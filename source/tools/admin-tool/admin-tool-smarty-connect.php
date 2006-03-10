@@ -15,7 +15,8 @@
 //***************************************************************************
 
 //***** imports *************************************************************
-require_once(SMARTY_DIR . 'Smarty.class.php');
+require_once(dirname(__FILE__).'/admin-tool-config.php');
+require_once(SMARTY_DIR.'Smarty.class.php');
 
 //***** AdminToolApp ********************************************************
 /**
@@ -35,7 +36,7 @@ class AdminToolSmartyConnect extends Smarty {
         $this->left_delimiter = '{{';
         $this->right_delimiter = '}}';
         $this->template_dir = AT_SMARTY_TEMP_DIR . '/templates';
-        $this->config_dir = $_SERVER['DOCUMENT_ROOT'] . '/smarty/configs';
+        //$this->config_dir = $_SERVER['DOCUMENT_ROOT'] . '/smarty/configs';
         $this->compile_dir = AT_SMARTY_TEMP_DIR . '/templates_c';
         $this->cache_dir = SMARTY_DIR . '../cache';
     }

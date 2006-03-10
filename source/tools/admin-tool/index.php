@@ -32,8 +32,7 @@ require_once(dirname(__FILE__).'/admin-tool-lib.php');
 require_once(dirname(__FILE__).'/admin-tool-smarty-connect.php');
 require_once(dirname(__FILE__).'/admin-tool-db.php');
 
-require_once(dirname(__FILE__).'/../../libs/reflection/class.ExtReflectionClass.php');
-require_once(dirname(__FILE__).'/policy-plugin/policy-plugin.php');
+require_once(dirname(__FILE__).'/../../../libs/reflection/class.ExtReflectionClass.php');
 
 
 //***** AdminToolApp ********************************************************
@@ -63,11 +62,6 @@ class AdminToolApp {
   private $db = null;
 
   /**
-   * @var PolicyPlugIn
-   */
-  private $plugIn = null;
-
-  /**
    * @var string
    */
   private $ws_output_folder = '';
@@ -92,7 +86,6 @@ public function __construct() {
   $this->smarty  = new AdminToolSmartyConnect();
   $this->library = new AdminToolLibrary();
   $this->db      = new AdminToolDB();
-  $this->plugIn  = new PolicyPlugIn();
 
   $this->ws_output_folder = $_SERVER["DOCUMENT_ROOT"] . "/webservices";
 
@@ -181,15 +174,6 @@ public function run() {
                   // dann wieder Methoden anzeigen
                   $this->showMethods($_REQUEST['class_id']);
                   break;
-                case "Web Service erstellen":
-
-                  $class = $this->db->getClassByID($_REQUEST["class_id"]);
-                  $extRefClass = new ExtReflectionClass($class["class_name"]);
-                  $methods = $extRefClass->getMethods();
-                  $methods = $this->plugIn->getPublishedMethods($methods);
-                  $ws_gen = new DocumentWrappedAdapterGenerator();
-                  $this->check_ws_output_folder();
-                  $ws_gen->generateAdapterClass($class["class_name"], $methods, $this->ws_output_folder);
 
                 // Sonst (Zurueck)
                 case 'back':
@@ -748,13 +732,13 @@ $this->smarty->assign("classes_checked","");
 
   if (isset($_REQUEST["action"])) {
     switch ($_REQUEST["action"]) {
-case "Registrieren":
+      case "Registrieren":
           $selected_list = $_REQUEST["class_ids"];
           foreach($classes as $key => $value) {
             if (in_array($key, $selected_list)) {
               $class = new ExtReflectionClass($value);
               $methods = $class->getMethods();
-              $this->plugIn->getPublishedMethods($methods);
+              $this->library->getPublishedMethods($methods);
             }
           }
       case "Anwenden":

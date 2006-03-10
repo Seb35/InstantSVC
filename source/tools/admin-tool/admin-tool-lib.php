@@ -21,10 +21,10 @@ error_reporting(E_ALL);
 
 //***** imports *************************************************************
 require_once dirname(__FILE__).'/../../../libs/misc/class.codeAnalyzer.php';
-require_once dirname(__FILE__) . '/admin-tool-db.php';
-require_once(dirname(__FILE__).'/../../libs/WSDLGenerator/class.WSDLGenerator.php');
-require_once(dirname(__FILE__).'/../../libs/generator/class.soapDdGenerator.php');
-require_once(dirname(__FILE__).'/../../libs/WSDLGenerator/class.DocumentWrappedAdapterGenerator.php');
+require_once dirname(__FILE__).'/admin-tool-db.php';
+require_once(dirname(__FILE__).'/../../libs/Generators/class.WSDLGenerator.php');
+require_once(dirname(__FILE__).'/../../libs/Generators/class.soapDdGenerator.php');
+require_once(dirname(__FILE__).'/../../libs/Generators/class.DocumentWrappedAdapterGenerator.php');
 
 //***** AdminToolLibrary ****************************************************
 /**
@@ -248,6 +248,43 @@ public function getRegisteredClasses() {
     public static function getAdapterClassName($className) {
         return DocumentWrappedAdapterGenerator::generateAdapterClassName($className);
     }
+
+    //===========================================================================
+    /**
+     * Die Funktion nimmt Methoden in die DB auf und gibt alle Methoden zurück
+     * die veröffentlicht werden dürfen
+     * @param ReflectionMethod[] - Liste mit Methoden-Objekten
+     * @return ReflectionMethod[] - gefilterte Liste mit Methoden-Objekten, nur
+     *         diejenigen, die veröffentlicht werden sollen
+     */
+    public function getPublishedMethods($methods) {
+        $publishedMethods = array();
+
+        foreach($methods as $method) {
+            try {
+                $method_name = $method->getName();
+                $class_name = $method->getDeclaringClass()->getName();
+                $class_file = $method->getDeclaringClass()->getFileName();
+                $comment = $method->getDocComment();
+            }
+            catch (Exception $e) {
+                die($e->getMessage());
+            }
+
+            $class_id = $this->db->insertClass($class_name, $class_file);
+            $method_id = $this->db->insertMethod($class_id, $method_name);
+            $this->db->insertSourceCodeComment($method_id, $comment);
+            $publish_state = $this->db->getMethodState($class_name, $method_name);
+
+            if ($publish_state) {
+                $publishedMethods[] = $method;
+            }
+
+        } // end foreach
+
+        return $publishedMethods;
+
+    } // end getPublishedMethods
 }
 
 ?>

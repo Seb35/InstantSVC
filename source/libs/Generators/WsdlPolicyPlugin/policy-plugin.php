@@ -17,7 +17,8 @@
 //***************************************************************************
 
 //***** imports *************************************************************
-require_once(dirname(__FILE__).'/../admin-tool-db.php');
+require_once(dirname(__FILE__).'/../../../tools/admin-tool/admin-tool-db.php');
+require_once(dirname(__FILE__).'/../../../tools/admin-tool/admin-tool-lib.php');
 
 
 //***** PolicyPlugIn ********************************************************
@@ -40,6 +41,11 @@ class PolicyPlugIn {
      */
     private $db;
 
+    /**
+     * @var AdminToolLibrary
+     */
+    private $lib;
+
 //===========================================================================
 /**
  *  Konstruktor - erzeugt ein neues PublishFunctions-Object und
@@ -58,35 +64,8 @@ public function __construct() {
  *         diejenigen, die veröffentlicht werden sollen
  */
 public function getPublishedMethods($methods) {
-
-  $publishedMethods = array();
-
-  foreach($methods as $method) {
-
-    try {
-      $method_name = $method->getName();
-      $class_name = $method->getDeclaringClass()->getName();
-      $class_file = $method->getDeclaringClass()->getFileName();
-      $comment = $method->getDocComment();
-    }
-    catch (Exception $e) {
-      die($e->getMessage());
-    }
-
-    $class_id = $this->db->insertClass($class_name, $class_file);
-    $method_id = $this->db->insertMethod($class_id, $method_name);
-    $this->db->insertSourceCodeComment($method_id, $comment);
-    $publish_state = $this->db->getMethodState($class_name, $method_name);
-
-    if ($publish_state) {
-      $publishedMethods[] = $method;
-    }
-
-  } // end foreach
-
-  return $publishedMethods;
-
-} // end getPublishedMethods
+  return $this->lib->getPublishedMethods($methods);
+}
 
 
 //===========================================================================

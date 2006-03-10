@@ -19,8 +19,8 @@
 //***************************************************************************
 
 //***** imports *************************************************************
-require_once ADODB_DIR . '/adodb.inc.php';
-
+require_once(dirname(__FILE__).'/admin-tool-config.php');
+require_once(ADODB_DIR.'/adodb.inc.php');
 
 //***** AdminToolDB *********************************************************
 /**

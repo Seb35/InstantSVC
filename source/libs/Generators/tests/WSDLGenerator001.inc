@@ -3,7 +3,7 @@
 
 ini_set('include_path', ini_get('include_path') . PATH_SEPARATOR . '../../');
 
-require_once 'WSDLGenerator/class.WSDLGenerator.php';
+require_once(dirname(__FILE__).'/../class.WSDLGenerator.php');
 
 if (substr($_SERVER['SCRIPT_NAME'], -5) == '.phpt') {
     $testCase = basename($_SERVER['SCRIPT_NAME'], '.phpt');
@@ -12,7 +12,7 @@ if (substr($_SERVER['SCRIPT_NAME'], -5) == '.phpt') {
 }
 $wsdl_file = $testCase . '.wsdl';
 //$service_access_point = 'http://www.example.org/webservices/' . $testCase;
-$service_access_point = 'test://'; 
+$service_access_point = 'test://';
 $namespace = 'http://www.example.org/webservices/' . $testCase;
 $typeNamespace = 'http://www.example.org/webservices/' . $testCase . '/types';
 

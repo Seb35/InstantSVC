@@ -2,7 +2,7 @@
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4 filetype=php: */
 
 if ($soapBinding == 0) {
-    require_once 'WSDLGenerator/class.DocumentWrappedAdapterGenerator.php';
+    require_once(dirname(__FILE__).'/../class.DocumentWrappedAdapterGenerator.php');
     $myDocumentWrappedAdapterGenerator = new DocumentWrappedAdapterGenerator($classname);
     eval($myDocumentWrappedAdapterGenerator->getAdapterClass());
     $classname = $myDocumentWrappedAdapterGenerator->getAdapterClassName();

@@ -17,7 +17,7 @@
 //***************************************************************************
 
 // include base parser
-require_once('XmlParser.php');
+require_once(dirname(__FILE__).'/../../../libs/misc/class.XmlParser.php');
 
 //***** XmlParserExtended****************************************************
 /**

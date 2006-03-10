@@ -25,18 +25,20 @@ ini_set('soap.wsdl_cache_ttl', 0);
 
 //***** imports *************************************************************
 // include extended SoapServer
-include('Server/ExtendedSoapServer.php');
+include_once('class.ExtendedSoapServer.php');
 // include WebserviceClass
-include('Webservice/HalloWelt.php');
-
-// include Security-Parser
-require_once('Server/Parser/XmlSoapSecParser.php');
+include_once(dirname(__FILE__).'/../SecureClient/test/HalloWelt.php');
 
 // include SoapHeader-Parser
-require_once('Server/Parser/XmlSoapHeaderParser.php');
+require_once(dirname(__FILE__).'/../SoapHeader/XmlSoapHeaderParser.php');
+
+// include Security-Parser
+require_once(dirname(__FILE__).'/../UserTokenProfile/XmlSoapSecParser.php');
+
+
 
 //include a ICheckUserRunnable implementation
-require_once('Server/Parser/CheckUserRunnable.php');
+require_once(dirname(__FILE__).'/../UserTokenProfile/CheckUserRunnable.php');
 
 if (php_sapi_name() == 'cli') {
     echo 'isn\'t meant to be called from commandline';

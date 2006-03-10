@@ -18,9 +18,9 @@
 
 //***** imports *************************************************************
 // include base parser
-require_once('XmlParserExtended.php');
+require_once(dirname(__FILE__).'/../SoapHeader/XmlParserExtended.php');
 // include check algorithm
-require_once('ICheckUserRunnable.php');
+require_once(dirname(__FILE__).'/ICheckUserRunnable.php');
 
 
 //***** XmlSoapSecParser ****************************************************
