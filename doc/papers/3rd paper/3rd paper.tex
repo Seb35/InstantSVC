@@ -268,7 +268,7 @@ Christoph~Hartmann, Andreas~Meyer und Sebastian~Böttner
 %Hasso-Plattner-Institut für Softwaresystemtechnik
 %\end{center}
 }% <-this % stops a space
-%
+% 
 % The paper headers
 \markboth{Seminar Konzepte und Methoden der Web-Programmierung 2005/2006}{Web Service Toolkit für PHP5}
 % The only time the second header will appear is for the odd numbered pages
@@ -934,7 +934,6 @@ diese an dem vom Benutzer gewünschten Pfad im Dateisystem ab.
 Das Administrations-Tool bietet auch einen Wizard, mit Hilfe 
 dessen Web Services im Frage-Antwort-Stil aufgesetzt werden k\"{o}nnen.
 
-%Stefan: bitte ohne rahmen
 \begin{figure}[!htb]
 	\centering
 		\includegraphics[width=3.4in]{pics/arch_admin-tool}
@@ -1030,12 +1029,32 @@ Der WSDL-Generator unterstützt den WSDL 1.1 Standard für document-literal, rpc-l
 Zur Markierung von Klassen und Methoden als Web Service können Annotationen ähnlich wie in Java~EE und .NET verwendet werden. Zusätzlich werden semantische Informationen aus dem Quelltext in die WSDL-Dokumentation übernommen.
 Für document-wrapped Web Services können mit dem Adapter-Generator automatisch Adapter-Klassen generiert werden, die sich transparent um das Wrapping in den SOAP-Nachrichten kümmern.
 
-Die rund 20 weiterführenden WS-*-Spezifikationen im Bereich der Sicherheit, Synchronisation und Sessioning, an denen zur Zeit ununterbrochen gearbeitet wird, werden zusätzliche Felder für die Header von SOAP-Nachrichten spezifizieren. Um diese Standards in Zukunft mit PHP nutzen zu können entwickelten wir den Extended SOAP Server, der um weitere Handler erweitert werden kann, die als Kette von SOAP-Intermediaries nacheinander eine SOAP-Nachricht bearbeiten.
+Die rund 20 weiterführenden WS-*-Spezifikationen im Bereich der Sicherheit, Synchronisation und Sessioning, 
+%Stefan: ununterbrochen? weiß man nicht, und ist auch nur nen füllwort
+an denen zur Zeit ununterbrochen gearbeitet wird, 
+werden zusätzliche Felder für die Header von SOAP-Nachrichten spezifizieren. Um diese Standards in Zukunft mit PHP nutzen zu können entwickelten wir den Extended SOAP Server, der um weitere Handler erweitert werden kann, die als Kette von SOAP-Intermediaries nacheinander eine SOAP-Nachricht bearbeiten.
 Auf der Basis des Extended SOAP Servers haben wir das Username-Token-Profile aus dem WS-Security Standard für PHP5 implementiert. Damit ist es Anwendungen, die einen Web Service nutzen, möglich sich beim Dienstanbieter sicher zu authentifizieren.
 
 %TODO: something about REST
+Als alternative zu Web Services mit komplexen SOAP-Stacks und 
+dem damit verbundenen Aufwand, werden die Web Services im 
+REST-Stil besonders bei Entwicklern zunehmend
+beliebter. Dies hat auf der einen Seite mit dem geringen Toolbedarf
+und damit einem geringeren Einstiegaufwand zu tun und auf der anderen
+Seite mit den Vorteilen dieses Architekturstils und der damit verbundenen
+Interoperabilität.
 
-Das Admin-Tool bietet schließlich eine einheitliche Oberfläche für um alle Werkzeuge zu konfigurieren und zu starten und damit automatisiert SOAP-Server für eine bestehende Anwendung zu generieren.
+Um dieser Entwicklung Rechnung zu tragen, wurden zusätzliche zu den SOAP-Tools 
+entsprechende Werkzeuge zum Erleichtern der Entwicklung von REST Services implementiert.
+Diese ermöglichen die automatische Generierung eines REST Servers der die Serviceanfragen 
+entgegen nimmt und außerdem bei Bedarf die Authentifikation des Clients über
+HTTP Digest durchführt.
+
+Das entwickelte Admin-Tool bietet schließlich eine einheitliche Oberfläche
+um alle Werkzeuge zu konfigurieren und zu starten und damit 
+automatisiert SOAP-Server für eine bestehende Anwendung zu generieren.
+
+
 
 % if have a single appendix:
 %\appendix[Proof of the Zonklar Equations]
