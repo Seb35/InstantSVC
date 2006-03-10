@@ -119,7 +119,7 @@ foreach ($classes as $class) {
 $console->writeLn('Create DD: '.$generator->getDeployFileName());
 $generator->save($ddPath);
 $console->writeLn('Copy REST Server: '.$ddPath.DIRECTORY_SEPARATOR.'rest.php');
-copy(dirname(__FILE__).DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'rest.php', $ddPath.DIRECTORY_SEPARATOR.'rest.php');
+copy(dirname(__FILE__).'/../libs/Server/rest.php', $ddPath.'/rest.php');
 $console->writeLn('Deployment successful completed');
 
 /**

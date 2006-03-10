@@ -226,7 +226,7 @@ public function getRegisteredClasses() {
      * @return boolean
      */
     public static function generateServer($targetPath) {
-        return copy(dirname(__FILE__).'/../../soap.php', $targetPath.'/soap.php');
+        return copy(dirname(__FILE__).'/../../libs/Server/soap.php', $targetPath.'/soap.php');
     }
 
     //=======================================================================
