@@ -143,5 +143,15 @@ class ExtReflectionMethod extends ReflectionMethod {
             return $this->docParser->getTagsByName($name);
         }
     }
+    //=======================================================================
+    /**
+    * Checks if this method is a 'Magic Function' or not
+    * @return boolean
+    */
+    function isMagic() {
+        $magicArray =  array('__construct','__destruct','__call','__get','__set','__isset','__unset','__sleep','__wakeup','__toString','__clone','__autoload');
+        return in_array($this->getName(),$magicArray);
+    }
+
 }
 ?>

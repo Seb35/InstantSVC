@@ -384,7 +384,7 @@ class WSDLGenerator
      */
     protected function addOperation($method)
     {
-        if (($method->getName() != '__construct') && ($method->getName() != '__destruct') && ($method->getName() !='getInstance'))
+        if (!($method->isMagic()) && ($method->getName() !='getInstance'))
         {
             if ($this->bindingStyle != 'rpc')
             {
