@@ -290,7 +290,7 @@ Christoph~Hartmann, Andreas~Meyer und Sebastian~Böttner
 
 \begin{abstract}
 
-Dieses Paper beschreibt die Ergebnisse unserer Arbeit an einer Familie von Werkzeugen für Web Services unter PHP5. Allerdings machen die besonderen Spracheigenschaften die Entwicklung von Meta-Spach-Werkzeugen etwas schwiereig. Daher wurde zunächst die Reflection API erweitert um die benötigten Informationen über Sprachkonstrukte zu bekommen. Auf dieser Basis wurde zunächst ein leistungsfähiger WSDL-Generator...
+Dieses Paper beschreibt die Ergebnisse unserer Arbeit an einer Familie von Werkzeugen für Web Services unter PHP5. Allerdings machen die besonderen Spracheigenschaften die Entwicklung von Meta-Spach-Werkzeugen etwas schwierig. Daher wurde zunächst die Reflection API erweitert um die benötigten Informationen über Sprachkonstrukte zu bekommen. Auf dieser Basis wurde zunächst ein leistungsfähiger WSDL-Generator...
 \end{abstract}
 
 \begin{keywords}
@@ -333,7 +333,12 @@ PHP5, Reflection, Annotations, Web Services, WSDL-Generator, SOAP-Handler-Chains
 
 \section{Einführung}
 
-\PARstart{W}{eb Services} sind eines der wichtigsten IT-Themen der letzten Jahre. Sie bieten interoperable Kommunikation über Plattform- und Programmiersprachengrenzen hinweg und stellen aus diesem Grund für Unternehmen ein vielversprechendes Konzept dar. Web Services werden eingesetzt um bestehende interne und unternehmensübergreifende Anwendungen sinnvoll zu integrieren und so Geschäftsprozesse zu optimieren. Das Grundprinzip dabei ist, dass Anwendungen ihre Funktionalität in Form von Diensten anbieten, die über das Internet von anderen Anwendungen genutzt werden können.
+\PARstart{W}{eb Services} sind eines der wichtigsten IT-Themen der letzten Jahre. 
+Sie bieten interoperable Kommunikation über Plattform- und Programmiersprachengrenzen 
+hinweg und stellen aus diesem Grund für Unternehmen ein vielversprechendes Konzept dar. 
+%Stefan: aus den beiden sätzen bitte einen machen, irgendwie kommt so der logsiche schluss nicht rüber
+%Stefan: ..Unternehmen ein vielversprechendes Konzept dar, um bestehende interne und unternehmensübergreifende ....
+Web Services werden eingesetzt um bestehende interne und unternehmensübergreifende Anwendungen sinnvoll zu integrieren und so Geschäftsprozesse zu optimieren. Das Grundprinzip dabei ist, dass Anwendungen ihre Funktionalität in Form von Diensten anbieten, die über das Internet von anderen Anwendungen genutzt werden können.
 
 Die wichtigsten Grundlagenstandards für Web Services sind das \textit{SOAP-Protokoll} \cite{SOAP}, die \textit{Web Services Description Language (WSDL)} \cite{WSDL} und \textit{Universal Description, Discovery and Integration (UDDI)} \cite{UDDI}. SOAP ist dabei das Kommunikationsprotokoll für den Zugriff auf die Dienste. Mit WSDL werden vertragsähnliche Beschreibungsdokumente erstellt, die ein Anbieter den Nutzern zur Verfügung stellen kann. UDDI ist der Standard für Namensdienste, mit denen Web Services bekannt gemacht und gesucht werden können.
 
@@ -345,7 +350,7 @@ Um eine Klasse in PHP5 als Web Service anzubieten, erstellt man zunächst eine Be
 
 Das ist natürlich bei weitem nicht so komfortabel, wie man es von .NET oder Java~EE gewohnt ist. Zwar ist die SOAP-Implementierung sehr einfach zu benutzen, aber die manuelle Erstellung von WSDL-Beschreibungen ist sehr aufwändig und könnte prinzipiell automatisiert werden. Um also professionell in großen Systemen Web Services anzubieten benötigt man umfangreiche Werkzeugunterstützung. Typischerweise verwendet man in anderen Programmiersprachen Annotationsmechanismen um Klassen und Methoden einer Anwendung zu markieren, die als Web Service verwendet werden sollen. Mit dem so markierten Quelltext wird eine Werkzeugkette angestoßen, die dann WSDL-Beschreibungen, zusätzlichen Code für Stubs und Skeletons und falls nötig Deployment-Deskriptoren generiert, mit denen die Web Services sofort bereit für den Produktiveinsatz sind.
 
-Das Ziel unserer Arbeit war es, die Lücken in der Werkzeugunterstützung für PHP5 zu schließen.
+Das Ziel unserer Arbeit war es, diese Lücken in der Werkzeugunterstützung für PHP5 zu schließen.
 
 
 \section{Extended Reflection API}
