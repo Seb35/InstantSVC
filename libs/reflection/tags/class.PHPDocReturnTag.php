@@ -14,6 +14,9 @@
 //***************************************************************************
 //***************************************************************************
 
+//***** imports *************************************************************
+require_once(dirname(__FILE__).'/../class.PHPDocTag.php');
+
 //***** PHPDocReturnTag *****************************************************
 /**
 * @package    reflection.tags
@@ -28,7 +31,7 @@ class PHPDocReturnTag extends PHPDocTag {
     */
     public function __construct($line) {
         $this->tagName = $line[0];
-        
+
         if (isset($line[1])) {
             $this->params[0] = TypeMapper::getInstance()->getType($line[1]);
         }
@@ -39,7 +42,7 @@ class PHPDocReturnTag extends PHPDocTag {
             $this->desc .= ' '.$line[3];
         }
     }
-    
+
     //=======================================================================
     /**
     * @return string

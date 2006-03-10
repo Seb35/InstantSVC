@@ -5,9 +5,8 @@
 <body>
 <?php
 //error_reporting(E_ALL|E_STRICT);
-include_once('../../config/config.php');
-include_once(ROOT_DIR.'libs/reflection/require.package.php');
-include_once(ROOT_DIR.'sample/libs/teletask/class.Lecture.php');
+include_once(dirname(__FILE__).'/../../libs/reflection/class.ExtendedReflectionApi.php');
+include_once(dirname(__FILE__).'/../teletask/libs/class.Lecture.php');
 
 
 function testWithClass2($name) {

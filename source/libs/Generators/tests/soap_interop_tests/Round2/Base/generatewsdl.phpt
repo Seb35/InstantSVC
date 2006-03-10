@@ -6,7 +6,7 @@ SOAP Interop Round2 base WSDL generation
 
 ini_set('include_path', ini_get('include_path') . PATH_SEPARATOR . dirname(__FILE__) . '/../../../../../');
 
-require_once 'WSDLGenerator/class.WSDLGenerator.php';
+require_once 'Generators/class.WSDLGenerator.php';
 require_once 'class.SOAP_Interop_Base.php';
 $classname = 'SOAP_Interop_Base';
 $wsdl_file = dirname(__FILE__)."/round2_base.wsdl";

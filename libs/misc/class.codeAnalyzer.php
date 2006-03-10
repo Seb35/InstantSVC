@@ -18,8 +18,8 @@
 //***** imports *************************************************************
 require_once(dirname(__FILE__).'/class.fileDetails.php');
 require_once(dirname(__FILE__).'/../config/config.php');
-require_once(dirname(__FILE__).'/../../source/libs/reflection/class.ExtReflectionClass.php');
-require_once(dirname(__FILE__).'/../../source/libs/reflection/class.ExtReflectionFunction.php');
+require_once(dirname(__FILE__).'/../reflection/class.ExtReflectionClass.php');
+require_once(dirname(__FILE__).'/../reflection/class.ExtReflectionFunction.php');
 require_once(dirname(__FILE__).'/../genesis-core/class.renderEngine.php');
 
 //***** CodeAnalyzer ********************************************************
@@ -195,9 +195,8 @@ class CodeAnalyzer {
             if ($detail->mimeType == 'application/x-httpd-php') {
                 $detail->fileName = strtr($detail->fileName, DIRECTORY_SEPARATOR, '/');
 
-
-
                 $cmd = $this->phpBin.' "'.dirname(__FILE__).'/inc.codeAnalyzer.php" exec "'.$detail->fileName.'"';
+                echo $cmd."\n";
                 if ($cli) {
                     $out = shell_exec($cmd);
                 }

@@ -10,7 +10,7 @@
  */
 
 
-require_once('class.stats.php');
+require_once(dirname(__FILE__).'/../../libs/misc/class.codeAnalyzer.php');
 //at this point only buildin classes should be listed
 $declaredClasses = get_declared_classes();
 
@@ -29,11 +29,25 @@ else {
 }
 
 
-$stats = new Stats($path);
+if (isset($_ENV['OS']) and stripos($_ENV['OS'], 'windows') !== false) {
+    if (isset($_SERVER['PHP_PEAR_PHP_BIN'])) {
+        $phpbin = $_SERVER['PHP_PEAR_PHP_BIN'].' -c '.$_SERVER['PHP_PEAR_PHP_BIN'];
+    }
+    else {
+        $phpbin = 'c:\Programme\php5\php.exe -c c:\Programme\php5';
+    }
+}
+else {
+    $phpbin = '/usr/bin/php5.1';
+}
+
+$stats = new CodeAnalyzer($path);
+$stats->setPhpBinPath($phpbin);
 $stats->setDeclaredClasses($declaredClasses);
 $stats->collect();
-$stats->collectDocumentationFlaws();
-$flaws = $stats->getDocuFlaws();
+$stats->inspectFiles();
+$flaws = $stats->getCodeSummary();
+$flaws = $flaws['classes'];
 
 foreach ($flaws as $classname => $class) {
     if ($class['webservice'] or !$webservices) {

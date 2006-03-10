@@ -16,7 +16,7 @@
 //***************************************************************************
 //***************************************************************************
 
-require_once dirname(__FILE__) . '/../reflection/class.ExtReflectionClass.php';
+require_once dirname(__FILE__).'/../../../libs/reflection/class.ExtReflectionClass.php';
 
 //***** WSDLGenerator *******************************************************
 /**

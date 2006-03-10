@@ -7,7 +7,7 @@ if (!defined('HTTPLOC'))
 
 
 if (!defined('GENESIS_CFGFILE'))
-  define('GENESIS_CFGFILE', dirname(__FILE__).'/config.php');
+  define('GENESIS_CFGFILE', __FILE__);
 
 
 

@@ -20,6 +20,7 @@
 //***** imports *************************************************************
 require_once('class.xbelParser.php');
 require_once('class.user.php');
+require_once(dirname(__FILE__).'/../../../libs/misc/interface.serializer.php');
 
 //***** XbelSerializer ******************************************************
 /**

@@ -14,6 +14,9 @@
 //***************************************************************************
 //***************************************************************************
 
+//***** imports *************************************************************
+require_once(dirname(__FILE__).'/../class.PHPDocTag.php');
+
 //***** PHPDocVarTag ********************************************************
 /**
 * @package    reflection.tags
@@ -22,14 +25,14 @@
 * @license    http://www.apache.org/licenses/LICENSE-2.0   Apache License 2.0
 */
 class PHPDocVarTag extends PHPDocTag {
-    
+
     //=======================================================================
     /**
     * @param string[] $line Array of words
     */
     public function __construct($line) {
         $this->tagName = $line[0];
-        
+
         if (isset($line[1])) {
             $this->params[0] = TypeMapper::getInstance()->getType($line[1]);
         }
@@ -39,8 +42,8 @@ class PHPDocVarTag extends PHPDocTag {
         if (isset($line[3])) {
             $this->desc .= ' '.$line[3];
         }
-    }    
-    
+    }
+
     //=======================================================================
     /**
     * @return string

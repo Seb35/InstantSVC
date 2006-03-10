@@ -28,6 +28,10 @@
  */
 interface authProvider {
 
+    const PLAIN  = 'plain';
+    const DIGEST = 'digest';
+    const MD5    = 'md5';
+
     /**
      * Returns the users password
      * If it is a plain or a md5 value should be checked

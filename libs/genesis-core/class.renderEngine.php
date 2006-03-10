@@ -22,7 +22,7 @@ error_reporting(E_ALL);
 
 //***** imports *************************************************************
 include_once(SMARTY_DIR.'Smarty.class.php');
-//error_reporting(E_ALL|E_STRICT);
+
 //***** wsRenderEngine ******************************************************
 /**
  * Provides a initialized and preconfigured smarty template engine

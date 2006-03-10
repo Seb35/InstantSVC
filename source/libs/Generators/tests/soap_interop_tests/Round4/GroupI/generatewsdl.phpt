@@ -6,7 +6,7 @@ SOAP Interop Round4 GroupI XSD WSDL generation
 
 ini_set('include_path', ini_get('include_path') . PATH_SEPARATOR . dirname(__FILE__) . '/../../../../../');
 
-require_once 'WSDLGenerator/class.WSDLGenerator.php';
+require_once 'Generators/class.WSDLGenerator.php';
 require_once 'class.SOAP_Interop_GroupI.php';
 $classname = 'SOAP_Interop_GroupI';
 $wsdl_file = dirname(__FILE__) . '/round4_groupI_xsd.wsdl';
@@ -24,7 +24,7 @@ $myWSDLGenerator->setClass($classname);
 $wsdl = $myWSDLGenerator->saveToFile($wsdl_file);
 var_dump(file_exists($wsdl_file));
 
-require_once 'WSDLGenerator/class.DocumentWrappedAdapterGenerator.php';
+require_once 'Generators/class.DocumentWrappedAdapterGenerator.php';
 $myDocumentWrappedAdapterGenerator = new DocumentWrappedAdapterGenerator($classname, NULL, 'SOAP_Interop_GroupIDocumentWrappedAdapter');
 var_dump(file_exists($myDocumentWrappedAdapterGenerator->saveToFile(dirname(__FILE__), 'class.SOAP_Interop_GroupIDocumentWrappedAdapter.php')));
 ?>

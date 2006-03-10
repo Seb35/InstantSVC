@@ -36,7 +36,7 @@ class dummyAuthProvider implements authProvider {
      * @param string $accountName
      * @return string
      */
-    function getPassword($accountName) {
+    function getPassword($accountName, $type = null) {
         return strrev($accountName);
     }
 
@@ -70,6 +70,14 @@ class dummyAuthProvider implements authProvider {
      */
     function isRFC2617Md5() {
         return false;
+    }
+
+    //=========================================================================
+    /**
+     * @return string
+     */
+    function getPasswordType() {
+        return authProvider::PLAIN;
     }
 }
 

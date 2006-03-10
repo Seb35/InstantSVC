@@ -11,8 +11,8 @@
  */
 
 error_reporting(E_ALL|E_STRICT);
-require_once('../../libs/misc/class.console.php');
-require_once('../libs/class.classLoader.php');
+require_once(dirname(__FILE__).'/../../libs/misc/class.console.php');
+require_once(dirname(__FILE__).'/../../libs/misc/class.classLoader.php');
 
 $console = new Console();
 
