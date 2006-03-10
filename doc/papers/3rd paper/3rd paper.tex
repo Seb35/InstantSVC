@@ -1,6 +1,6 @@
 %% 3rd paper.tex
 %% V1.0
-%% March 9, 2006
+%% March 10, 2006
 %% by Stefan Marr, Falko Menge, Gregor Gabrysiak, Martin Sprengel, 
 %%    Christoph Hartmann, Michael Perscheid, Andreas Meyer and Sebastian Böttner
 %%
@@ -256,19 +256,11 @@
 % paper title
 \title{Web Service Toolkit für PHP5}
 %
-%
-% author names and IEEE memberships
-% note positions of commas and nonbreaking spaces ( ~ ) LaTeX will not break
-% a structure at a ~ so this keeps an author's name from being broken across
-% two lines.
-% use \thanks{} to gain access to the first footnote area
-% a separate \thanks must be used for each paragraph as LaTeX2e's \thanks
-% was not built to handle multiple paragraphs
 \author{
 \begin{center}
-Sebastian Böttner, Gregor Gabrysiak, Christoph Hartmann, Stefan Marr, Falko Menge, 
+Stefan~Marr, Falko~Menge, Gregor~Gabrysiak, Martin~Sprengel, Michael~Perscheid,
 \end{center}
-Andreas Meyer, Michael Perscheid und Martin Sprengel
+Christoph~Hartmann, Andreas~Meyer und Sebastian~Böttner
 %\begin{center}
 %\textit{Seminar Konzepte und Methoden der Web-Programmierung 2005/2006}
 %\end{center}
@@ -276,29 +268,6 @@ Andreas Meyer, Michael Perscheid und Martin Sprengel
 %Hasso-Plattner-Institut für Softwaresystemtechnik
 %\end{center}
 }% <-this % stops a space
-%\author{Michael~Shell,~\IEEEmembership{Member,~IEEE,}
-%        John~Doe,~\IEEEmembership{Fellow,~OSA,}
-%        and~Jane~Doe,~\IEEEmembership{Life~Fellow,~IEEE}% <-this % stops a space
-%\thanks{Manuscript received January 20, 2002; revised November 18, 2002.
-%        This work was supported by the IEEE.}% <-this % stops a space
-%\thanks{M. Shell is with the Georgia Institute of Technology.}}
-% note the % following the last \IEEEmembership and also the first \thanks - 
-% these prevent an unwanted space from occurring between the last author name
-% and the end of the author line. i.e., if you had this:
-% 
-% \author{....lastname \thanks{...} \thanks{...} }
-%                     ^------------^------------^----Do not want these spaces!
-%
-% a space would be appended to the last name and could cause every name on that
-% line to be shifted left slightly. This is one of those "LaTeX things". For
-% instance, "A\textbf{} \textbf{}B" will typeset as "A B" not "AB". If you want
-% "AB" then you have to do: "A\textbf{}\textbf{}B"
-% \thanks is no different in this regard, so shield the last } of each \thanks
-% that ends a line with a % and do not let a space in before the next \thanks.
-% Spaces after \IEEEmembership other than the last one are OK (and needed) as
-% you are supposed to have spaces between the names. For what it is worth,
-% this is a minor point as most people would not even notice if the said evil
-% space somehow managed to creep in.
 %
 % The paper headers
 \markboth{Seminar Konzepte und Methoden der Web-Programmierung 2005/2006}{Web Service Toolkit für PHP5}
@@ -324,7 +293,7 @@ The abstract goes here.
 \end{abstract}
 
 \begin{keywords}
-Web Services, PHP5, Tooling, Security.
+PHP5, Web Services, WSDL-Generator, WS-Security, REST.
 \end{keywords}
 % Note that keywords are not normally used for peerreview papers.
 
@@ -363,22 +332,19 @@ Web Services, PHP5, Tooling, Security.
 
 \section{Einführung}
 
-\PARstart{W}{eb Services} sind eines der wichtigsten IT-Themen der letzten Jahre. Sie bieten interoperable Kommunikation über Plattform- und Programmiersprachengrenzen hinweg und stellen aus diesem Grund für Unternehmen ein vielversprechendes Konzept dar. Sie werden eingesetzt um bestehende interne und unternehmensübergreifende Anwendungen sinnvoll zu integrieren und so Geschäftsprozesse zu optimieren.
+\PARstart{W}{eb Services} sind eines der wichtigsten IT-Themen der letzten Jahre. Sie bieten interoperable Kommunikation über Plattform- und Programmiersprachengrenzen hinweg und stellen aus diesem Grund für Unternehmen ein vielversprechendes Konzept dar. Web Services werden eingesetzt um bestehende interne und unternehmensübergreifende Anwendungen sinnvoll zu integrieren und so Geschäftsprozesse zu optimieren. Das Grundprinzip dabei ist, dass Anwendungen ihre Funktionalität in Form von Diensten anbieten, die über das Internet von anderen Anwendungen genutzt werden können.
 
-Die wichtigsten Grundlagenstandards für Web Services sind SOAP \cite{SOAP}, WSDL (Web Services Description Language) \cite{WSDL} und UDDI (Universal Description, Discovery and Integration) \cite{UDDI}. SOAP ist dabei das Kommunikationsprotokoll für den Zugriff auf die Dienste. Mit der Web Services Description Language (WSDL) werden vertragsähnliche Beschreibungsdokumente erstellt, die vom Server für die Nutzer angeboten werden können. Universal Description, Discovery and Integration (UDDI) ist der Standard für Namensdienste, mit denen Web Services bekannt gemacht und gesucht werden können.  Zur effektiven und interoperablen Nutzung von SOAP und, mit Abstrichen, von WSDL existieren für alle üblichen Programmiersprachen und Plattformen  voll ausgereifte Werkzeuge, die für den Produktionsbetrieb eingesetzt werden können. Für UDDI Namensdienste werden meist kommerzielle Produkte eingesetzt, die via Web Service integriert werden.
+Die wichtigsten Grundlagenstandards für Web Services sind das \textit{SOAP-Protokoll} \cite{SOAP}, die \textit{Web Services Description Language (WSDL)} \cite{WSDL} und \textit{Universal Description, Discovery and Integration (UDDI)} \cite{UDDI}. SOAP ist dabei das Kommunikationsprotokoll für den Zugriff auf die Dienste. Mit WSDL werden vertragsähnliche Beschreibungsdokumente erstellt, die ein Anbieter den Nutzern zur Verfügung stellen kann. UDDI ist der Standard für Namensdienste, mit denen Web Services bekannt gemacht und gesucht werden können.
 
-%STefan: unser und wir? wie siehts denn nun aus damit? wollen wir das vermeiden wie "`der Leser"'?
+Zur effektiven und interoperablen Nutzung von SOAP und, mit Abstrichen, von WSDL existieren für alle üblichen Programmiersprachen und Plattformen  voll ausgereifte Werkzeuge, die für den Produktionsbetrieb eingesetzt werden können. Für UDDI Namensdienste werden meist kommerzielle Produkte verwendet, die via Web Service in die Anwendungen integriert werden.
+
 In unserer ersten Ausarbeitung \textit{"`Einführung in XML Web Services"'} \cite{WebServicePart1} haben wir SOAP, WSDL und UDDI vorgestellt und gezeigt, wie man die Standards mit PHP5 nutzen kann. PHP5 bietet eine Implementierung des SOAP-Protokolls, die sich nutzen lässt, um interoperable SOAP-Server und -Clients zu entwickeln.
 
 Um eine Klasse in PHP5 als Web Service anzubieten, erstellt man zunächst eine Beschreibung der Schnittstelle mit WSDL. Dabei definiert man unter anderem für alle Datentypen mit Hilfe von XML~Schema-Ausdrücken, wie sie für das Versenden in SOAP-Nachrichten serialisiert werden sollen. Eine Dokumentation der Methodensemantik kann manuell aus dem Quelltext der Klasse in die Schnittstellen-Beschreibung übertragen werden. Danach schreibt man ein PHP Script, das mit Hilfe der WSDL-Beschreibung einen SOAP Server startet. Dieser erzeugt dann ein Exemplar der dazugehörigen Klasse und beginnt SOAP-Anfragen zu beantworten.
 
+Das ist natürlich bei weitem nicht so komfortabel, wie man es von .NET oder Java~EE gewohnt ist. Zwar ist die SOAP-Implementierung sehr einfach zu benutzen, aber die manuelle Erstellung von WSDL-Beschreibungen ist sehr aufwändig und könnte prinzipiell automatisiert werden. Um also professionell in großen Systemen Web Services anzubieten benötigt man umfangreiche Werkzeugunterstützung. Typischerweise verwendet man in anderen Programmiersprachen Annotationsmechanismen um Klassen und Methoden einer Anwendung zu markieren, die als Web Service verwendet werden sollen. Mit dem so markierten Quelltext wird eine Werkzeugkette angestoßen, die dann WSDL-Beschreibungen, zusätzlichen Code für Stubs und Skeletons und falls nötig Deployment-Deskriptoren generiert, mit denen die Web Services sofort bereit für den Produktiveinsatz sind.
 
-Das ist natürlich bei weitem nicht so komfortabel, 
-%Stefan: J2EE oder?
-wie man es von .NET oder JEE gewohnt ist. 
-Zwar ist die SOAP-Implementierung sehr einfach zu benutzen, aber die manuelle Erstellung von WSDL-Beschreibungen ist extrem aufwändig und könnte prinzipiell automatisiert werden. 
-
-To be continued...
+Unser Ziel war es also die Lücken in der Werkzeugunterstützung für PHP5 zu schließen.
 
 \section{Extended Reflection API}
 Die in PHP5 integrierte Reflection API bietet die grundlegenden Möglichkeiten,
@@ -1057,21 +1023,11 @@ Rückgabewerte der Datenbank abgefangen und auf die Objekte gemappt, so dass dies
 zur Verfügung gestellt werden können.
 
 \section{Zusammenfassung und Ausblick}
-%Stefan: Unsere, hm, distanzieren möchte ich mich nicht von unserer leistung, aber es klingt ungewohnt?
-Unsere Erweiterung der PHP5 Reflection API ermöglichte uns 
-auf äußerst elegante Weise einen WSDL-Generator zu implementieren.
- Da die Algorithmen zum Ermitteln der Typinformationen aus dem 
- %Stefan: sind, andere zeiform bitte
- WSDL-Generator ausgelagert waren, konnten wir gleich eine ganze 
- Familie von Web Service Werkzeugen auf Basis der Extended Reflection API entwickeln.
+Unsere Erweiterung der PHP5 Reflection API ermöglichte uns auf äußerst elegante Weise einen WSDL-Generator zu implementieren. Da die Algorithmen zum Ermitteln der Typinformationen sich nicht direkt im WSDL-Generator befanden, konnten wir gleich eine ganze Familie von Web Service Werkzeugen auf Basis der Extended Reflection API entwickeln.
 Die Fähigkeiten der Extended Reflection API sind sicherlich für viele weitere PHP Projekte interessant. Der eingeführte Annotation-Mechanismus könnte zudem eine Grundlage für die Nutzung von neuen dynamischen Programmiertechniken wie zum Beispiel aspekt-orientierter Programmierung in PHP sein.
 
-Der WSDL-Generator unterstützt alle Dialekte von WSDL 1.0 und ist konform zum WS-I Basic Profile 1.1. 
-
-Zur Markierung von Klassen und Methoden als 
-Web Service können Annotationen ähnlich wie in 
-%Stefan: haben sie das umbenannt? oder doch J2EE? hm, google: http://www.java.com/en/about/brand/naming.jsp
-JEE und .NET verwendet werden. Zusätzlich werden semantische Informationen aus dem Quelltext in die WSDL-Dokumentation übernommen.
+Der WSDL-Generator unterstützt den WSDL 1.1 Standard für document-literal, rpc-literal und rpc-encoded Web Services. %und ist konform zum WS-I Basic Profile 1.1. 
+Zur Markierung von Klassen und Methoden als Web Service können Annotationen ähnlich wie in Java~EE und .NET verwendet werden. Zusätzlich werden semantische Informationen aus dem Quelltext in die WSDL-Dokumentation übernommen.
 Für document-wrapped Web Services können mit dem Adapter-Generator automatisch Adapter-Klassen generiert werden, die sich transparent um das Wrapping in den SOAP-Nachrichten kümmern.
 
 Die rund 20 weiterführenden WS-*-Spezifikationen im Bereich der Sicherheit, Synchronisation und Sessioning, an denen zur Zeit ununterbrochen gearbeitet wird, werden zusätzliche Felder für die Header von SOAP-Nachrichten spezifizieren. Um diese Standards in Zukunft mit PHP nutzen zu können entwickelten wir den Extended SOAP Server, der um weitere Handler erweitert werden kann, die als Kette von SOAP-Intermediaries nacheinander eine SOAP-Nachricht bearbeiten.
@@ -1079,9 +1035,7 @@ Auf der Basis des Extended SOAP Servers haben wir das Username-Token-Profile aus
 
 %TODO: something about REST
 
-Das Admin-Tool bietet schließlich eine einheitliche Oberfläche
-um alle Werkzeuge zu konfigurieren und zu starten und damit 
-automatisiert SOAP-Server für eine bestehende Anwendung zu generieren.
+Das Admin-Tool bietet schließlich eine einheitliche Oberfläche für um alle Werkzeuge zu konfigurieren und zu starten und damit automatisiert SOAP-Server für eine bestehende Anwendung zu generieren.
 
 % if have a single appendix:
 %\appendix[Proof of the Zonklar Equations]
