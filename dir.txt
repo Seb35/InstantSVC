@@ -1,0 +1,430 @@
+#allgemeines:
+um die benutzung des frameworks zu vereinfachen, sollte es eventuell noch einen allgemeinen ort für sämtliche 
+sql files geben, um das erstellen der datenbank tabellen geschlossen zu ermöglichen
+Falko: vielleicht in der README darauf hinweisen wo die SQL-Files liegen und für welche Features man sie benötigt? Man braucht ja möglicherweise nur einzelne.
+
+
+|   dir.txt => README.txt
+|   phpdoc.settings
+|   used-pear-libs.txt
+|   
++---doc
+|	#Dokumentation der Projekts, also alles allgemeine, tutrials hilfeseiten, architekturbeschreibung (paper)
+|       code.only.css
+|       index.html
+|       rest-tutorial.html
+|       style-guide.html
+|       style.css
+|       Web Service Security Hilfeseite.tex
+|       webservices.html
+|       word.import.style-guide.html
+|       word.style.css
+|       
++---example
+|   #Beispiel Anwendungen
+|   +---bookmarks
+|   |   |   config.php
+|   |   |   index.php
+|   |   |   remoterequest.js
+|   |   |   rest-interface.html
+|   |   |   rest.requires.php
+|   |   |   
+|   |   +---libs
+|   |   |       class.bookmark.php
+|   |   |       class.bookmarks.php
+|   |   |       class.tags.php
+|   |   |       class.tagsSerializer.php
+|   |   |       class.user.php
+|   |   |       class.users.php
+|   |   |       class.xbelParser.php
+|   |   |       class.xbelSerializer.php
+|   |   |       test.xbelParser.php
+|   |   |       
+|   |   +---rest
+|   |   |       rest.dd.php.bak
+|   |   |       rest.php.bak
+|   |   |       
+|   |   +---sql
+|   |   |       db.sql
+|   |   |       dbdesigner.xml
+|   |   |       
+|   |   \---xsl
+|   |           bookmark.xbel.xml
+|   |           bookmark.xml
+|   |           bookmark2xbel.xsl
+|   |           
+|   \---teletask
+|       |   boot.php
+|       |   constants.php
+|       |   index.php
+|       |   service.wsdl
+|       |   
+|       +---config
+|       |       config.php
+|       |       
+|       +---libs
+|       |   |   class.Lecture.php
+|       |   |   class.modul.php
+|       |   |   class.News.php
+|       |   |   queryLanguage.php
+|       |   |   queryLecture.php
+|       |   |   queryLecturegroup.php
+|       |   |   queryLink.php
+|       |   |   queryLinkgroup.php
+|       |   |   queryMedia.php
+|       |   |   queryMediagroup.php
+|       |   |   queryNews.php
+|       |   |   queryPeople.php
+|       |   |   querySeries.php
+|       |   |   queryTopic.php
+|       |   |   
+|       |   \---webservices
+|       |           queryLecture.php
+|       |           
+|       \---sql
+|               create_tables.sql
+|               insert_data.sql
+|               
++---html
+|	#Hier perspektivisch eine internetseite zum projekt?
++---libs
+|   #Alles was sich irgendwie auch in anderen kontexten wiederverwenden lassen kann und nicht unbedingt webservicespezifisch ist
+|   |   packaging.txt
+|   |   
+|   +---config
+|   |   #configuration für frameworks, datenbanken oder was auch immer
+|   |       config.php
+|   |       
+|   +---genesis-core => sind die core bibliotheken, von einem produkt
+|   |   #datenbank und smarty klassen, zur wiederverwendung, z.b. in den tools mit html interface, oder den example apps
+|   |       class.config.php
+|   |       class.dbCollection.php
+|   |       class.dbManager.php
+|   |       class.item.php
+|   |       class.renderEngine.php
+|   |       class.singleton.php
+|   |       
+|   +---misc
+|   |   #unsortiertes
+|   |       class.classLoader.php
+|   |       class.console.php
+|   |       class.digestAuth.php
+|   |       class.dummyAuthProvider.php
+|   |       class.file.php
+|   |       class.mimetypes.php
+|   |       class.PearSerializer.php
+|   |       class.serializer.php
+|   |       class.unserializer.php
+|   |       class.XmlParser.php
+|   |       class.xslTransformator.php
+|   |       interface.authProvider.php
+|   |       interface.serializer.php
+|   |       mime.types
+|   |       test.file.php
+|   |       
+|   \---reflection
+|		#die erweiterte reflection api
+|       |   class.AbstractType.php
+|       |   class.ArrayType.php
+|       |   class.ClassType.php
+|       |   class.ExtendedReflectionApi.php
+|       |   class.ExtReflectionClass.php
+|       |   class.ExtReflectionExtension.php
+|       |   class.ExtReflectionFunction.php
+|       |   class.ExtReflectionMethod.php
+|       |   class.ExtReflectionParameter.php
+|       |   class.ExtReflectionProperty.php
+|       |   class.PHPDocParser.php
+|       |   class.PHPDocTag.php
+|       |   class.PHPDocTagFactory.php
+|       |   class.PrimitiveType.php
+|       |   class.TypeFactory.php
+|       |   class.TypeMapper.php
+|       |   const.xml.php
+|       |   interface.Type.php
+|       |   interface.TypeFactory.php
+|       |   
+|       \---tags
+|			#die möglichen tags die in der reflection api genutzt werden und gleich mitgeliefert sind
+|               class.PHPDocParamTag.php
+|               class.PHPDocRestInTag.php
+|               class.PHPDocRestMethodTag.php
+|               class.PHPDocRestOutTag.php
+|               class.PHPDocReturnTag.php
+|               class.PHPDocVarTag.php
+|               class.PHPDocWebMethodTag.php
+|               class.PHPDocWebServiceTag.php
+|               require.tags.php
+|               
++---source
+|	#hier alles was explizit nur im zusammenhang mit den webservices verwendet werden soll
+|   |   TODO.txt
+|   |   
+|   +---doc => Falko: sollte nach /doc verschoben werden, so dass es einen ordner für 
+|   |   +---presentations
+|   |   |       Falko: für alle Präsentationen
+|   |   +---elaboration => papers
+|	|	|	#noch nicht einsortiert
+|   |   |   |   project-presentation2.001.ppt
+|   |   |   |   project-presentation2_msp.ppt
+|   |   |   |   pr„si WP.odp
+|   |   |   |   unserzeug.ppt
+|   |   |   |   Web Service Toolkit fr PHP5.ppt
+|   |   |   |   web-service-facade-for-php5.paper.pdf
+|   |   |   |   web-service-facade-for-php5.presentation.pdf
+|   |   |   |   WebserviceSecurity.ppt
+|   |   |   |   WSDL-Generator.doc
+|   |   |   |   
+|   |   |   +---1st paper
+|   |   |   |       allgemeines Web Service Szenario.png
+|   |   |   |       allgemeines Web Service Szenario.vsd
+|   |   |   |       class diagram PEAR-UDDI [UDDI 2.0 Inquiry API].wmf
+|   |   |   |       class diagram PHP5-SoapClient.wmf
+|   |   |   |       class diagram PHP5-SoapServer.wmf
+|   |   |   |       class diagrams.VSD
+|   |   |   |       Einfhrung in XML Web Services [Christoph Hartmann, Martin Sprengel, Michael Perscheid, Gregor Gabrysiak und Falko Menge - November 2005].pdf
+|   |   |   |       IEEE-Style Template.stw
+|   |   |   |       paper.rc2.odt
+|   |   |   |       Structure of an UDDI registry [by Johannes Nicolai].wmf
+|   |   |   |       typical structure of a WSDL description.png
+|   |   |   |       typical structure of a WSDL description.vsd
+|   |   |   |       typische Web Service Architektur mit SOAP, WSDL und UDDI.png
+|   |   |   |       typische Web Service Architektur mit SOAP, WSDL und UDDI.vsd
+|   |   |   |       UDDI resources.txt
+|   |   |   |       UDDI.edit.gif
+|   |   |   |       UDDI.edit2.odp
+|   |   |   |       UDDI.edit2.wmf
+|   |   |   |       Web Service Protocol Stack.pgm
+|   |   |   |       
+|   |   |   +---2nd paper
+|   |   |   |       paper.007.doc
+|   |   |   |       project-presentation.008.pdf
+|   |   |   |       project-presentation.008.ppt
+|   |   |   |       
+|   |   |   +---3rd paper
+|   |   |   |   |   3rd paper.tex
+|   |   |   |   |   3rd_paper_msp.rar
+|   |   |   |   |   bare_conf.tex
+|   |   |   |   |   bare_jrnl.tex
+|   |   |   |   |   Gliederung Paper.doc
+|   |   |   |   |   IEEEtran.cls
+|   |   |   |   |   IEEEtran_HOWTO.pdf
+|   |   |   |   |   README
+|   |   |   |   |   
+|   |   |   |   +---pics
+|   |   |   |   |       arch_admin-tool.eps
+|   |   |   |   |       AufbauWithDetailSecurity.eps
+|   |   |   |   |       klassenstrukturServer.eps
+|   |   |   |   |       UMLSecureSoapClient.eps
+|   |   |   |   |       UTPCode.eps
+|   |   |   |   |       WebserviceSecurityAblaufPart1.eps
+|   |   |   |   |       WebserviceSecurityAblaufPart2.eps
+|   |   |   |   |       
+|   |   |   |   +---reflection-api
+|   |   |   |   |       reflection-api.doc
+|   |   |   |   |       reflection-api.pdf
+|   |   |   |   |       webp-extreflection-api.eps
+|   |   |   |   |       webp-extreflection-api.pdf
+|   |   |   |   |       webp-reflection-api.eps
+|   |   |   |   |       webp-reflection-api.pdf
+|   |   |   |   |       webp.extreflection-api.vsd
+|   |   |   |   |       webp.reflection-api.vsd
+|   |   |   |   |       
+|   |   |   |   \---Webservice Security Paper
+|   |   |   |           Paper-Part_Web_Service_Security.doc
+|   |   |   |           
+|   |   |   \---architecture => /doc/architecture
+|   |   |           arch.admin-tool.vsd
+|   |   |           arch.overview.002.vsd
+|   |   |           arch.overview.vsd
+|   |   |           aufbaubild-token-framework.VSD
+|   |   |           classes.002.zuml
+|   |   |           classes.004.zuml
+|   |   |           classes.zuml
+|   |   |           overview.with.framework.vsd
+|   |   |           paper.overview.002.vsd
+|   |   |           paper.overview.vsd
+|   |   |           soap.server.vsd
+|   |   |           web-admin.vsd
+|   |   |           wsd.manager.old.vsd
+|   |   |           wsd.manager.vsd
+|   |   |           wsdl.generator.vsd
+|   |   |           
+|   |   +---PublishFunctionsPlugIn
+|	|	|	#noch nicht einsortiert
+|   |   |       PublishFunctionsPlugIn.zuml
+|   |   |       PublishFunctionsPlugInKlassendiagramm.png
+|   |   |       PublishFunctionsPlugInUseCase.png
+|   |   |       
+|   |   +---reflection
+|	|	|	#hm, beispiel für die reflection api, hier auch nicht wirklich richtig angeordnet
+|   |   |       |       Falko: nach /examples/reflection ?
+|   |   |       functions.php
+|   |   |       index.php
+|   |   |       xsd-schema.php
+|   |   |       
+|   |   \---WSDLGenerator
+|	|		#noch nicht einsortiert
+|   |   |               Falko: könnte nach /doc/architecture
+|   |           class diagram WSDLGenerator.vsd
+|   |           
+|   +---libs
+|   |   +---generator => generators
+|	|	|	#alles was nach generator aussieht
+|   |   |   |   class.DocumentWrappedAdapterGenerator.php
+|   |   |   |   class.restDdGenerator.php
+|   |   |   |   class.WSDLGenerator.php
+|   |   |   |   
+|   |   |   +---tests
+|	|	|	|	#testfälle für die generatoren
+|   |   |   |   |   dom_test.inc
+|   |   |   |   |   run-php-tests.php
+|   |   |   |   |   schemavalidation.phpt
+|   |   |   |   |   wsdl-2003-02-11.xsd
+|   |   |   |   |   WSDLGenerator001doclit.phpt
+|   |   |   |   |   WSDLGenerator001doclit.wsdl
+|   |   |   |   |   WSDLGenerator001rpcenc.phpt
+|   |   |   |   |   WSDLGenerator001rpcenc.wsdl
+|   |   |   |   |   WSDLGenerator001rpclit.phpt
+|   |   |   |   |   WSDLGenerator001rpclit.wsdl
+|   |   |   |   |   
+|   |   |   |   \---testclasses
+|   |   |   |           class.HelloWorld.php
+|   |   |   |           
+|   |   |   \---WsdlPolicyPlugin
+|	|	|		#da ausschließlich vom generator genutzt?!
+                                Falko: ja macht am meisten Sinn
+|   |   |           policy-plugin-db.php
+|   |   |           policy-plugin.php
+|   |   |           
+|   |   +---SecureClient
+|	|	|	#der secureclient mit test, da ergebnis des projekts
+|   |   |       class.SecureClient.php
+|   |   |       test.SecureClient.php
+|   |   |       
+|   |   +---server
+			#alle server bzw. scripts zum initialisieren der server
+|   |   |   |   ExtendedSoapServer.php
+|   |   |   |   rest.php
+|   |   |   |   soap.php
+|   |   |   |   test.SecWeb.php
+|   |   |   |   
+|   |   |   \---Webservice => Falko: nach /examples ?
+|   |   |           HalloWelt.php
+|   |   |           HalloWelt.wsdl
+|   |   |           
+|   |   +---SoapHeader
+			#alle bibliotheken die mit soapheadern zu tun haben
+|   |   |       XmlParserExtended.php
+|   |   |       XmlSoapHeaderParser.php
+|   |   |       
+|   |   \---UserTokenProfile
+			#alles UTP spezifische
+|   |       |   CheckUserDB.php
+|   |       |   CheckUserRunnable.php
+|   |       |   ICheckUserRunnable.php
+|   |       |   XmlSoapSecParser.php
+|   |       |   
+|   |       +---Schema
+|   |       |       oasis-200401-wss-wssecurity-secext-1.0.xsd
+|   |       |       oasis-200401-wss-wssecurity-utility-1.0.xsd
+|   |       |       xml.xsd
+|   |       |       xmldsig-core-schema.xsd
+|   |       |       
+|   |       \---sql
+|   |               usertokenstorage.sql
+|   |               
+|   +---templates
+		#tpls
+|   |   |   stats.html
+|   |   |   
+|   |   \---admin-tool
+|   |           admin-tool-classView.tpl
+|   |           admin-tool-footer.tpl
+|   |           admin-tool-header.tpl
+|   |           admin-tool-intro.tpl
+|   |           admin-tool-methodDetailsView.tpl
+|   |           admin-tool-methodView.tpl
+|   |           admin-tool-navi.tpl
+|   |           admin-tool-register-view.tpl
+|   |           admin-tool-settings-view.tpl
+|   |           admin-tool-wizard.tpl
+|   |           admin-tool-wsgen-view.tpl
+|   |           
+|   +---templates_c
+|   |   \---admin-tool
+|   \---tools
+		#werkzeuge
+|       |   checkDependencies.php
+|       |   checkDependency.bat
+|       |   checkDependency.php
+|       |   checkDocuFlaws.bat
+|       |   checkDocuFlaws.php
+|       |   checkSourceTree.bat
+|       |   checkSourceTree.php
+|       |   class.mimetypes.php
+|       |   class.stats.php
+|       |   generateRestDd.bat
+|       |   generateRestDd.php
+|       |   mime.types
+|       |   network.png
+|       |   rest.dd.php
+|       |   stats.php
+|       |   xslTransform.bat
+|       |   xslTransform.php
+|       |   
+|       \---admin-tool
+|           |   admin-tool-config.php
+|           |   admin-tool-db.php
+|           |   admin-tool-lib.php
+|           |   admin-tool-log.txt
+|           |   admin-tool-smarty-connect.php
+|           |   admin-tool-wizard.php
+|           |   admin-tool.php
+|           |   
+|           +---css
+|           |       default.css
+|           |       
+|           \---sql
+|                   wsdl-db.sql
+|                   
+\---testing
+	#weiteres testing
+    +---DotNet
+    |   \---SampleClient
+    |       |   SampleClient.sln
+    |       |   
+    |       \---SampleClient
+    |           |   Program.cs
+    |           |   SampleClient.csproj
+    |           |   TeleTaskService.cs
+    |           |   
+    |           \---Properties
+    |                   AssemblyInfo.cs
+    |                   
+    +---Java
+    |   \---sampleClient
+    |       |   .classpath
+    |       |   .project
+    |       |   axis.wsdd
+    |       |   
+    |       \---src
+    |           |   PWCallback.java
+    |           |   TestClient.java
+    |           |   
+    |           \---de
+    |               \---tele_task
+    |                   +---model
+    |                   |       Item.java
+    |                   |       Lecture.java
+    |                   |       
+    |                   \---services
+    |                           TeleTaskService.java
+    |                           TeleTaskServiceLocator.java
+    |                           TeleTaskServiceSoap.java
+    |                           TeleTaskServiceSoapStub.java
+    |                           
+    \---JavaScript
+            remoterequest.js
+            rest-interface.html
+            

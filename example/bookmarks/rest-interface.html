@@ -1,0 +1,248 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>REST Interface</title>
+<script src="remoterequest.js"></script>
+<script>
+	/**
+	* Setup Request inheritance
+	*/
+	Request.prototype = new AsyncRemoteRequest();
+	Request.prototype.constructor = Request;
+	Request.superclass = AsyncRemoteRequest.prototype;
+	
+	/**
+	* Request constructor
+	*/
+	function Request() {
+
+	}
+	Request.prototype.doOnStart = function() {
+		url = document.getElementById('uri').value;
+		this.url = url;
+		this.method = document.getElementById('method').value;
+		this.requestData = document.getElementById('request').value;
+	};
+	
+		
+	
+	Request.prototype.doOnLoadCompleted = function() {
+		if (knownTagsRequest) {
+			knownTagsRequest = false;
+			//alert(this.request.responseXML);
+			knownTags = document.getElementById('knowntags');
+			while (knownTags.length > 0) {knownTags.remove(0);}
+			tags = this.request.responseXML.firstChild;
+			tag = tags.firstChild;
+			while (tag != null) {
+				if (tag.nodeName == 'tag') {
+					var itm = document.createElement("option");
+					itm.text = tag.firstChild.data;
+					itm.value = tag.firstChild.data;
+					var opt = null;
+					knownTags.add(itm, opt);
+				}
+				tag = tag.nextSibling;
+			}
+			
+		}
+		text = this.request.responseText;
+		//funktioniert leider nicht für den kompletten text nur für das erste zeichen
+		text = replaceChars(text, '<', '&lt;');
+		text = replaceChars(text, '>', '&gt;');
+		//text = text.replace(/</, '&lt;');
+		//text = text.replace(/>/, '&gt;');
+		document.getElementById('response').innerHTML = '<pre>'+text+'</pre>';
+		this.completed = true;
+
+
+	};
+	
+	var req = new Request();
+	
+	function onSubmit() {
+		document.getElementById('response').innerHTML = '';
+		req.start();
+		return false;
+	}
+	
+	var knownTagsRequest = false;
+	
+	function refreshKnownTags() {
+		knownTagsRequest = true;
+		document.getElementById('response').innerHTML = '';
+		document.getElementById('uri').value = 'rest.php/all/keywords/';
+		document.getElementById('method').selectedIndex = 0;
+		req.start();
+	}
+	
+	function buildAddRequest() {
+		str = '<xbel version="1.0">'+"\n";
+		str+= '<bookmark href="'+document.getElementById('bookmarkuri').value+'">'+"\n";
+//		str = replaceChars(str, '<', '&lt;');
+//		str = replaceChars(str, '>', '&gt;');
+        str+= '<title>'+document.getElementById('title').value+'</title>'+"\n";
+
+		tags = document.getElementById('tags').value.split(',');
+		str+= '<metadata owner="http://example.com/documentation/xbel/tags">'+"\n";
+		for (i = 0; i < tags.length; i++) {
+		    str+= '<tag>'+tags[i]+'</tag>'+"\n";
+        }
+        str+= "</metadata>\n";
+		str+= "</info>\n";
+		str+= "<desc>\n";
+		str+= document.getElementById('desc').value;
+		str+= "</desc>\n";
+		str+= "</bookmark>\n";
+        str+= '</xbel>';
+		document.getElementById('request').value = str;
+		document.getElementById('method').selectedIndex = 2;
+		document.getElementById('uri').value = 'rest.php/stefan/bookmarks/';
+	}
+
+	function buildUpdateRequest() {
+		str = '<xbel version="1.0">'+"\n";
+		str+= '<bookmark href="'+document.getElementById('bookmarkuri').value+'">'+"\n";
+//		str = replaceChars(str, '<', '&lt;');
+//		str = replaceChars(str, '>', '&gt;');
+        str+= '<title>'+document.getElementById('title').value+'</title>'+"\n";
+
+		tags = document.getElementById('tags').value.split(',');
+		str+= '<metadata owner="http://example.com/documentation/xbel/tags">'+"\n";
+		for (i = 0; i < tags.length; i++) {
+		    str+= '<tag>'+tags[i]+'</tag>'+"\n";
+        }
+        str+= "</metadata>\n";
+		str+= "</info>\n";
+		str+= "<desc>\n";
+		str+= document.getElementById('desc').value;
+		str+= "</desc>\n";
+		str+= "</bookmark>\n";
+        str+= '</xbel>';
+		document.getElementById('request').value = str;
+		document.getElementById('method').selectedIndex = 0;
+		document.getElementById('uri').value = 'rest.php/stefan/bookmark/{ENTER-ID-HERE}';
+	}
+
+	
+	function buildAllRequest() {
+		document.getElementById('method').selectedIndex = 0;
+		document.getElementById('uri').value = 'rest.php/all/bookmarks/';
+	}
+	
+	function buildStefanRequest() {
+		document.getElementById('method').selectedIndex = 0;
+		document.getElementById('uri').value = 'rest.php/stefan/bookmarks/';
+	}
+	
+	function replaceChars(text, s, r) {
+		temp = "" + text;
+		pos = temp.indexOf(s);
+		while (pos > -1) {
+			temp = "" + (temp.substring(0, pos) + r + 
+			temp.substring((pos + s.length), temp.length));
+			pos = temp.indexOf(s);
+		}
+		return temp;
+	}
+</script>
+<style>
+ html, body {
+ 	font-family:Verdana, Arial, Helvetica, sans-serif;
+	font-size:9pt;
+ }
+ 
+ table {
+ 	border:1px solid #ccc;
+	/*border-collapse:collapse;*/
+ }
+ tr {
+ }
+ th {
+ 	padding:1px 2px;
+ 	background-color:#C0D7E4;
+ }
+ 
+ td {
+ 	padding:1px 2px;
+	vertical-align:top;
+ }
+ 
+ .folder {
+ 	background-color:#F0F0FF;
+ }
+ 
+ .r {
+ 	text-align:right;
+ }
+ 
+ .warn {
+ 	background-color:#FCE39A;
+ }
+ .err {
+ 	background-color:#FFBFBF;
+ }
+ img {border:0; vertical-align:middle;}
+ .block {padding-left:30px;}
+ 
+ input,button,select, textarea {border:1px solid #ccc;}
+ select, input[type=text] {width:300px;}
+ textarea {width:300px; height:40px;}
+ button {background-color:#eeeeee;}
+</style>
+
+</head>
+
+<body>
+<table>
+<tr>
+<th colspan="2">New Bookmark</th>
+<th>Known Tags</th>
+</tr>
+<tr>
+<td>Title:</td><td><input name="title" type="text" id="title" /></td>
+<td rowspan="4"><select name="select" multiple="multiple" id="knowntags" style="width:100px; height:200px;">
+</select><br/><button style="width:100px;margin-top:3px;" onclick="refreshKnownTags();">Refresh</button>
+
+</td>
+</tr>
+<tr><td>URI:</td><td><input name="bookmarkuri" type="text" id="bookmarkuri" /></td></tr>
+<tr>
+  <td>Description:</td>
+  <td><textarea name="desc" id="desc"></textarea></td></tr>
+<tr>
+  <td>Tags:</td>
+  <td><textarea name="tags" id="tags">seperated,by,comma</textarea>
+  <br/>
+  <button style="margin-top:3px; width:300px;" onclick="buildAddRequest();">Generate Add Request</button><br />
+  <button style="margin-top:3px; width:300px;" onclick="buildUpdateRequest();">Generate Update Request</button><br />
+  <button style="margin-top:3px; width:300px;" onclick="buildAllRequest();">Generate Query Top 20 Request (all)</button>
+  <br />
+  <button style="margin-top:3px; width:300px;" onclick="buildStefanRequest();">Generate Query Top 20 Request</button>
+  </td>
+</tr>
+</table>
+
+	<table style="width:100%;">
+	<tr><th style="width:50%">Input</th><th style="width:50%">Output</th></tr>
+	<tr>
+	<td style="vertical-align:top;">
+	<form onsubmit="return false;">
+	<input name="uri" type="text" id="uri" style="width:100%" value="rest.php/stefan/bookmark/119" />
+	<select style="width:100%" id="method">
+	<option value="GET" selected="selected">GET</option>
+	<option value="PUT">PUT</option>
+	<option value="POST">POST</option>
+	<option value="DELETE">DELETE</option>
+	</select>
+	<textarea style="width:100%;height:250px;" id="request"></textarea>
+	<button style="width:100%" onclick="onSubmit();">Submit</button>
+	</form>
+	</td>
+	<td style="vertical-align:top;"><div style="width:100%;" id="response"></div>
+	</tr>
+	</table>
+
+</body>
+</html>

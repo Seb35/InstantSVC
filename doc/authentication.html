@@ -1,0 +1,72 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<title>&lt;FRAMEWORK_NAME&gt; - Authentifikation</title>
+<meta name="author" content="Stefan Marr" />
+<link id="style" href="style.css" rel="stylesheet" rev="stylesheet" />
+<script>
+var phpOnly = false;
+function switchCSS() {
+  if (phpOnly) {
+    document.getElementById('style').href = "style.css";
+    document.getElementById('style_link').innerHTML = "nur Quellcode";
+  }
+  else {
+    document.getElementById('style').href = "code.only.css";
+    document.getElementById('style_link').innerHTML = "mit Hinweisen";
+  }
+  phpOnly = !phpOnly;
+}
+</script>
+</head>
+
+<body>
+<h1>Authentifikation </h1>
+<h3>Schnittstellen f&uuml;r die anwendungsspezifische Nutzerauthentifikation </h3>
+<h4>SOAP spezifisches vom phpSec Team? </h4>
+<p><a href="#link auf tex dokument">PhpSec Hilfe Seite</a> </p>
+<h2>Authentifikation durch AuthProvider </h2>
+<p>Das Anbinden einer anwendungsspezifischen Authentifikation z.B. f&uuml;r einen REST Service kann durch die Implementierung eines <em>Authentication Providers</em> bzw. einer Komponente, die den Zugriff auf die Anmelderoutinen des Systems kapselt, realisiert werden.</p>
+<p>Im folgenden ist das <code class="inline">authProfider</code>-Interface dargestellt, welches entsprechend implementiert werden muss. </p>
+<code>//***** authProvider ********************************************************
+interface authProvider {
+    /**
+     * @param string $accountName
+     * @param string $type
+     * @return string
+     */
+    function getPassword($accountName, $type);
+
+    /**
+     * @return boolean
+     */
+    function isPlain();
+
+    /**
+     * @return boolean
+     */
+    function isMd5();
+
+    /**
+     * @return boolean
+     */
+    function isRFC2617Md5();
+
+    /**
+     * @return string
+     */
+    function getPasswordType();
+	
+    /**
+     * @return mixed
+     */
+    function getAlternativeEncryptionMethod();
+}
+</code>
+<p>Die Methoden mit dem R&uuml;ckgabetyp <code class="inline">Boolean</code> erm&ouml;glichen es der nutzenden Komponente zu erkennen, welche Art Passwort bzw. Passwort&auml;quivalent zur&uuml;ckgeliefert werden kann. Um z.B. die HTTP-Digest Authentifikation nutzen zu k&ouml;nnen, ist es entweder n&ouml;tig die Passw&ouml;rter als Klartext zur&uuml;ckzugeben, oder ein Passwort&auml;quivalent gem&auml;&szlig; RFC2617. Falls in diesem Fall ein Klartext-Passwort zur&uuml;ckgegeben wird, stellt die nutzende Komponente das Passwort&auml;quivalent f&uuml;r den Vergleich selbst her. In der Implementierung des <code class="inline">authProvider</code>'s muss dies nur &uuml;ber entsprechend richtige R&uuml;ckgabewerte ausgedr&uuml;ckt werden.</p>
+<p>Hierbei ist es m&ouml;glich &uuml;ber <code class="inline">getPasswordType</code> den bevorzugten Typ des Passworts zur&uuml;ckzugeben, welcher bei einem <code class="inline">getPasswort</code>-Aufruf mit angegeben werden kann. </p>
+<p>Um spezielle Authentifikationsmechanismen nutzen zu k&ouml;nnen, die eventuell eine spezielle Verschl&uuml;sselung des Passworts erfordern, kann eine dazu zu verwendende Methode &uuml;ber die Funktion <code class="inline">getAlternativeEncryptionMethod</code> bekannt gegeben werden. Hier wird als R&uuml;ckgabe ein passender Eingabewert f&uuml;r die Funktion <code class="inline">call_user_func</code> erwartet, mit der die zur&uuml;ckgegebene Funktion aufgerufen wird.</p>
+<p>Ein Beispiel, wie eine einfache Implementierung aussehen kann, bietet der <code class="inline">dummyAuthProvider</code>. Dieser implementiert keine komplexe Anbindung an ein System, sondern gibt den Namen des Benutzeraccounts r&uuml;ckw&auml;rts als Passwort zur&uuml;ck. </p>
+</body>
+</html>

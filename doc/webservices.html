@@ -1,0 +1,107 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<title>&lt;FRAMEWORK_NAME&gt; - Web Services Annotations</title>
+<meta name="author" content="Stefan Marr" />
+<link id="style" href="style.css" rel="stylesheet" rev="stylesheet" />
+<script>
+var phpOnly = false;
+function switchCSS() {
+  if (phpOnly) {
+    document.getElementById('style').href = "style.css";
+    document.getElementById('style_link').innerHTML = "nur Quellcode";
+  }
+  else {
+    document.getElementById('style').href = "code.only.css";
+    document.getElementById('style_link').innerHTML = "mit Hinweisen";
+  }
+  phpOnly = !phpOnly;
+}
+</script>
+</head>
+
+<body>
+<h1>Web Services Annotations </h1>
+<h3>&Uuml;berblick &uuml;ber die verf&uuml;gbaren Annotations </h3>
+<h2>Allgemeines</h2>
+<p>Wie auch in anderen Frameworks reicht es nicht aus eine Methode oder Klasse einfach &uuml;ber eine Annotation &uuml;ber SOAP oder REST verf&uuml;gbar zu machen, um einen interoperable Web Service zu erstellen. Auch die Architektur des Services muss auf die Gegebenheiten hin optimiert sein. So ist es sehr unperformant ein feingranulares Interface wie es in der objektorientierten Welt &uuml;blich ist, so ohne weiteres als webf&auml;hig zu markieren.</p>
+<p>Ein g&auml;ngiges Vorgehen f&uuml;r Remote-Interfaces ist, sie m&ouml;glichst grobgranular zu gestallten und so die Anzahl der Abfragen, die n&ouml;tig sind um ein bestimmtes Ziel zu erreichen,  gering zu halten. Ein bekanntes Pattern aus diesem Bereich ist die <em>Remote-Facade</em>, welche meist auch in Zusammenhang mit sogenannten <em>Data Transfer Objekts</em> verwendet wird. </p>
+
+<p>Dies als Hinweis vorweg, um einer allzu blau&auml;ugigen Verwendung dieses Frameworks vorzubeugen.</p>
+<h2>SOAP vs. REST?</h2>
+<p>Diese beiden Ans&auml;tze zum Entwurf und zur Implementierung von sogenannten Web Services sind momentan sehr bliebt. Jeder von ihnen hat seine ganz speziellen Vor- und Nachteile, wenn der eine vielleicht auch mehr als der andere.</p>
+<p>Grunds&auml;tzlich soll dieses Framework dem Entwickler, der eventuell durch &auml;u&szlig;ere Umst&auml;nde zu einer der beiden M&ouml;glichkeiten bewegt wurde, das Leben in der PHP-Welt so angenehm wie m&ouml;glich machen. Aus diesem Grund werden auch beide Verfahren unterst&uuml;tzt, egal wie gut oder schlecht sie sein m&ouml;gen. </p>
+<h2>SOAP Services</h2>
+<p>@webservice</p>
+<p>@webmethod</p>
+<p>&lt;!-- CUT&amp;PASTE --&gt; </p>
+<p>Um Klassen und Methoden, welche als Web Service zur Verf&uuml;gung gestellt werden sollen, m&ouml;glichst einfach von allen anderen Klassen unterscheiden zu k&ouml;nnen, wurden die zus&auml;tzlichen Tags <strong>@webmethod</strong> und <strong>@webservice</strong> eingef&uuml;hrt. Diese dienen dazu, auf eine auch in anderen Sprachumgebungen verwendete Art und Weise, im Quelltext bereits Informationen dar&uuml;ber ablegen zu k&ouml;nnen, ob diese Klassen/Methoden &uuml;ber SOAP erreichbar sein sollen.</p>
+<p>Um eine Klasse als Web Service bereit zu stellen, muss diese Klasse in ihrem 
+  Kopfkommentar mit dem Tag <strong>@webservice</strong> versehen werden. In der 
+  Klasse selbst m&uuml;ssen dar&uuml;ber hinaus die Methoden, die angeboten werden 
+  sollen, &uuml;ber das <strong>@webmethod</strong>-Tag gekennzeichnet sein. Ist 
+  eine Methode als <strong>@webmethod</strong> markiert, aber die Klasse nicht 
+  mit dem <strong>@webservice</strong>-Tag versehen, wird sie nicht ber&uuml;cksichtigt.</p>
+<p>&lt;!-- END --&gt; </p>
+<h2>REST Services</h2>
+<p>&gt; Ausf&uuml;hrlicheres <a href="rest-tutorial.html">Tutorial</a> </p>
+<p>F&uuml;r die Bereitstellung eines REST Web Services bietet dieses Framework folgende Features:</p>
+<ul>
+  <li>Authentifikation &uuml;ber HTTP-Digest (RFC2617)</li>
+  <li>Unterst&uuml;tzung beliebiger <a href="#link_auf_phpdoc_interface.serializer.php">Serializer</a> zur freien Wahl der Ressourcenrepr&auml;sentationen</li>
+  <li>Unterst&uuml;tzung von <a href="#link dahin, wo das mapping dokumentiert ist, mit dem per &amp;f das ausgabe format ver&auml;ndert werden kann">Request spezifischen Ausgabeformaten</a></li>
+  <li>Annotations zur Festlegung des REST2PHP Mappings im Quellcode </li>
+  <li>Commandline Tool zum Generieren des Servers auf Grundlage der Annotations </li>
+</ul>
+<p>F&uuml;r das Erstellen von REST Web Services sind die folgenden Tags bzw. Annotations verf&uuml;gbar. </p>
+<ul>
+  <li><strong>@webservice</strong><br />
+    Mit diesem Tag wird die Klasse gekennzeichnet, die <strong>@restmethod</strong>'s zur Verf&uuml;gung stellt.<br />
+    Momentan werden keine Parameter erwartet.</li>
+  <li><strong>@restmethod</strong> &lt;method&gt; &lt;pattern&gt; <br />
+   Mit diesem Tag werden die Methoden versehen, welche durch die Anfragen aufgerufen werden sollen.<br />
+     Dabei sind beide Parameter zwingend notwendig. Der Erste 
+  gibt die <a href="#entsprechender abschnitt im paper">HTTP Methode</a> an, auf die reagiert werden soll und der Zweite spezifiziert &uuml;ber einen regul&auml;ren Ausdruck den URI zu dem diese Methode geh&ouml;rt.<br />
+    Wichtig ist bei der Spezifikation des Patterns, dass die Ergebnisse, welche <a href="#link zur php doku">preg_match</a> 
+    zur&uuml;ckliefert, in dieser Reihenfolge als Parameter an die zu rufende Methode 
+    &uuml;bergeben werden. Dies bedeutet, dass f&uuml;r Klammern die nur gruppierende 
+    Wirkung haben, die Syntax mit <a href="#link auf reg exp seite">?:</a> verwendet 
+    werden sollte, um diese Ergebnisse nicht mit an die Methode zu &uuml;bergeben.<br />
+  Beispiele:<br />
+  @restmethod
+  GET /\/(.*?)\/bookmarks\//<br />
+  F&uuml;r den Aufruf GET /testuser/bookmarks/ wird also $user='testuser' an die Methode function getBookmarks($user); &uuml;bergeben. <br />
+    Das deserialiserte Ergebnis einer Eingabe &uuml;ber PUT oder POST wird als 
+    letzter Parameter &uuml;bergeben </li>
+  <li><strong>@restin</strong> &lt;Serializer&gt; <br />
+  &Uuml;ber dieses Tag l&auml;sst sich der Serializer angeben, welcher zum Verarbeiten der Eingabe verwendet werden soll. Dabei muss dieser das <a href="#passender link php doc"><code class="inline">Serializer</code>-Interface</a> implementieren </li>
+  <li><strong>@restout</strong> &lt;Serializer&gt;<br />
+  Dieser Tag funktioniert wie @restin, nur das hiermit der Serializer spezifiziert wird, der den R&uuml;ckgabewert der Methode verarbeitet und in das gew&uuml;nschte Ausgabeformat transformiert.</li>
+</ul>
+<h3>Codebeispiele</h3>
+<code>    //=======================================================================
+    /**
+     * @restmethod GET /\/(.*?)\/bookmarks\//
+     * @param string $user
+     * @return Bookmark[]
+     */
+    public function getNewestBookmarks($user) {
+        .......
+        return $result;
+    }
+	
+    //=======================================================================
+    /**
+     * @restmethod PUT /\/(.*?)\/bookmark\/([0-9]+)/
+     * @restin XbelSerializer
+     * @param string $user
+     * @param integer $id
+     * @param Bookmark $bookmark
+     */
+    public function updateBookmark($user, $id, Bookmark $bookmark) {
+        //update bookmark in database
+    }
+</code>
+</body>
+</html>

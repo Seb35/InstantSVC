@@ -1,0 +1,118 @@
+<?php
+//** RESTServer Deployment Descriptor **//
+//** generated via generateRestDd.php **//
+
+//** constants **//
+//** imports **//
+require_once('libs/class.tags.php');
+require_once('libs/class.tagsSerializer.php');
+require_once('libs/class.bookmarks.php');
+require_once('libs/class.xbelSerializer.php');
+require_once('libs/class.users.php');
+require_once('../../libs/misc/class.PearSerializer.php');
+
+//** settings **//
+return array (
+  'mapping' => 
+  array (
+    '/\\/(.*?)\\/keywords\\//' => 
+    array (
+      'GET' => 
+      array (
+        'c' => 'Tags',
+        'm' => 'getTagsByUser',
+        'in' => NULL,
+        'out' => 'TagsSerializer',
+      ),
+    ),
+    '/\\/(.*?)\\/bookmark\\/([0-9]+)/' => 
+    array (
+      'GET' => 
+      array (
+        'c' => 'Bookmarks',
+        'm' => 'getBookmark',
+        'in' => NULL,
+        'out' => 'XbelSerializer',
+      ),
+      'PUT' => 
+      array (
+        'c' => 'Bookmarks',
+        'm' => 'updateBookmark',
+        'in' => 'XbelSerializer',
+        'out' => NULL,
+      ),
+    ),
+    '/\\/(.*?)\\/bookmarks\\/(.*?)\\//' => 
+    array (
+      'GET' => 
+      array (
+        'c' => 'Bookmarks',
+        'm' => 'getNewestBookmarksWithTag',
+        'in' => NULL,
+        'out' => 'XbelSerializer',
+      ),
+    ),
+    '/\\/(.*?)\\/bookmarks\\/date\\/([0-9]{4})\\//' => 
+    array (
+      'GET' => 
+      array (
+        'c' => 'Bookmarks',
+        'm' => 'getBookmarksInYear',
+        'in' => NULL,
+        'out' => NULL,
+      ),
+    ),
+    '/\\/(.*?)\\/bookmarks\\/date\\/([0-9]{4})\\/([0-9]{1,2})\\//' => 
+    array (
+      'GET' => 
+      array (
+        'c' => 'Bookmarks',
+        'm' => 'getBookmarksInYearAndMount',
+        'in' => NULL,
+        'out' => NULL,
+      ),
+    ),
+    '/\\/(.*?)\\/bookmarks\\//' => 
+    array (
+      'POST' => 
+      array (
+        'c' => 'Bookmarks',
+        'm' => 'addBookmark',
+        'in' => 'XbelSerializer',
+        'out' => NULL,
+      ),
+      'GET' => 
+      array (
+        'c' => 'Bookmarks',
+        'm' => 'getNewestBookmarks',
+        'in' => NULL,
+        'out' => NULL,
+      ),
+    ),
+    '/([^\\/]+)/' => 
+    array (
+      'GET' => 
+      array (
+        'c' => 'Users',
+        'm' => 'getUser',
+        'in' => NULL,
+        'out' => NULL,
+      ),
+    ),
+  ),
+  'authentication' => 'none',
+  'auth-settings' => 
+  array (
+    'none' => 
+    array (
+      'provider' => NULL,
+    ),
+  ),
+  'serializer' => 
+  array (
+    'in' => 'PearSerializer',
+    'out' => 'PearSerializer',
+    'map' => NULL,
+  ),
+);
+?>

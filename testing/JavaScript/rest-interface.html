@@ -1,0 +1,103 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>REST Interface</title>
+<script src="remoterequest.js"></script>
+<script>
+/**
+	* Setup Request inheritance
+	*/
+	Request.prototype = new AsyncRemoteRequest();
+	Request.prototype.constructor = Request;
+	Request.superclass = AsyncRemoteRequest.prototype;
+	
+	/**
+	* Request constructor
+	*/
+	function Request() {
+
+	}
+	Request.prototype.doOnStart = function() {
+		url = document.getElementById('uri').value;
+		this.url = url;
+		this.method = document.getElementById('method').value;
+		this.requestData = document.getElementById('request').value;
+	};
+	
+		
+	
+	Request.prototype.doOnLoadCompleted = function() {
+		document.getElementById('response').innerHTML = '<pre>'+this.request.responseText+'</pre>';
+		this.completed = true;
+	};
+	
+	var req = new Request();
+	
+	function onSubmit() {
+		document.getElementById('response').innerHTML = '';
+		req.start();
+		return false;
+	}
+</script>
+<style>
+ html, body {
+ 	font-family:Verdana, Arial, Helvetica, sans-serif;
+	font-size:9pt;
+ }
+ 
+ table, tr {
+ 	border:1px solid #ccc;
+	border-collapse:collapse;
+ }
+ 
+ th {
+ 	background-color:#C0D7E4;
+ }
+ 
+ td {
+ 	padding:2px 4px;
+ }
+ 
+ .folder {
+ 	background-color:#F0F0FF;
+ }
+ 
+ .r {
+ 	text-align:right;
+ }
+ 
+ .warn {
+ 	background-color:#FCE39A;
+ }
+ .err {
+ 	background-color:#FFBFBF;
+ }
+ img {border:0; vertical-align:middle;}
+ .block {padding-left:30px;}
+</style>
+
+</head>
+
+<body>
+<table style="width:100%;">
+<tr><th style="width:50%">Input</th><th style="width:50%">Output</th></tr>
+<tr>
+<td style="vertical-align:top;">
+<form onsubmit="return false;">
+<input name="uri" type="text" id="uri" style="width:100%" value="http://localhost:8080/webp/repo/source/sample/rest.php/lecture/103" />
+<select style="width:100%" id="method">
+<option value="GET" selected="selected">GET</option>
+<option value="PUT">PUT</option>
+<option value="POST">POST</option>
+<option value="DELETE">DELETE</option>
+</select>
+<textarea style="width:100%;height:300px;" id="request"></textarea>
+<button style="width:100%" onclick="onSubmit();">Submit</button>
+</form>
+</td>
+<td style="vertical-align:top;"><div style="width:100%;" id="response"></div>
+</tr>
+</table>
+</body>
+</html>

@@ -1,0 +1,258 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<title>&lt;FRAMEWORK_NAME&gt; - REST with &lt;FRAMEWORK_NAME&gt;</title>
+<meta name="author" content="Stefan Marr" />
+<link id="style" href="style.css" rel="stylesheet" rev="stylesheet" />
+<script>
+var phpOnly = false;
+function switchCSS() {
+  if (phpOnly) {
+    document.getElementById('style').href = "style.css";
+    document.getElementById('style_link').innerHTML = "nur Quellcode";
+  }
+  else {
+    document.getElementById('style').href = "code.only.css";
+    document.getElementById('style_link').innerHTML = "mit Hinweisen";
+  }
+  phpOnly = !phpOnly;
+}
+</script>
+</head>
+
+<body>
+<h1>REST with &lt;FRAMEWORK_NAME&gt; </h1>
+<h3>Tutorial zum Erstellen von RESTful Web Services </h3>
+<p>Ziel dieses Tutorial ist es an Hand eines einfachen Beispiel kurz alle wesentlichen Schritte zum Erstellen eines RESTful Web Services mit dem &lt;FRAMEWORK_NAME&gt; erl&auml;utern und den Einsatz der Tools darzustellen. </p>
+<p>Daf&uuml;r wird hier ein Teil des Bookmark-Beispiels Schritt f&uuml;r Schritt entwickelt. Der Quellcode zum Beispiel ist unter <code class="inline">example/bookmarks</code> zu finden.</p>
+<p>Einge genauere Beschreibung der Vorgehensweise zum Erstellen von RESTful Web Services sowie theoretische Hintergr&uuml;nde sind in der Ausarbeitung <a href="#link zum paper">RESTful Web Services</a> zu finden und auf folgenden Seiten recht &uuml;bersichtlich dargestellt.</p>
+<ul>
+  <li><a href="#links zu relevanten seiten">Link1</a></li>
+  <li><a href="#links zu relevanten seiten">Link2</a></li>
+</ul>
+<h2>Identifikation der Ressourcen</h2>
+<p>F&uuml;r dieses Tutorial soll es ausreichen Bookmarks abfragen, aktualisieren und neu anlegen zu k&ouml;nnen, also wird die Ressource Bookmark ben&ouml;tigt und zus&auml;tzlich die Ressource Bookmarksammlung, wobei diese nur zum Hinzuf&uuml;gen spezifiziert wird.</p>
+<p>Die vollst&auml;ndige Implementierung dieser Ressource ist unter <code class="inline"><a href="#link auf phpdoc">example/bookmarks/libs/class.bookmark.php</a></code> zu finden.</p>
+<code>//***** Bookmark ************************************************************
+/**
+ * Represents a single bookmark with some meta information
+ * @package    example.bookmarks
+ */
+class Bookmark extends Item {
+    protected $id;
+    protected $title;
+    protected $description;
+    protected $uri;
+    protected $tags;
+    protected $user_id;
+    protected $created;
+}
+</code>
+<p>Zusätzlich zu der <code class="inline"><a href="#link auf phpdoc">Bookmark</a></code>-Klasse wird noch eine Klasse zum Abfragen der Datenbank ben&ouml;tigt. Die <code class="inline"><a href="#link auf phpdoc">Bookmarks</a></code>-Klasse ist unter <code class="inline"><a href="#link auf phpdoc">example/bookmarks/libs/class.bookmarks.php</a></code> ausprogrammiert zu finden. Hier nur die wichtigsten Methoden: </p>
+
+<code>//***** Bookmarks ***********************************************************
+/**
+ * Manages bookmarks table and provides all methodes to operate
+ * on the database table
+ * @package    example.bookmarks
+ */
+class Bookmarks extends DbCollection {
+    //=======================================================================
+    /**
+     * @param string $user
+     * @param integer $id
+     * @return Bookmark
+     */
+    public function getBookmark($user, $id);
+    
+    //=======================================================================
+    /**
+     * @param string $user
+     * @param Bookmark $bookmark
+     */
+    public function addBookmark($user, Bookmark $bookmark);
+
+    //=======================================================================
+    /**
+     * @param string $user
+     * @param integer $id
+     * @param Bookmark $bookmark
+     */
+    public function updateBookmark($user, $id, Bookmark $bookmark);
+}
+</code>
+
+<h2>Entwurf des URI-Namesraums </h2>
+<p>In der folgenden Tabelle ist der URI-Namensraum spezifiziert, der f&uuml;r dieses Tutorial verwendet werden soll. Die in geschweiften Klammern angegebenen Platzhalter sind sp&auml;ter die Parameter f&uuml;r die Methoden.</p>
+<table style="width:100%">
+<tr><th>URI</th><th>Art der Ressource</th><th>Beschreibung</th></tr>
+<tr><td>{user}/bookmark/{id}</td>
+<td>Bookmark</td>
+<td>Ein einzelnes Bookmark von {user} </td>
+</tr>
+
+<tr>
+  <td>{user}/bookmarks/</td>
+  <td>Sammlung von Bookmarks </td>
+  <td>Die 20 neusten Bookmarks von {user}  </td>
+</tr>
+</table>
+<h2>Festlegung der Ressourcenrepr&auml;sentationen</h2>
+<p>Als Format f&uuml;r die Bookmarks soll der XML-Dialekt <a href="#xbel_spec">XBEL</a> dienen.<br />
+Dazu ein Beispieldokument: </p>
+<code>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;!DOCTYPE xbel PUBLIC &quot;+//IDN python.org//DTD XML Bookmark Exchange
+Language 1.0//EN//XML&quot; &quot;http://www.python.org/topics/xml/dtds/xbel-1.0.dtd&quot;&gt;
+&lt;xbel version=&quot;1.0&quot;&gt;
+    &lt;bookmark href=&quot;http://www.xml.com/pub/a/2005/02/09/xml-http-request.html&quot;&gt;
+        &lt;title&gt;Very Dynamic Web Interfaces&lt;/title&gt;
+        &lt;info&gt;
+            &lt;metadata owner=&quot;http://example.com/documentation/xbel/edit&quot;&gt;
+                http://example.com/testuser/bookmark/1
+            &lt;/metadata&gt;
+            &lt;metadata owner=&quot;http://example.com/documentation/xbel/tags&quot;&gt;
+                &lt;tag&gt;XML&lt;/tag&gt;
+                &lt;tag&gt;XForms&lt;/tag&gt;
+            &lt;/metadata&gt;
+        &lt;/info&gt;
+        &lt;desc&gt;
+            Using XMLHttpRequest to build dynamic web interfaces.
+        &lt;/desc&gt;
+    &lt;/bookmark&gt;
+&lt;/xbel&gt;</code>
+<h2>Entwickeln oder Konfigurieren der Serializer/Deserializer </h2>
+<p>Nachdem die Repr&auml;sentation gew&auml;hlt wurde, muss daf&uuml;r ein Serializer bzw. Deserializer entwickelt werden, der diese Repr&auml;sentation in das erwartete Bookmark-Objekt umsetzt.</p>
+<p>Dazu muss f&uuml;r den RESTServer das Interface <code class="inline"><a href="#link auf phpdoc">Serializer</a></code> implementiert werden. Die entsprechende Implementierung des <code class="inline"><a href="#link auf phpdoc">XbelSerializer</a></code>'s ist unter <code class="inline"><a href="#link auf phpdoc">example/bookmarks/libs/class.xbelSerializer.php</a></code> zu finden. Hier kurz das entsprechende Grundger&uuml;st: </p>
+<code>//***** XbelSerializer ******************************************************
+/**
+ * XbelSerializer combines data serialization and deserialization
+ * to be used by the RESTServer
+ *
+ * @package    example.bookmarks
+ */
+class XbelSerializer implements Serializer {
+
+    //=======================================================================
+    /**
+     * @param mixed $data
+     * @return string
+     */
+    public function serialize($data);
+
+    //=======================================================================
+    /**
+     * @param string $str
+     * @return mixed
+     */
+    public function deserialize($str);
+}
+</code>
+<h2>Annotieren der Methoden</h2>
+<p>Nachdem der Gro&szlig;teil der Implementierung abgeschlossen ist, k&ouml;nnen die wichtigen Tags zur  <code class="inline"><a href="#link auf phpdoc">Bookmark</a></code>-Klasse hinzugef&uuml;gt werden. </p>
+
+<p>Die Klasse selbst bekommt den <strong>@webservice</strong>-Tag um vom Parser sp&auml;ter beachtet zu werden und die einzelnen Methoden bekommen einen <strong>@restmethod</strong>-Tag. Hier wird jeweils die HTTP-Methode angegeben und ein regul&auml;rer Ausdruck, der es erm&ouml;glicht, aus der URI der Anfrage die Methodenparameter zu gewinnen.</p>
+
+<p>Zur richtigen Formatierung der Ausgabe wird zus&auml;tzlich der <strong>@restout</strong>-Tag gesetzt, um den passenden Serializer anzugeben.</p>
+<p>Bei der PUT und POST Methode werden hingegen Eingaben erwartet, also muss hier ein entsprechender <strong>@restin</strong>-Tag gesetzt werden. Um die Deserializerung des erwarteten XBEL-Dokuments in ein Bookmark-Objekt zu erm&ouml;glichen. </p>
+<code>//***** Bookmarks ***********************************************************
+/**
+ * Manages bookmarks table and provides all methodes to operate
+ * on the database table
+ * @package    example.bookmarks
+ * <strong>@webservice</strong>
+ */
+class Bookmarks extends DbCollection {
+    //=======================================================================
+    /**
+     * <strong>@restmethod GET /\/(.*?)\/bookmark\/([0-9]+)/</strong>
+     * <strong>@restout XbelSerializer</strong>
+     * @param string $user
+     * @param integer $id
+     * @return Bookmark
+     */
+    public function getBookmark($user, $id);
+
+    //=======================================================================
+    /**
+     * <strong>@restmethod POST /\/(.*?)\/bookmarks\//</strong>
+     * <strong>@restin XbelSerializer</strong>
+     * @param string $user
+     * @param Bookmark $bookmark
+     */
+    public function addBookmark($user, Bookmark $bookmark);
+	
+    //=======================================================================
+    /**
+     * <strong>@restmethod PUT /\/(.*?)\/bookmark\/([0-9]+)/</strong>
+     * <strong>@restin XbelSerializer</strong>
+     * @param string $user
+     * @param integer $id
+     * @param Bookmark $bookmark
+     */
+    public function updateBookmark($user, $id, Bookmark $bookmark);
+}
+</code>
+
+
+<p>TODO: Status-Codes unterst&uuml;tzen, momentan werden die richtigen HTTP-Status-Codes noch nicht unterst&uuml;tzt. </p>
+<h2>Sicherstellen der Abh&auml;ngigkeiten</h2>
+<p> Wichtig f&uuml;r die korrekte Funktion des RESTServers ist, dass alle abh&auml;ngigen Dateien jeweils explizit geladen werden, beim Einbinden einer Datei. Falls es im n&auml;chsten Schritt zu Fehlern kommt, weil z.B. die Serializer-Klasse nicht gefunden wird, gen&uuml;gt es entweder eine zus&auml;tzliche Datei mit ins Verzeichnis zu legen, in der diese Klasse eingebunden wird, oder sie in einer bestehenden Datei zu referenzieren. Der Generator durchsucht das komplette Code-Verzeichnis und l&auml;dt alle .php-Dateien die er findet.</p>
+<h2>Generieren des REST Deployment Descriptors</h2>
+<p>Zum Generieren des Deployment Descriptors steht ein Kommandozeilen-Tool zur Verf&uuml;gung. Dieses ist unter <code class="inline">source/tools/generateRestDd.bat</code> f&uuml;r Windows bzw. direkt als <code class="inline">source/tools/generateRestDd.php</code> unter Unix/Linux ausf&uuml;hrbar. </p>
+<p>Hier nun ein Beispiel, wie das Tool aufgerufen werden kann:</p>
+<code>\source\tools&gt;generateRestDd.bat
+Usage: generateRestDd.php [options] &lt;base-path&gt; [deploy-path]
+generateRestDd.php is meant to generate your deployment descriptor for the REST server
+
+  &lt;base-path&gt;   - path for searching for @restservice classes
+  [deploy-path] - path to write deployment descriptor and rest server, defaults to &lt;base-path&gt;
+
+  OPTIONS:
+     -a &lt;provider&gt;    use digest authentication with given provider class
+     -s &lt;serializer&gt;  use serializer class, default=PearSerializer
+     -d &lt;deserial&gt;    use deserializer class, defaults to -s
+     -f &lt;formatmap&gt;   to enable different serializations by &f URL-param
+                      &lt;formatmap&gt; = ([A-z0-9]+)=([A-z0-9]+)(;([A-z0-9]+)=([A-z0-9]+))*
+                      with $1 := &lt;id&gt; and $2 := &lt;serializer class name&gt;
+     -t               do a testrun, don't deploy to path
+     -b &lt;rest-base&gt;   base uri for the rest server (add /rest.php or change for mod_rewrite)
+     -?               this help
+
+\source\tools&gt;
+</code>
+<p>Die meisten Parameter sind optional und in diesem Tutorial nicht von Interesse. Hier reicht es einfach den Pfad zum Beispielordner anzugeben, also folgenderma&szlig;en:</p>
+<code>\source\tools&gt;generateRestDd.bat ..\..\example\bookmarks
+Base-Path:    D:\p\sst\WebP\source\repo\example\bookmarks
+Deploy-Path:  D:\p\sst\WebP\source\repo\example\bookmarks
+
+Found classes:
+       DbManager
+       DbCollection
+[web]  Tags
+[web]  Bookmarks
+       Item
+       Bookmark
+[web]  Users
+       TagsSerializer
+       User
+       XbelParser
+       XbelSerializer
+Create DD: \rest.dd.php
+Copy REST Server: ..\..\example\bookmarks\rest.php
+Deployment successful completed
+
+D:\p\sst\WebP\source\repo\source\tools>
+\source\tools&gt;
+</code>
+<p>Die Ausgabe sollte in etwa genauso aussehen. Hier ist jedoch anzumerken, dass im aktuellen Entwicklungsstand nicht ausgeschlossen werden kann, dass das Generieren fehlschl&auml;gt, wenn PEAR Bibliotheken fehlen, die referenziert werden, selbst wenn sie nicht genutzt werden. </p>
+<h2>Testen des generierten Servers</h2>
+<p>Im Beispielverzeichnis sollten sich jetzt zwei neue Dateien befinden, rest.php und rest.dd.php. Ist dies nicht der Fall, k&ouml;nnen einfach die vorhandenen beiden Dateien im rest-Unterverzeichnis in das Beispielverzeichnis kopiert und entsprechend umbenannt werden. </p>
+<p>Um nun das Ganze auf einem Webserver testen zu k&ouml;nnen, muss noch das Datenbankschema in die Datenbank eingef&uuml;gt werden, dazu dient <code class="inline">example/bookmarks/sql/db.sql</code>. Dieser SQL-Dump enh&auml;lt dar&uuml;ber hinaus noch Bespieldaten, Bookmarks zum Thema REST.</p>
+<p> Als n&auml;chster Schritt sollte die Datei  <code class="inline">example/bookmarks/config.php</code> an die eigenen Bed&uuml;rfnisse angepasst werden, um die Datenbankabfragen zu erm&ouml;glichen. Die Datenbankanbindung nutzt die Bibliothek ADOdb, welche im Zweifel noch zus&auml;tzlich heruntergeladen werden muss.</p>
+<p>TODO: s&auml;mtliche Abh&auml;ngigkeiten auflisten und m&ouml;glichst konfigurierbar machen </p>
+<p>Wurden diese H&uuml;rden genommen,  sollte es m&ouml;glich sein &uuml;ber einen Web-Browser die Datei <code class="inline">rest-interface.html</code> im Beispielverzeichnis aufzurufen, z.B. &uuml;ber <a href="../example/bookmarks/rest-interface.html">http://localhost/example/bookmarks/rest-interface.html</a></p>
+<p>Wenn bis zu diesem Punkt alles fehlerfrei geklappt hat, dann k&ouml;nnen &uuml;ber den Refresh-Button unter der Known Tags Liste die bekannten Schl&uuml;sselw&ouml;rter abgefragen werden. </p>
+<p>&Uuml;ber den Button Generate Query Top 20 Request sollte das Formular im unteren Teil entsprechend ausgef&uuml;llt werden, um die 20 neusten Bookmarks abzufragen. Sobald auf Submit geklickt wird, sollte im rechten Bereich eine Ausgabe erscheinen, die vom PearSerializer stammt. Aktuell ist im Quellcode f&uuml;r diese Methode nicht der XBEL-Serializer angegeben, um einmal das Standardverhalten zu demonstrieren. </p>
+</body>
+</html>

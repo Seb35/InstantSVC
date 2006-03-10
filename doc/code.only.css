@@ -1,0 +1,17 @@
+code {
+	white-space:pre;
+	display:block;
+}
+h2, p, ul {display:none;}
+html {
+	font-family:Verdana, Arial, Helvetica, sans-serif;
+	font-size:10pt;
+}
+
+body {
+	margin:auto;
+	width:650px;	
+}
+#style_link {
+	float:right;
+}

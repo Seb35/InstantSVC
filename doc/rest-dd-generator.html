@@ -1,0 +1,53 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<title>&lt;FRAMEWORK_NAME&gt; - REST Deployment Descriptor Generator</title>
+<meta name="author" content="Stefan Marr" />
+<link id="style" href="style.css" rel="stylesheet" rev="stylesheet" />
+<script>
+var phpOnly = false;
+function switchCSS() {
+  if (phpOnly) {
+    document.getElementById('style').href = "style.css";
+    document.getElementById('style_link').innerHTML = "nur Quellcode";
+  }
+  else {
+    document.getElementById('style').href = "code.only.css";
+    document.getElementById('style_link').innerHTML = "mit Hinweisen";
+  }
+  phpOnly = !phpOnly;
+}
+</script></head>
+
+<body>
+<h1>REST <acronym title="Deployment Descriptor">DD</acronym> Generator</span>  </h1>
+<h3>Kommandozeilen Tool zum automatischen Erstellen der REST Server Konfiguration  </h3>
+<h2>Verwendung</h2>
+<p><code class="inline">generateRestDd</code> ist dazu gedacht, die im Quellcode &uuml;ber Annotations abgelegten Informationen auszulesen, um daraus die Konfiguration des REST Servers zu erstellen, um &uuml;ber diesen die REST Services anbieten zu k&ouml;nnen. </p>
+<p>Zus&auml;tzlich ist es m&ouml;glich, weitere Optionen &uuml;ber das Tool anzugeben. So ist es z.B. f&uuml;r die HTTP-Digest Authentifikation n&ouml;tig ein sogenanntes <em>Realm</em> anzugeben, dass auch in die dabei verwendeten Passwort&auml;quivalents eincodiert werden muss. </p>
+<p>Dar&uuml;berhinaus sind noch weitere Parameter einstellbar, die im Folgenden n&auml;her erkl&auml;rt werden. Ein Aufruf der Tools ist mit <code class="inline">source/tools/generateRestDd.bat</code> f&uuml;r Windows bzw. unter Unix/Linux direkt mit <code class="inline">source/tools/generateRestDd.php</code> m&ouml;glich. </p>
+<h2>Parameter</h2>
+<p>Als Scriptaufruf wird folgendes erwartet: <code class="inline">generateRestDd.php [options] &lt;base-path&gt; [deploy-path]</code></p>
+<p>Der einzige obligatorische Paramter ist <code class="inline">base-path</code>, &uuml;ber diesen wird der Pfad angegeben, der nach REST Services durchsucht wird. Hier kann sowohl ein relativer, als auch ein absoluter Pfad angegeben werden. Das angegebene Verzeichnis wird dann rekursiv nach .php Dateien durchsucht.</p>
+<p>Der optionale Paramter <code class="inline">deploy-path</code> gibt das Verzeichnis an, in das der Deployment Descriptor und der REST Server erstellt werden.  </p>
+<p>Die weiteren Optionen sehen wie folgt aus: </p>
+<code>-a &lt;provider&gt;    use digest authentication with given provider class
+-s &lt;serializer&gt;  use serializer class, default=PearSerializer
+-d &lt;deserial&gt;    use deserializer class, defaults to -s
+-f &lt;formatmap&gt;   to enable different serializations by &f URL-param
+                 &lt;formatmap&gt; = ([A-z0-9]+)=([A-z0-9]+)(;([A-z0-9]+)=([A-z0-9]+))*
+                 with $1 := &lt;id&gt; and $2 := &lt;serializer class name&gt;
+-t               do a testrun, don't deploy to path
+-b &lt;rest-base&gt;   base uri for the rest server (add /rest.php or change for mod_rewrite)
+-?               this help</code>
+<ul>
+  <li><code class="inline"><strong>-a</strong></code> konfiguriert den Server so, dass HTTP Digest zur Authentifikation verwendet wird. Als Parameter muss hier der Klassenname des implementierten <a href="authentication.html">AuthProviders</a> angegeben werden.</li>
+  <li><code class="inline"><strong>-s</strong></code> kann genutzt werden, um einen speziellen <code class="inline">Serializer</code> als Standard-Serializer zu registrieren. Dieser wird verwendet, wenn kein Serializer f&uuml;r eine aufgerufene Methode angegeben ist und kein <code class="inline">&amp;f</code> Parameter in der Request URI gesetzt ist. Dieses Verhalten wird bei den Deserializern ebenfalls verwendet. Standardm&auml;&szlig;ig wird der <code class="inline">PearSerializer</code> verwendet, welcher die PHP Konstrukte in einfache XML-Konstrukte &uuml;bersetzt.  </li>
+  <li><code class="inline"><strong>-d</strong></code> spezifiziert den zu nutzenden Standard-Deserializer zur Umsetzung der Eingaben &uuml;ber POST und PUT in PHP Konstrukte. Als Paramter wird der Klassenname erwartet. Wird diese Option nicht verwendet, wird die Angabe von <code class="inline">-s</code> bzw. der dort genutzte Standardwert &uuml;bernommen. </li>
+  <li><code class="inline"><strong>-f</strong></code> F&uuml;r manche Anwendungen ist es sinnvoll unterschiede Ressourcenrepr&auml;sentationen anbieten zu k&ouml;nnen. Um dies m&ouml;glichst allgemein zu realisieren, ist es m&ouml;glich einen Standardparameter in einer Request URI zu verwenden. Ein Beispielaufruf w&auml;re <code class="inline">/bookmark/5?f=xbel</code> oder <code class="inline">/bookmark/5?f=html</code>. Damit dies nicht direkt &uuml;ber den Klassennamen des Serializers  geschehen muss und damit eventuelle Sicherheitsl&uuml;cken erm&ouml;glicht w&uuml;rden, wird an dieser Stelle eine Mapping Tabelle angegeben.<br />
+  Dieses Mapping besteht aus einfachen K&uuml;rzel=Klassename Paaren, getrennt von Semikolons. Beispiel als Eingabeparameter f&uuml;r das Tool: <code class="inline">-f xml=PearSerializer;xbel=XbelSerializer</code></li>
+  <li><code class="inline"><strong>-b</strong></code> F&uuml;r verschiedene Features ist es n&ouml;tig ein Realm oder eine Basis-URI angeben zu k&ouml;nnen. Dies geschieht &uuml;ber diesen Parameter. Ist er angegeben, wird die Konstante <code class="inline">REST_BASE</code> mit der entsprechenden URI belegt. Das Script des REST Servers selbst wird standardm&auml;&szlig;ig unter dem Namen <code class="inline">rest.php</code> abgelegt und sollte daher mit angegeben werden, falls nicht &uuml;ber <code class="inline">mod_rewrite</code> oder &auml;hnliches die Request URI vor Aufruf des Scripts angepasst wird. </li>
+</ul>
+</body>
+</html>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="bookmark2xbel.xsl"?>
+<Bookmark>
+	<id>33</id>
+	<title>TestBookmark</title>
+	<description>eeeeeeeeeeee</description>
+	<uri>http://example/</uri>
+	<tags>
+		<tag>111</tag>
+		<tag>222</tag>
+		<tag>333</tag>
+	</tags>
+	<user_id>4</user_id>
+	<created>2005-12-22 12:12:12</created>
+</Bookmark>

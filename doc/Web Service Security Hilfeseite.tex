@@ -1,0 +1,121 @@
+\documentclass[11pt,fleqn]{scrartcl}
+
+\usepackage[latin1]{inputenc}
+\usepackage{ngerman}
+\usepackage{amsmath,amssymb,amstext}
+\usepackage{graphicx}
+\usepackage[automark]{scrpage2}
+
+\title{Web Service Hilfe}
+\author{Christoph Hartmann, Michael Perscheid}
+\date{\today{} in Potsdam}
+
+\pagestyle{scrheadings}
+
+\ifoot[Christoph Hartmann, Michael Perscheid]{Christoph Hartmann, Michael Perscheid}
+\cfoot[]{}
+\ofoot[\thepage]{\thepage}
+
+\begin{document}
+
+\maketitle
+
+\quote {Bei diesem Dokument handelt es sich um eine Hilfestellung zur Beschreibung einer eigenen Hilfeseite zur Nutzung von Web Service Security mittels des tele-TASK-Frameworks.}
+
+\tableofcontents
+
+\section{Nutzungsbedingungen}
+\label{wsh:Nutzungsbedingungen}
+Hier bitte die Nutzungsbedingungen für die Verwendung von Web Services des tele-TASK-Frameworks einfügen.
+
+\subsection{Erstellen eines Accounts}
+\label{wsh:ErstellenEinesAccounts}
+Wie und wo erstelle ich einen Account oder bekomme ihn her?
+Ein Account muss vorher in der verwendeten Benutzerverwaltung angelegt werden. Auch das Passwort muss dort bekannt sein. 
+
+\subsection{Gastaccount}
+\label{wsh:Gastaccount}
+Was versteht der Benutzer unter einem Gastaccount?
+
+\section{Authentifizierung - Username Token Profil}
+\label{wsh:Authentifizierung}
+Zur Absicherung der Web Services gegen nicht authorisierte Personen wurde das Username Token Profil in PHP implementiert. Dabei handelt sich um einen Teil des Standards Web Service Security von OASIS\footnote{www.oasis-open.org}. Hierbei stehen dem Benutzer zwei Möglichkeiten zur Verfügung sich zu identifizieren:
+
+\subsection{Passwort Klartext}
+\label{wsh:PasswortKlartext}
+Die einfachste und unsicherste Methode sich beim Server zu authentifizieren, besteht darin nur seinen Accountnamen und Passwort im Header einer jeden Soap Message zu übermitteln. Dabei sind alle Daten unverschlüsselt und Replay-Attacken\footnote{Dabei wird die Soap Message abgefangen und beliebig oft erneut gesendet.} sind leicht ausführbar. Daher sollte diese Variante vermieden und die Möglichkeit des verschlüsselten Passwortes genutzt werden.
+
+\subsection{Verschlüsseltes Passwort}
+\label{wsh:PasswortDigest}
+Verschlüsselte Passwörter\footnote{PasswortDigest} werden mittels einem Zufallswert und einem Zeitstempel abgesichert. Diese Daten werden neben dem Accountnamen auch im Header der Nachricht mitgeführt. Dementsprechend ist jede Anfrage nur noch genau einmal gültig, da sonst der Zufallswert sich auf Serverseite doppelt oder die Anfrage zu alt ist.
+
+\subsection{MD5 Passwörter}
+\label{wsh:MD5Passwort}
+Da einerseits auf Serverseite aus Sicherheitsgründen nur die MD5-Hashwerte der Passwörter zur Verfügung stehen und auf der anderen Seite klare Passwörter nicht zu empfehlen sind, \textbf{gilt, dass alle Anfragen mit dem Passwortäquivalent, sprich ihrem MD5-Hashwert, gesendet werden müssen.} Dieser Punkt kann bei Web Service Anfragen schnell zu einem vermeidbaren Problem werden.
+
+
+\section{Client Implementierungen}
+\label{wsh:ClientImplementation}
+Zur Benutzung der Web Services empfiehlt es sich einen Client zu benutzen. Dabei werden hier drei in den gebräuchlichsten Sprachen vorgestellt. Sie wurden alle in Testfällen erfolgreich überprüft. Bei der Verwendung eines anderen Clients, muss auf die Kompatibilität zu Web Service Security 1.0 geachtet werden.
+
+\subsection{PHP Client}
+\label{wsh:PHPClient}
+Der PHP Client\footnote{URL zur client.php} ist ebenso wie der Server eine Eigenentwicklung. Er ist auf Grund von PHP Eigenheiten nicht interoperabel. Jedoch funktioniert er sehr gut mit den tele-TASK Web Services und kann hier uneingeschränkt verwendet werden. Dabei wird ausschliesslich Passwort Digest verwendet und der Anwender des Clients muss nur in einem erweiterten Konstruktor Name und Passwort angeben. Alles weitere, wie z.B. Header erzeugen, ist vom Client gekapselt und für den Anwender nicht zu beachten.
+
+\subsection{C\# Client}
+\label{wsh:CSharpClient}
+Für C\# wird die von Microsoft implementierte Version der Web Services Enhancements 3.0 empfohlen.\footnote{Microsoft Web Services Enhancements 3.0 www.microsoft.com} In dieser Erweiterung ist auch das Username Token Profile vorhanden, welches genutzt werden muss, um eine Verbindung mit tele-TASK Web Services herstellen zu können.
+
+\subsection{Java Client}
+\label{wsh:JavaClient}
+In Java wurde erfolgreich eine Verbindung mittels Java Axis hergestellt.\footnote{Java Axis 1.3 http://ws.apache.org/axis/} Diese Erweiterung bietet, analog zu Microsoft, viele Möglichkeiten Web Services zu nutzen, darunter ist auch das Username Token Profile.
+
+\section{Liste der verfügbaren Web Services}
+\label{wsh:ListeWebServices}
+Liste der verfügbaren Web Service hier einfügen.
+
+
+%\section{Allgemeine Fragen zum Server}
+%\label{wsh:AllgemeineFragen}
+%\subsection{Wie kann ich einen Server aufsetzen?}
+%\label{wsh:ServerAufsetzen}
+
+%Um einen Server aufzusetzen, muss als erstes ein Service implementiert werden. Diese PHP Klasse muss mittels PHP 5 Features objektorientiert implementiert werden. Anschließend wird eine WSDL-Beschreibung erstellt. Dazu kann entweder der Generator benutzt werden oder die Beschreibung wird per Hand erstellt. Die erste Variante ist aus Kompatibilitätsgründen dringend zu empfehlen.
+%Anschließend muss der Server aufgesetzt werden. Dies ist mit folgendem CodeSchnipsel möglich:
+%<addCodehere>
+
+%Der Ablauf lässt sich wie folgt zusammenfassen:
+%\begin{itemize}
+%	\item PHP Klasse erstellen
+%	\item WSDL genierieren
+%	\item Server mit WSDL aufsetzen, Klasse als Implementierung angeben
+%\end{itemize}
+ 
+
+%\subsection{Wie kann ich Benutzer meiner Web Services authentifizieren lassen?}
+%\label{wsh:BenutzerAuthentifizieren}
+
+%Als erstes muss eine Benutzerverwaltung vorhanden sein. Sie muss mindestes ein Passwort, welches sich md5 gehasht auslesen lässt, zu einem Benutzernamen speichern. Mittels dieser Benutzerverwaltung kann später ein Vergleich erstellt werden. 
+%Die Anbindung an den Server erfolgt über eine geänderte Implementierung des ICheckUserRunnable-Interface. Da müssen die Methoden getPassword, setAccount, setGuestAccout neu implementiert werden. Der Rest ist im ExtendedSoapServer schon implementiert. Die neue ICheckUserRunnable an den XmlSoapSecParser binden. 
+%Nachdem der XmlParser an den ExtendedSoapServer gebunden wurde, kann die Authentifizierung verwendet werden.
+
+%Kurz Zusammengefasst:
+%\begin{itemize}
+%	\item Aufsetzen der Benutzerverwaltung
+%	\item Anpassen des ICheckUserRunnable an die Rechteverwaltung
+%	\item Benutzer Username und Passwort mitteilen
+%  \item Anstatt des SoapServers den Extended Soap Server verwenden
+%  \item XML Parser binden
+%\end{itemize}
+
+%\subsection{Implementieren einer eigenen Sicherheitslösung}
+%\label{wsh:SicherheitImplementierung}
+%Das implementieren von weiteren Sicherheitsaspekten kann mittels eines neuen XML Parser erfolgen. Dieser muss dann an den ExtendedSoapServer gebunden werden.
+
+%Es muss daher folgendes erledigt werden:
+%\begin{itemize}
+%	\item Schreiben eines XML Parser, welcher von ExtendedXmlParser erbt
+%	\item Binden an den ExtendedSoapServer
+%\end{itemize}
+
+\end{document}

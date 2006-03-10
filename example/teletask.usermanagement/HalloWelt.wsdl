@@ -1,0 +1,36 @@
+<?xml version='1.0' encoding='UTF-8'?>
+
+<definitions name="HalloWelt" targetNamespace="urn:HalloWelt" xmlns:typens="urn:HalloWelt" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns="http://schemas.xmlsoap.org/wsdl/">
+	<message name="halloWelt">
+		<part name="inputString" type="xsd:string"/>
+	</message>
+	<message name="halloWeltResponse">
+		<part name="return"/>
+	</message>
+	<portType name="WebdienstPortType">
+		<documentation>
+			Enter description here...
+		</documentation>
+		<operation name="halloWelt">
+			<input message="typens:halloWelt"/>
+			<output message="typens:halloWeltResponse"/>
+		</operation>
+	</portType>
+	<binding name="WebdienstBinding" type="typens:WebdienstPortType">
+		<soap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/>
+		<operation name="halloWelt">
+			<soap:operation soapAction="urn:WebdienstAction"/>
+			<input>
+				<soap:body namespace="urn:HalloWelt" use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+			</input>
+			<output>
+				<soap:body namespace="urn:HalloWelt" use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+			</output>
+		</operation>
+	</binding>
+	<service name="HalloWeltService">
+		<port name="WebdienstPort" binding="typens:WebdienstBinding">			
+			<soap:address location="http://localhost:81/phpSec/SecWeb.php"/>
+		</port>
+	</service>
+</definitions>

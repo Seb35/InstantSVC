@@ -1,0 +1,21 @@
+;Configuration File made by Zend Studio PHPDocumentor Wizard, Thu Mar 09 08:18:48 CET 2006
+pear=off
+
+output=HTML:Smarty:PHP
+
+customtags=webmethod,restmethod,webservice,restin,restout
+
+parseprivate=on
+
+directory=D:\p\sst\WebP\source\repo\example,D:\p\sst\WebP\source\repo\libs,D:\p\sst\WebP\source\repo\source
+
+target=D:\p\sst\WebP\source\repo\docu\phpdoc
+
+ignore=D:\p\sst\WebP\source\repo\source\templates_c\%%01^010^0102E260%%admin-tool-classView.tpl.php,D:\p\sst\WebP\source\repo\source\templates_c\%%16^161^161C91B5%%admin-tool-methodView.tpl.php,D:\p\sst\WebP\source\repo\source\templates_c\%%28^283^283A413F%%admin-tool-intro.tpl.php,D:\p\sst\WebP\source\repo\source\templates_c\%%36^369^369DD9EB%%admin-tool-methodDetailsView.tpl.php,D:\p\sst\WebP\source\repo\source\templates_c\%%4E^4E1^4E17FA3B%%admin-tool-register-view.tpl.php,D:\p\sst\WebP\source\repo\source\templates_c\%%62^62E^62ECC07A%%admin-tool-wsgen-view.tpl.php,D:\p\sst\WebP\source\repo\source\templates_c\%%64^643^643CAD31%%admin-tool-header.tpl.php,D:\p\sst\WebP\source\repo\source\templates_c\%%92^923^923F9FE7%%admin-tool-settings-view.tpl.php,D:\p\sst\WebP\source\repo\source\templates_c\%%9D^9D8^9D8F99E0%%admin-tool-footer.tpl.php,D:\p\sst\WebP\source\repo\source\templates_c\%%9D^9DA^9DA759DA%%stats.html.php,D:\p\sst\WebP\source\repo\source\templates_c\%%A3^A30^A308A26F%%admin-tool-navi.tpl.php,D:\p\sst\WebP\source\repo\source\templates_c\%%D6^D63^D637D69B%%admin-tool-wizard.tpl.php
+
+title=&lt;FRAMEWORK_NAME&gt;
+
+sourcecode=on
+
+javadocdesc=off
+

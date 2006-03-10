@@ -1,0 +1,344 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<title>&lt;FRAMEWORK_NAME&gt; - Admin Tool - Von der PHP-Anwendung zum Web Service</title>
+<meta name="author" content="Stefan Marr" />
+<link id="style" href="style.css" rel="stylesheet" rev="stylesheet" />
+
+</head>
+
+<body>
+<h1>Admin Tool</h1>
+
+<h3>Von der PHP-Anwendung zum Web Service</h3>
+<p>Diese Anleitung erläutert die Verwendung des Admin-Tools zur Erstellung von Web Services aus bestehenden PHP-Anwendungen. Diese Anwendungen müssen lediglich gemäß dem ebenfalls im Anhang befindlichen Style-Guide dokumeniert und als Web Services gekennzeichnet werden.</p>
+<p>Die PHP-Datei queryLink, ein Teil der Notfalllösung <b>(Andi: vlt besser: Beispielimplementierung)</b> zum tele-TASK-Framework 
+  und dessen Methoden werden hier als Beispiel verwendet.</p>
+<code class="completed">&lt;?php</code>
+<code>//***** queryLink ********************************************************
+/**
+* queryLink - provides basic queries on table links of the Teletask DB
+* @webservice
+*/
+class queryLink extends DbCollection {
+
+    //=========================================================================
+    /**
+     * Returns an array of strings, index represents link id, value the name
+     *
+     * @webmethod
+     * @return String[]
+     */
+    public function getIdAndNameOfAllLinks() {
+        $sql = 'SELECT LINK.name, LINK.id FROM links LINK';
+        $this->_lastResult = $this->_db->Execute($sql);
+        if (isset($this->_lastResult)) {
+            while (!$this->_lastResult->EOF) {
+              $item = new Link(-1, $this->_lastResult->fields);
+              $result[$item->getID()] = $item->getName();
+              $this->_lastResult->MoveNext();
+            }
+        }
+        return $result;
+    }    
+}</code>
+
+<p>Klassen und Methoden, die als Web Service verfügbar gemacht werden sollen, <br>müssen mit @webservice beziehungsweise @webmethod gekennzeichnet werden.</p>
+
+<h2>Das Admin-Tool einrichten</h2>
+<p>Nachdem sie das Admin-Tool gestartet haben, wählen sie den Menüpunkt 'Einstellungen'.</p>
+
+<div class="screen"> 
+  <h3>Einstellungen</h3>
+    <ul>
+     <li>
+       Standardsuchpfad f&uuml;r Web Service Klassen: <br/>
+       <input type="text" value="C:/Programme/Apache Group/Apache2/htdocs" name="searchpath" size="80" />
+     </li>
+     <br/>
+     <li>
+       Standard-Server:<br/>
+       <label><input type="radio" name="selectedServer" value="soap" checked="checked" />SOAP-Server</label><br/>
+<label><input type="radio" name="selectedServer" value="rest" />REST-Server</label><br/>
+     </li>
+     </br>
+     <li>
+       Sicherheit:<br/>
+       <label><input type="radio" name="selectedSecurity" value="wss" checked="checked" />WS-Security (Username/Token-Profile)</label><br/>
+<label><input type="radio" name="selectedSecurity" value="none" />Keine</label><br/>
+     </li>
+    </ul>
+  <br/>
+  <input type="submit" name="action" value="Abbrechen" />
+  <input type="submit" name="action" value="Ok" />
+</div>
+
+<p>Sie können einen Standardsuchpfad angeben, an dem automatisch nach verfügbaren PHP-Anwendungen gesucht wird. Beim Registrieren der Web Service Klassen kann auch ein anderer Pfad gewählt werden.</p><p>
+
+Treffen Sie noch die Entscheidung zwischen einem SOAP oder REST Server und ob sie Web Service Security in Form des Username/Token-Profiles 1.0 nutzen möchten. Übernehmen Sie Ihre Einstellungen dann mit ‚Ok’.
+</p><p>
+Wählen Sie nun den Menüpunkt ‚Web Service Klassen registrieren’.
+</p>
+
+<h2>Web Services Klassen registrieren</h2>
+<div class="screen">
+  <h3>Web Service Klassen registrieren</h3>
+  <p>Web Service Klassen suchen:</p>
+  <table>
+    <tr>
+      <td><input type="radio" name="searchmethod" value="byPath" checked="checked"><label>Verzeichnis durchsuchen:</label></td>
+      </tr><tr><td>
+        <input type="text" value="C:/Programme/Apache Group/Apache2/htdocs" name="searchpath" size="70"/><br/>
+        <input type="checkbox"  name="only_ws_tag" value="checked">
+        Nur Klassen mit @webservice-Tag ber&uuml;cksichtigen
+     </td>
+    </tr>
+  </table>
+  <p>
+    <input type="reset" name="action" value="Abbrechen" />
+    <input type="submit" name="action" value="Suchen">
+  </p>
+
+<p>Bisher registrierte Klassen:</p>
+<table>
+  <tr>
+    <th>Klassen-ID</th>
+    <th>Klassenname</th>
+    <th>Pfad</th>
+    <th>Policy-Status</th>
+    <th>Bemerkung</th>
+  </tr>
+    <tr>
+    <td>60</td>
+    <td>queryLecturegroup</td>
+    <td></td>
+    <td></td>
+    <td></td>
+  </tr>
+    <tr>
+    <td>61</td>
+    <td>queryLink</td>
+    <td></td>
+    <td></td>
+    <td></td>
+  </tr>
+    <tr>
+    <td>62</td>
+    <td>queryLinkgroup</td>
+    <td></td>
+    <td></td>
+    <td></td>
+  </tr>
+    <tr>
+    <td>63</td>
+    <td>queryMedia</td>
+    <td></td>
+    <td></td>
+    <td></td>
+  </tr>
+    <tr>
+    <td>64</td>
+    <td>queryMediagroup</td>
+    <td></td>
+    <td></td>
+    <td></td>
+  </tr>
+    <tr>
+    <td>65</td>
+    <td>queryNews</td>
+    <td></td>
+    <td></td>
+    <td></td>
+  </tr>
+  </table>
+</div>
+
+<p> In der unteren Hälfte des Bildschirms werden die bereits registrierten Klassen aufgeführt. <br>
+Der Pfad der Verzeichnissuche entspricht dem Standardsuchpfad aus dem Menüpunkt ‚Einstellungen’, kann hier jedoch noch einmal geändert werden.<br>
+Die Suche nach Anwendungen kann auf jene begrenzt werden, die das @webservice-Tag tragen und damit explizit für die Verwendung als Web Service vorgesehen wurden.<br>
+Nachdem Sie den Suchpfad oder die Datei angegeben haben, klicken Sie auf ‚Suchen’.<br>
+Sie sehen nun eine Auflistung der gefundenen Web Service Klassen.  </p>
+
+<div class="screen">
+<p>Folgende Klassen wurden gefunden:</p>
+<table>
+  <tr>
+  	<th></th>
+    <th>Klassenname</th>
+    <th>Pfad</th>
+    <th>Bemerkung</th>
+  </tr>
+    <tr>
+  	<td><input type="checkbox" name="class[]" value="Lecture" /></td>
+    <td>Lecture</td>
+    <td>d:\php\TeleTask\class.Lecture.php</td>
+    <td></td>
+  </tr>
+    <tr>
+  	<td><input type="checkbox" name="class[]" value="queryLecture" /></td>
+    <td>queryLecture</td>
+    <td>d:\php\TeleTask\queryLecture.php</td>
+    <td></td>
+  </tr>
+    <tr>
+  	<td><input type="checkbox" name="class[]" value="Lectures" /></td>
+    <td>Lectures</td>
+    <td>d:\php\TeleTask\class.modul.php</td>
+    <td></td>
+  </tr>
+    <tr>
+  	<td><input type="checkbox" name="class[]" value="News" /></td>
+    <td>News</td>
+    <td>d:\php\TeleTask\class.News.php</td>
+    <td></td>
+  </tr>
+    <tr>
+  	<td><input type="checkbox" name="class[]" value="queryLanguage" /></td>
+    <td>queryLanguage</td>
+    <td>d:\php\TeleTask\queryLanguage.php</td>
+    <td></td>
+  </tr>
+    <tr>
+  	<td><input type="checkbox" name="class[]" value="queryLecturegroup" /></td>
+    <td>queryLecturegroup</td>
+    <td>d:\php\TeleTask\queryLecturegroup.php</td>
+    <td></td>
+  </tr>
+    <tr>
+  	<td><input type="checkbox" name="class[]" value="queryLink" /></td>
+    <td>queryLink</td>
+    <td>d:\php\TeleTask\queryLink.php</td>
+    <td></td>
+  </tr>
+    <tr>
+  	<td><input type="checkbox" name="class[]" value="queryLinkgroup" /></td>
+    <td>queryLinkgroup</td>
+    <td>d:\php\TeleTask\queryLinkgroup.php</td>
+    <td></td>
+  </tr>
+    <tr>
+  	<td><input type="checkbox" name="class[]" value="queryMedia" /></td>
+    <td>queryMedia</td>
+    <td>d:\php\TeleTask\queryMedia.php</td>
+    <td></td>
+  </tr>
+    <tr>
+  	<td><input type="checkbox" name="class[]" value="queryMediagroup" /></td>
+    <td>queryMediagroup</td>
+    <td>d:\php\TeleTask\queryMediagroup.php</td>
+    <td></td>
+  </tr>
+    <tr>
+  	<td><input type="checkbox" name="class[]" value="queryNews" /></td>
+    <td>queryNews</td>
+    <td>d:\php\TeleTask\queryNews.php</td>
+    <td></td>
+  </tr>
+    <tr>
+  	<td><input type="checkbox" name="class[]" value="queryPeople" /></td>
+    <td>queryPeople</td>
+    <td>d:\php\TeleTask\queryPeople.php</td>
+    <td></td>
+  </tr>
+    <tr>
+  	<td><input type="checkbox" name="class[]" value="querySeries" /></td>
+    <td>querySeries</td>
+    <td>d:\php\TeleTask\querySeries.php</td>
+    <td></td>
+  </tr>
+    <tr>
+  	<td><input type="checkbox" name="class[]" value="queryTopic" /></td>
+    <td>queryTopic</td>
+    <td>d:\php\TeleTask\queryTopic.php</td>
+    <td></td>
+  </tr>
+    <tr>
+  	<td><input type="checkbox" name="class[]" value="queryLectureSoapAdapter" /></td>
+    <td>queryLectureSoapAdapter</td>
+    <td>d:\php\TeleTask\queryLecture.php</td>
+    <td></td>
+  </tr>
+  </table>
+<p>
+  <input type="reset" name="action" value="Abbrechen" />
+  <input type="submit" name="action" value="Registrieren">
+</p>
+
+</div>
+
+<p>Die aufgelisteten Klassen werden mit ihrem Pfad und gegebenfalls Bemerkungen versehen. Wählen Sie die Klassen aus, die Sie als Web Service freigeben wollen und klicken Sie auf 'Registrieren'. 
+</p>
+
+<p>Die gewünschten Klassen wurden registriert, klicken Sie nun den Menüpunkt 'Web Service Klassen konfigurieren'.
+
+<h2>Web Service Klassen konfigurieren</h2>
+</div>
+
+<div class="screen">
+<p>W&auml;hlen Sie eine Klasse aus, um sich deren Methoden anzeigen zu lassen.</p>
+    <input type="hidden" name="view" value="methods" />
+    <p>Registrierte Klassen:</p><br />
+    <label><input type="radio" name="class_id" value="60" /><b>1</b> - queryLecturegroup</label><br/>
+<label><input type="radio" name="class_id" value="61" /><b>2</b> - queryLink</label><br/>
+<label><input type="radio" name="class_id" value="62" /><b>3</b> - queryLinkgroup</label><br/>
+<label><input type="radio" name="class_id" value="63" /><b>4</b> - queryMedia</label><br/>
+<label><input type="radio" name="class_id" value="64" /><b>5</b> - queryMediagroup</label><br/>
+<label><input type="radio" name="class_id" value="65" /><b>6</b> - queryNews</label><br/>
+    <br/>
+    <input type="submit" name="select_class" value="Zur&uuml;ck" />
+    <input type="submit" name="select_class" value="Weiter" />
+</div>
+
+<p>Hier werden alle Klassen angezeigt, die Sie eben oder zu einem früheren Zeitpunkt 
+  registriert haben.<br>
+   Wählen Sie die Klasse aus, die Sie konfigurieren wollen und klicken Sie anschliessend auf 'Weiter'.</p>
+
+<div class="screen">
+  <p>W&auml;hlen sie die Methoden aus, die mittels WebService ver&ouml;ffentlicht werden sollen.</p><br/>
+    <p>Methoden:</p><br />
+  <label><input type="checkbox" name="method_ids[]" value="283" checked="checked" /><a href="#"><b>1</b> - getAllLinks (zurzeit ver&ouml;ffentlicht)</a></label>
+    <br />
+<label><input type="checkbox" name="method_ids[]" value="284" checked="checked" /><a href="#"><b>2</b> - updateOrAddLink (zurzeit ver&ouml;ffentlicht)</a></label>
+<br />
+<label><input type="checkbox" name="method_ids[]" value="285" checked="checked" /><a href="#"><b>3</b> - getIdAndNameOfAllLinks (zurzeit ver&ouml;ffentlicht)</a></label>
+<br />
+<label><input type="checkbox" name="method_ids[]" value="286" checked="checked" /><a href="#"><b>4</b> - getLinksByLinkgroup (zurzeit ver&ouml;ffentlicht)</a></label>
+<br />
+    <br />
+    <input type="submit" name="methodView_action" value="back" />
+    <input type="submit" name="methodView_action" value="Speichern" />
+    <input type="submit" name="methodView_action" value="Web Service erstellen" />
+</div>
+
+<p> Nach Auswahl der zu veröffentlichen Klasse, erhalten Sie eine Übersicht über alle in der Klasse vorkommenden und mit dem @webmethod Tag versehenden Methoden.<br> Sie können wiederum jene Methoden auswählen, die veröffentlich werden sollen.</p>
+<p>Wählen Sie 'Speichern' werden Informationen über die Klasse und ihre Methoden in einer Datenbank abgelegt. Dabei wird vermerkt, ob die Methode veröffentlich werden soll. Sie können für jede Methode einen individuellen Kommentar in der Datenbank speichern, der später in die WSDL-Datei eingebracht wird. Der Source-Kommentar wird ebenfalls gespeichert.</p>
+
+<div class="screen">
+    <input type="hidden" name="view" value="method_detail" />
+    <input type="hidden" name="method_id" value="285" />
+    <input type="hidden" name="class_id" value="61" />
+    <p>Methode <b>getIdAndNameOfAllLinks</b> der Klasse <b>queryLink</b>:</p><br />
+    <p>
+    Source-Code-Kommentar:
+    <br/>
+    <textarea id="form_method_details" name="source_code_comment" readonly="true" style="width:100%; height:100px;">/**
+  * Returns an array of strings, index represents link id, value the name
+  *
+  * @webmethod
+  *
+  * @return String[]
+  */</textarea>
+    </p>
+    <p>
+    Eigener Kommentar (wird in WSDL-Datei &uuml;bernommen):
+    <br/>
+    <textarea id="form_method_details" name="user_comment" style="width:100%; height:100px;"></textarea>
+    <br/>
+
+    <input type="submit" name="methodDetailsView_action" value="Zur&uuml;ck" />
+    <input type="submit" name="methodDetailsView_action" value="Speichern" />
+</div>
+
+<p> Klicken Sie zu guter Letzt auf 'Web Service erstellen'. Der WSDL-Generator wird nun für die ausgewählten Klassen und Methoden die WSDL-Datei erzeugen und den Web Service erstellen. </p><br><br></body>
+</html>

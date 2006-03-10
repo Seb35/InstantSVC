@@ -1,0 +1,35 @@
+code {
+	white-space:pre;
+	display:block;
+	border:1px solid #cccccc;
+	padding:5px;
+	font-size:9.5pt;
+}
+code.completed {
+	display:none;
+}
+code.inline {
+	display:inline;
+	white-space:nowrap;
+	border:0;
+	padding:0;
+}
+html {
+	font-family:Verdana, Arial, Helvetica, sans-serif;
+	font-size:10pt;
+}
+
+body {
+	margin:auto;
+	width:650px;	
+}
+
+h2:before {
+	counter-increment:head2;
+	content:counter(head2) ". ";
+}
+#style_link {
+	float:right;
+}
+li {padding-bottom:6pt;}
+.screen {border: 1px solid #ccc; background-color:#f0f0f0; padding:10px;}

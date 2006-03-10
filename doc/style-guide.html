@@ -1,0 +1,208 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<title>&lt;FRAMEWORK_NAME&gt; - Style Guide - Richtlinen zur Quellcode-Gestaltung</title>
+<meta name="author" content="Stefan Marr" />
+<link id="style" href="style.css" rel="stylesheet" rev="stylesheet" />
+<script>
+var phpOnly = false;
+function switchCSS() {
+  if (phpOnly) {
+    document.getElementById('style').href = "style.css";
+    document.getElementById('style_link').innerHTML = "nur Quellcode";
+  }
+  else {
+    document.getElementById('style').href = "code.only.css";
+    document.getElementById('style_link').innerHTML = "mit Hinweisen";
+  }
+  phpOnly = !phpOnly;
+}
+</script>
+</head>
+
+<body>
+<h1>Style Guide</h1>
+<a id="style_link" href="javascript:switchCSS();">nur Quellcode</a>
+<h3>Richtlinien zur Quellcode-Gestaltung</h3>
+<p>Diese Richtlinien dienen als Grundlage zur automatisierten Erstellung von Web Services aus PHP-Klassen. Dar&uuml;ber hinaus ist ein einheitliches Code-Bild nat&uuml;rlich auch anzustreben, um die Wartbarkeit und Lesbarkeit der Quelltexte im gesamten Projekt zu erh&ouml;hen.</p>
+<h2>Allgemeines</h2>
+<p>Die L&auml;nge einer Zeile sollte nicht mehr als 77 Zeichen betragen.<br />
+Einr&uuml;ckungen: 2 Leerzeichen pro Ebene, keine Tabs</p>
+<p>Als Sprache f&uuml;r Kommentare und Bezeichner ist Englisch zu verwenden.<br />
+Bezeichner sind weiterhin in der <a target="_blank" href="http://en.wikipedia.org/wiki/CamelCase">CamelCase</a> Schreibweise zu notieren wobei Unterstriche (_) zu vermeiden sind.</p>
+<h2>Dateikopf</h2>
+<code class="completed">&lt;?php</code>
+<code>//***************************************************************************
+//***************************************************************************
+//**                                                                       **
+//** ClassName - Kurze Beschreibung dieser Klasse                          **
+//**                                                                       **
+//** Project: Name des Projekts                                            **
+//**                                                                       **
+//** @package    Paketname                                                 **
+//** @author     Max Mustermann &lt;mail@example.org&gt;                         **
+//** @copyright  2005 ....                                                 **
+//** @license    URL zur Lizenz   Name der Lizenz                          **
+//** @lastchange YYYY-MM-DD - Details zur &Auml;nderung                         **
+//**                                                                       **
+//***************************************************************************
+//***************************************************************************</code>
+<code class="completed"> </code>
+<h2>PHPDoc Kommentare</h2>
+<p>Ein Dokumentationskommentar wird in HTML geschrieben und geh&ouml;rt vor Klassen, Attribute, Konstruktoren und Methoden. Er besteht aus zwei Teilen, einer Beschreibung und darauf folgenden PHPDoc-Tags, wie zum Beispiel @param, @return und @var. </p>
+
+<p>Die erste Zeile beginnt dabei mit /** um den Anfang zu kennzeichnen. <br />
+  Der erste Satz sollte eine kurze Zusammenfassung sein, darauf kann durch eine Leerzeile getrennt eine ausf&uuml;hrlichere Beschreibung folgen. Wieder durch eine Leerzeile getrennt, k&ouml;nnen anschlie&szlig;end weitere Angaben mit Hilfe der PHPDoc-Tags hinzugef&uuml;gt werden. Die letzte Zeile endet mit einem einfachen */ um den Kommentarblock zu schlie&szlig;en.</p>
+<h2>PHPDoc Tags</h2>
+<ul>
+  <li><strong>@author</strong> authorname &lt;authoremail@example.com&gt;<br />
+  Autor des mit diesem Tag versehenden Elements </li>
+  <li><strong>@copyright</strong> info string <br />
+    zur Angabe von Copyright-Hinweisen</li>
+  <li><strong>@deprecated</strong> [info string]<br />
+    im optionalen info string k&ouml;nnen Angaben bez&uuml;glich Version und Gr&uuml;nden hinterlegt werden
+    <br />
+  </li>
+  <li><strong>@global</strong> datatype $globalvariablename description<br />
+    zum Dokumentieren von benutzten globalen Variablen</li>
+  <li><strong>@internal</strong> info string<br />
+    f&uuml;r Informationen die nur zum internen Gebrauch bestimmt sind</li>
+  <li><strong>@license</strong> URL name of licence<br />
+    zur Angabe der Lizenz unter der dieses Code-Fragment 
+    ver&ouml;ffentlich wurde</li>
+  <li><strong>@package</strong> name<br />
+    zum Dokumentieren von strukturellen Zusammenh&auml;ngen</li>
+  <li><strong>@param</strong> datatype $paramname description<br />
+  datatype kann einer der folgenden PHP-Typen sein
+    <ul>
+      <li>boolean</li>
+      <li>integer</li>
+      <li>double</li>
+      <li>string</li>
+      <li>beliebige Klasse </li>
+    </ul>
+    Au&szlig;erdem ist es m&ouml;glich Arrays von den PHP-Typen anzugeben. Dies 
+    geschieht &uuml;ber ein Anh&auml;ngen von eckigen Klammern. Bsp.: integer[], 
+    string[][]<br />
+  Assoziative Arrays werden wie folgt notiert: array&lt;datatype,datatype&gt; wobei diese Notation nur verwendet werden sollte, wenn die Schl&uuml;ssel wirklich relevant sind, andernfalls ist die Notation mit eckigen Klammern vorzuziehen. Bsp.: array&lt;integer,string&gt; oder array&lt;string,MyClass&gt; </li>
+  <li><strong>@return</strong> datatype description<br />
+  zur Angabe des R&uuml;ckgabewertes einer Methode oder Funktion </li>
+  <li><strong>@see</strong> element<br />
+    wird genutzt, um auf andere Elemente zu verweisen, z.B. Funktionen, Dateien, 
+    Variable oder Klassen</li>
+  <li><strong>@since</strong> info string<br />
+    gibt an ab welcher Version dieses Element vorhanden ist</li>
+  <li><strong>@todo</strong><br /> 
+    zur Dokumentation von beabsichtigten &Auml;nderungen</li>
+  <li><strong>@uses</strong> element<br />
+    zur Dokumentation von Nutzungs-Beziehungen, z.B. von Konstanten oder Funktionen</li>
+  <li><strong>@var</strong> datatype description<br />
+    zur Dokumentation des Typs eines Attributs</li>
+  <li><strong>@version</strong><br />
+  zur Dokumentation der Version des betreffenden Elements</li>
+  <li><strong>@webmethod</strong>/<strong>@restmethod</strong> und <strong>@webservice</strong><br />
+    zur Kennzeichnung von Methoden, welche geeignet sind als Web Service angeboten 
+    zu werden, siehe <a href="#webservices">Abschnitt Web Services</a> </li>
+  <li><strong>@webserializable</strong><br />
+  zur Kennzeichnung von Klassen, welche mittels eines Web Service &uuml;bertragen werden sollen</li>
+</ul>
+<h2>Klassen</h2>
+<p>Jeder Klasse wird eine abtrennende Zeile mit dem Klassennamen, sowie einleitende Dokumentation im PHPDoc Stil vorangestellt.</p>
+<code>//***** ClassName ***********************************************************
+/**
+* Kurze Beschreibung dieser Klasse
+*
+* @package    Paketname
+* @author     Max Mustermann &lt;mail@example.org&gt;
+* @copyright  2005 ....
+* @license    URL zur Lizenz   Name der Lizenz
+*/
+</code>
+<code class="completed">class MyClass extends BaseClass {
+
+</code>
+
+<h2>Attribute</h2>
+<p>Die Attribute, die in einer Klasse definiert werden, sind jeweils einzeln mit 
+  einem PHPDoc Kommentar zu versehen. Dabei muss mindestens der Datentyp des Attributes 
+  &uuml;ber den <strong>@var</strong>-Tag angegeben werden.</p>
+<code>  /**
+  * @var string
+  */
+  protected $name;
+
+  /**
+  * @var MyObject[]
+  */
+  private $objects = null;
+</code>
+<code class="completed"> </code>
+<h2>Methoden und Funktionen</h2>
+<p>Methoden und Funktionen m&uuml;ssen mit einer Linie sowie einem einleitenden PHPDoc Kommentar versehen werden.</p>
+<p>Dabei sind <strong>@param</strong> und <strong>@return</strong> Pflichtangaben, 
+  um f&uuml;r die Generierung der Web Services-Beschreibung Informationen &uuml;ber 
+  die in der Signatur verwendeten Datentypen zu bekommen.</p>
+<p>Wenn die Funktion mehr als 15 Zeilen umfasst, muss hinter der abschlie&szlig;enden Klammer der Funktion ein <code class="inline">//end of functionname</code>-Kommentar angegeben werden. </p>
+<code>  //=======================================================================
+  /**
+  * Kurze Beschreibung
+  *
+  * Mehrzeilige, detailierte Beschreibung.
+  * Hier können auch HTML-Tags zum Formatieren genutzt werden.
+  * Darüber hinaus sind Kommentare in Englisch anzugeben.
+  *
+  * @param string $a
+  * @param integer $b
+  * @param MyClass $c
+  * @return string[]
+  */
+  public function getMethod($a, $b, $c = null) { 
+    return array('a', 'aa', 'b'); 
+  }
+</code>
+<code class="completed"> </code>
+<h2>Kontrollstrukturen</h2>
+<p>Bei Kontrollstrukturen, die &uuml;ber mehr als 15 Zeilen gehen, ist nach der schlie&szlig;enden Klammer ein jeweils passender Endkommentar anzugeben, um die Lesbarkeit von langen Code-Abschnitten zu erh&ouml;hen. Wenn die Code-Abschnitte nur kurz sind, m&uuml;ssen diese abschlie&szlig;enden Kommentare nicht angegeben werden. </p>
+<code>  //=======================================================================
+  /**
+  * shows how to use brackets, whitespaces and indentations
+  */
+  public function styleExample() {
+    if ($a == $b || !($c > $d + $e)) {
+      //do something
+    } //end if
+    elseif ($f) {
+      //do something
+    } //end elseif
+    else {
+      //do something
+    } //end else
+        
+    for|foreach|while (...) {
+      //do
+    } //end for|foreach|while
+        
+    do {
+        
+    } while ($g);
+        
+    switch ($h) {
+      case ...:
+        ...;
+        break;
+      default:
+        ...;
+    } //end switch
+  } //end of styleExample</code>
+<code class="completed">} //end of class ClassName</code>
+<code class="completed">?&gt;</code>
+<h2><a name="webservices"></a>Web Services</h2>
+<p>Um Klassen und Methoden, welche als Web Service zur Verf&uuml;gung gestellt 
+  werden sollen, m&ouml;glichst einfach von allen anderen Klassen unterscheiden 
+  zu k&ouml;nnen, wurde der zus&auml;tzliche Tag <strong>@webservice</strong> 
+  eingef&uuml;hrt. Dieser dient dazu, die Klasse sp&auml;ter &uuml;ber die Reflection 
+  API als Web Service Klasse erkennen zu k&ouml;nnen. </p>
+<p>Au&szlig;er der Klasse selbst m&uuml;ssen die anzubietenden Methoden ebenfalls speziell gekennzeichnet werden. Weitere Informationen dazu und <a href="webservices.html">allgemeine Hinweise zum Erstellen von Web Services</a> sind <a href="webservices.html">hier</a> zu finden. </p>
+</body>
+</html>

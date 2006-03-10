@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+	xmlns:tns="http://tele-task.de/services/"
+	xmlns:ttm="http://tele-task.de/model/"
+	xmlns:s="http://www.w3.org/2001/XMLSchema"
+	targetNamespace="http://tele-task.de/services/"
+	xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+	<wsdl:types>
+
+<!-- Wichtig zu merken, beim genrieren der Datenmodelle muss fuer .Net wohl meist noch ein nillable="true" gesetzt werden -->
+<xs:schema xmlns:tns="http://tele-task.de/model/" xmlns:ttm="http://tele-task.de/model/"
+		   elementFormDefault="qualified" targetNamespace="http://tele-task.de/model/" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:complexType name="Item" />
+
+  <xs:complexType name="Lecture">
+    <xs:complexContent mixed="false">
+      <xs:extension base="tns:Item">
+        <xs:sequence>
+          <xs:element minOccurs="1" maxOccurs="1" name="id" type="xs:int" />
+          <xs:element minOccurs="0" maxOccurs="1" name="name" type="xs:string" />
+          <xs:element minOccurs="0" maxOccurs="1" name="duration" type="xs:int" />
+          <xs:element minOccurs="0" maxOccurs="1" name="namehtml" type="xs:string" />
+          <xs:element minOccurs="0" maxOccurs="1" name="streamurldsl" type="xs:string" />
+          <xs:element minOccurs="0" maxOccurs="1" name="abstract" type="xs:string" />
+          <xs:element minOccurs="0" maxOccurs="1" name="languagesId" type="xs:int" nillable="true" />
+
+          <xs:element minOccurs="0" maxOccurs="1" name="logo" type="xs:int" nillable="true" />
+          <xs:element minOccurs="0" maxOccurs="1" name="time" type="xs:int" nillable="true" />
+          <xs:element minOccurs="0" maxOccurs="1" name="sortdate" type="xs:string" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+
+  <xs:complexType name="ArrayOfLecture">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="Lecture" nillable="true" type="tns:Lecture" />
+    </xs:sequence>
+  </xs:complexType>
+
+</xs:schema>
+
+
+<s:schema elementFormDefault="qualified"
+			targetNamespace="http://tele-task.de/services/"
+			xmlns:ttm="http://tele-task.de/model/">
+			<s:element name="GetAllLectures">
+				<s:complexType />
+			</s:element>
+			<s:element name="GetAllLecturesResponse">
+				<s:complexType>
+					<s:sequence>
+						<s:element minOccurs="0" maxOccurs="1"
+							name="GetAllLecturesResult" type="ttm:ArrayOfLecture" />
+					</s:sequence>
+				</s:complexType>
+			</s:element>
+			<s:element name="GetLecture">
+				<s:complexType>
+					<s:sequence>
+						<s:element minOccurs="1" maxOccurs="1"
+							name="id" type="s:int" />
+					</s:sequence>
+				</s:complexType>
+			</s:element>
+			<s:complexType name="Lecture">
+				<s:sequence>
+					<s:element minOccurs="1" maxOccurs="1"
+						name="Lecture" type="ttm:Lecture" />
+				</s:sequence>
+			</s:complexType>
+			<s:element name="GetLectureResponse">
+				<s:complexType>
+					<s:sequence>
+						<s:element minOccurs="1" maxOccurs="1"
+							name="Lecture" type="ttm:Lecture" />
+					</s:sequence>
+				</s:complexType>
+			</s:element>
+			<s:element name="GetLecturesBySeries">
+				<s:complexType>
+					<s:sequence>
+						<s:element minOccurs="1" maxOccurs="1"
+							name="seriesName" type="s:string" />
+					</s:sequence>
+				</s:complexType>
+			</s:element>
+			<s:element name="GetLecturesBySeriesResponse">
+				<s:complexType>
+					<s:sequence>
+						<s:element minOccurs="0" maxOccurs="1"
+							name="GetLecturesBySeriesResult" type="ttm:ArrayOfLecture" />
+					</s:sequence>
+				</s:complexType>
+			</s:element>
+		</s:schema>
+	</wsdl:types>
+	<wsdl:message name="GetAllLecturesSoapIn">
+		<wsdl:part name="parameters" element="tns:GetAllLectures" />
+	</wsdl:message>
+	<wsdl:message name="GetAllLecturesSoapOut">
+		<wsdl:part name="parameters" element="tns:GetAllLecturesResponse" />
+	</wsdl:message>
+	<wsdl:message name="GetLectureSoapIn">
+		<wsdl:part name="parameters" element="tns:GetLecture" />
+	</wsdl:message>
+	<wsdl:message name="GetLectureSoapOut">
+		<wsdl:part name="parameters" element="tns:GetLectureResponse" />
+	</wsdl:message>
+	<wsdl:message name="GetLecturesBySeriesSoapIn">
+		<wsdl:part name="parameters" element="tns:GetLecturesBySeries" />
+	</wsdl:message>
+	<wsdl:message name="GetLecturesBySeriesSoapOut">
+		<wsdl:part name="parameters" element="tns:GetLecturesBySeriesResponse" />
+	</wsdl:message>
+	<wsdl:portType name="TeleTaskServiceSoap">
+		<wsdl:operation name="GetAllLectures">
+			<wsdl:input message="tns:GetAllLecturesSoapIn" />
+			<wsdl:output message="tns:GetAllLecturesSoapOut" />
+		</wsdl:operation>
+		<wsdl:operation name="GetLecture">
+			<wsdl:input message="tns:GetLectureSoapIn" />
+			<wsdl:output message="tns:GetLectureSoapOut" />
+		</wsdl:operation>
+		<wsdl:operation name="GetLecturesBySeries">
+			<wsdl:input message="tns:GetLecturesBySeriesSoapIn" />
+			<wsdl:output message="tns:GetLecturesBySeriesSoapOut" />
+		</wsdl:operation>
+	</wsdl:portType>
+	<wsdl:binding name="TeleTaskServiceSoap" type="tns:TeleTaskServiceSoap">
+		<soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+		<wsdl:operation name="GetAllLectures">
+			<soap:operation soapAction="http://tele-task.de/services/GetAllLectures"
+				style="document" />
+			<wsdl:input>
+				<soap:body use="literal" />
+			</wsdl:input>
+			<wsdl:output>
+				<soap:body use="literal" />
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="GetLecture">
+			<soap:operation soapAction="http://tele-task.de/services/GetLecture"
+				style="document" />
+			<wsdl:input>
+				<soap:body use="literal" />
+			</wsdl:input>
+			<wsdl:output>
+				<soap:body use="literal" />
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="GetLecturesBySeries">
+			<soap:operation
+				soapAction="http://tele-task.de/services/GetLecturesBySeries" style="document" />
+			<wsdl:input>
+				<soap:body use="literal" />
+			</wsdl:input>
+			<wsdl:output>
+				<soap:body use="literal" />
+			</wsdl:output>
+		</wsdl:operation>
+	</wsdl:binding>
+
+	<wsdl:service name="TeleTaskService">
+		<wsdl:port name="TeleTaskServiceSoap"
+			binding="tns:TeleTaskServiceSoap">
+			<soap:address
+				location="http://localhost:8080/webp/repo/source/soap.php" />
+		</wsdl:port>
+	</wsdl:service>
+</wsdl:definitions>
