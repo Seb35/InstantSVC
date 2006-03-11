@@ -118,18 +118,37 @@ class DocumentWrappedAdapterGenerator {
         $gen.= ' */' . "\n";
         $gen.= 'class ' . $this->adapterClassName . ' {' . "\n";
         $gen.= '' . "\n";
+        $gen.= '    /**' . "\n";
+        $gen.= '     * @var '  . $this->className . "\n";
+        $gen.= '     */' . "\n";
         $gen.= '    private $target;' . "\n";
         $gen.= '' . "\n";
-        $gen.= '    public function __construct() {' . "\n";
-        $gen.= '        $this->target = new ' . $this->className . '();' . "\n";
+        $gen.= '    /**' . "\n";
+        $gen.= '     * @param '  . $this->className . ' $target' . "\n";
+        $gen.= '     */' . "\n";
+        $gen.= '    public function __construct($target = null) {' . "\n";
+        $gen.= '        if (empty($target)) {' . "\n";
+        $gen.= '            $this->target = new ' . $this->className . '();' . "\n";
+        $gen.= '        } else {' . "\n";
+        $gen.= '            $this->target = $target;' . "\n";
+        $gen.= '        }' . "\n";
         $gen.= '    }' . "\n";
         $gen.= '' . "\n";
         foreach ($methods as $method) {
             if (!$method->isConstructor() and !$method->isDestructor()) {
                 $methodName = $method->getName();
                 $params = $method->getParameters();
+                $returnType = $method->getReturnType();
 
                 //echo $methodName . "<br>\n";
+                $gen.= '    /**' . "\n";
+                $gen.= '     * @param object $args' . "\n";
+                if (!empty($returnType)) {
+                    $gen.= '     * @return array<string,' . $returnType->toString() . '>' . "\n";
+                } else {
+                    $gen.= '     * @return array<string,mixed>' . "\n";
+                }
+                $gen.= '     */' . "\n";
                 $gen.= '    public function ' . $methodName . '(';
                 if (!empty($params)) {
                     $gen.= '$args';
@@ -140,7 +159,7 @@ class DocumentWrappedAdapterGenerator {
                 $returnElementName = $methodName . 'Result';
                 //$returnElementName = 'return';
 
-                $gen.= '        return array("' . $returnElementName . '" => $this->target->' . $methodName . '(';
+                $gen.= '        return array(\'' . $returnElementName . '\' => $this->target->' . $methodName . '(';
                 if (!empty($params)) {
                     foreach ($params as $param) {
                         $gen.= '$args->' . $param->getName() . ', ';
