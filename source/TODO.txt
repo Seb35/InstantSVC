@@ -35,6 +35,8 @@ DONE - constants as class constants
      - verify doc-lit and rpc-lit output with WS-I Basic Profile 1.1
        Possible Flaws:
        R2206 rpc-lit
+     - use ExdReflectionMethod::isMagic() in the Document/Wrapped-Adapter-Generator
+     - use Web Service Annotations directly to avoid the need for a database
 V2   - XML Schema in external .xsd-file
 V2   - XML Schema validation against http://schemas.xmlsoap.org/wsdl/soap/2003-02-11.xsd
 REM    (a better validation engine is needed. The DOM extension has problems with the xsd)
@@ -42,6 +44,8 @@ V2   - generator tool eventuell auch als cmd-line tool anbieten?!
 V2   - XML Beautifier
 V3   - redesign (driver architecture)
 V3   - WSDL 2.0 support
+V3   - Adapters or Extended SOAPClient for doument wrapped clients
+V3   - SOAPServer wich generates WSDL if(!file_exists($wsdl_file)) [may be started with new ExtSOAPServer($wsdl_file,  array('soap_binding_style' => WSDLGenerator::DOCUMENT_WRAPPED);]
 
 
 webservices identifizieren
