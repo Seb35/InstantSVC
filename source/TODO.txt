@@ -7,6 +7,10 @@ allgemein
 		- Integration von Stats/Docu-Flaws ins Admin-Tool
 		- Tutorial zu Axis und .Net-WSDL.exe
 
+phpSec
+		- type Attribut auswerten zur unterscheidung von text oder digest
+
+
 Admin-Tool (TODOs aus Martins Email)
 		- Menüpunkt „Web Service erstellen“ ist noch nicht implementiert.
 		  evtl. die Standard-Einstellungen aus Settings beachten

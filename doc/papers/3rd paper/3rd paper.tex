@@ -90,7 +90,7 @@
 
 
 % correct bad hyphenation here
-\hyphenation{platt-form-über-greifende aspekt-ori-en-tie-rte aus-zu-tau-schen}
+\hyphenation{platt-form-über-greifende aspekt-ori-en-tie-rte aus-zu-tau-schen Sicher-heits-aspekten}
 
 
 \begin{document}
@@ -316,7 +316,7 @@ Elemente in den SOAP-Nachrichten enthalten sein müssen um sie zu nutzen. Die
 WSDL-Beschreibung ist dann eine Art Vertrag zwischen den Kommunikationspartnern,
 an den sich beide halten müssen um erfolgreich Nachrichten auszutauschen. Der
 von uns entwickelte WSDL-Generator erzeugt WSDL-Dokumente gemäß dem WSDL 1.1
-Standard\cite{WSDL} und unterstützt dabei alle
+Standard\cite{WSDL}.
 
 Bereits bei der Konzeption eines Web Services gibt es zwei 
 grundlegende Entscheidungen zu treffen: die Art des Methodenaufrufs 
@@ -353,11 +353,11 @@ spezifizierte SOAP-Encoding. Diese schreibt vor, wie man alle Typen der
 jeweiligen Programmiersprache, auf vom Standard definierte Typen von
 XML-Elementen abbildet. Wenn die Nachricht dann also versendet werden soll,
 müssen Client und Web Service dafür sorgen, diese Abbildungen zu nutzen. Die
-zweite Kodierungsart ist die "`Literal"'-Variante. Hierbei wird für die
-Nachrichten keine spezielle Kodierung verwendet sondern reines XML mit den in
-XML Schema definierten Datentypen. Zur Beschreibung der WSDL-Parameter wird dann
-XML Schema benutzt, noch alle komplexeren Datentypen explizit durch eigene
-Schemas beschrieben werden müssen.
+zweite Kodierungsart ist die "`Literal"'-Variante. 
+Hierbei wird für die
+Nachrichten keine spezielle Kodierung verwendet sondern reines XML, welches über 
+XML Schema zu definieren ist. Der Nachteil hierbei ist, dass alle Datenkonstrukte
+explizit durch eigene Schemas beschrieben werden müssen.
 
 Diese zwei mal zwei Möglichkeiten lassen sich nun kombinieren und 
 so ergeben sich theoretisch vier Varianten, einen Web Service zu erstellen:
@@ -404,13 +404,13 @@ deren Funktionalität angeboten werden soll, einlesen lassen oder per
 dieser Funktionalität nutzen. Es ist jedoch nicht möglich, diese beiden 
 Methoden der Erstellung zu mischen, da sie sich gegenseitig ausschließen.
 Ab diesem Punkt wird die Extended Reflection API aktiv. Sie liefert uns
-nämlich nicht nur die Methodennamen, sondern wir erhalten Liste von
+nämlich nicht nur die Methodennamen, sondern wir erhalten Listen von
 ExtReflectionMethods, die wir direkt nach ihren Parametern und
 Rückgabewerten fragen können. Dies ist einer der Hauptvorteile des 
-WSDLGenerators, da er nicht selbst die Klassen parsen muss um die 
+\texttt{WSDLGenerators}, da er nicht selbst die Klassen parsen muss, um die 
 benötigten Informationen zu erhalten.
 
-Jede gefundene so gefundenen Methoden bzw. jede hinzugefügte Funktion muss in
+Jede so gefundenen Methoden bzw. jede hinzugefügte Funktion muss in
 die WSDL-Datei abgebildet werden. Sollten bestimmte Methoden nicht
 veröffentlicht werden, so kann das Policy-PlugIn, das in Abschnitt
 \ref{Policy-PlugIn} vorgestellt wird, genutzt werden. Es erhält als Eingabe die
@@ -446,7 +446,7 @@ Message-Teil gegeben, bei dem für jede Methode ein Element für die Anfrage und
 ein Element für die entsprechende Antwort vorhanden ist. Darauf folgt die
 PortType-Abteilung, in der die Methoden auf Operationen abgebildet werden.
 Anschließend wird die Kombination aus Aufruf und Kodierung explizit angegeben in
-der Binding-Sektion und abschließend kommt noch das Service-Element, bei dem dem
+der Binding-Sektion und abschließend kommt noch das Service-Element, bei dem
 der Service an einen Port gebunden wird.
 
 Auf die erzeugte Struktur kann der Anwender dann mit den Methoden 
@@ -461,7 +461,7 @@ zu starten um den Web Service sofort zu testen.
 
 \section{Document/Wrapped-Adapter-Generator} \label{DWAG} Um entfernte
 Funktionsaufrufe über Web Services mit einer Document/Literal SOAP-Bindung
-realisieren möchte, wird typischerweise ein Mechanismus verwendet, der auch als
+realisieren zu können, wird typischerweise ein Mechanismus verwendet, der auch als
 Document/Wrapped Bindung bezeichnet wird. Dabei sind in den SOAP-Nachrichten die
 serialisierten Argumente und Rückgabewerte einer Operation in einem zusätzlichen
 XML-Element verpackt, so dass im Body der SOAP-Nachricht immer nur ein einzelnes
@@ -469,8 +469,9 @@ XML-Element mit einem oder mehreren Kind-Elementen vorkommt. Die
 SOAP-Implementierung von PHP5 wurde entwickelt um alle Arten der SOAP-Bindung zu
 unterstützen. Diese generische Auslegung führt allerdings dazu, dass das
 Wrapping und Unwrapping bei Document/Wrapped Web Services nicht automatisch vom
-SOAP-Server vorgenommen wird sondern der gerufenen Methode oder Funktion
-überlassen. Auf der einen Seite bietet das Anwendungen einige Freiheiten in der
+SOAP-Server vorgenommen wird, sondern durch die gerufenen Methode oder Funktion
+ausgeführt werden muss. 
+Auf der einen Seite bietet dieses Vorgehen Anwendungen einige Freiheiten in der
 Verwendung von SOAP. Andererseits erfordert es, die Signaturen der Methoden oder
 Funktionen anzupassen um eine Document/Wrapped Bindung zu nutzen. Eine solche
 Anpassung verhindert allerdings die parallele Nutzung als normale Methode und
@@ -603,7 +604,7 @@ Für eine Umsetzung von Sicherheitsaspekten bei der Verwendung von Web Services
 müssen vor Beginn der Arbeiten einige Designziele aufgestellt werden, die es
 einzuhalten gilt. Diese beeinflussen die Lösungsfindung entscheidend. Hierzu
 zählt vor allem, dass die Implementierung bzw. die Benutzung von
-Sicherheitsaspekten nicht zu Lasten des Anwendungentwicklers gehen darf. Die
+Sicherheitsaspekten nicht zu Lasten des Anwendungsentwicklers gehen darf. Die
 Implementierung eines Web Services muss vollständig unabhängig von möglichen
 Sicherheitstechniken sein. Dies liegt darin begründet, dass eine sichere
 Implementierung morgen schon als sehr unsicher gelten kann. Aus diesem Grund
@@ -702,7 +703,7 @@ Erzeugungszeitpunkt(\texttt{<wsu:Created>}) mit.
 Bei den Tags werden nun zwei Namespaces sichtbar, dabei handelt es sich einmal
 um
 wsse\footnote{http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-
-1.0.xsd} und zum Anderem um
+1.0.xsd} und zum anderem um
 wsu\footnote{http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-
 1.0.xsd}.
 
@@ -912,10 +913,9 @@ Die Tabelle besitzt zwei Spalten mit den Attributen für Nonce (Primary Key) und
 dem Created Zeitstempel. Mittels derer lassen sich doppelte und zu alte Anfragen
 filtern.
 
-Ein weiterer wichtiger Punkt ist, dass das type Feld im Password Tag nicht
-erkannt wird. Um dieses Problem, welche Version der Anfrage (PasswordText oder
-PasswordDigest), zu lösen, wird auf die gesetzten Tags geachtet. Das heißt zum
-Beispiel, dass beim PasswordText die optionalen Tags nicht gesetzt sein dürfen.
+Ein weiterer wichtiger Punkt ist, dass das \texttt{type}-Feld im Password Tag durch den
+PHP Soap Client nicht gesetzt werden kann. Um nun zu erkennen, ob \texttt{PasswordText} oder
+\texttt{PasswordDigest} verwendet wurde, wird in diesem Fall auf die gesetzten Tags geachtet.
 
 \emph{Ablauf}
 
@@ -1018,7 +1018,7 @@ demzufolge nichts entgegen.
 Etwas unschön ist dabei, dass der \texttt{ExtendedSoapServer} nicht direkt von
 dem PHP eigenen SoapServer abgeleitet werden konnte. Es ist daher eher eine
 Frage der Zeit, bis diese Lösung etwas umstrukturiert werden muss. Dies wird
-aber wie schon zuvor erwähnt mit wenigen Handgriffen zu machen sein.
+aber, wie schon zuvor erwähnt, mit wenigen Handgriffen zu machen sein.
 
 Es kann auf Grund dessen im Gesamten eine positive Bilanz gezogen werden, vor
 allem dadurch, dass die Interoperabilität gewährleistet ist. (siehe
@@ -1071,7 +1071,7 @@ abhängig von deren Implementierung.
 
 Im Großen und Ganzen ist die Implementierung des Clients recht unspektakulär,
 jedoch werden einige nicht dokumentierte Funktionen in PHP benutzt, was die
-Entwicklung weitaus schwieriger gestaltet hat, als man anfänglich denken würde.
+Entwicklung weitaus schwieriger gestaltete, als anfänglich gedacht wurde.
 
 Dieser Client kann somit durchaus als Vorlage für eigene Security Vorstellungen
 dienen. Eine Umstellung auf PasswordText wäre relativ problemlos möglich, um
@@ -1123,7 +1123,7 @@ und soll hier kurz aufgegriffen werden.
 Der Hauptgedanke bei RESTful Web Services liegt in der Verwendung 
 eines uniformen und minimalen Interfaces für alle Web Services, 
 unabhängig von einem speziellen Einsatzbereich. Dies steht damit 
-im Gegensatz  zu auf SOAP aufbauenden Web Services, welche als 
+im Gegensatz  zu den auf SOAP aufbauenden Web Services, welche als 
 gemeinsame Basis nur das SOAP-Nachrichtenformat verwenden, selbst 
 jedoch jeweils komplett unabhängig davon eigene Nachrichtenprotokolle 
 und Schnittstellen definieren.
@@ -1260,7 +1260,7 @@ heraus, die zur Ver\"{o}ffentlichung mittels Web Service gedacht sind.
 Auch das Policy-PlugIn ben\"{o}tigt eine Datenbankanbindung, 
 welche wiederum durch ADOdb gekapselt wird. Durch das PlugIn werden 
 in der Datenbank Informationen zu Klassen, deren Methoden und 
-Kommentaren hinterlegt. Schon durch die Benutzung des PlugIns 
+Kommentare hinterlegt. Schon durch die Benutzung des PlugIns 
 wird eine Klasse samt ihrer Methoden registriert und kann dann 
 wie beschrieben konfiguriert werden.
 
@@ -1288,7 +1288,7 @@ den Grundbedarf an Klassen.
 \subsection{Aufbau des Beispiels}
 \label{sec:Anwendungsbeispiel:Basis}
 Es werden je Datenbanktabelle zwei Klassen ben\"{o}tigt. Zum einen müssen
-die Werte der Tabellenzeilen angesprochen werden können, dazu werden
+die Werte der Tabellenzeilen angesprochen werden können. Dazu werden
 diese als Objekte behandelt. So lassen sich alle Werte mittels 
 Gettern und Settern adressieren. Zum anderen wird je eine 
 Klasse ben\"{o}tigt, welche sich um den Datenbankzugriff 
@@ -1321,7 +1321,7 @@ Datenblock \"{u}bergeben und nach der Anfrage das Ergebnis in
 erwarteter Form zur\"{u}ckgeliefert. Um dies zu erm\"{o}glichen, 
 muss f\"{u}r jede denkbare, sinnvolle Anfrage eine Methode mit 
 der gew\"{u}nschten Funktionalit\"{a}t vorliegen. In der 
-queryLecture.php ist es unter Anderem sinnvoll alle Vorlesungs-Elemente, 
+queryLecture.php ist es unter anderem sinnvoll alle Vorlesungs-Elemente, 
 alle Vorlesungen eines bestimmtes Autors oder eines bestimmten Themas 
 zur\"{u}ckzugeben.
 Zudem wird eine Methode ben\"{o}tigt, um eine Instanz der Zielklasse 
