@@ -183,7 +183,8 @@ Das ist natürlich bei weitem nicht so komfortabel, wie man es von .NET oder Java
 
 Das Ziel unserer Arbeit war es, diese Lücken in der Werkzeugunterstützung für PHP5 zu schließen.
 Im folgenden werden zunächst die entwickelten Werkzeuge einzeln vorgestellt.
-Dabei wird besonders auf die Architektur und die getroffenen Design-Entscheidungen eingegangen, die zu der jeweiligen Lösung geführt haben.
+Dabei wird besonders auf die Architektur und die getroffenen Design-Entscheidungen, die zu der jeweiligen Lösung geführt haben, eingegangen.
+Dannach wird in einer umfangreichen Beispielanwendung gezeigt, wie die Werkzeuge zusammen eingesetzt werden können, um eine Anwendung mit Web Service Schnittstellen auszustatten.
 
 \section{Extended Reflection API}
 Die in PHP5 integrierte Reflection API bietet die grundlegenden Möglichkeiten,
@@ -205,15 +206,15 @@ Da PHP5 selbst eine schwach typisierte und teils sogar dynamische Sprache ist,
 bietet die API nur sehr wenige Informationen zur Typisierung der einzelnen Sprachkonstrukte an. 
 Um jedoch nicht nur zur Laufzeit Informationen über die Typisierung erhalten zu können, 
 wurde es erforderlich, die vorhandene API zu erweitern. Ziel dieser Erweiterung ist es, 
-zusätzliche Informationen in der Kommentierung der Sprachkonstrukte nutzen zu können. 
-Dabei wurde auf PHPDoc, eine in der PHP-Welt verbreitete Variation des JavaDoc-Standards, gesetzt. 
-Ursprünglich waren diese Informationen dazu gedacht, dem Entwickler unter die Arme zu greifen, 
-in dem der Quellcode durch zusätzliche Informationen angereichert wird.
+zusätzliche Informationen in der Quelltext-Dokumentation der Sprachkonstrukte nutzen zu können. 
+Dabei wurde auf PHPDoc, die in der PHP-Welt genutzte Variation des JavaDoc-Standards, gesetzt. 
+Ursprünglich sind diese Informationen dazu gedacht, die arbeitsteilige Entwicklung zu unterstützen, 
+in dem der Quellcode durch zusätzliche semantische Informationen angereichert wird.
 
-Da die PHPDoc-Tags in der PHP-Welt überwiegend als Standard akzeptiert sind 
+Da die PHPDoc-Tags sich in der PHP-Welt als Standard durchgesetzt haben 
 und in viele bestehenden Projekten von diesen Gebrauch gemacht wird, 
 bieten sie eine gute Basis um die nötigen Informationen aus den Quelltext-Kommentaren zu extrahieren, 
-ohne auf neue Verfahren zurückzugreifen, die bei einem Nutzer weitgehende Anpassungen erfordern würden.
+ohne neue Verfahren einzuführen, die in bestehenden Anwendungen weitgehende Anpassungen erfordern würden.
 
 Die erweiterte Reflection API nutzt zur Gewinnung der Typinformationen 
 einen einfachen PHPDoc-Parser, welcher die Quellcode-Kommentare 
@@ -226,22 +227,29 @@ wurde eine programmiersprachliche Repräsentation für ein einfaches Typensystem e
 \label{extref_api}
 \end{figure}
 
-In Abb. \ref{extref_api} ist das zentrale Interface \texttt{Type} dargestellt. Dieses wird letztendlich 
-von drei wesentlichen Klassen implementiert. \texttt{ClassType} repräsentiert alle 
-Klassen, \textsl{ArrayType} alle möglichen Array-Typen und \texttt{PrimitiveType} die einfachen Datentypen 
-wie \texttt{Integer}, \texttt{Float} und \texttt{String}. Damit ist es möglich aus einem programmiersprachlichen 
-Konstrukt, nicht nur zur eigenen Laufzeit, sondern auch ohne ein Exemplar 
-des Konstrukts, die gewünschten Typeninformationen zu gewinnen.
+In Abb. \ref{extref_api} ist das zentrale Interface \texttt{Type} dargestellt. Dieses wird im wesentlichen 
+von drei Klassen implementiert.
+%Reihenfolge von ClassType, ArrayType & Primitive Type umgedreht,
+%das macht das Prinzip schneller verständlich
+\texttt{PrimitiveType} repräsentiert die einfachen Datentypen 
+wie \texttt{Integer}, \texttt{Float} und \texttt{String},
+\textsl{ArrayType} alle möglichen Array-Typen
+und \texttt{ClassType} alle Klassen.
+Damit ist es möglich aus einem programmiersprachlichen 
+Konstrukt, nicht nur zur dessen Laufzeit, sondern auch ohne ein Exemplar 
+des Konstrukts, die gewünschten Typinformationen zu gewinnen.
 
-Dieses Typensystem erlaut zusätzlich vielfältige eigene Erweiterungen. 
+Dieses Typensystem erlaubt zusätzlich vielfältige eigene Erweiterungen. 
 Durch die Verwendung einer \texttt{TypeFactory} ist es möglich für verschiedene 
 Anwendungsaspekte angepasste Typenklassen zu entwickeln, die weitere 
 Zusatzinformationen zur Verfügung stellen. Aktuell implementiert ist 
 unter anderem die Möglichkeit, direkt aus den Typen ihre Definition 
-in XML-Schema zu erhalten, um Exemplare so ohne Umwege nach XML serialisieren zu können.
+in XML Schema zu erhalten.
+Das ist Hilfreich beim Erstellen XML Schema Beschreibungen für Anwendungen, die PHP-Datenstrukturen nach XML serialisieren.
 
 Eine weitere wesentliche Erweiterung ist die Implementierung eines Annotation-Mechanismus,
 % das muss Genitiv sein, aber Mechanismusses hört sich komsich an und ich hab grad keinen Duden um nachzuschauen
+%Falko: `Mechanismus' ist der Genitiv
  welcher in PHP bis dahin nicht verfügbar war, sich jedoch in anderen gängigen Programmiersprachen zunehmender Beliebtheit erfreut. Für dieses Projekt stand
 % nicht "steht" ?
  die statische Verwendung von Zusatzinformationen im Vordergrund. So ist es möglich die programmiersprachlichen Konstrukte mit zusätzlichen Eigenschaften zu versehen, unter anderem die Kennzeichnung als Web Service. Zusätzlich denkbar wäre es, diesen Annotation-Mechanismus durch eine geeignete Laufzeitumgebung zu nutzen, um aspektorientierte Programmierung unterstützen zu können. Dies ist in diesem Projekt jedoch nicht realisiert.
