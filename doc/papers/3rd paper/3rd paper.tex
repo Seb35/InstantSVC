@@ -118,22 +118,26 @@ Christoph~Hartmann, Andreas~Meyer und Sebastian~Böttner
 \maketitle
 
 \begin{abstract}
-Dieses Paper beschreibt die Ergebnisse unserer Arbeit an einer Sammlung von Werkzeugen
-für die automatisierte Erstellung von Web Services unter PHP5.
-Die besonderen Eigenschaften der Sprache machen die Entwicklung von Meta-Spach-Werkzeugen etwas schwierig.
-Daher wurde die Reflection API von PHP5 erweitert,
-um die benötigten Informationen über Sprachkonstrukte zu erhalten und Annotationen in PHP5 zu ermöglichen.
-Auf dieser Basis wurden zunächst ein leistungsfähiger WSDL-Generator und
-ein spezieller Code-Generator entwickelt.
-Um eine sichere Authentifizierung für Nutzer von Web Services zu ermöglichen
-wurde das Username-Token-Profile aus dem WS-Security-Standard für PHP5 implementiert.
-Dazu wurde der SOAP-Server um einen Handler-Chain-Mechanismus für SOAP-Intermediaries erweitert.
-Zusätzlich zu den Werkzeugen für SOAP-basierte Web Services entstand eine Reihe von Werkzeugen zur Entwicklung von RESTful Web Services mit PHP5.
-Ein Administrations-Tool stellt eine einheitliche grafische Oberfläche für alle Werkzeuge zur Verfügung um automatisiert SOAP-Server und REST-Server für eine bestehende Anwendung zu generieren und somit plattformübergreifende Kommunikation mit anderen Anwendungen zu ermöglichen.
+Dieses Paper beschreibt die Ergebnisse unserer Arbeit an einer Sammlung von
+Werkzeugen für die automatisierte Erstellung von Web Services unter PHP5. Die
+besonderen Eigenschaften der Sprache machen die Entwicklung von
+Meta-Spach-Werkzeugen etwas schwierig. Daher wurde die Reflection API von PHP5
+erweitert, um die benötigten Informationen über Sprachkonstrukte zu erhalten und
+Annotationen in PHP5 zu ermöglichen. Auf dieser Basis wurden zunächst ein
+leistungsfähiger WSDL-Generator und ein spezieller Code-Generator entwickelt. Um
+eine sichere Authentifizierung für Nutzer von Web Services zu ermöglichen wurde
+das Username-Token-Profile aus dem WS-Security-Standard für PHP5 implementiert.
+Dazu wurde der SOAP-Server um einen Handler-Chain-Mechanismus für
+SOAP-Intermediaries erweitert. Zusätzlich zu den Werkzeugen für SOAP-basierte
+Web Services entstand eine Reihe von Werkzeugen zur Entwicklung von RESTful Web
+Services mit PHP5. Ein Administrations-Tool stellt eine einheitliche grafische
+Oberfläche für alle Werkzeuge zur Verfügung um automatisiert SOAP-Server und
+REST-Server für eine bestehende Anwendung zu generieren und somit
+plattformübergreifende Kommunikation mit anderen Anwendungen zu ermöglichen.
 \end{abstract}
 
-\begin{keywords}
-PHP5, Reflection, Annotations, Web Services, WSDL-Generator, SOAP-Handler-Chains, WS-Security, Username-Token-Profile, REST.
+\begin{keywords} PHP5, Reflection, Annotations, Web Services, WSDL-Generator,
+SOAP-Handler-Chains, WS-Security, Username-Token-Profile, REST. 
 \end{keywords}
 
 %Gliederung Paper (Obergrenze 10 S.)
@@ -163,100 +167,146 @@ PHP5, Reflection, Annotations, Web Services, WSDL-Generator, SOAP-Handler-Chains
 
 \section{Einführung}
 
-\PARstart{W}{eb Services} sind eines der wichtigsten IT-Themen der letzten Jahre.
-Sie bieten interoperable Kommunikation über Plattform- und Programmiersprachengrenzen
-hinweg und stellen aus diesem Grund für Unternehmen ein vielversprechendes Konzept dar,
-um bestehende interne und unternehmensübergreifende Anwendungen sinnvoll zu integrieren
-und so Geschäftsprozesse zu optimieren. Das Grundprinzip dabei ist, dass Anwendungen ihre
-Funktionalität in Form von Diensten anbieten, die über das Internet von anderen Anwendungen
-genutzt werden können.
+\PARstart{W}{eb Services} sind eines der wichtigsten IT-Themen der letzten
+Jahre. Sie bieten interoperable Kommunikation über Plattform- und
+Programmiersprachengrenzen hinweg und stellen aus diesem Grund für Unternehmen
+ein vielversprechendes Konzept dar, um bestehende interne und
+unternehmensübergreifende Anwendungen sinnvoll zu integrieren und so
+Geschäftsprozesse zu optimieren. Das Grundprinzip dabei ist, dass Anwendungen
+ihre Funktionalität in Form von Diensten anbieten, die über das Internet von
+anderen Anwendungen genutzt werden können.
 
-Die wichtigsten Grundlagenstandards für Web Services sind das \textit{SOAP-Protokoll} \cite{SOAP}, die \textit{Web Services Description Language (WSDL)} \cite{WSDL} und \textit{Universal Description, Discovery and Integration (UDDI)} \cite{UDDI}. SOAP ist dabei das Kommunikationsprotokoll für den Zugriff auf die Dienste. Mit WSDL werden vertragsähnliche Beschreibungsdokumente erstellt, die ein Anbieter den Nutzern zur Verfügung stellen kann. UDDI ist der Standard für Namensdienste, mit denen Web Services bekannt gemacht und gesucht werden können.
+Die wichtigsten Grundlagenstandards für Web Services sind das
+\textit{SOAP-Protokoll} \cite{SOAP}, die \textit{Web Services Description
+Language (WSDL)} \cite{WSDL} und \textit{Universal Description, Discovery and
+Integration (UDDI)} \cite{UDDI}. SOAP ist dabei das Kommunikationsprotokoll für
+den Zugriff auf die Dienste. Mit WSDL werden vertragsähnliche
+Beschreibungsdokumente erstellt, die ein Anbieter den Nutzern zur Verfügung
+stellen kann. UDDI ist der Standard für Namensdienste, mit denen Web Services
+bekannt gemacht und gesucht werden können.
 
-Zur effektiven und interoperablen Nutzung von SOAP und, mit Abstrichen, von WSDL existieren für alle üblichen Programmiersprachen und Plattformen  voll ausgereifte Werkzeuge, die für den Produktionsbetrieb eingesetzt werden können. Für UDDI Namensdienste werden meist kommerzielle Produkte verwendet, die via Web Service in die Anwendungen integriert werden.
+Zur effektiven und interoperablen Nutzung von SOAP und, mit Abstrichen, von WSDL
+existieren für alle üblichen Programmiersprachen und Plattformen voll
+ausgereifte Werkzeuge, die für den Produktionsbetrieb eingesetzt werden können.
+Für UDDI Namensdienste werden meist kommerzielle Produkte verwendet, die via Web
+Service in die Anwendungen integriert werden.
 
-In unserer ersten Ausarbeitung \textit{"`Einführung in XML Web Services"'} \cite{WebServicePart1} haben wir SOAP, WSDL und UDDI vorgestellt und gezeigt, wie man die Standards mit PHP5 nutzen kann. PHP5 bietet eine Implementierung des SOAP-Protokolls, die sich nutzen lässt, um interoperable SOAP-Server und -Clients zu entwickeln.
+In unserer ersten Ausarbeitung \textit{"`Einführung in XML Web Services"'}
+\cite{WebServicePart1} haben wir SOAP, WSDL und UDDI vorgestellt und gezeigt,
+wie man die Standards mit PHP5 nutzen kann. PHP5 bietet eine Implementierung des
+SOAP-Protokolls, die sich nutzen lässt, um interoperable SOAP-Server und
+-Clients zu entwickeln.
 
-Um eine Klasse in PHP5 als Web Service anzubieten, erstellt man zunächst eine Beschreibung der Schnittstelle mit WSDL. Dabei definiert man unter anderem für alle Datentypen mit Hilfe von XML~Schema-Ausdrücken, wie sie für das Versenden in SOAP-Nachrichten serialisiert werden sollen. Eine Dokumentation der Methodensemantik kann manuell aus dem Quelltext der Klasse in die Schnittstellen-Beschreibung übertragen werden. Danach schreibt man ein PHP Script, das mit Hilfe der WSDL-Beschreibung einen SOAP Server startet. Dieser erzeugt dann ein Exemplar der dazugehörigen Klasse und beginnt SOAP-Anfragen zu beantworten.
+Um eine Klasse in PHP5 als Web Service anzubieten, erstellt man zunächst eine
+Beschreibung der Schnittstelle mit WSDL. Dabei definiert man unter anderem für
+alle Datentypen mit Hilfe von XML~Schema-Ausdrücken, wie sie für das Versenden
+in SOAP-Nachrichten serialisiert werden sollen. Eine Dokumentation der
+Methodensemantik kann manuell aus dem Quelltext der Klasse in die
+Schnittstellen-Beschreibung übertragen werden. Danach schreibt man ein PHP
+Script, das mit Hilfe der WSDL-Beschreibung einen SOAP Server startet. Dieser
+erzeugt dann ein Exemplar der dazugehörigen Klasse und beginnt SOAP-Anfragen zu
+beantworten.
 
-Das ist natürlich bei weitem nicht so komfortabel, wie man es von .NET oder Java~EE gewohnt ist. Zwar ist die SOAP-Implementierung sehr einfach zu benutzen, aber die manuelle Erstellung von WSDL-Beschreibungen ist sehr aufwändig und könnte prinzipiell automatisiert werden. Um also professionell in großen Systemen Web Services anzubieten benötigt man umfangreiche Werkzeugunterstützung. Typischerweise verwendet man in anderen Programmiersprachen Annotationsmechanismen um Klassen und Methoden einer Anwendung zu markieren, die als Web Service verwendet werden sollen. Mit dem so markierten Quelltext wird eine Werkzeugkette angestoßen, die dann WSDL-Beschreibungen, zusätzlichen Code für Stubs und Skeletons und falls nötig Deployment-Deskriptoren generiert, mit denen die Web Services sofort bereit für den Produktiveinsatz sind.
+Das ist natürlich bei weitem nicht so komfortabel, wie man es von .NET oder
+Java~EE gewohnt ist. Zwar ist die SOAP-Implementierung sehr einfach zu benutzen,
+aber die manuelle Erstellung von WSDL-Beschreibungen ist sehr aufwändig und
+könnte prinzipiell automatisiert werden. Um also professionell in großen
+Systemen Web Services anzubieten benötigt man umfangreiche
+Werkzeugunterstützung. Typischerweise verwendet man in anderen
+Programmiersprachen Annotationsmechanismen um Klassen und Methoden einer
+Anwendung zu markieren, die als Web Service verwendet werden sollen. Mit dem so
+markierten Quelltext wird eine Werkzeugkette angestoßen, die dann
+WSDL-Beschreibungen, zusätzlichen Code für Stubs und Skeletons und falls nötig
+Deployment-Deskriptoren generiert, mit denen die Web Services sofort bereit für
+den Produktiveinsatz sind.
 
-Das Ziel unserer Arbeit war es, diese Lücken in der Werkzeugunterstützung für PHP5 zu schließen.
-Im folgenden werden zunächst die entwickelten Werkzeuge einzeln vorgestellt.
-Dabei wird besonders auf die Architektur und die getroffenen Design-Entscheidungen, die zu der jeweiligen Lösung geführt haben, eingegangen.
-Dannach wird in einer umfangreichen Beispielanwendung gezeigt, wie die Werkzeuge zusammen eingesetzt werden können, um eine Anwendung mit Web Service Schnittstellen auszustatten.
+Das Ziel unserer Arbeit war es, diese Lücken in der Werkzeugunterstützung für
+PHP5 zu schließen. Im folgenden werden zunächst die entwickelten Werkzeuge
+einzeln vorgestellt. Dabei wird besonders auf die Architektur und die
+getroffenen Design-Entscheidungen, die zu der jeweiligen Lösung geführt haben,
+eingegangen. Dannach wird in einer umfangreichen Beispielanwendung gezeigt, wie
+die Werkzeuge zusammen eingesetzt werden können, um eine Anwendung mit Web
+Service Schnittstellen auszustatten.
 
-\section{Extended Reflection API}
-Die in PHP5 integrierte Reflection API bietet die grundlegenden Möglichkeiten,
-um zur Laufzeit Informationen zur Struktur der verfügbaren programmiersprachlichen Konstrukte,
-insbesondere der verfügbaren Klassen, Erweiterungen und Funktionen, zu erhalten.
-Darüber hinaus bietet sie ebenso die Möglichkeit auf Exemplare dieser Konstrukte zuzugreifen,
-um den aktuellen Zustand zur Laufzeit zu ermitteln oder zu modifizieren.
-\begin{figure}[!htb]
-\centering
+\section{Extended Reflection API} Die in PHP5 integrierte Reflection API bietet
+die grundlegenden Möglichkeiten, um zur Laufzeit Informationen zur Struktur der
+verfügbaren programmiersprachlichen Konstrukte, insbesondere der verfügbaren
+Klassen, Erweiterungen und Funktionen, zu erhalten. Darüber hinaus bietet sie
+ebenso die Möglichkeit auf Exemplare dieser Konstrukte zuzugreifen, um den
+aktuellen Zustand zur Laufzeit zu ermitteln oder zu modifizieren.
+\begin{figure}[!htb] \centering
 \includegraphics[width=3.4in]{reflection-api/webp-reflection-api}
-\caption{UML-Darstellung der PHP5 Reflection API}
-\label{ref_api}
-\end{figure}
+\caption{UML-Darstellung der PHP5 Reflection API} \label{ref_api} \end{figure}
 
-In Abb. \ref{ref_api} ist die grobe Struktur der API dargestellt,
-welche einem Metamodel für die Definition einer Klasse im Sinne 
-der objektorientierten Programmierung entspricht. 
-Da PHP5 selbst eine schwach typisierte und teils sogar dynamische Sprache ist, 
-bietet die API nur sehr wenige Informationen zur Typisierung der einzelnen Sprachkonstrukte an. 
-Um jedoch nicht nur zur Laufzeit Informationen über die Typisierung erhalten zu können, 
-wurde es erforderlich, die vorhandene API zu erweitern. Ziel dieser Erweiterung ist es, 
-zusätzliche Informationen in der Quelltext-Dokumentation der Sprachkonstrukte nutzen zu können. 
-Dabei wurde auf PHPDoc, die in der PHP-Welt genutzte Variation des JavaDoc-Standards, gesetzt. 
-Ursprünglich sind diese Informationen dazu gedacht, die arbeitsteilige Entwicklung zu unterstützen, 
-in dem der Quellcode durch zusätzliche semantische Informationen angereichert wird.
+In Abb. \ref{ref_api} ist die grobe Struktur der API dargestellt, welche einem
+Metamodel für die Definition einer Klasse im Sinne der objektorientierten
+Programmierung entspricht. Da PHP5 selbst eine schwach typisierte und teils
+sogar dynamische Sprache ist, bietet die API nur sehr wenige Informationen zur
+Typisierung der einzelnen Sprachkonstrukte an. Um jedoch nicht nur zur Laufzeit
+Informationen über die Typisierung erhalten zu können, wurde es erforderlich,
+die vorhandene API zu erweitern. Ziel dieser Erweiterung ist es, zusätzliche
+Informationen in der Quelltext-Dokumentation der Sprachkonstrukte nutzen zu
+können. Dabei wurde auf PHPDoc, die in der PHP-Welt genutzte Variation des
+JavaDoc-Standards, gesetzt. Ursprünglich sind diese Informationen dazu gedacht,
+die arbeitsteilige Entwicklung zu unterstützen, in dem der Quellcode durch
+zusätzliche semantische Informationen angereichert wird.
 
-Da die PHPDoc-Tags sich in der PHP-Welt als Standard durchgesetzt haben 
-und in viele bestehenden Projekten von diesen Gebrauch gemacht wird, 
-bieten sie eine gute Basis um die nötigen Informationen aus den Quelltext-Kommentaren zu extrahieren, 
-ohne neue Verfahren einzuführen, die in bestehenden Anwendungen weitgehende Anpassungen erfordern würden.
+Da die PHPDoc-Tags sich in der PHP-Welt als Standard durchgesetzt haben und in
+viele bestehenden Projekten von diesen Gebrauch gemacht wird, bieten sie eine
+gute Basis um die nötigen Informationen aus den Quelltext-Kommentaren zu
+extrahieren, ohne neue Verfahren einzuführen, die in bestehenden Anwendungen
+weitgehende Anpassungen erfordern würden.
 
-Die erweiterte Reflection API nutzt zur Gewinnung der Typinformationen 
-einen einfachen PHPDoc-Parser, welcher die Quellcode-Kommentare 
-untersucht und interpretiert. Um diese Informationen geeignet nutzen zu können, 
-wurde eine programmiersprachliche Repräsentation für ein einfaches Typensystem entworfen.
-\begin{figure}[!htb]
-\centering
+Die erweiterte Reflection API nutzt zur Gewinnung der Typinformationen einen
+einfachen PHPDoc-Parser, welcher die Quellcode-Kommentare untersucht und
+interpretiert. Um diese Informationen geeignet nutzen zu können, wurde eine
+programmiersprachliche Repräsentation für ein einfaches Typensystem entworfen.
+\begin{figure}[!htb] \centering
 \includegraphics[width=3.4in]{reflection-api/webp-extreflection-api}
-\caption{UML-Darstellung der erweiterten Reflection API}
-\label{extref_api}
+\caption{UML-Darstellung der erweiterten Reflection API} \label{extref_api}
 \end{figure}
 
-In Abb. \ref{extref_api} ist das zentrale Interface \texttt{Type} dargestellt. Dieses wird im wesentlichen 
-von drei Klassen implementiert.
-%Reihenfolge von ClassType, ArrayType & Primitive Type umgedreht,
-%das macht das Prinzip schneller verständlich
-\texttt{PrimitiveType} repräsentiert die einfachen Datentypen 
-wie \texttt{Integer}, \texttt{Float} und \texttt{String},
-\textsl{ArrayType} alle möglichen Array-Typen
-und \texttt{ClassType} alle Klassen.
-Damit ist es möglich aus einem programmiersprachlichen 
-Konstrukt, nicht nur zur dessen Laufzeit, sondern auch ohne ein Exemplar 
-des Konstrukts, die gewünschten Typinformationen zu gewinnen.
+In Abb. \ref{extref_api} ist das zentrale Interface \texttt{Type} dargestellt.
+Dieses wird im wesentlichen von drei Klassen implementiert.
+\texttt{PrimitiveType} repräsentiert die einfachen Datentypen wie
+\texttt{Integer}, \texttt{Float} und \texttt{String}, \textsl{ArrayType} alle
+möglichen Array-Typen und \texttt{ClassType} alle Klassen. Damit ist es möglich
+aus einem programmiersprachlichen Konstrukt, nicht nur zur dessen Laufzeit,
+sondern auch ohne ein Exemplar des Konstrukts, die gewünschten Typinformationen
+zu gewinnen.
 
-Dieses Typensystem erlaubt zusätzlich vielfältige eigene Erweiterungen. 
-Durch die Verwendung einer \texttt{TypeFactory} ist es möglich für verschiedene 
-Anwendungsaspekte angepasste Typenklassen zu entwickeln, die weitere 
-Zusatzinformationen zur Verfügung stellen. Aktuell implementiert ist 
-unter anderem die Möglichkeit, direkt aus den Typen ihre Definition 
-in XML Schema zu erhalten.
-Das ist Hilfreich beim Erstellen XML Schema Beschreibungen für Anwendungen, die PHP-Datenstrukturen nach XML serialisieren.
+Dieses Typensystem erlaubt zusätzlich vielfältige eigene Erweiterungen. Durch
+die Verwendung einer \texttt{TypeFactory} ist es möglich für verschiedene
+Anwendungsaspekte angepasste Typenklassen zu entwickeln, die weitere
+Zusatzinformationen zur Verfügung stellen. Aktuell implementiert ist unter
+anderem die Möglichkeit, direkt aus den Typen ihre Definition in XML Schema zu
+erhalten. Das ist Hilfreich beim Erstellen XML Schema Beschreibungen für
+Anwendungen, die PHP-Datenstrukturen nach XML serialisieren.
 
 Eine weitere wesentliche Erweiterung ist die Implementierung eines Annotation-Mechanismus,
 % das muss Genitiv sein, aber Mechanismusses hört sich komsich an und ich hab grad keinen Duden um nachzuschauen
 %Falko: `Mechanismus' ist der Genitiv
- welcher in PHP bis dahin nicht verfügbar war, sich jedoch in anderen gängigen Programmiersprachen zunehmender Beliebtheit erfreut. Für dieses Projekt stand
-% nicht "steht" ?
- die statische Verwendung von Zusatzinformationen im Vordergrund. So ist es möglich die programmiersprachlichen Konstrukte mit zusätzlichen Eigenschaften zu versehen, unter anderem die Kennzeichnung als Web Service. Zusätzlich denkbar wäre es, diesen Annotation-Mechanismus durch eine geeignete Laufzeitumgebung zu nutzen, um aspektorientierte Programmierung unterstützen zu können. Dies ist in diesem Projekt jedoch nicht realisiert.
+welcher in PHP bis dahin nicht verfügbar war, sich jedoch in anderen gängigen
+Programmiersprachen zunehmender Beliebtheit erfreut. Für dieses Projekt steht
+die statische Verwendung von Zusatzinformationen im Vordergrund. So ist es
+möglich die programmiersprachlichen Konstrukte mit zusätzlichen Eigenschaften zu
+versehen, unter anderem die Kennzeichnung als Web Service. Zusätzlich denkbar
+wäre es, diesen Annotation-Mechanismus durch eine geeignete Laufzeitumgebung zu
+nutzen, um aspektorientierte Programmierung unterstützen zu können. Dies ist in
+diesem Projekt jedoch nicht realisiert.
 
-\section{WSDL Generator}
-Nachdem die Extended Reflection API das Problem gelöst hatte Typinformationen für PHP5 Sprachkonstrukte zu ermitteln, konnten wir nun einen WSDL-Generator für die Erstellung von Web Services entwickeln. Die Web Service Description Language (WSDL), welche in 
-\cite{WebServicePart1} näher erläutert wird, verwendet man um die Schnittstellen der Dienste zu beschreiben. Anbieter von Web Services können ihren Nutzern WSDL-Dokumente zur Verfügung stellen, aus denen sie Erfahren welche Operationen angeboten werden und welche Elemente in den SOAP-Nachrichten enthalten sein müssen um sie zu nutzen. Die WSDL-Beschreibung ist dann eine Art Vertrag zwischen den Kommunikationspartnern, an den sich beide halten müssen um erfolgreich Nachrichten auszutauschen. Der von uns entwickelte WSDL-Generator erzeugt WSDL-Dokumente gemäß dem WSDL 1.1 Standard\cite{WSDL} und unterstützt dabei alle 
+\section{WSDL Generator} Nachdem die Extended Reflection API das Problem gelöst
+hatte Typinformationen für PHP5 Sprachkonstrukte zu ermitteln, konnten wir nun
+einen WSDL-Generator für die Erstellung von Web Services entwickeln. Die Web
+Service Description Language (WSDL), welche in \cite{WebServicePart1} näher
+erläutert wird, verwendet man um die Schnittstellen der Dienste zu beschreiben.
+Anbieter von Web Services können ihren Nutzern WSDL-Dokumente zur Verfügung
+stellen, aus denen sie Erfahren welche Operationen angeboten werden und welche
+Elemente in den SOAP-Nachrichten enthalten sein müssen um sie zu nutzen. Die
+WSDL-Beschreibung ist dann eine Art Vertrag zwischen den Kommunikationspartnern,
+an den sich beide halten müssen um erfolgreich Nachrichten auszutauschen. Der
+von uns entwickelte WSDL-Generator erzeugt WSDL-Dokumente gemäß dem WSDL 1.1
+Standard\cite{WSDL} und unterstützt dabei alle
 
 Bereits bei der Konzeption eines Web Services gibt es zwei 
 grundlegende Entscheidungen zu treffen: die Art des Methodenaufrufs 
@@ -272,28 +322,32 @@ wird dann zur Kommunikation genutzt. Der Client nimmt den
 Web Service als einzelne, logische Komponente mit gekapselten 
 Objekten wahr. Die Komplexität wird also durch den SOAP RPC Stack verborgen.
 
-Bei der DOC-Variante hingegen wird der Methodenaufruf direkt auf 
-ein XML Dokument abgebildet, das dann über SOAP versendet wird. Der gesamte Nachrichtenaustausch zwischen Client und Web Service ist hier durch die zugrunde 
-liegende XML Schema Beschreibung bereits vorgegeben. 
-Demzufolge muss nur die Nachricht benannt werden um die Parameterliste 
-direkt übergeben zu können, da die Nachricht deren Art und Reihenfolge 
-bereits vorgibt. Dadurch entsteht bei der Kommunikation viel weniger 
-Traffic, als es bei RPC der Fall ist. Während nämlich die Methodenaufrufe 
-durch den Aufbau des Stacks erheblich mehr Overhead erzeugen, muss man 
-bei DOC nur die Nachricht aus dem Schema identifizieren und kann die 
-(benannten) Parameter direkt übergeben. Eine genauere Darstellung der 
-Auswirkungen der verschiedenen SOAP Varianten auf die Performance ist 
-unter \cite{ibm:soapenc} zu finden.
+Bei der DOC-Variante hingegen wird der Methodenaufruf direkt auf ein XML
+Dokument abgebildet, das dann über SOAP versendet wird. Der gesamte
+Nachrichtenaustausch zwischen Client und Web Service ist hier durch die zugrunde
+liegende XML Schema Beschreibung bereits vorgegeben. Demzufolge muss nur die
+Nachricht benannt werden um die Parameterliste direkt übergeben zu können, da
+die Nachricht deren Art und Reihenfolge bereits vorgibt. Dadurch entsteht bei
+der Kommunikation viel weniger Traffic, als es bei RPC der Fall ist. Während
+nämlich die Methodenaufrufe durch den Aufbau des Stacks erheblich mehr Overhead
+erzeugen, muss man bei DOC nur die Nachricht aus dem Schema identifizieren und
+kann die (benannten) Parameter direkt übergeben. Eine genauere Darstellung der
+Auswirkungen der verschiedenen SOAP Varianten auf die Performance ist unter
+\cite{ibm:soapenc} zu finden.
 
-Des Weiteren gibt es noch zwei verschiedene Kodierungsmöglichkeiten, 
-um die Übergabewerte beim Sender zu serialisieren und beim Empfänger 
-wieder zu rekonstruieren. Die erste Variante ist es eine spezielle Kodierung zu verwenden.
-Die einzige gebräuchliche Kodierung ist das im SOAP-Standard \cite{SOAP} spezifizierte SOAP-Encoding.
-Diese schreibt vor, wie man alle Typen der jeweiligen Programmiersprache, auf vom Standard definierte Typen von XML-Elementen abbildet. Wenn die Nachricht 
-dann also versendet werden soll, müssen Client und Web Service dafür sorgen,
-diese Abbildungen zu nutzen.
-Die zweite Kodierungsart ist die "`Literal"'-Variante. Hierbei wird für die Nachrichten keine spezielle Kodierung verwendet sondern reines XML mit den in XML Schema definierten Datentypen.
-Zur Beschreibung der WSDL-Parameter wird dann XML Schema benutzt, noch alle komplexeren Datentypen explizit durch eigene Schemas beschrieben werden müssen.
+Des Weiteren gibt es noch zwei verschiedene Kodierungsmöglichkeiten, um die
+Übergabewerte beim Sender zu serialisieren und beim Empfänger wieder zu
+rekonstruieren. Die erste Variante ist es eine spezielle Kodierung zu verwenden.
+Die einzige gebräuchliche Kodierung ist das im SOAP-Standard \cite{SOAP}
+spezifizierte SOAP-Encoding. Diese schreibt vor, wie man alle Typen der
+jeweiligen Programmiersprache, auf vom Standard definierte Typen von
+XML-Elementen abbildet. Wenn die Nachricht dann also versendet werden soll,
+müssen Client und Web Service dafür sorgen, diese Abbildungen zu nutzen. Die
+zweite Kodierungsart ist die "`Literal"'-Variante. Hierbei wird für die
+Nachrichten keine spezielle Kodierung verwendet sondern reines XML mit den in
+XML Schema definierten Datentypen. Zur Beschreibung der WSDL-Parameter wird dann
+XML Schema benutzt, noch alle komplexeren Datentypen explizit durch eigene
+Schemas beschrieben werden müssen.
 
 Diese zwei mal zwei Möglichkeiten lassen sich nun kombinieren und 
 so ergeben sich theoretisch vier Varianten, einen Web Service zu erstellen:
@@ -305,27 +359,27 @@ so ergeben sich theoretisch vier Varianten, einen Web Service zu erstellen:
  	\item Document/Literal
 \end{itemize}
 
-Document/Encoded wird jedoch nicht genutzt, da es sich schon 
-in seiner Konzeption selbst widerspricht. 
-Die Frage bleibt also: welche Kombination ist zu bevorzugen?
-Die Antwort liefert die Web Services Interoperability Organization (WS-I), ein Industriekonsortium, 
-das sich mit der plattformübergreifenden Kommunikation zwischen 
-Web Services beschäftigt. Web Services, welche die Anforderungen in den WS-I Profilen erfüllen, können interoperabel über Plattform- und Programmiersprachengrenzen
-hinweg kommunizieren. Das ist nur mit solchen Web Services möglich, die auf den 
-Kombinationen RPC/Literal oder Document/Literal aufbauen.
-Die Verwendung des SOAP-Encodings oder anderen Kodierungen
-wird generell nicht mehr empfohlen.
-Daher wurde bei der Entwicklung des WSDL-Generators der Fokus in 
-erster Linie auf die Kodierungsart Literal gesetzt. Trotzdem ist 
-er in der Lage, neben den WS-I-konformen Varianten auch das 
-dennoch gebräuchliche RPC/Encoded durch die Erzeugung entsprechender 
+Document/Encoded wird jedoch nicht genutzt, da es sich schon in seiner
+Konzeption selbst widerspricht. Die Frage bleibt also: welche Kombination ist zu
+bevorzugen? Die Antwort liefert die Web Services Interoperability Organization
+(WS-I), ein Industriekonsortium, das sich mit der plattformübergreifenden
+Kommunikation zwischen Web Services beschäftigt. Web Services, welche die
+Anforderungen in den WS-I Profilen erfüllen, können interoperabel über
+Plattform- und Programmiersprachengrenzen hinweg kommunizieren. Das ist nur mit
+solchen Web Services möglich, die auf den Kombinationen RPC/Literal oder
+Document/Literal aufbauen. Die Verwendung des SOAP-Encodings oder anderen
+Kodierungen wird generell nicht mehr empfohlen. Daher wurde bei der Entwicklung
+des WSDL-Generators der Fokus in erster Linie auf die Kodierungsart Literal
+gesetzt. Trotzdem ist er in der Lage, neben den WS-I-konformen Varianten auch
+das dennoch gebräuchliche RPC/Encoded durch die Erzeugung entsprechender
 WSDL-Dateien zu unterstützen.
 
-Abb. \ref{KlassendiagrammWSDLGenerator} zeigt die Schnittstelle über die der WSDL-Generator genutzt werden kann. Der Generator selbst wird initialisiert mit der Angabe des Namens 
-für den zu erstellenden Service, dem URI über den der Service 
-erreichbar sein soll, dem Namespace für die WSDL-Beschreibung und der 
-gewünschten SOAP-Bindung. Standardmäßig wird vom 
-Generator die "`Document/Literal-Wrapped"'-Bindung erzeugt.
+Abb. \ref{KlassendiagrammWSDLGenerator} zeigt die Schnittstelle über die der
+WSDL-Generator genutzt werden kann. Der Generator selbst wird initialisiert mit
+der Angabe des Namens für den zu erstellenden Service, dem URI über den der
+Service erreichbar sein soll, dem Namespace für die WSDL-Beschreibung und der
+gewünschten SOAP-Bindung. Standardmäßig wird vom Generator die
+"`Document/Literal-Wrapped"'-Bindung erzeugt.
 
 \begin{figure}[!htb]
 \centering
@@ -346,40 +400,44 @@ Rückgabewerten fragen können. Dies ist einer der Hauptvorteile des
 WSDLGenerators, da er nicht selbst die Klassen parsen muss um die 
 benötigten Informationen zu erhalten.
 
-Jede gefundene so gefundenen Methoden bzw. jede hinzugefügte Funktion muss in die 
-WSDL-Datei abgebildet werden.
-Sollten bestimmte Methoden nicht veröffentlicht werden, so kann das Policy-PlugIn,
-das in Abschnitt \ref{Policy-PlugIn} vorgestellt wird, genutzt werden. Es erhält als Eingabe die
-Liste der ExtReflectionMethoden und liefert eine gefilterte Liste zurück. Die 
-Entscheidung, ob eine Methode veröffentlicht werden soll oder nicht, findet es in
-der angeschlossenen Datenbank, die der Entwickler zuvor mit Hilfe des AdminTools
-für die entsprechende Klasse füllen muss. Im AdminTool kann außerdem eine
-Beschreibung der Methode in die Datenbank eingepflegt werden, die dann automatisch,
-sofern das Policy-PlugIn genutzt wird, mit in der WSDL-Datei ausgegeben wird.
+Jede gefundene so gefundenen Methoden bzw. jede hinzugefügte Funktion muss in
+die WSDL-Datei abgebildet werden. Sollten bestimmte Methoden nicht
+veröffentlicht werden, so kann das Policy-PlugIn, das in Abschnitt
+\ref{Policy-PlugIn} vorgestellt wird, genutzt werden. Es erhält als Eingabe die
+Liste der ExtReflectionMethoden und liefert eine gefilterte Liste zurück. Die
+Entscheidung, ob eine Methode veröffentlicht werden soll oder nicht, findet es
+in der angeschlossenen Datenbank, die der Entwickler zuvor mit Hilfe des
+AdminTools für die entsprechende Klasse füllen muss. Im AdminTool kann außerdem
+eine Beschreibung der Methode in die Datenbank eingepflegt werden, die dann
+automatisch, sofern das Policy-PlugIn genutzt wird, mit in der WSDL-Datei
+ausgegeben wird.
 
-Der schwierigste Teil der Abbildung von Methoden auf die WSDL-Beschreibung ist die korrekte Definition der Kodierung von komplexen Datentypen, da diese auch auf Clientseite erzeugt und 
-verarbeitet werden müssen. Um das zu ermöglichen ist der 
-WSDL-Generator in der Lage, rekursiv XML-Schemas zu erstellen, 
-die alle gebräuchlichen Datentypen abdecken. Per Extended Reflection API 
-werden so z.B. Klassen als solche erkannt. Damit ist der Generator in der Lage,
-die Klassestruktur rekursiv zu analysieren und das XML Schema sukzessive zu ergänzen, sollten 
-in einer Klasse selbst neue, komplexe Datentypen als Attribute enthalten sein.
+Der schwierigste Teil der Abbildung von Methoden auf die WSDL-Beschreibung ist
+die korrekte Definition der Kodierung von komplexen Datentypen, da diese auch
+auf Clientseite erzeugt und verarbeitet werden müssen. Um das zu ermöglichen ist
+der WSDL-Generator in der Lage, rekursiv XML-Schemas zu erstellen, die alle
+gebräuchlichen Datentypen abdecken. Per Extended Reflection API werden so z.B.
+Klassen als solche erkannt. Damit ist der Generator in der Lage, die
+Klassestruktur rekursiv zu analysieren und das XML Schema sukzessive zu
+ergänzen, sollten in einer Klasse selbst neue, komplexe Datentypen als Attribute
+enthalten sein.
 
 Damit dabei kein redundanter Code erzeugt wird, vermerkt der Generator die 
 erzeugten Schemanamen in einer Liste und greift während 
 der Verarbeitung auch auf diese zu.
 
-Der Generator erzeugt ein DOM-Dokument, das die 
-WSDL-Struktur enthält. Das heißt im Einzelnen:
-Es gibt das Definition-Element, in dem alle verwendeten Namespaces definiert werden und das alle anderen Beschreibungselemente enthält. Dann folgt 
-die Type-Sektion, die XML Schema Beschreibungen für alle komplexen Datentypen enthält und, bei
-Verwendung einer Literalkombination, außerdem die Anfrage- und Antwortnachrichten
-definiert. Eine Liste der Methoden ist indirekt durch den Message-Teil gegeben, bei
-dem für jede Methode ein Element für die Anfrage und ein Element für die entsprechende
-Antwort vorhanden ist. Darauf folgt die PortType-Abteilung, in der die Methoden auf
-Operationen abgebildet werden. Anschließend wird die Kombination aus Aufruf und 
-Kodierung explizit angegeben in der Binding-Sektion und abschließend kommt noch das
-Service-Element, bei dem dem der Service an einen Port gebunden wird.
+Der Generator erzeugt ein DOM-Dokument, das die WSDL-Struktur enthält. Das heißt
+im Einzelnen: Es gibt das Definition-Element, in dem alle verwendeten Namespaces
+definiert werden und das alle anderen Beschreibungselemente enthält. Dann folgt
+die Type-Sektion, die XML Schema Beschreibungen für alle komplexen Datentypen
+enthält und, bei Verwendung einer Literalkombination, außerdem die Anfrage- und
+Antwortnachrichten definiert. Eine Liste der Methoden ist indirekt durch den
+Message-Teil gegeben, bei dem für jede Methode ein Element für die Anfrage und
+ein Element für die entsprechende Antwort vorhanden ist. Darauf folgt die
+PortType-Abteilung, in der die Methoden auf Operationen abgebildet werden.
+Anschließend wird die Kombination aus Aufruf und Kodierung explizit angegeben in
+der Binding-Sektion und abschließend kommt noch das Service-Element, bei dem dem
+der Service an einen Port gebunden wird.
 
 Auf die erzeugte Struktur kann der Anwender dann mit den Methoden 
 \texttt{getString()} oder \texttt{getDOMDocument()} zugreifen, 
@@ -391,10 +449,24 @@ zu starten um den Web Service sofort zu testen.
 %Letzteres ist jedoch nicht für den Produktiveinsatz gedacht, da auf diese Weise bei jeder eintreffenden SOAP-Nachricht eine neue WSDL-Beschreibung erzeugte würde.
 
 
-\section{Document/Wrapped-Adapter-Generator}
-\label{DWAG}
-Um entfernte Funktionsaufrufe über Web Services mit einer Document/Literal SOAP-Bindung realisieren möchte, wird typischerweise ein Mechanismus verwendet, der auch als Document/Wrapped Bindung bezeichnet wird. Dabei sind in den SOAP-Nachrichten die serialisierten Argumente und Rückgabewerte einer Operation in einem zusätzlichen XML-Element verpackt, so dass im Body der SOAP-Nachricht immer nur ein einzelnes XML-Element mit einem oder mehreren Kind-Elementen vorkommt.
-Die SOAP-Implementierung von PHP5 wurde entwickelt um alle Arten der SOAP-Bindung zu unterstützen. Diese generische Auslegung führt allerdings dazu, dass das Wrapping und Unwrapping bei Document/Wrapped Web Services nicht automatisch vom SOAP-Server vorgenommen wird sondern der gerufenen Methode oder Funktion überlassen. Auf der einen Seite bietet das Anwendungen einige Freiheiten in der Verwendung von SOAP. Andererseits erfordert es, die Signaturen der Methoden oder Funktionen anzupassen um eine Document/Wrapped Bindung zu nutzen. Eine solche Anpassung verhindert allerdings die parallele Nutzung als normale Methode und ist in bereits bestehenden Systemen völlig undenkbar. Zudem müssten die PHPDoc-Kommentare, um eine WSDL-Generierung zu ermöglichen, die tatsächlichen Typen für Argumente und Rückgabewert verleugnen.
+\section{Document/Wrapped-Adapter-Generator} \label{DWAG} Um entfernte
+Funktionsaufrufe über Web Services mit einer Document/Literal SOAP-Bindung
+realisieren möchte, wird typischerweise ein Mechanismus verwendet, der auch als
+Document/Wrapped Bindung bezeichnet wird. Dabei sind in den SOAP-Nachrichten die
+serialisierten Argumente und Rückgabewerte einer Operation in einem zusätzlichen
+XML-Element verpackt, so dass im Body der SOAP-Nachricht immer nur ein einzelnes
+XML-Element mit einem oder mehreren Kind-Elementen vorkommt. Die
+SOAP-Implementierung von PHP5 wurde entwickelt um alle Arten der SOAP-Bindung zu
+unterstützen. Diese generische Auslegung führt allerdings dazu, dass das
+Wrapping und Unwrapping bei Document/Wrapped Web Services nicht automatisch vom
+SOAP-Server vorgenommen wird sondern der gerufenen Methode oder Funktion
+überlassen. Auf der einen Seite bietet das Anwendungen einige Freiheiten in der
+Verwendung von SOAP. Andererseits erfordert es, die Signaturen der Methoden oder
+Funktionen anzupassen um eine Document/Wrapped Bindung zu nutzen. Eine solche
+Anpassung verhindert allerdings die parallele Nutzung als normale Methode und
+ist in bereits bestehenden Systemen völlig undenkbar. Zudem müssten die
+PHPDoc-Kommentare, um eine WSDL-Generierung zu ermöglichen, die tatsächlichen
+Typen für Argumente und Rückgabewert verleugnen.
 
 In manchen Klassen findet man beispielsweise folgende Konstruktionen um das Problem zu umgehen:
 \small
@@ -411,8 +483,15 @@ public function echoString($inputString) {
 }
 \end{verbatim}
 \normalsize
-Die Fallunterscheidung macht die Methode wieder in ihrem normalen Kontext verwendbar, ist aber nur eine partielle Lösung des Problems, da dies nur für Methoden mit einem einzigen Parameter funktioniert.
-Allgemein lässt sich das Problem lösen, indem man eine Adapter-Klasse einsetzt, die Methoden mit den gleichen Namen anbietet, und diese statt der Original-Klasse beim SOAP-Server registriert. Die Methoden der Adapter-Klasse rufen mit den Argumenten aus dem jeweiligen vom SOAP-Server übergebenen Objekt die Methode an der Orginal-Klasse auf und verpacken den Rückgabewert in ein Array bevor sie ihn zur Serialisierung an den SOAP-Server zurückgeben.
+Die Fallunterscheidung macht die Methode wieder in ihrem normalen Kontext
+verwendbar, ist aber nur eine partielle Lösung des Problems, da dies nur für
+Methoden mit einem einzigen Parameter funktioniert. Allgemein lässt sich das
+Problem lösen, indem man eine Adapter-Klasse einsetzt, die Methoden mit den
+gleichen Namen anbietet, und diese statt der Original-Klasse beim SOAP-Server
+registriert. Die Methoden der Adapter-Klasse rufen mit den Argumenten aus dem
+jeweiligen vom SOAP-Server übergebenen Objekt die Methode an der Orginal-Klasse
+auf und verpacken den Rückgabewert in ein Array bevor sie ihn zur Serialisierung
+an den SOAP-Server zurückgeben.
 
 Eine einfache Beispielklasse könnte so aussehen:
 \small
@@ -467,11 +546,15 @@ class AdderDocumentWrappedAdapter {
 }
 \end{verbatim}
 \normalsize
-Die Adapter-Klasse sorgt transparent für das Unwrapping von Argumenten und das Wrapping von Rückgabewerten und die Orginal-Klasse muss dazu in keiner Weise angepasst werden.
+Die Adapter-Klasse sorgt transparent für das Unwrapping von Argumenten und das
+Wrapping von Rückgabewerten und die Orginal-Klasse muss dazu in keiner Weise
+angepasst werden.
 
-Ein solcher Adapter enthält keine anwendungsspezifische Geschäftslogik und kann daher automatisch generiert werden.
-Auf Basis unserer Extended Reflection API haben wir einen entsprechenden Code-Generator entwickelt.
-Abb. \ref{KlassendiagrammAdapterGenerator} zeigt die Schnittstelle über die das Werkzeug genutzt werden kann.
+Ein solcher Adapter enthält keine anwendungsspezifische Geschäftslogik und kann
+daher automatisch generiert werden. Auf Basis unserer Extended Reflection API
+haben wir einen entsprechenden Code-Generator entwickelt. Abb.
+\ref{KlassendiagrammAdapterGenerator} zeigt die Schnittstelle über die das
+Werkzeug genutzt werden kann.
 
 \begin{figure}[!htb]
 \centering
@@ -480,23 +563,55 @@ Abb. \ref{KlassendiagrammAdapterGenerator} zeigt die Schnittstelle über die das 
 \label{KlassendiagrammAdapterGenerator}
 \end{figure}
 
-Zusätzlich zu der Generierung von WSDL-Beschreibungen wird somit auch dieser Schritt für die Erstellung von Web Services mit PHP5 automatisiert.
+Zusätzlich zu der Generierung von WSDL-Beschreibungen wird somit auch dieser
+Schritt für die Erstellung von Web Services mit PHP5 automatisiert.
 
-\section{WS-Security}
-\label{sec:wss}
-\subsection{Übersicht}
-\label{sec:wss:Uebersicht}
-Nicht immer möchte man seine Web Services jedem frei verfügbar machen. Möglicherweise möchte man kostenpflichtige Dienste anbieten oder sie nur unternehmensintern bzw. mit ausgewählten Geschäftspartnern nutzen. Dabei 
-werden die Grenzen der Spezifikationen von Web Services in ihrem normalen Umfang von WSDL, SOAP und UDDI schnell erreicht. Dies bedeutet nicht, dass keine möglichen Lösungen existieren. Doch wenn keine einheitlichen Standards verwendet werden, gehen die Lösungen schnell soweit auseinander, dass es an Interoperabilität mangelt und die Entwickler von Client-Applikationen Integrationsprobleme haben. Die Frage nach Sicherheitsmechanismen für Web Services steht nun im Zeichen dieses Kapitels.
+\section{WS-Security} \label{sec:wss} \subsection{Übersicht}
+\label{sec:wss:Uebersicht} Nicht immer möchte man seine Web Services jedem frei
+verfügbar machen. Möglicherweise möchte man kostenpflichtige Dienste anbieten
+oder sie nur unternehmensintern bzw. mit ausgewählten Geschäftspartnern nutzen.
+Dabei werden die Grenzen der Spezifikationen von Web Services in ihrem normalen
+Umfang von WSDL, SOAP und UDDI schnell erreicht. Dies bedeutet nicht, dass keine
+möglichen Lösungen existieren. Doch wenn keine einheitlichen Standards verwendet
+werden, gehen die Lösungen schnell soweit auseinander, dass es an
+Interoperabilität mangelt und die Entwickler von Client-Applikationen
+Integrationsprobleme haben. Die Frage nach Sicherheitsmechanismen für Web
+Services steht nun im Zeichen dieses Kapitels.
 
 \subsection{Anforderungen an gesicherte Webservices}
-\label{sec:wss:Anforderungen}
-Wird allgemein von Sicherheit gesprochen, sind viele Dinge zu beachten. Bei Sicherheit handelt es sich meist nicht nur um funktionale, sondern auch um nicht-funktionale Anforderungen. Um Sicherheit in Software untersuchen zu können, existieren verschiedenen Kriterien. Im Allgemeinen sind dabei die Punkte Verfügbarkeit, Datenintegrität, Vertraulichkeit, Authentifikation und Autorisation anerkannt. Diese Aspekte werden hier im Weiteren nicht näher erläutert, sollen aber auf eine gewisse Sensibilität aufmerksam machen, die bei einer Umsetzung von Sicherheit gewährleistet werden muss.
+\label{sec:wss:Anforderungen} Wird allgemein von Sicherheit gesprochen, sind
+viele Dinge zu beachten. Bei Sicherheit handelt es sich meist nicht nur um
+funktionale, sondern auch um nicht-funktionale Anforderungen. Um Sicherheit in
+Software untersuchen zu können, existieren verschiedenen Kriterien. Im
+Allgemeinen sind dabei die Punkte Verfügbarkeit, Datenintegrität,
+Vertraulichkeit, Authentifikation und Autorisation anerkannt. Diese Aspekte
+werden hier im Weiteren nicht näher erläutert, sollen aber auf eine gewisse
+Sensibilität aufmerksam machen, die bei einer Umsetzung von Sicherheit
+gewährleistet werden muss.
 
-Für eine Umsetzung von Sicherheitsaspekten bei der Verwendung von Web Services müssen vor Beginn der Arbeiten einige Designziele aufgestellt werden, die es einzuhalten gilt. Diese beeinflussen die Lösungsfindung entscheidend. Hierzu zählt vor allem, dass die Implementierung bzw. die Benutzung von Sicherheitsaspekten nicht zu Lasten des Anwendungentwicklers gehen darf. Die Implementierung eines Web Services muss vollständig unabhängig von möglichen Sicherheitstechniken sein. Dies liegt darin begründet, dass eine sichere Implementierung morgen schon als sehr unsicher gelten kann. Aus diesem Grund darf eine Sicherheits-Implementierung nur eine Erweiterung zur Business-Logik sein, welche schnell ausgetauscht werden kann. Ein weiterer Punkt betrifft eine möglichst große Interoperabilität. Auch wenn PHP nicht die klassische Software-Plattform für die Implementierung von Web Services ist, so muss eine Lösung dennoch aus Java und .Net genutzt werden können.
+Für eine Umsetzung von Sicherheitsaspekten bei der Verwendung von Web Services
+müssen vor Beginn der Arbeiten einige Designziele aufgestellt werden, die es
+einzuhalten gilt. Diese beeinflussen die Lösungsfindung entscheidend. Hierzu
+zählt vor allem, dass die Implementierung bzw. die Benutzung von
+Sicherheitsaspekten nicht zu Lasten des Anwendungentwicklers gehen darf. Die
+Implementierung eines Web Services muss vollständig unabhängig von möglichen
+Sicherheitstechniken sein. Dies liegt darin begründet, dass eine sichere
+Implementierung morgen schon als sehr unsicher gelten kann. Aus diesem Grund
+darf eine Sicherheits-Implementierung nur eine Erweiterung zur Business-Logik
+sein, welche schnell ausgetauscht werden kann. Ein weiterer Punkt betrifft eine
+möglichst große Interoperabilität. Auch wenn PHP nicht die klassische
+Software-Plattform für die Implementierung von Web Services ist, so muss eine
+Lösung dennoch aus Java und .Net genutzt werden können.
 
-Das Thema Sicherheit umfasst einen riesigen Themenkomplex. Daher ist es nicht möglich, eine vollständige Sicherheitslösung in einem kurzen Zeitraum umzusetzen. Hierbei sind auch viele Reviews nötig, um wirkliche Sicherheit zu gewährleisten. Es musste daher auf einen Teil der zuvor genannten Sicherheitsaspekte das Hauptaugenmerk gelegt werden. Dies soll im Nachfolgenden bei der Umsetzung die Authentifizierung sein. Die Web Services werden dabei weiterhin unverschlüsselt übertragen. 
-Allerdings dürfen andere Aspekte nicht außer Acht gelassen werden, so sollte z.B. die entstehende Lösung weiteren Sicherheitsstrategien nicht im Wege stehen.
+Das Thema Sicherheit umfasst einen riesigen Themenkomplex. Daher ist es nicht
+möglich, eine vollständige Sicherheitslösung in einem kurzen Zeitraum
+umzusetzen. Hierbei sind auch viele Reviews nötig, um wirkliche Sicherheit zu
+gewährleisten. Es musste daher auf einen Teil der zuvor genannten
+Sicherheitsaspekte das Hauptaugenmerk gelegt werden. Dies soll im Nachfolgenden
+bei der Umsetzung die Authentifizierung sein. Die Web Services werden dabei
+weiterhin unverschlüsselt übertragen. Allerdings dürfen andere Aspekte nicht
+außer Acht gelassen werden, so sollte z.B. die entstehende Lösung weiteren
+Sicherheitsstrategien nicht im Wege stehen.
 
 \subsection{Mögliche Ansätze zur Absicherung von Web Services}
 \label{sec:wss:Ansaetze}
@@ -507,41 +622,90 @@ Möchte man hier eine Lösung finden, fällt gleich ein grober Ablauf ein. Dieser b
 	\item Nach der korrekten Authentifizierung wird die Anfrage an die Web Service Implementierung weitergeleitet
 \end{enumerate}
 
-Lösungen eines selbst implementierten Token-Prinzips sind immer möglich, stehen jedoch im Kontrast zu einer geforderten Interoperabilität. Demnach muss ein Standard gefunden werden, welcher genau diese Anforderungen erfüllen kann. In der Welt von Java und .Net hat dabei Web Service Security\footnote{Basiert auf Standard 1.0, am 17.2.2006 wurde die Version 1.1 veröffentlicht} von Oasis eine weite Verbreitung gefunden. Dieser Standard umfasst mehrere Teile. Das ist auf der einen Seite Soap Message Security zum Verschlüsseln von Nachrichten und der Behandlung von Fehlern. Auf der anderen Seite gibt es die Token Profiles\footnote{Hier wird nur das Username Token Profil 1.0 betrachtet}. Diese beschreiben einen Authentifizierungsmechanismus für Web Services. Sie erfüllen dabei idealerweise fast alle geforderten Ziele und wurden daher für eine Implementierung in PHP ausgewählt. Eine Umsetzung des Username Token Profile 1.0 steht nun im Mittelpunkt der weiteren Arbeiten. 
+Lösungen eines selbst implementierten Token-Prinzips sind immer möglich, stehen
+jedoch im Kontrast zu einer geforderten Interoperabilität. Demnach muss ein
+Standard gefunden werden, welcher genau diese Anforderungen erfüllen kann. In
+der Welt von Java und .Net hat dabei Web Service Security\footnote{Basiert auf
+Standard 1.0, am 17.2.2006 wurde die Version 1.1 veröffentlicht} von Oasis eine
+weite Verbreitung gefunden. Dieser Standard umfasst mehrere Teile. Das ist auf
+der einen Seite Soap Message Security zum Verschlüsseln von Nachrichten und der
+Behandlung von Fehlern. Auf der anderen Seite gibt es die Token
+Profiles\footnote{Hier wird nur das Username Token Profil 1.0 betrachtet}. Diese
+beschreiben einen Authentifizierungsmechanismus für Web Services. Sie erfüllen
+dabei idealerweise fast alle geforderten Ziele und wurden daher für eine
+Implementierung in PHP ausgewählt. Eine Umsetzung des Username Token Profile 1.0
+steht nun im Mittelpunkt der weiteren Arbeiten.
 
-\subsection{Username Token Profile 1.0 im Detail}
-\label{sec:wss:UTPDetail}
-Das Username Token Profile 1.0 wurde von Oasis \cite{wss:oasis} erarbeitet. In der hier vorgestellten Version, handelt es sich, wie schon erwähnt nicht um die Version 1.1, da sie zu Beginn der Entwicklung nur als Entwurf vorlag und der erweiterte Funktionsumfang nicht benötigt wurde. Des Weiteren wird Version 1.0 schon durch diverse Middleware-Plattformen unterstützt und bietet somit eine gute Grundlage für Interoperabilitätstest und Anwendungen.
-Der Standard beschreibt nicht neue Techniken, sondern gibt einen Rahmen vor, wie die benötigten Informationen in einem spezifizierten Format zu übertragen sind. Dabei wird kein Verschlüsselungsalgorithmus für das Passwort festgelegt, da dessen Wert kontinuirlich mit der Zeit abnimmt.
+\subsection{Username Token Profile 1.0 im Detail} \label{sec:wss:UTPDetail} Das
+Username Token Profile 1.0 wurde von Oasis \cite{wss:oasis} erarbeitet. In der
+hier vorgestellten Version, handelt es sich, wie schon erwähnt nicht um die
+Version 1.1, da sie zu Beginn der Entwicklung nur als Entwurf vorlag und der
+erweiterte Funktionsumfang nicht benötigt wurde. Des Weiteren wird Version 1.0
+schon durch diverse Middleware-Plattformen unterstützt und bietet somit eine
+gute Grundlage für Interoperabilitätstest und Anwendungen. Der Standard
+beschreibt nicht neue Techniken, sondern gibt einen Rahmen vor, wie die
+benötigten Informationen in einem spezifizierten Format zu übertragen sind.
+Dabei wird kein Verschlüsselungsalgorithmus für das Passwort festgelegt, da
+dessen Wert kontinuirlich mit der Zeit abnimmt.
 
-Das Format besteht aus dem ersten Tag \texttt{<wsse:Security>}, welches die Webservice Security Daten im SoapHeader kapselt. Darauf folgt ein Tag namens \texttt{<wsse:UsernameToken>}, der darauf aufmerksam macht, dass hier das Username Token Profil benutzt wird. Nun folgen die benötigten Daten, dabei gilt, \texttt{<wsse:Username>} muss immer angegeben werden und ist unverschlüsselt. Beim nächsten Tag \texttt{<wsse:Password Type=\grqq...\grqq>} unterscheidet man zwei Typen:
-\begin{itemize}
-\item \emph{PasswortText (default)}
+Das Format besteht aus dem ersten Tag \texttt{<wsse:Security>}, welches die
+Webservice Security Daten im SoapHeader kapselt. Darauf folgt ein Tag namens
+\texttt{<wsse:UsernameToken>}, der darauf aufmerksam macht, dass hier das
+Username Token Profil benutzt wird. Nun folgen die benötigten Daten, dabei gilt,
+\texttt{<wsse:Username>} muss immer angegeben werden und ist unverschlüsselt.
+Beim nächsten Tag \texttt{<wsse:Password Type=\grqq...\grqq>} unterscheidet man
+zwei Typen: \begin{itemize} \item \emph{PasswortText (default)}
 
-Hierbei kann das type Feld leer gelassen werden und als Daten sind nur der Username und das Passwort (bzw. Passwortäquivalent) notwendig.
-\item \emph{PasswordDigest}
+Hierbei kann das type Feld leer gelassen werden und als Daten sind nur der
+Username und das Passwort (bzw. Passwortäquivalent) notwendig. \item
+\emph{PasswordDigest}
 
-Um sicherzustellen, dass keine Anfrage zweimal gesendet werden kann (Replayattacke), wird das Passwort mittels eines Zeitstempels und einer Zufallszahl (Nonce) verschlüsselt. Als \texttt{Type}-Wert muss hier grundsätzlich PasswordDigest gesetzt sein. Die Formel nach welcher sich die Verschlüsselung zusammensetzt, sieht nun wie folgt aus:
+Um sicherzustellen, dass keine Anfrage zweimal gesendet werden kann
+(Replayattacke), wird das Passwort mittels eines Zeitstempels und einer
+Zufallszahl (Nonce) verschlüsselt. Als \texttt{Type}-Wert muss hier
+grundsätzlich PasswordDigest gesetzt sein. Die Formel nach welcher sich die
+Verschlüsselung zusammensetzt, sieht nun wie folgt aus:
+
 \\
 \\
 \texttt{PasswordDigest = Base64( SHA-1( Nonce + Created + Password ))}
 \\
 \\
-Die Zufallszahl wird mit dem Datum und dem Passwort (bzw. Äquivalent) zusammengekettet, danach wird mittels eines SHA-1-Algorithmus dieser Wert gehasht und nochmals mit Base64 kodiert. Auf Serverseite wird mittels der bekannten Daten (Zufallszahl und Zeitstempel sind im Header enthalten) ebenfalls ein Vergleichswert erschaffen, um damit dann die Korrektheit der Anfrage zu überprüfen. Somit ist jede Anfrage nur genau einmal gültig (Hashwert ist jedes Mal verschieden). Identische Anfragen werden natürlich von der Serverseite negiert.
+
+Die Zufallszahl wird mit dem Datum und dem Passwort (bzw. Äquivalent)
+zusammengekettet, danach wird mittels eines SHA-1-Algorithmus dieser Wert
+gehasht und nochmals mit Base64 kodiert. Auf Serverseite wird mittels der
+bekannten Daten (Zufallszahl und Zeitstempel sind im Header enthalten) ebenfalls
+ein Vergleichswert erschaffen, um damit dann die Korrektheit der Anfrage zu
+überprüfen. Somit ist jede Anfrage nur genau einmal gültig (Hashwert ist jedes
+Mal verschieden). Identische Anfragen werden natürlich von der Serverseite
+negiert.
 \end{itemize}
-Die letzten zwei Tags sind optional und senden zum einen die Zufallszahl(\texttt{<wsse:Nonce>}) im Base64 Format und zum anderen den Erzeugungszeitpunkt(\texttt{<wsu:Created>}) mit.
+
+Die letzten zwei Tags sind optional und senden zum einen die
+Zufallszahl(\texttt{<wsse:Nonce>}) im Base64 Format und zum anderen den
+Erzeugungszeitpunkt(\texttt{<wsu:Created>}) mit.
 \\
 \\
 \texttt{Nonce = Base64( Nonce )}
 \\
 \\
-Bei den Tags werden nun zwei Namespaces sichtbar, dabei handelt es sich einmal um wsse\footnote{http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-
-1.0.xsd} und zum Anderem um wsu\footnote{http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-
+Bei den Tags werden nun zwei Namespaces sichtbar, dabei handelt es sich einmal
+um
+wsse\footnote{http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-
+1.0.xsd} und zum Anderem um
+wsu\footnote{http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-
 1.0.xsd}.
 
-Des Weiteren sollen Anfragen mit einem alten Zeitstempel zurückgewiesen und ein Cache mit schon benutzen Zufallszahlen geführt werden. Als Minimum gibt der Standard eine Empfehlung von fünf Minuten an.
+Des Weiteren sollen Anfragen mit einem alten Zeitstempel zurückgewiesen und ein
+Cache mit schon benutzen Zufallszahlen geführt werden. Als Minimum gibt der
+Standard eine Empfehlung von fünf Minuten an.
 
-Passwortäquivalent bedeutet in diesem Zusammenhang, dass dieses extern verschlüsselt sein kann und sollte. Bei dieser Umsetzung gilt grundsätzlich das Passwörter immer MD5 gehasht sein müssen. Dementsprechend gilt auch beim PasswortText, dass ein Passwort einem \texttt{MD5(Passwort)} entspricht und nicht nur durch ein reines Passwort repräsentiert wird.
+Passwortäquivalent bedeutet in diesem Zusammenhang, dass dieses extern
+verschlüsselt sein kann und sollte. Bei dieser Umsetzung gilt grundsätzlich das
+Passwörter immer MD5 gehasht sein müssen. Dementsprechend gilt auch beim
+PasswortText, dass ein Passwort einem \texttt{MD5(Passwort)} entspricht und
+nicht nur durch ein reines Passwort repräsentiert wird.
 
 \begin{figure}[!htb]
 \centering
@@ -550,20 +714,39 @@ Passwortäquivalent bedeutet in diesem Zusammenhang, dass dieses extern verschlüs
 \label{wss:UTPCode}
 \end{figure}
 
-Für nähere Details sei hier auf den Standard \cite{wss:usernameTokenProfile} verwiesen. Es wurde an dieser Stelle versucht kurz und knapp die grundlegenden Ideen des Standards zu vermitteln. Im Nachfolgenden soll die Umsetzung in PHP näher beleuchtet werden.
+Für nähere Details sei hier auf den Standard \cite{wss:usernameTokenProfile}
+verwiesen. Es wurde an dieser Stelle versucht kurz und knapp die grundlegenden
+Ideen des Standards zu vermitteln. Im Nachfolgenden soll die Umsetzung in PHP
+näher beleuchtet werden.
 
 \subsection{Umsetzung des Servers in PHP}
 \label{wss:UmsetzungServer}
 
-\subsubsection{Vorhandene Umsetzungen}
-\label{wss:VorhandeneUmsetzungen}
-PHP bietet seit der Version 5 eine SOAP Extension, welche es erlaubt Web Services aufzusetzen, beziehungsweise angebotene Dienste zu verwenden. Eine Möglichkeit der Verwendung von Sicherheitsaspekten bleibt einem dabei allerdings verwehrt. Die Implementierung des Username Token Profiles für PHP wird auf Basis der vorhandenen Klassen SoapClient und SoapServer erfolgen. Dies hat den klaren Vorteil, dass der gesamte Teil zum Abarbeiten von Web Services schon als gelöst angesehen werden kann. Im Idealfall profitiert die zu erstellende Lösung einfach aus Verbesserungen der SOAP Extension. Die Extension selbst ist in C geschriebenen und bietet somit einen klaren Geschwindigkeitsvorteil gegenüber PHP Klassenbibliotheken. Die erstellten PHP Klassen erben von diesen bzw. erweitern sie um die zusätzlichen benötigten Aspekte.
+\subsubsection{Vorhandene Umsetzungen} \label{wss:VorhandeneUmsetzungen} PHP
+bietet seit der Version 5 eine SOAP Extension, welche es erlaubt Web Services
+aufzusetzen, beziehungsweise angebotene Dienste zu verwenden. Eine Möglichkeit
+der Verwendung von Sicherheitsaspekten bleibt einem dabei allerdings verwehrt.
+Die Implementierung des Username Token Profiles für PHP wird auf Basis der
+vorhandenen Klassen SoapClient und SoapServer erfolgen. Dies hat den klaren
+Vorteil, dass der gesamte Teil zum Abarbeiten von Web Services schon als gelöst
+angesehen werden kann. Im Idealfall profitiert die zu erstellende Lösung einfach
+aus Verbesserungen der SOAP Extension. Die Extension selbst ist in C
+geschriebenen und bietet somit einen klaren Geschwindigkeitsvorteil gegenüber
+PHP Klassenbibliotheken. Die erstellten PHP Klassen erben von diesen bzw.
+erweitern sie um die zusätzlichen benötigten Aspekte.
 
-\subsubsection{Probleme}
-\label{wss:Probleme}
-Diese Idealvorstellung erweist sich allerdings schnell als nicht trivial. Dies liegt einerseits in der schlechten PHP Dokumentation, welche ein Review des SourceCodes unerlässlich macht und andererseits in den noch vorhanden \glqq Features\grqq. Unter anderem ruft der SoapServer anhand des Tagnamens im SoapHeader automatisch Methoden auf, welche den gleichen Namen besitzen. Dies kann Potential für eine Sicherheitslücke darstellen. 
-Es muss daher eine Lösung gefunden werden, welche es ermöglicht alle Headerinformationen aus der SoapMessage nach deren Verwendung zu löschen. 
-Die vorhandene Implementierung des SoapServers hat noch einen weiteren Nachteil. Sie wirft nicht unter allen Umständen korrekte SoapFaults. Das Werfen eigener Fehler sollte hingegen immer korrekt ablaufen, gerade wenn Exceptions zur Laufzeit auftreten.
+\subsubsection{Probleme} \label{wss:Probleme} Diese Idealvorstellung erweist
+sich allerdings schnell als nicht trivial. Dies liegt einerseits in der
+schlechten PHP Dokumentation, welche ein Review des SourceCodes unerlässlich
+macht und andererseits in den noch vorhanden \glqq Features\grqq. Unter anderem
+ruft der SoapServer anhand des Tagnamens im SoapHeader automatisch Methoden auf,
+welche den gleichen Namen besitzen. Dies kann Potential für eine
+Sicherheitslücke darstellen. Es muss daher eine Lösung gefunden werden, welche
+es ermöglicht alle Headerinformationen aus der SoapMessage nach deren Verwendung
+zu löschen. Die vorhandene Implementierung des SoapServers hat noch einen
+weiteren Nachteil. Sie wirft nicht unter allen Umständen korrekte SoapFaults.
+Das Werfen eigener Fehler sollte hingegen immer korrekt ablaufen, gerade wenn
+Exceptions zur Laufzeit auftreten.
 
 \subsubsection{Extended Soap Server}
 \label{wss:ExtendedSoapServer}
@@ -575,52 +758,137 @@ Die vorhandene Implementierung des SoapServers hat noch einen weiteren Nachteil.
 \end{figure}
 Um die Sicherheit kapseln zu können, wurde der \glqq Extended Soap Server\grqq~entwickelt.
 
-Es sei an ein wichtiges Designziel erinnert: Weitere Standards sollten möglichst einfach integrierbar sein. Aus diesem Grund muss dass Problem der Behandlung von Sicherheitsaspekten abstrahiert werden. Dies ist hier geschehen und wird im Weiteren näher erläutert.
+Es sei an ein wichtiges Designziel erinnert: Weitere Standards sollten möglichst
+einfach integrierbar sein. Aus diesem Grund muss dass Problem der Behandlung von
+Sicherheitsaspekten abstrahiert werden. Dies ist hier geschehen und wird im
+Weiteren näher erläutert.
 
 \begin{itemize}
 \item \emph{XmlParser}
 
-Bei Web Services handelt es sich um eine Übertragung von XML konformen Dokumenten. Da ist es nur offensichtlich, dass die Implementierung von XML Handlern den Weg zum Designziel massiv erleichtern können. Es gibt zwei grundsätzlich verschiedene Arten ein Dokument zu parsen. Einerseits die DOM-Parser, welche im Speicher die gesamte Baumstruktur aufbauen und andererseits die SAX-Parser (Event-Driven). Sie sind einfach beschrieben Tagsucher, welche bei jedem vorkommenden Tag eine Methode aufrufen. Für eine Umsetzung in PHP empfehlen sich dabei klar die SAX-Parser, da sie speichereffizienter agieren. 
-Diese lassen sich in PHP nicht direkt realisieren, doch stehen Grundelemente bereit. Eine abstrakte Implementierung eines solchen Parsers, welcher leere Methoden implementiert, aber schon eine Methode \texttt{parse()} bereitstellt, ist der  \texttt{XmlParser}. Diese Methode hat als Rückgabewert einen Fehlercode, welcher angibt ob die Abarbeitung und Auswertung des Parsens erfolgreich war (\texttt{return 0}).
+Bei Web Services handelt es sich um eine Übertragung von XML konformen
+Dokumenten. Da ist es nur offensichtlich, dass die Implementierung von XML
+Handlern den Weg zum Designziel massiv erleichtern können. Es gibt zwei
+grundsätzlich verschiedene Arten ein Dokument zu parsen. Einerseits die
+DOM-Parser, welche im Speicher die gesamte Baumstruktur aufbauen und
+andererseits die SAX-Parser (Event-Driven). Sie sind einfach beschrieben
+Tagsucher, welche bei jedem vorkommenden Tag eine Methode aufrufen. Für eine
+Umsetzung in PHP empfehlen sich dabei klar die SAX-Parser, da sie
+speichereffizienter agieren. Diese lassen sich in PHP nicht direkt realisieren,
+doch stehen Grundelemente bereit. Eine abstrakte Implementierung eines solchen
+Parsers, welcher leere Methoden implementiert, aber schon eine Methode
+\texttt{parse()} bereitstellt, ist der \texttt{XmlParser}. Diese Methode hat als
+Rückgabewert einen Fehlercode, welcher angibt ob die Abarbeitung und Auswertung
+des Parsens erfolgreich war (\texttt{return 0}).
 
 \item \emph{XmlParserExtended}
 
-Der \texttt{XmlParser} wird durch \texttt{XmlParserExtended} erweitert, wodurch es möglich ist, Headerabschnitte zu löschen. Da jeder Parser das gesamte Dokument durchsucht, ist es nötig schon benutzte Teile zu entfernen, um doppelte Datenauswertungen zu verhindern. Somit ist es ebenso möglich, durch die richtige Implementation der Methode \texttt{deleteHeader()} das Sicherheitsproblem der Ausführung von Methoden durch Header-Tags zu verhindern (siehe \ref{wss:XmlSoapHeaderParser} \emph{XmlSoapHeaderParser}).
+Der \texttt{XmlParser} wird durch \texttt{XmlParserExtended} erweitert, wodurch
+es möglich ist, Headerabschnitte zu löschen. Da jeder Parser das gesamte
+Dokument durchsucht, ist es nötig schon benutzte Teile zu entfernen, um doppelte
+Datenauswertungen zu verhindern. Somit ist es ebenso möglich, durch die richtige
+Implementation der Methode \texttt{deleteHeader()} das Sicherheitsproblem der
+Ausführung von Methoden durch Header-Tags zu verhindern (siehe
+\ref{wss:XmlSoapHeaderParser} \emph{XmlSoapHeaderParser}).
 
-Die XML Soap Parser sind demnach eine Anwendung des Strategy-Pattern\footnote{\glqq Define a family of algorithms, encapsulate each one, and make them interchangeable. Strategy lets the algorithm vary independently from clients that use it.\grqq \cite{wss:designPatterns}}, welches es erlaubt mehrere Algorithmen unter einem einheitlichen Interface anzusprechen und auszutauschen. Mit dieser Möglichkeit kann ein Chainhandler aufgebaut werden. Dabei handelt es sich um die Möglichkeit, beliebig viele XML Soap Parser dem \texttt{ExtendedSoapServer} zu übergeben und diese nach der Reihenfolge abzuarbeiten.
+Die XML Soap Parser sind demnach eine Anwendung des
+Strategy-Pattern\footnote{\glqq Define a family of algorithms, encapsulate each
+one, and make them interchangeable. Strategy lets the algorithm vary
+independently from clients that use it.\grqq \cite{wss:designPatterns}}, welches
+es erlaubt mehrere Algorithmen unter einem einheitlichen Interface anzusprechen
+und auszutauschen. Mit dieser Möglichkeit kann ein Chainhandler aufgebaut
+werden. Dabei handelt es sich um die Möglichkeit, beliebig viele XML Soap Parser
+dem \texttt{ExtendedSoapServer} zu übergeben und diese nach der Reihenfolge
+abzuarbeiten.
 
-Das Username Token Profile ist folglich nur als eine konkrete Umsetzung des \texttt{XmlParserExtended} (siehe \ref{wss:XmlSoapSecParser} \emph{XmlSoapSecParser}) anzusehen. Dabei wird in der \texttt{parse()}-Methode  auf das Interface \texttt{ICheckUserRunnable} verwiesen und überlässt ihm mittels der geparsten Werte für Username, Passwort, Nonce und Created die Auswertung der Anfrage. Nachdem diese erfolgt ist, werden alle entsprechenden Tags mittels der \texttt{delete()}-Methode gelöscht.
+Das Username Token Profile ist folglich nur als eine konkrete Umsetzung des
+\texttt{XmlParserExtended} (siehe \ref{wss:XmlSoapSecParser}
+\emph{XmlSoapSecParser}) anzusehen. Dabei wird in der \texttt{parse()}-Methode
+auf das Interface \texttt{ICheckUserRunnable} verwiesen und überlässt ihm
+mittels der geparsten Werte für Username, Passwort, Nonce und Created die
+Auswertung der Anfrage. Nachdem diese erfolgt ist, werden alle entsprechenden
+Tags mittels der \texttt{delete()}-Methode gelöscht. 
 \end{itemize}
 
-Durch die Trennung von Parser und SoapServer ist die Lösung unabhängig vom Parser und somit dem zu implementierenden Standard. Eine Umstellung auf andere Möglichkeiten ist somit leicht möglich. 
+Durch die Trennung von Parser und SoapServer ist die Lösung unabhängig vom
+Parser und somit dem zu implementierenden Standard. Eine Umstellung auf andere
+Möglichkeiten ist somit leicht möglich.
 
-Damit eine Behandlung der SoapMessage noch vor der Weiterleitung an den PHP eigenen SoapServer erfolgen kann, muss der Inhalt aus \texttt{\$HTTP\underline~RAW\underline~POST\underline~DATA} ausgelesen und durch die Parser jeweils, wenn nötig, angepasst werden. 
-Das Ergebnis muss wiederum in dieser Variable gespeichert werden, da die gekapselte SoapServer-Implementierung auf diese Variable zugreift.
+Damit eine Behandlung der SoapMessage noch vor der Weiterleitung an den PHP
+eigenen SoapServer erfolgen kann, muss der Inhalt aus
+\texttt{\$HTTP\underline~RAW\underline~POST\underline~DATA} ausgelesen und durch
+die Parser jeweils, wenn nötig, angepasst werden. Das Ergebnis muss wiederum in
+dieser Variable gespeichert werden, da die gekapselte SoapServer-Implementierung
+auf diese Variable zugreift.
 
-Es soll hierbei erwähnt werden, dass die Reihenfolge der Parser einen entscheidenden Faktor spielen kann. Ein Parser, welcher den gesamten SoapHeader löscht, darf erst zum Schluß ausgeführt werden. Da allerdings der \texttt{ExtendedSoapServer} keine Kenntnis über den semantischen Inhalt der genutzten XML Parser hat, ist der Entwickler des \texttt{ExtendedSoapServer} dazu aufgefordert, die XML Parser in der richtigen Reihenfolge dem \texttt{ExtendedSoapServer} mitzuteilen. Diese Reihenfolge wird bei der Ausführung beachtet.
+Es soll hierbei erwähnt werden, dass die Reihenfolge der Parser einen
+entscheidenden Faktor spielen kann. Ein Parser, welcher den gesamten SoapHeader
+löscht, darf erst zum Schluß ausgeführt werden. Da allerdings der
+\texttt{ExtendedSoapServer} keine Kenntnis über den semantischen Inhalt der
+genutzten XML Parser hat, ist der Entwickler des \texttt{ExtendedSoapServer}
+dazu aufgefordert, die XML Parser in der richtigen Reihenfolge dem
+\texttt{ExtendedSoapServer} mitzuteilen. Diese Reihenfolge wird bei der
+Ausführung beachtet.
 
-Nachdem die großen Probleme gelöst werden konnten, bleibt nur noch die Frage nach den SoapFaults(siehe \ref{wss:SoapFaults} \emph{SoapFaults}). Als gute Lösung erwies sich in Tests die Verwendung eines extra SoapServers nur für Fehlermeldungen. Dabei muss ein minimaler Web Service bereitgestellt werden, welcher nicht einmal Dienste anbieten muss. Dieser dient nur zum Aufsetzen des Servers. Damit ist es möglich korrekte SoapFaults zu erstellen. Die Verhinderung der genannten Sicherheitsprobleme ist damit erfolgt.
+Nachdem die großen Probleme gelöst werden konnten, bleibt nur noch die Frage
+nach den SoapFaults(siehe \ref{wss:SoapFaults} \emph{SoapFaults}). Als gute
+Lösung erwies sich in Tests die Verwendung eines extra SoapServers nur für
+Fehlermeldungen. Dabei muss ein minimaler Web Service bereitgestellt werden,
+welcher nicht einmal Dienste anbieten muss. Dieser dient nur zum Aufsetzen des
+Servers. Damit ist es möglich korrekte SoapFaults zu erstellen. Die Verhinderung
+der genannten Sicherheitsprobleme ist damit erfolgt.
 
-Allerdings ist es nun leider nicht mehr möglich einen \texttt{ExtendedSoapServer} als Ableitung von SoapServer zu implementieren, da nun zwei Exemplare eines SoapServers benötigt werden. Demnach kapselt der \texttt{ExtendedSoapServer} nun sämtliche Funktionen des SoapServers und 
-erweitert ihn um unsere Bestandteile (siehe Abb. \ref{wss:klassenstrukturServer}).
+Allerdings ist es nun leider nicht mehr möglich einen
+\texttt{ExtendedSoapServer} als Ableitung von SoapServer zu implementieren, da
+nun zwei Exemplare eines SoapServers benötigt werden. Demnach kapselt der
+\texttt{ExtendedSoapServer} nun sämtliche Funktionen des SoapServers und
+erweitert ihn um unsere Bestandteile (siehe Abb.
+\ref{wss:klassenstrukturServer}).
 
-Sollten später die Probleme in PHP behoben werden, ist eine Umstellung auf Vererbung aber nicht grundsätzlich unmöglich. Da eine Trennung der XML Behandlung erfolgte, ist dies sogar mit relativ wenig Aufwand möglich.
+Sollten später die Probleme in PHP behoben werden, ist eine Umstellung auf
+Vererbung aber nicht grundsätzlich unmöglich. Da eine Trennung der XML
+Behandlung erfolgte, ist dies sogar mit relativ wenig Aufwand möglich.
 
-Die Verwendung des \texttt{ExtendedSoapServers} ist nun nahezu identisch zu der des normalen SoapServers. Es wurde lediglich eine Funktion nach außen hinzugefügt: \texttt{addXmlHandler()} fügt entsprechend der Erläuterung des ChainHandlers neue XML Soap Parser hinzu und führt sie aus.
+Die Verwendung des \texttt{ExtendedSoapServers} ist nun nahezu identisch zu der
+des normalen SoapServers. Es wurde lediglich eine Funktion nach außen
+hinzugefügt: \texttt{addXmlHandler()} fügt entsprechend der Erläuterung des
+ChainHandlers neue XML Soap Parser hinzu und führt sie aus.
 
-\subsubsection{XmlSoapSecParser}
-\label{wss:XmlSoapSecParser}
-Nachdem die Umsetzung eines Servers näher erläutert wurde, besteht nun die spannende Frage, wie der XML Soap Parser für das Username Token Profile aussieht.
+\subsubsection{XmlSoapSecParser} \label{wss:XmlSoapSecParser} Nachdem die
+Umsetzung eines Servers näher erläutert wurde, besteht nun die spannende Frage,
+wie der XML Soap Parser für das Username Token Profile aussieht.
 
-Der Parser sammelt aus dem Header alle notwendigen Daten zusammen. Dazu zählen Username, Password, Nonce und das Created-Tag. Sind die benötigten Daten ermittelt, so werden die Daten an eine Implementierung des Interfaces \texttt{ICheckUserRunnable} übergeben. Dieses wird intern in der Methode \texttt{parse()} aufgerufen, welche damit auch die Fehler nach außen reichen kann.
+Der Parser sammelt aus dem Header alle notwendigen Daten zusammen. Dazu zählen
+Username, Password, Nonce und das Created-Tag. Sind die benötigten Daten
+ermittelt, so werden die Daten an eine Implementierung des Interfaces
+\texttt{ICheckUserRunnable} übergeben. Dieses wird intern in der Methode
+\texttt{parse()} aufgerufen, welche damit auch die Fehler nach außen reichen
+kann.
 
-Die schon oft erwähnte Methode \texttt{deleteHeader()} dient nun dazu alle oder nur Teile eines Headers zu entfernen. Grundsätzlich ist es hiermit auch möglich den Inhalt der gesamten SoapMessage zu löschen, was aber wenig Sinn macht. Bei der Implementierung muss die Variable \texttt{\$this->deleteTag} einfach mit dem betreffenden Tag gesetzt werden. Nach der \texttt{parse()} Methode wird dann automatisch eine Methode des XML Parsers durch den \texttt{ExtendedSoapServer} aufgerufen, welche den gesamten Inhalt des Tags löscht. Soll kein Inhalt des SoapHeaders entfernt werden, so braucht die Variable \texttt{\$this->deleteTag} einfach nicht gesetzt zu werden. In der konkreten Implementierung des \texttt{XmlSoapSecParsers} wird der gesamte Inhalt des Security Tags gelöscht.
+Die schon oft erwähnte Methode \texttt{deleteHeader()} dient nun dazu alle oder
+nur Teile eines Headers zu entfernen. Grundsätzlich ist es hiermit auch möglich
+den Inhalt der gesamten SoapMessage zu löschen, was aber wenig Sinn macht. Bei
+der Implementierung muss die Variable \texttt{\$this->deleteTag} einfach mit dem
+betreffenden Tag gesetzt werden. Nach der \texttt{parse()} Methode wird dann
+automatisch eine Methode des XML Parsers durch den \texttt{ExtendedSoapServer}
+aufgerufen, welche den gesamten Inhalt des Tags löscht. Soll kein Inhalt des
+SoapHeaders entfernt werden, so braucht die Variable \texttt{\$this->deleteTag}
+einfach nicht gesetzt zu werden. In der konkreten Implementierung des
+\texttt{XmlSoapSecParsers} wird der gesamte Inhalt des Security Tags gelöscht.
 
 \subsubsection{ICheckUserRunnable und CheckUserRunnable}
-\label{wss:CheckUserRunnable}
-Die Trennung ist notwendig, da bei einer Anwendung in einem Unternehmen immer wieder verschiedene Datenhaltungstechniken verwendet werden. Nur so ist gewährleistet, eine flexible Implementierung zu erstellen. In der Implementierung des Interfaces \texttt{ICheckUserRunnable} ist die eigentliche Logik des Standards enthalten. Hier wurde als Beispiel eine Implementierung für die tele-TASK-Benutzerverwaltung erstellt.
+\label{wss:CheckUserRunnable} Die Trennung ist notwendig, da bei einer Anwendung
+in einem Unternehmen immer wieder verschiedene Datenhaltungstechniken verwendet
+werden. Nur so ist gewährleistet, eine flexible Implementierung zu erstellen. In
+der Implementierung des Interfaces \texttt{ICheckUserRunnable} ist die
+eigentliche Logik des Standards enthalten. Hier wurde als Beispiel eine
+Implementierung für die tele-TASK-Benutzerverwaltung erstellt.
 
-Um den Ablauf zu verdeutlichen wurde ein Petrinetz erstellt, welches die Reihenfolge der Überprüfungen verdeutlicht. Es besteht aus zwei Teilen um die Komplexität etwas zu verringern. (siehe Abb. \ref{wss:WebserviceSecurityAblaufPart1} und \ref{wss:WebserviceSecurityAblaufPart2})
+Um den Ablauf zu verdeutlichen wurde ein Petrinetz erstellt, welches die
+Reihenfolge der Überprüfungen verdeutlicht. Es besteht aus zwei Teilen um die
+Komplexität etwas zu verringern. (siehe Abb.
+\ref{wss:WebserviceSecurityAblaufPart1} und
+\ref{wss:WebserviceSecurityAblaufPart2})
 
 \begin{figure}[!htb]
 \centering
@@ -629,19 +897,43 @@ Um den Ablauf zu verdeutlichen wurde ein Petrinetz erstellt, welches die Reihenf
 \label{wss:WebserviceSecurityAblaufPart1}
 \end{figure}
 
-Vorweg sei gesagt, die Umsetzung des Username Token Profile benötigt eine eigene Tabelle. Diese wird durch ADOdb und der Klasse \texttt{CheckUserDB} gekapselt. Die Tabelle besitzt zwei Spalten mit den Attributen für Nonce (Primary Key) und dem Created Zeitstempel. Mittels derer lassen sich doppelte und zu alte Anfragen filtern.
+Vorweg sei gesagt, die Umsetzung des Username Token Profile benötigt eine eigene
+Tabelle. Diese wird durch ADOdb und der Klasse \texttt{CheckUserDB} gekapselt.
+Die Tabelle besitzt zwei Spalten mit den Attributen für Nonce (Primary Key) und
+dem Created Zeitstempel. Mittels derer lassen sich doppelte und zu alte Anfragen
+filtern.
 
-Ein weiterer wichtiger Punkt ist, dass das type Feld im Password Tag nicht erkannt wird. Um dieses Problem, welche Version der Anfrage (PasswordText oder PasswordDigest), zu lösen, wird auf die gesetzten Tags geachtet. Das heißt zum Beispiel, dass beim PasswordText die optionalen Tags nicht gesetzt sein dürfen.
+Ein weiterer wichtiger Punkt ist, dass das type Feld im Password Tag nicht
+erkannt wird. Um dieses Problem, welche Version der Anfrage (PasswordText oder
+PasswordDigest), zu lösen, wird auf die gesetzten Tags geachtet. Das heißt zum
+Beispiel, dass beim PasswordText die optionalen Tags nicht gesetzt sein dürfen.
 
 \emph{Ablauf}
 
-Als erstes wird, wie schon oft beschrieben, der SoapHeader ausgelesen und die notwendigen Daten übermittelt. Es lassen sich mehrere Wege durch das Petrinetz finden, von links nach rechts gilt:
+Als erstes wird, wie schon oft beschrieben, der SoapHeader ausgelesen und die
+notwendigen Daten übermittelt. Es lassen sich mehrere Wege durch das Petrinetz
+finden, von links nach rechts gilt:
 
 \begin{enumerate}
-	\item Sollte die Zufallszahl exklusiv oder der Zeitstempel fehlen wird ein Fehler zurückgegeben. Daher liefert die \texttt{parse()} Funktion des \texttt{XmlSoapSecParser} nicht 0 sondern -101 (siehe \ref{wss:SoapFaults} \emph{SoapFaults})
-	\item Hierbei handelt es sich um PasswordText, dafür müssen sowohl Nonce als auch Created fehlen. Anschließend findet die Authentifikation statt. Hierbei kann es passieren, dass ein Benutzer unbekannt ist (-104), sein Passwort ungültig ist (-105) oder im Erfolgsfall das globale Userobjekt erzeugt und die Anfrage an den Webservice weitergeleitet wird, sofern keine anderen Parser Fehler auslösen.
-	\item Der gesamte Security Header fehlt und es kann somit an dieser Stelle ein Gastaccount geladen werden.
-	\item Als letzter Zweig wird nun PasswordDigest abgearbeitet. Dafür wird als erstes das Alter der Anfrage überprüft. Dabei gilt, alle Anfragen älter als fünf Minuten zu verwerfen (-106). Sollte dies nicht der Fall sein wird die Zufallszahl dekodiert (Base64), alle alten Zufallszahlen werden entfernt und es wird überprüft ob diese Zahl schon vorhanden ist (-106).
+
+	\item Sollte die Zufallszahl exklusiv oder der Zeitstempel fehlen wird
+	ein Fehler zurückgegeben. Daher liefert die \texttt{parse()} Funktion
+	des \texttt{XmlSoapSecParser} nicht 0 sondern -101 (siehe
+	\ref{wss:SoapFaults} \emph{SoapFaults})
+	\item Hierbei handelt es sich um PasswordText, dafür müssen sowohl Nonce
+	als auch Created fehlen. Anschließend findet die Authentifikation statt.
+	Hierbei kann es passieren, dass ein Benutzer unbekannt ist (-104), sein
+	Passwort ungültig ist (-105) oder im Erfolgsfall das globale Userobjekt
+	erzeugt und die Anfrage an den Webservice weitergeleitet wird, sofern
+	keine anderen Parser Fehler auslösen.
+	\item Der gesamte Security Header fehlt und es kann somit an dieser
+	Stelle ein Gastaccount geladen werden.
+	\item Als letzter Zweig wird nun PasswordDigest abgearbeitet. Dafür wird
+	als erstes das Alter der Anfrage überprüft. Dabei gilt, alle Anfragen
+	älter als fünf Minuten zu verwerfen (-106). Sollte dies nicht der Fall
+	sein wird die Zufallszahl dekodiert (Base64), alle alten Zufallszahlen
+	werden entfernt und es wird überprüft ob diese Zahl schon vorhanden ist
+	(-106).
 
 \begin{figure}[!htb]
 \centering
@@ -650,17 +942,32 @@ Als erstes wird, wie schon oft beschrieben, der SoapHeader ausgelesen und die no
 \label{wss:WebserviceSecurityAblaufPart2}
 \end{figure}
 	
-Sollte nun die gestellte Anfrage nicht doppelt oder zu alt sein, so wird zuerst das Passwort (MD5 verschlüsselt) vom Server geholt. Sollte dies fehlschlagen ist hier ebenfalls der Benutzer unbekannt(-104). Mit dem nun erhaltenen Passwort wird auf Serverseite ein zweiter Vergleichshashwert erzeugt und mit dem Zugesandten verglichen. Konnte der Hashwert korrekt erzeugt werden, so ist die Anfrage gültig und kann weitergereicht werden (Globales Userobjekt wird erzeugt und \texttt{return 0} als Rückgabewert geliefert). Andernfalls wird auch hier ein Fehler zurückgegeben (-105) 
+Sollte nun die gestellte Anfrage nicht doppelt oder zu alt sein, so wird zuerst
+das Passwort (MD5 verschlüsselt) vom Server geholt. Sollte dies fehlschlagen ist
+hier ebenfalls der Benutzer unbekannt(-104). Mit dem nun erhaltenen Passwort
+wird auf Serverseite ein zweiter Vergleichshashwert erzeugt und mit dem
+Zugesandten verglichen. Konnte der Hashwert korrekt erzeugt werden, so ist die
+Anfrage gültig und kann weitergereicht werden (Globales Userobjekt wird erzeugt
+und \texttt{return 0} als Rückgabewert geliefert). Andernfalls wird auch hier
+ein Fehler zurückgegeben (-105) 
 \end{enumerate}
 
 
 \subsubsection{XmlSoapHeaderParser}
 \label{wss:XmlSoapHeaderParser}
-Dieser Parser löscht den gesamten SoapHeader. Demnach nutzt er die Funktionalität des \texttt{XmlParserExtended} zum Löschen von Tag-Abschitten. Dies funktioniert wie schon zuvor in \texttt{XmlSoapSecParser} beschrieben. Dabei ist der einzige Unterschied, dass nicht nur das Security-Tag entfernt wird, sondern gleich der gesamte SoapHeader. Dieser Parser sollte demnach als allerletztes an den \texttt{ExtendedSoapServer} übergeben werden.
+Dieser Parser löscht den gesamten SoapHeader. Demnach nutzt er die
+Funktionalität des \texttt{XmlParserExtended} zum Löschen von Tag-Abschitten.
+Dies funktioniert wie schon zuvor in \texttt{XmlSoapSecParser} beschrieben.
+Dabei ist der einzige Unterschied, dass nicht nur das Security-Tag entfernt
+wird, sondern gleich der gesamte SoapHeader. Dieser Parser sollte demnach als
+allerletztes an den \texttt{ExtendedSoapServer} übergeben werden.
 
 \subsubsection{SoapFaults}
 \label{wss:SoapFaults}
-Das Thema SoapFaults basiert ebenfalls auf dem Web Service Security Standard (siehe \cite{wss:oasis} Soap Message Security 1.0) und ist somit wohl definiert. Die folgende Tabelle \ref{wss:SoapFaultsTable} zeigt den internen Fehlercode und den zugehörigen standardisierten Fehlercode sowie dessen Stringbeschreibung.
+Das Thema SoapFaults basiert ebenfalls auf dem Web Service Security Standard
+(siehe \cite{wss:oasis} Soap Message Security 1.0) und ist somit wohl definiert.
+Die folgende Tabelle \ref{wss:SoapFaultsTable} zeigt den internen Fehlercode und
+den zugehörigen standardisierten Fehlercode sowie dessen Stringbeschreibung.
 
 \begin{table}[!h]
 \caption{Fehlercodes}
@@ -689,15 +996,28 @@ Code & Code & String \\
 
 \subsubsection{Fazit}
 \label{wss:Fazit}
-Als Abschluss soll noch einmal ein kritischer Blick auf die erstellte Lösung geworfen werden. Dabei sind viele der geforderten Ziele umgesetzt worden. Die Benutzung des \texttt{ExtendedSoapServer} unterscheidet sich nur durch die Anwendung von XML Parsern. Die WSDL-Beschreibung und die Web Service-Klasse bleiben dagegen völlig identisch.
+Als Abschluss soll noch einmal ein kritischer Blick auf die erstellte Lösung
+geworfen werden. Dabei sind viele der geforderten Ziele umgesetzt worden. Die
+Benutzung des \texttt{ExtendedSoapServer} unterscheidet sich nur durch die
+Anwendung von XML Parsern. Die WSDL-Beschreibung und die Web Service-Klasse
+bleiben dagegen völlig identisch.
 
-Die unabhängige Implementierung der Sicherheitsaspekte konnte durch das Stategy-Pattern gelöst werden. Eine Umsetzung von weiteren Standards steht demzufolge nichts entgegen.
+Die unabhängige Implementierung der Sicherheitsaspekte konnte durch das
+Stategy-Pattern gelöst werden. Eine Umsetzung von weiteren Standards steht
+demzufolge nichts entgegen.
 
-Etwas unschön ist dabei, dass der \texttt{ExtendedSoapServer} nicht direkt von dem PHP eigenen SoapServer abgeleitet werden konnte. Es ist daher eher eine Frage der Zeit, bis diese Lösung etwas umstrukturiert werden muss. Dies wird aber wie schon zuvor erwähnt mit wenigen Handgriffen zu machen sein.
+Etwas unschön ist dabei, dass der \texttt{ExtendedSoapServer} nicht direkt von
+dem PHP eigenen SoapServer abgeleitet werden konnte. Es ist daher eher eine
+Frage der Zeit, bis diese Lösung etwas umstrukturiert werden muss. Dies wird
+aber wie schon zuvor erwähnt mit wenigen Handgriffen zu machen sein.
 
-Es kann auf Grund dessen im Gesamten eine positive Bilanz gezogen werden, vor allem dadurch, dass die Interoperabilität gewährleistet ist. (siehe \ref{wss:Interoperabilitaet} Interoperabilität)
+Es kann auf Grund dessen im Gesamten eine positive Bilanz gezogen werden, vor
+allem dadurch, dass die Interoperabilität gewährleistet ist. (siehe
+\ref{wss:Interoperabilitaet} Interoperabilität)
 
-Der Server ist vollständig erstellt. Es fehlt dabei allerdings die Möglichkeit die abgesicherten Web Services unter PHP zu verwenden. Dies soll an dieser Stelle nachgeholt werden.
+Der Server ist vollständig erstellt. Es fehlt dabei allerdings die Möglichkeit
+die abgesicherten Web Services unter PHP zu verwenden. Dies soll an dieser
+Stelle nachgeholt werden.
 
 \subsection{Umsetzung des Clients in PHP}
 \label{wss:UmsetzungClient}
@@ -709,24 +1029,59 @@ Der Server ist vollständig erstellt. Es fehlt dabei allerdings die Möglichkeit d
 \label{wss:UMLSecureSoapClient}
 \end{figure}
 
-Der Client ist punktuell für das Username Token Profile erweitert worden. Dabei konnte hier von einer Vererbung profitiert werden. Aus der von PHP gelieferten Klasse \texttt{SoapClient} wird der \texttt{SecureSoapClient}. Dazu wurde der Konstruktor leicht verändert, damit die zusätzlichen Parameter wie Name und Passwort entgegengenommen werden können. Dieser bietet demnach nun 4 Parameter an \texttt{\underline~\underline~construct(\$wsdl , \$options, \$user, \$pw)} in denen die zusätzlichen Informationen übergeben werden.
+Der Client ist punktuell für das Username Token Profile erweitert worden. Dabei
+konnte hier von einer Vererbung profitiert werden. Aus der von PHP gelieferten
+Klasse \texttt{SoapClient} wird der \texttt{SecureSoapClient}. Dazu wurde der
+Konstruktor leicht verändert, damit die zusätzlichen Parameter wie Name und
+Passwort entgegengenommen werden können. Dieser bietet demnach nun 4 Parameter
+an \texttt{\underline~\underline~construct(\$wsdl , \$options, \$user, \$pw)} in
+denen die zusätzlichen Informationen übergeben werden.
 
-Mit den zusätzlichen Daten generiert der Client bei jedem \texttt{\underline~\underline~call()} Aufruf automatisch den benötigten SoapHeader. Die Benutzung der Klasse ist dabei idealerweise nahezu identisch zum SoapClient und unterscheidet sich lediglich im erweiterten Konstruktor.
+Mit den zusätzlichen Daten generiert der Client bei jedem
+\texttt{\underline~\underline~call()} Aufruf automatisch den benötigten
+SoapHeader. Die Benutzung der Klasse ist dabei idealerweise nahezu identisch zum
+SoapClient und unterscheidet sich lediglich im erweiterten Konstruktor.
 
-Die Erstellung des SoapHeaders ist unter PHP allerdings eine Sache für sich. Es ist erforderlich eine Struktur von Structs zu generieren, um einen konformen Header erzeugen zu können. Hierbei kommen auch die PHP eigenen Klassen \texttt{SoapVar} und \texttt{SoapHeader} zum Einsatz. Der sogenannte \texttt{SecurityStruct}, welcher das Username Token kapselt, wird \texttt{SoapVar} übergeben, welcher daraus eine XML konforme Darstellung erzeugt. Das Ergebnis wird anschließend dem \texttt{SoapHeader} übergeben. Dabei ist leider zu beachten das type-Attribute innerhalb eines Tags nicht erzeugt werden können. Damit ist die Interoperabilität vom PHP Client zu beliebigen Web Service Security Servern leider nicht möglich. Auf Grund dessen, dass der Client nur PasswortDigest unterstützt, aber dies im Tag nicht identifizieren kann, wird er von anderen Servern als PasswortText interpretiert und dies sorgt für eine Ablehnung der Anfrage (PasswordText versus PasswortDigest). Bei dem erstellten \texttt{ExtendesSoapServer} ist dies kein Problem, da er dies an Hand der übergebenen Argumente herleitet und somit der Server einfach und problemlos mit dem Client kommunizieren kann. Demnach ist ein Erfolg bei anderen Servern abhängig von deren Implementierung.
+Die Erstellung des SoapHeaders ist unter PHP allerdings eine Sache für sich. Es
+ist erforderlich eine Struktur von Structs zu generieren, um einen konformen
+Header erzeugen zu können. Hierbei kommen auch die PHP eigenen Klassen
+\texttt{SoapVar} und \texttt{SoapHeader} zum Einsatz. Der sogenannte
+\texttt{SecurityStruct}, welcher das Username Token kapselt, wird
+\texttt{SoapVar} übergeben, welcher daraus eine XML konforme Darstellung
+erzeugt. Das Ergebnis wird anschließend dem \texttt{SoapHeader} übergeben. Dabei
+ist leider zu beachten das type-Attribute innerhalb eines Tags nicht erzeugt
+werden können. Damit ist die Interoperabilität vom PHP Client zu beliebigen Web
+Service Security Servern leider nicht möglich. Auf Grund dessen, dass der Client
+nur PasswortDigest unterstützt, aber dies im Tag nicht identifizieren kann, wird
+er von anderen Servern als PasswortText interpretiert und dies sorgt für eine
+Ablehnung der Anfrage (PasswordText versus PasswortDigest). Bei dem erstellten
+\texttt{ExtendesSoapServer} ist dies kein Problem, da er dies an Hand der
+übergebenen Argumente herleitet und somit der Server einfach und problemlos mit
+dem Client kommunizieren kann. Demnach ist ein Erfolg bei anderen Servern
+abhängig von deren Implementierung.
 
-Im Großen und Ganzen ist die Implementierung des Clients recht unspektakulär, jedoch werden einige nicht dokumentierte Funktionen in PHP benutzt, was die Entwicklung weitaus schwieriger gestaltet hat, als man anfänglich denken würde.
+Im Großen und Ganzen ist die Implementierung des Clients recht unspektakulär,
+jedoch werden einige nicht dokumentierte Funktionen in PHP benutzt, was die
+Entwicklung weitaus schwieriger gestaltet hat, als man anfänglich denken würde.
 
-Dieser Client kann somit durchaus als Vorlage für eigene Security Vorstellungen dienen. Eine Umstellung auf PasswordText wäre relativ problemlos möglich, um Interoperabilität zu anderen Servern gewährleisten zu können.
+Dieser Client kann somit durchaus als Vorlage für eigene Security Vorstellungen
+dienen. Eine Umstellung auf PasswordText wäre relativ problemlos möglich, um
+Interoperabilität zu anderen Servern gewährleisten zu können.
  
 \subsection{Einbettung in das Gesamtsystem}
 \label{wss:Einbettung}
 
-Da nun die Implementierung des Servers und des Clients abgeschlossen wurde, soll nun ein Blick auf das Gesamtsystem geworfen werden. 
-Dabei wird das altbekannte Bild \cite{WebServicePart2} Abb. \ref{wss:AufbauWithDetailSecurity} zu Grunde gelegt.
- In diesem wurde nun der Security Agent detaillierter dargestellt. Extended Server übernimmt dabei die Kapselung des eigentlichen PHP Soap Server und leitet die Anfrage an die zwei Parser weiter, die damit entsprechend ihrer Funktion umgehen. Als letzten neuen Bestandteil übernimmt User Token Check die Authetifikation mittels der Datenbank und dem User Management.
+Da nun die Implementierung des Servers und des Clients abgeschlossen wurde, soll
+nun ein Blick auf das Gesamtsystem geworfen werden. Dabei wird das altbekannte
+Bild \cite{WebServicePart2} Abb. \ref{wss:AufbauWithDetailSecurity} zu Grunde
+gelegt. In diesem wurde nun der Security Agent detaillierter dargestellt.
+Extended Server übernimmt dabei die Kapselung des eigentlichen PHP Soap Server
+und leitet die Anfrage an die zwei Parser weiter, die damit entsprechend ihrer
+Funktion umgehen. Als letzten neuen Bestandteil übernimmt User Token Check die
+Authetifikation mittels der Datenbank und dem User Management.
 
-Die WSDL Adminoberfläche wurde so erweitert, dass sie mit einem zusätzlichen Flag sichere Web Services erstellen kann.
+Die WSDL Adminoberfläche wurde so erweitert, dass sie mit einem zusätzlichen
+Flag sichere Web Services erstellen kann.
 
 \begin{figure}[!htb]
 \centering
@@ -738,9 +1093,13 @@ Die WSDL Adminoberfläche wurde so erweitert, dass sie mit einem zusätzlichen Fla
 \subsection{Interoperabilität}
 \label{wss:Interoperabilitaet}
 
-Um die Interoperabilität nachzuweisen, wurde der sichere Web Service einmal mit einem C\# und zum anderen mit einem Java Client getestet. 
-Beide Interoperabilitätstest verliefen erfolgreich und sind dem Anhang des Projektes zu entnehmen. 
-Die Umsetzung des User Token Profil auf Client Seite wird hier nicht näher erläutert. Es sei hier auf die Referenzimplementierungen\footnote{Microsoft Web Services Enhancements 3.0 www.microsoft.com und Java Axis 1.3 http://ws.apache.org/axis/} verwiesen.
+Um die Interoperabilität nachzuweisen, wurde der sichere Web Service einmal mit
+einem C\# und zum anderen mit einem Java Client getestet. Beide
+Interoperabilitätstest verliefen erfolgreich und sind dem Anhang des Projektes
+zu entnehmen. Die Umsetzung des User Token Profil auf Client Seite wird hier
+nicht näher erläutert. Es sei hier auf die
+Referenzimplementierungen\footnote{Microsoft Web Services Enhancements 3.0
+www.microsoft.com und Java Axis 1.3 http://ws.apache.org/axis/} verwiesen.
 
 %Stefan: wo bzw. an welcher stelle sinnvoller weise informationen zu REST eingebunden werden sollte, müsste nochmal durchdacht werden. hier erstmal der erste rohtext. Anmerkung und Kommentare sind willkommen
 \section{RESTful Web Services}
@@ -964,16 +1323,34 @@ Rückgabewerte der Datenbank abgefangen und auf die Objekte gemappt, so dass dies
 zur Verfügung gestellt werden können.
 
 \section{Zusammenfassung und Ausblick}
-Die von uns entwickelte Erweiterung der PHP5 Reflection API ermöglichte uns auf äußerst elegante Weise einen WSDL-Generator zu implementieren. Da die Algorithmen zum Ermitteln der Typinformationen sich nicht direkt im WSDL-Generator befanden, konnten wir gleich eine ganze Familie von Web Service Werkzeugen auf Basis der Extended Reflection API entwickeln.
-Die Fähigkeiten der Extended Reflection API sind sicherlich für viele weitere PHP Projekte interessant. Der eingeführte Annotation-Mechanismus könnte zudem eine Grundlage für die Nutzung von neuen dynamischen Programmiertechniken wie zum Beispiel aspekt-orientierter Programmierung in PHP sein.
+Die von uns entwickelte Erweiterung der PHP5 Reflection API ermöglichte uns auf
+äußerst elegante Weise einen WSDL-Generator zu implementieren. Da die
+Algorithmen zum Ermitteln der Typinformationen sich nicht direkt im
+WSDL-Generator befanden, konnten wir gleich eine ganze Familie von Web Service
+Werkzeugen auf Basis der Extended Reflection API entwickeln. Die Fähigkeiten der
+Extended Reflection API sind sicherlich für viele weitere PHP Projekte
+interessant. Der eingeführte Annotation-Mechanismus könnte zudem eine Grundlage
+für die Nutzung von neuen dynamischen Programmiertechniken wie zum Beispiel
+aspekt-orientierter Programmierung in PHP sein.
 
-Der WSDL-Generator unterstützt den WSDL 1.1 Standard für Document/Literal, RPC/Literal und RPC/Encoded Web Services. %und ist konform zum WS-I Basic Profile 1.1. 
-Zur Markierung von Klassen und Methoden als Web Service können Annotationen ähnlich wie in Java~EE und .NET verwendet werden. Zusätzlich werden semantische Informationen aus dem Quelltext in die WSDL-Dokumentation übernommen.
-Für Document/Wrapped Web Services können mit dem Adapter-Generator automatisch Adapter-Klassen generiert werden, die sich transparent um das Wrapping in den SOAP-Nachrichten kümmern.
+Der WSDL-Generator unterstützt den WSDL 1.1 Standard für Document/Literal,
+RPC/Literal und RPC/Encoded Web Services. %und ist konform zum WS-I Basic Profile 1.1. 
+Zur Markierung von Klassen und Methoden als Web Service können
+Annotationen ähnlich wie in Java~EE und .NET verwendet werden. Zusätzlich werden
+semantische Informationen aus dem Quelltext in die WSDL-Dokumentation
+übernommen. Für Document/Wrapped Web Services können mit dem Adapter-Generator
+automatisch Adapter-Klassen generiert werden, die sich transparent um das
+Wrapping in den SOAP-Nachrichten kümmern.
 
-Die rund 20 weiterführenden WS-*-Spezifikationen im Bereich der Sicherheit, Synchronisation und Sessioning, an denen zur Zeit gearbeitet wird, 
-werden zusätzliche Felder für die Header von SOAP-Nachrichten spezifizieren. Um diese Standards in Zukunft mit PHP nutzen zu können entwickelten wir den Extended SOAP Server, der um weitere Handler erweitert werden kann, die als Kette von SOAP-Intermediaries nacheinander eine SOAP-Nachricht bearbeiten.
-Auf der Basis des Extended SOAP Servers haben wir das Username-Token-Profile aus dem WS-Security Standard für PHP5 implementiert. Damit ist es Anwendungen, die einen Web Service nutzen, möglich sich beim Dienstanbieter sicher zu authentifizieren.
+Die rund 20 weiterführenden WS-*-Spezifikationen im Bereich der Sicherheit,
+Synchronisation und Sessioning, an denen zur Zeit gearbeitet wird, werden
+zusätzliche Felder für die Header von SOAP-Nachrichten spezifizieren. Um diese
+Standards in Zukunft mit PHP nutzen zu können entwickelten wir den Extended SOAP
+Server, der um weitere Handler erweitert werden kann, die als Kette von
+SOAP-Intermediaries nacheinander eine SOAP-Nachricht bearbeiten. Auf der Basis
+des Extended SOAP Servers haben wir das Username-Token-Profile aus dem
+WS-Security Standard für PHP5 implementiert. Damit ist es Anwendungen, die einen
+Web Service nutzen, möglich sich beim Dienstanbieter sicher zu authentifizieren.
 
 Als Alternative zu Web Services mit komplexen SOAP-Stacks und 
 dem damit verbundenen Aufwand, werden die Web Services im 
@@ -988,12 +1365,14 @@ Diese ermöglichen die automatische Generierung eines REST Servers der die Servic
 entgegen nimmt und außerdem bei Bedarf die Authentifikation des Clients über
 HTTP Digest durchführt.
 
-Das entwickelte Administrations-Tool bietet schließlich eine einheitliche Oberfläche
-um alle Werkzeuge zu konfigurieren und zu starten und damit 
-automatisiert SOAP-Server und REST-Server für eine bestehende Anwendung zu generieren.
+Das entwickelte Administrations-Tool bietet schließlich eine einheitliche
+Oberfläche um alle Werkzeuge zu konfigurieren und zu starten und damit
+automatisiert SOAP-Server und REST-Server für eine bestehende Anwendung zu
+generieren.
 
-Trotzdem es Pläne gibt die entwickelten Werkzeuge in einem konkreten Projekt einzusetzen,
-lag ein besonderes Augenmerk darauf alle Komponenten so allgemein und wiederverwendbar wie möglich zu gestalten.
+Trotzdem es Pläne gibt die entwickelten Werkzeuge in einem konkreten Projekt
+einzusetzen, lag ein besonderes Augenmerk darauf alle Komponenten so allgemein
+und wiederverwendbar wie möglich zu gestalten.
 
 
 \begin{thebibliography}{99}
@@ -1013,11 +1392,15 @@ lag ein besonderes Augenmerk darauf alle Komponenten so allgemein und wiederverw
   0.5em minus 0.4em\relax OASIS, Oktober 19, 2004.
   \newline http://www.oasis-open.org/committees/uddi-spec/doc/spec/v3/uddi-v3.0.2-20041019.htm
   
-\bibitem{WebServicePart1}
-C.~Hartmann, M.~Sprengel, M.~Perscheid, G.~Gabrysiak, F.~Menge, \emph{Einführung in XML Web Services}, Ausarbeitung zum Seminar Konzepte und Methoden der Web-Programmierung WS2005/06, Hasso-Plattner-Institut für Softwaresystemtechnik, November 2005
+\bibitem{WebServicePart1} C.~Hartmann, M.~Sprengel, M.~Perscheid, G.~Gabrysiak,
+F.~Menge, \emph{Einführung in XML Web Services}, Ausarbeitung zum Seminar
+Konzepte und Methoden der Web-Programmierung WS2005/06, Hasso-Plattner-Institut
+für Softwaresystemtechnik, November 2005
 
-\bibitem{WebServicePart2}
-S.~Böttner, A.~Meyer, S.~Marr, \emph{Web Service Facade for PHP5}, Ausarbeitung im Seminar Konzepte und Methoden der Web-Programmierung WS2005/06, Hasso-Plattner-Institut für Softwaresystemtechnik, 2006
+\bibitem{WebServicePart2} S.~Böttner, A.~Meyer, S.~Marr, \emph{Web Service
+Facade for PHP5}, Ausarbeitung im Seminar Konzepte und Methoden der
+Web-Programmierung WS2005/06, Hasso-Plattner-Institut für Softwaresystemtechnik,
+2006
 
 \bibitem{ibm:soapenc}
 Frank Cohen, \emph{Discover SOAP encoding's impact on Web service performance}, März 2003.
@@ -1029,23 +1412,25 @@ http://www-128.ibm.com/developerworks/webservices/library/ws-soapenc/
 \bibitem{wss:usernameTokenProfile}
 \emph {Username Token Profil}: http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-username-token-profile-1.0.pdf, 2004
 
-\bibitem{wss:designPatterns}
-E.~Gamma, R.~Helm, R~Johnson und J.~Vlissides \emph {Design Patterns} Addision-Wesley, 1995
+\bibitem{wss:designPatterns} E.~Gamma, R.~Helm, R~Johnson und J.~Vlissides \emph
+{Design Patterns} Addision-Wesley, 1995
 
-\bibitem{RESTServices}
-S.~Marr, \emph{RESTful Web Services}, Ausarbeitung zum ADT-Seminar WS2005/06, Hasso-Plattner-Institut für Softwaresystemtechnik, 2006
+\bibitem{RESTServices} S.~Marr, \emph{RESTful Web Services}, Ausarbeitung zum
+ADT-Seminar WS2005/06, Hasso-Plattner-Institut für Softwaresystemtechnik, 2006
 
 \bibitem{RESTTutorial}
 TUTORIAL LINK
 
-\bibitem{EnterprisePatterns}
-M.~Fowler, D.~Rice, M.~Foemmel, E.~Hieatt, R.~Mee, R.~Stafford, \emph{Patterns of Enterprise Application Architecture}.	Addison Wesley, 2002.
+\bibitem{EnterprisePatterns} M.~Fowler, D.~Rice, M.~Foemmel, E.~Hieatt, R.~Mee,
+R.~Stafford, \emph{Patterns of Enterprise Application Architecture}. Addison
+Wesley, 2002.
 
 \bibitem{rfc:2818}
 E.~Rescorla. RFC 2818: \emph{HTTP Over TLS}. Internet Engineering Task Force, Mai 2000.
 
-\bibitem{rfc:2617}
-J.~Franks, P.~Hallam-Baker, J.~Hostetler, S.~Lawrence, P.~Leach, A.~Luotonen, L.~Stewart. RFC 2617: \emph{HTTP Authentication: Basic and Digest Access Authentication}. Internet Engineering Task Force, Juni 1999.
+\bibitem{rfc:2617} J.~Franks, P.~Hallam-Baker, J.~Hostetler, S.~Lawrence,
+P.~Leach, A.~Luotonen, L.~Stewart. RFC 2617: \emph{HTTP Authentication: Basic
+and Digest Access Authentication}. Internet Engineering Task Force, Juni 1999.
 
 \end{thebibliography}
 
