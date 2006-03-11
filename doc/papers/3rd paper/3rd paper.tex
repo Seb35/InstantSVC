@@ -118,11 +118,22 @@ Christoph~Hartmann, Andreas~Meyer und Sebastian~Böttner
 \maketitle
 
 \begin{abstract}
-Dieses Paper beschreibt die Ergebnisse unserer Arbeit an einer Familie von Werkzeugen für Web Services unter PHP5. Die besonderen Spracheigenschaften machen die Entwicklung von Meta-Spach-Werkzeugen etwas schwierig. Daher wurde zunächst die Reflection API erweitert um die benötigten Informationen über Sprachkonstrukte zu bekommen. Auf dieser Basis wurde zunächst ein leistungsfähiger WSDL-Generator...
+Dieses Paper beschreibt die Ergebnisse unserer Arbeit an einer Sammlung von Werkzeugen
+für die automatisierte Erstellung von Web Services unter PHP5.
+Die besonderen Eigenschaften der Sprache machen die Entwicklung von Meta-Spach-Werkzeugen etwas schwierig.
+Daher wurde die Reflection API von PHP5 erweitert,
+um die benötigten Informationen über Sprachkonstrukte zu erhalten und Annotationen in PHP5 zu ermöglichen.
+Auf dieser Basis wurden zunächst ein leistungsfähiger WSDL-Generator und
+ein spezieller Code-Generator entwickelt.
+Um eine sichere Authentifizierung für Nutzer von Web Services zu ermöglichen
+wurde das Username-Token-Profile aus dem WS-Security-Standard für PHP5 implementiert.
+Dazu wurde der SOAP-Server um einen Handler-Chain-Mechanismus für SOAP-Intermediaries erweitert.
+Zusätzlich zu den Werkzeugen für SOAP-basierte Web Services entstand eine Reihe von Werkzeugen zur Entwicklung von RESTful Web Services mit PHP5.
+Ein Administrations-Tool stellt eine einheitliche grafische Oberfläche für alle Werkzeuge zur Verfügung um automatisiert SOAP-Server und REST-Server für eine bestehende Anwendung zu generieren und somit plattformübergreifende Kommunikation mit anderen Anwendungen zu ermöglichen.
 \end{abstract}
 
 \begin{keywords}
-PHP5, Reflection, Annotations, Web Services, WSDL-Generator, SOAP-Handler-Chains, WS-Security, REST.
+PHP5, Reflection, Annotations, Web Services, WSDL-Generator, SOAP-Handler-Chains, WS-Security, Username-Token-Profile, REST.
 \end{keywords}
 
 %Gliederung Paper (Obergrenze 10 S.)
