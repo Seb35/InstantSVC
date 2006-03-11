@@ -90,7 +90,7 @@
 
 
 % correct bad hyphenation here
-%\hyphenation{op-tical net-works semi-conduc-tor}
+\hyphenation{platt-form-über-greifende aspekt-ori-en-tie-rte aus-zu-tau-schen}
 
 
 \begin{document}
@@ -228,7 +228,17 @@ eingegangen. Dannach wird in einer umfangreichen Beispielanwendung gezeigt, wie
 die Werkzeuge zusammen eingesetzt werden können, um eine Anwendung mit Web
 Service Schnittstellen auszustatten.
 
-\section{Extended Reflection API} Die in PHP5 integrierte Reflection API bietet
+\section{Extended Reflection API} 
+%eingefügt:
+Zunächst besteht das Problem, an die in einer Programmiersprache 
+formulierten Informationen zu kommen, welche die Funktion und den 
+Ablauf eines beliebigen Programms und die Schnittstellen von Komponenten 
+beschreiben. In vielen Sprachumgebungen gibt es zu diesem Zweck sogenannte 
+Reflection APIs, welche es mit der Programmiersprache selbst ermöglichen an 
+die gewünschten Metainformationen zu kommen.
+%--
+
+Die in PHP5 integrierte Reflection API bietet
 die grundlegenden Möglichkeiten, um zur Laufzeit Informationen zur Struktur der
 verfügbaren programmiersprachlichen Konstrukte, insbesondere der verfügbaren
 Klassen, Erweiterungen und Funktionen, zu erhalten. Darüber hinaus bietet sie
@@ -244,7 +254,7 @@ Programmierung entspricht. Da PHP5 selbst eine schwach typisierte und teils
 sogar dynamische Sprache ist, bietet die API nur sehr wenige Informationen zur
 Typisierung der einzelnen Sprachkonstrukte an. Um jedoch nicht nur zur Laufzeit
 Informationen über die Typisierung erhalten zu können, wurde es erforderlich,
-die vorhandene API zu erweitern. Ziel dieser Erweiterung ist es, zusätzliche
+die vorhandene API zu erweitern. Ziel dieser Erweiterung ist es zusätzliche
 Informationen in der Quelltext-Dokumentation der Sprachkonstrukte nutzen zu
 können. Dabei wurde auf PHPDoc, die in der PHP-Welt genutzte Variation des
 JavaDoc-Standards, gesetzt. Ursprünglich sind diese Informationen dazu gedacht,
@@ -252,7 +262,7 @@ die arbeitsteilige Entwicklung zu unterstützen, in dem der Quellcode durch
 zusätzliche semantische Informationen angereichert wird.
 
 Da die PHPDoc-Tags sich in der PHP-Welt als Standard durchgesetzt haben und in
-viele bestehenden Projekten von diesen Gebrauch gemacht wird, bieten sie eine
+vielen bestehenden Projekten von diesen Gebrauch gemacht wird, bieten sie eine
 gute Basis um die nötigen Informationen aus den Quelltext-Kommentaren zu
 extrahieren, ohne neue Verfahren einzuführen, die in bestehenden Anwendungen
 weitgehende Anpassungen erfordern würden.
@@ -280,7 +290,7 @@ die Verwendung einer \texttt{TypeFactory} ist es möglich für verschiedene
 Anwendungsaspekte angepasste Typenklassen zu entwickeln, die weitere
 Zusatzinformationen zur Verfügung stellen. Aktuell implementiert ist unter
 anderem die Möglichkeit, direkt aus den Typen ihre Definition in XML Schema zu
-erhalten. Das ist Hilfreich beim Erstellen XML Schema Beschreibungen für
+erhalten. Das ist Hilfreich beim Erstellen von XML Schema Beschreibungen für
 Anwendungen, die PHP-Datenstrukturen nach XML serialisieren.
 
 Eine weitere wesentliche Erweiterung ist die Implementierung eines Annotation-Mechanismus,
@@ -296,7 +306,7 @@ nutzen, um aspektorientierte Programmierung unterstützen zu können. Dies ist in
 diesem Projekt jedoch nicht realisiert.
 
 \section{WSDL Generator} Nachdem die Extended Reflection API das Problem gelöst
-hatte Typinformationen für PHP5 Sprachkonstrukte zu ermitteln, konnten wir nun
+hatte, Typinformationen für PHP5 Sprachkonstrukte zu ermitteln, konnten wir nun
 einen WSDL-Generator für die Erstellung von Web Services entwickeln. Die Web
 Service Description Language (WSDL), welche in \cite{WebServicePart1} näher
 erläutert wird, verwendet man um die Schnittstellen der Dienste zu beschreiben.
@@ -665,7 +675,6 @@ Um sicherzustellen, dass keine Anfrage zweimal gesendet werden kann
 Zufallszahl (Nonce) verschlüsselt. Als \texttt{Type}-Wert muss hier
 grundsätzlich PasswordDigest gesetzt sein. Die Formel nach welcher sich die
 Verschlüsselung zusammensetzt, sieht nun wie folgt aus:
-
 \\
 \\
 \texttt{PasswordDigest = Base64( SHA-1( Nonce + Created + Password ))}
