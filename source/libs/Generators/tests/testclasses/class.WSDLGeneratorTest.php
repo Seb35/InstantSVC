@@ -40,19 +40,19 @@ class WSDLGeneratorTest {
      * @webmethod
      * @return Foo
      */
-    public function sayFoo() {
-        $fooly = new Foo();
-	return $fooly;
+    public function getFoo() {
+        $returnValue = new Foo();
+	return $returnValue;
     }
     /**
      * @webmethod
-     * @param Foo $fool
+     * @param Foo $inputFoo
      * @return Foo[]
      */
-    public function sayFooOverload($fool) {
-        $fooly[] = $fool;
-        $fooly[] = $fool;
-	return $fooly;
+    public function duplicateFoo($inputFoo) {
+        $returnValue[] = $inputFoo;
+        $returnValue[] = $inputFoo;
+	return $returnValue;
     }
 }
 ?>

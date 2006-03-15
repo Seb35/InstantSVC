@@ -1,5 +1,5 @@
 --TEST--
-WSDLGenerator 001 DOCLIT for class Helloworld
+WSDLGenerator 001 (doc/lit): HelloWorld->sayHello()
 --FILE--
 <?php
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4 filetype=php: */
@@ -12,8 +12,7 @@ require_once 'WSDLGenerator001.inc';
 
 $client = new SoapClient($wsdl_file, array("trace" => 1, "exceptions" => 0));
 $client->sayHello();
-//$client = new SoapClient(NULL, array("location" => "test://", "uri" => "http://www.example.org/webservices/", "trace" => 1, "exceptions" => 0));
-//$client->__soapCall("sayHello", array(), array("soapaction" => "http://www.example.org/webservices/", "uri" => "http://www.example.org/webservices/"));
+
 echo "\n" . 'SOAP Request:' . "\n" . $myXMLBeautifier->formatString($client->__getlastrequest()) . "\n";
 $HTTP_RAW_POST_DATA = $client->__getlastrequest();
 

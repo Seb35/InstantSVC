@@ -47,32 +47,32 @@ class SOAP_Interop_GroupI {
     
     /**
      * @webmethod
-     * @param Integer[] $input
+     * @param Integer[] $inputIntegerMultiOccurs
      * @return Integer[]
      */
-    function echoIntegerMultiOccurs($input)
+    function echoIntegerMultiOccurs($inputIntegerMultiOccurs)
     {
-        return $input;
+        return $inputIntegerMultiOccurs;
     }
     
     /**
      * @webmethod
-     * @param Float[] $input
+     * @param Float[] $inputFloatMultiOccurs
      * @return Float[]
      */
-    function echoFloatMultiOccurs($input)
+    function echoFloatMultiOccurs($inputFloatMultiOccurs)
     {
-        return $input;
+        return $inputFloatMultiOccurs;
     }
     
     /**
      * @webmethod
-     * @param string[] $input
+     * @param string[] $inputStringMultiOccurs
      * @return string[]
      */
-    function echoStringMultiOccurs($input)
+    function echoStringMultiOccurs($inputStringMultiOccurs)
     {
-        return $input;
+        return $inputStringMultiOccurs;
     }
     
     /**

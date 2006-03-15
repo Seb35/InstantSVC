@@ -1,11 +1,11 @@
 <?php
     /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
-    echo 'Note: The test cases may NOT delete the generated files.' . "\n";
+    echo 'Note: The test cases do NOT delete the generated WSDL files.' . "\n";
 
     require_once 'PEAR/RunTest.php';
 
-    $t = new PEAR_RunTest;
+    $t = new PEAR_RunTest(null, array('simple' => true));
     $testCases = array();
 
     $testCases = glob('./*.phpt', GLOB_BRACE);  

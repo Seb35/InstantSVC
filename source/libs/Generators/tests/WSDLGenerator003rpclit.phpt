@@ -1,5 +1,5 @@
 --TEST--
-WSDLGenerator 003 RPCLIT for class WSDLGeneratorTest->sayFooOverload($fool)
+WSDLGenerator 003 (rpc/lit): WSDLGeneratorTest->duplicateFoo(Foo)
 --FILE--
 <?php
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4 filetype=php: */
@@ -11,12 +11,9 @@ $soapBinding = 1;
 
 require_once 'WSDLGenerator001.inc';
 
-$fool = new Foo();
-
 $client = new SoapClient($wsdl_file, array("trace" => 1, "exceptions" => 0));
-$client->sayFooOverload(array('fool' => $fool));
-//$client = new SoapClient(NULL, array("location" => "test://", "uri" => "http://www.example.org/webservices/", "trace" => 1, "exceptions" => 0));
-//$client->__soapCall("sayHello", array(), array("soapaction" => "http://www.example.org/webservices/", "uri" => "http://www.example.org/webservices/"));
+$client->duplicateFoo(new Foo());
+
 echo "\n" . 'SOAP Request:' . "\n" . $myXMLBeautifier->formatString($client->__getlastrequest()) . "\n";
 $HTTP_RAW_POST_DATA = $client->__getlastrequest();
 
@@ -27,8 +24,8 @@ bool(true)
 
 SOAP Request:
 <?xml version="1.0" encoding="UTF-8"?>
-<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ns1="http://www.example.org/webservices/WSDLGenerator003rpclit" xmlns:xsd="http://www.w3.org/2001/XMLSchema"><SOAP-ENV:Body><ns1:sayFooOverload><fool><item><key>fool</key><value><inputString>test</inputString><myInteger>20</myInteger><stringArray><xsd:string>1d2</xsd:string><xsd:string>a1d</xsd:string></stringArray><myDouble/></value></item></fool></ns1:sayFooOverload></SOAP-ENV:Body></SOAP-ENV:Envelope>
+<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ns1="http://www.example.org/webservices/WSDLGenerator003rpclit" xmlns:ns2="http://www.example.org/webservices/WSDLGenerator003rpclit/types" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><SOAP-ENV:Body><ns1:duplicateFoo><inputFoo><ns2:inputString>test</ns2:inputString><ns2:myInteger>20</ns2:myInteger><ns2:stringArray><ns2:string>1d2</ns2:string><ns2:string>a1d</ns2:string></ns2:stringArray><ns2:myDouble xsi:nil="true"/></inputFoo></ns1:duplicateFoo></SOAP-ENV:Body></SOAP-ENV:Envelope>
 
 SOAP Response:
 <?xml version="1.0" encoding="UTF-8"?>
-<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ns1="http://www.example.org/webservices/WSDLGenerator003rpclit" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:ns2="http://www.example.org/webservices/WSDLGenerator003rpclit/types"><SOAP-ENV:Body><ns1:sayFooOverloadResponse><return><ns2:Foo><item><key>fool</key><value><inputString>test</inputString><myInteger>20</myInteger><stringArray><string><xsd:string>1d2</xsd:string><xsd:string>a1d</xsd:string></string></stringArray><myDouble></myDouble></value></item></ns2:Foo><ns2:Foo><item><key>fool</key><value><inputString>test</inputString><myInteger>20</myInteger><stringArray><string><xsd:string>1d2</xsd:string><xsd:string>a1d</xsd:string></string></stringArray><myDouble></myDouble></value></item></ns2:Foo></return></ns1:sayFooOverloadResponse></SOAP-ENV:Body></SOAP-ENV:Envelope>
+<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ns1="http://www.example.org/webservices/WSDLGenerator003rpclit" xmlns:ns2="http://www.example.org/webservices/WSDLGenerator003rpclit/types" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><SOAP-ENV:Body><ns1:duplicateFooResponse><return><ns2:Foo><ns2:inputString>test</ns2:inputString><ns2:myInteger>20</ns2:myInteger><ns2:stringArray><ns2:string>1d2</ns2:string><ns2:string>a1d</ns2:string></ns2:stringArray><ns2:myDouble xsi:nil="true"/></ns2:Foo><ns2:Foo><ns2:inputString>test</ns2:inputString><ns2:myInteger>20</ns2:myInteger><ns2:stringArray><ns2:string>1d2</ns2:string><ns2:string>a1d</ns2:string></ns2:stringArray><ns2:myDouble xsi:nil="true"/></ns2:Foo></return></ns1:duplicateFooResponse></SOAP-ENV:Body></SOAP-ENV:Envelope>

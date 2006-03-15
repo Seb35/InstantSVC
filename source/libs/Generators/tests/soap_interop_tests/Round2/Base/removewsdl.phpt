@@ -7,4 +7,3 @@ $wsdl_file = dirname(__FILE__) . '/round2_base.wsdl';
 //var_dump(unlink($wsdl_file));
 ?>
 --EXPECT--
-bool(true)
