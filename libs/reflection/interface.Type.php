@@ -81,11 +81,6 @@ interface Type {
     function getXmlName();
 
     /**
-     * @return string
-     */
-    function getNamespace();
-
-    /**
      * @param DOMDocument $dom
      * @return DOMElement
      */

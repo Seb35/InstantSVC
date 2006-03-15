@@ -9,6 +9,7 @@
 //**                                                                       **
 //** @package    libs.reflection                                           **
 //** @author     Stefan Marr <mail@stefan-marr.de>                         **
+//** @author     Falko Menge <mail@falko-menge.de>                         **
 //** @copyright  2006 ....                                                 **
 //** @license    www.apache.org/licenses/LICENSE-2.0   Apache License 2.0  **
 //**                                                                       **
@@ -69,18 +70,21 @@ class PrimitiveType extends AbstractType {
 
     //=======================================================================
     /**
+     * Returns name of the correspondent XML Schema datatype
+     *
+     * The prefix `xsd' is comonly used to refer to the 
+     * XML Schema namespace.
+     *
+     * @param boolean $usePrefix augments common prefix `xsd:' to the name
      * @return string
      */
-    function getXmlName() {
-        return TypeMapper::getInstance()->getXmlType($this->typeName);
-    }
-
-    //=======================================================================
-    /**
-     * @return string
-     */
-    function getNamespace() {
-        return '';
+    function getXmlName($usePrefix = true) {
+        if ($usePrefix) {
+            $prefix = 'xsd:';
+        } else {
+            $prefix = '';
+        }
+        return $prefix . TypeMapper::getInstance()->getXmlType($this->typeName);
     }
 
     //=======================================================================
@@ -92,5 +96,4 @@ class PrimitiveType extends AbstractType {
         return null;
     }
 }
-
 ?>

@@ -8,6 +8,7 @@
 //**                                                                       **
 //** @package    reflection                                                **
 //** @author     Stefan Marr <mail@stefan-marr.de>                         **
+//** @author     Falko Menge <mail@falko-menge.de>                         **
 //** @copyright  2006 ....                                                 **
 //** @license    www.apache.org/licenses/LICENSE-2.0   Apache License 2.0  **
 //**                                                                       **
@@ -16,17 +17,17 @@
 
 //***** imports *************************************************************
 require_once(dirname(__FILE__).'/class.AbstractType.php');
-require_once(dirname(__FILE__).'/const.xml.php');
 
 //***** ArrayType ***********************************************************
 /**
-* Provides type information of the array item type or map types
-*
-* @package    libs.reflection
-* @author     Stefan Marr <mail@stefan-marr.de>
-* @copyright  2006 ....
-* @license    http://www.apache.org/licenses/LICENSE-2.0   Apache License 2.0
-*/
+ * Provides type information of the array item type or map types
+ *
+ * @package    libs.reflection
+ * @author     Stefan Marr <mail@stefan-marr.de>
+ * @author     Falko Menge <mail@falko-menge.de>
+ * @copyright  2006 ....
+ * @license    http://www.apache.org/licenses/LICENSE-2.0   Apache License 2.0
+ */
 class ArrayType extends AbstractType {
 
     /**
@@ -186,14 +187,25 @@ class ArrayType extends AbstractType {
 
     //=======================================================================
     /**
+     * Returns XML Schema name of the complexType for the array
+     *
+     * The `this namespace' (tns) prefix is comonly used to refer to the 
+     * current XML Schema document.
+     *
+     * @param boolean $usePrefix augments common prefix `tns:' to the name
      * @return string
      */
-    function getXmlName() {
+    function getXmlName($usePrefix = true) {
+        if ($usePrefix) {
+            $prefix = 'tns:';
+        } else {
+            $prefix = '';
+        }
         if ($this->isArray()) {
-            return 'ArrayOf'.$this->arrayType->getXmlName();
+            return $prefix . 'ArrayOf'.$this->arrayType->getXmlName(false);
         }
         elseif ($this->isMap()) {
-            throw new Exception('Xml mapping is not supported for map-types');
+            throw new Exception('XML Schema mapping is not supported for map-types');
         }
     }
 
@@ -220,36 +232,29 @@ class ArrayType extends AbstractType {
      * @param DOMDocument $dom
      * @return DOMElement
      */
-    function getXmlSchema($dom) {
+    function getXmlSchema($dom, $namespaceXMLSchema = 'http://www.w3.org/2001/XMLSchema') {
         if ($this->isMap()) {
-            throw new Exception('Xml mapping is not supported for map-types');
+            throw new Exception('XML Schema mapping is not supported for map-types');
         }
 
         if (!$this->isArray()) {
             return null;
         }
 
-        $schema = $dom->createElementNS(XSD_SCHEMA, 'xsd:complexType');
-        $schema->setAttribute('name', $this->getXmlName());
+        $schema = $dom->createElementNS($namespaceXMLSchema, 'xsd:complexType');
+        $schema->setAttribute('name', $this->getXmlName(false));
 
-        $seq = $dom->createElementNS(XSD_SCHEMA, 'xsd:sequence');
+        $seq = $dom->createElementNS($namespaceXMLSchema, 'xsd:sequence');
         $schema->appendChild($seq);
-        $elm = $dom->createElementNS(XSD_SCHEMA, 'xsd:element');
+        $elm = $dom->createElementNS($namespaceXMLSchema, 'xsd:element');
         $seq->appendChild($elm);
 
         $elm->setAttribute('minOccurs', '0');
-    	$elm->setAttribute('maxOccurs', '1');
-    	$elm->setAttribute('nillable', 'true');
+        $elm->setAttribute('maxOccurs', 'unbounded');
+        $elm->setAttribute('nillable', 'true');
 
-    	$elm->setAttribute('name', $this->arrayType->getXmlName());
-
-    	if ($this->arrayType->isPrimitive()) {
-    	    $elm->setAttribute('type', $this->arrayType->getXmlName());
-    	}
-    	else {
-    	    $elm->setAttribute('type', XSD_TNSPREFIX.':'
-    	                               .$this->arrayType->getXmlName());
-    	}
+        $elm->setAttribute('name', $this->arrayType->getXmlName(false));
+        $elm->setAttribute('type', $this->arrayType->getXmlName(true));
 
         return $schema;
     }
