@@ -46,6 +46,11 @@ class WSDLGenerator
      */
     private $serviceAccessPointURL;
     /**
+     * List of XML namespaces
+     * @var array<string,string>
+     */
+    private $xmlns;
+    /**
      * @var string
      */
     private $namespace;
@@ -151,6 +156,12 @@ class WSDLGenerator
         }
         // signals the generator, that finishTree() still has to be called
         $this->treeFinished = false;
+        
+        // initialize the list of XML namespaces
+        $this->xmlns['wsdl'] = 'http://schemas.xmlsoap.org/wsdl/';
+        $this->xmlns['soap'] = 'http://schemas.xmlsoap.org/wsdl/soap/';
+        $this->xmlns['soapenc'] = 'http://schemas.xmlsoap.org/soap/encoding/';
+        $this->xmlns['xsd'] = 'http://www.w3.org/2001/XMLSchema';
     }
 
     //==========================================================================
@@ -168,54 +179,58 @@ class WSDLGenerator
     {
         $this->dom = new DOMDocument('1.0', 'UTF-8');
         $this->dom->formatOutput = true;
-        $this->definitions = $this->dom->createElement('definitions','');
+        $this->definitions = $this->dom->createElementNS(
+            $this->xmlns['wsdl'],
+            'wsdl:definitions',
+            ''
+            );
         $this->definitions->setAttribute('name', $this->serviceName);
         $this->definitions->setAttribute('targetNamespace', $this->namespace);
-        $this->definitions->setAttribute('xmlns', 'http://schemas.xmlsoap.org/wsdl/');
         $this->definitions->setAttribute('xmlns:tns', $this->namespace);
-        $this->definitions->setAttribute('xmlns:xsd', 'http://www.w3.org/2001/XMLSchema');
-        if ($this->bindingUse == 'encoded')
-        {
-            $this->definitions->setAttribute('xmlns:soapenc', 'http://schemas.xmlsoap.org/soap/encoding/');
-        }
         if (empty($this->typeNamespace))
         {
             $this->typeNamespace = $this->namespace;
         }
         $this->definitions->setAttribute('xmlns:types', $this->typeNamespace);
-        $this->definitions->setAttribute('xmlns:soap', 'http://schemas.xmlsoap.org/wsdl/soap/');
-        $this->definitions->setAttribute('xmlns:wsdl', 'http://schemas.xmlsoap.org/wsdl/');
+        /* could be removed if all names are qualified with namespace*/ $this->definitions->setAttribute('xmlns', $this->xmlns['wsdl']);
+        // will be added by createElementNS: $this->definitions->setAttribute('xmlns:wsdl', $this->xmlns['wsdl']);
+        $this->definitions->setAttribute('xmlns:soap', $this->xmlns['soap']);
+        if ($this->bindingUse == 'encoded')
+        {
+            $this->definitions->setAttribute('xmlns:soapenc', $this->xmlns['soapenc']);
+        }
+        $this->definitions->setAttribute('xmlns:xsd', $this->xmlns['xsd']);
         $this->definitions = $this->dom->appendChild($this->definitions);
 
         // Type-Section
-        $this->types = $this->dom->createElement('types','');
+        $this->types = $this->dom->createElementNS($this->xmlns['wsdl'], 'wsdl:types', '');
         $this->types = $this->definitions->appendChild($this->types);
-        $this->schema = $this->dom->createElement('schema','');
+        $this->schema = $this->dom->createElementNS($this->xmlns['xsd'], 'xsd:schema', '');
         $this->schema->setAttribute('xmlns', 'http://www.w3.org/2001/XMLSchema');
         $this->schema->setAttribute('targetNamespace', $this->typeNamespace);
         $this->schema->setAttribute('xmlns:tns', $this->typeNamespace);
         $this->schema->setAttribute('elementFormDefault', 'qualified');
         if ($this->bindingUse == 'encoded')
         {
-            $this->schema->setAttribute('xmlns:soapenc', 'http://schemas.xmlsoap.org/soap/encoding/');
+            $this->schema->setAttribute('xmlns:soapenc', $this->xmlns['soapenc']);
         }
         $this->schema = $this->types->appendChild($this->schema);
 
         // PortType-Section
-        $this->portType = $this->dom->createElement('portType','');
+        $this->portType = $this->dom->createElementNS('http://schemas.xmlsoap.org/wsdl/','wsdl:portType','');
         $this->portType->setAttribute('name', $this->serviceName.'PortType');
 
         // Binding-Section
-        $this->binding = $this->dom->createElement('binding','');
-        $this->binding->setAttribute('name',$this->serviceName.'Binding');
-        $this->binding->setAttribute('type','tns:'.$this->serviceName.'PortType');
-        $soap = $this->dom->createElement('soap:binding','');
+        $this->binding = $this->dom->createElementNS($this->xmlns['wsdl'], 'wsdl:binding', '');
+        $this->binding->setAttribute('name', $this->serviceName . 'Binding');
+        $this->binding->setAttribute('type', 'tns:' . $this->serviceName . 'PortType');
+        $soap = $this->dom->createElementNS($this->xmlns['soap'], 'soap:binding', '');
         $soap->setAttribute('transport','http://schemas.xmlsoap.org/soap/http');
         $soap->setAttribute('style',$this->bindingStyle);
         $soap = $this->binding->appendChild($soap);
 
         // Service-Section
-        $this->service = $this->dom->createElement('service','');
+        $this->service = $this->dom->createElementNS($this->xmlns['wsdl'], 'wsdl:service', '');
         $this->service->setAttribute('name',$this->serviceName);
     }
 
@@ -384,7 +399,7 @@ class WSDLGenerator
      */
     protected function addOperation($method)
     {
-        if (!($method->isMagic()) && ($method->getName() !='getInstance'))
+        if (!empty($method) and !$method->isConstructor() and !$method->isDestructor() and !$method->isMagic())
         {
             if ($this->bindingStyle != 'rpc')
             {
@@ -437,11 +452,11 @@ class WSDLGenerator
                     $part->setAttribute('name', $param->getName()); // name of Parameter
                     if ($this->bindingUse == 'literal')
                     {
-                        $part->setAttribute('type', $this->generateLiteralSchema($paramType));
+                        $part->setAttribute('type', $this->generateLiteralSchema($paramType, true, 'types'));
                     }
                     elseif ($this->bindingUse == 'encoded')
                     {
-                        $part->setAttribute('type',$this->generateEncodedSchema($paramType));
+                        $part->setAttribute('type', $this->generateEncodedSchema($paramType));
                     }
                     $part = $message->appendChild($part);
                 }
@@ -466,11 +481,11 @@ class WSDLGenerator
             $part->setAttribute('name','return');
             if ($this->bindingUse == 'encoded')
             {
-                $part->setAttribute('type',$this->generateEncodedSchema($returnType));
+                $part->setAttribute('type', $this->generateEncodedSchema($returnType));
             }
             elseif ($this->bindingUse == 'literal')
             {
-                $part->setAttribute('type', $this->generateLiteralSchema($returnType));
+                $part->setAttribute('type', $this->generateLiteralSchema($returnType, true, 'types'));
             }
             $part = $message->appendChild($part);
         }
@@ -531,7 +546,7 @@ class WSDLGenerator
         elseif ($type->isArray())
         {
             $arrayType = $type->getArrayType();
-            $arrayTypeName = $arrayType->getXMLName();
+            $arrayTypeName = $arrayType->getXmlName();
             $complexTypeName = 'ArrayOf' . $arrayType->toString();
 
             // checks, if the generated WSDL already contains a schema for
@@ -551,7 +566,7 @@ class WSDLGenerator
 
                 $attribute = $this->dom->createElement('attribute','');
                 $attribute->setAttribute('ref','soapenc:arrayType');
-                $attribute->setAttribute('wsdl:arrayType',$this->generateEncodedSchema($arrayType));
+                $attribute->setAttribute('wsdl:arrayType', $this->generateEncodedSchema($arrayType));
                 $attribute = $restriction->appendChild($attribute);
                 $this->myComplexTypes[] = $complexTypeName;
             }
@@ -565,8 +580,8 @@ class WSDLGenerator
             // and an array of that item min=0 max=unbounded type= (item)
             $indexType = $type->getMapIndexType();
             $valueType = $type->getMapValueType();
-            $convertedIndexType = $this->generateLiteralSchema($indexType);
-            $convertedValueType = $this->generateLiteralSchema($valueType);
+            $convertedIndexType = $this->generateEncodedSchema($indexType);
+            $convertedValueType = $this->generateEncodedSchema($valueType);
             if (!(in_array($indexType->toString().$valueType->toString().'map',$this->myComplexTypes)))
             {
                 if (!(in_array($indexType->toString().$valueType->toString().'item',$this->myComplexTypes)))
@@ -615,8 +630,8 @@ class WSDLGenerator
                 $sequence = $this->dom->createElement('sequence','');
                 $sequence = $complexType->appendChild($sequence);
 
-                if ($arrayType->isPrimitive()) {$arrayTypeInXML = $arrayType->getXMLName();}
-                else  {$arrayTypeInXML = $this->generateLiteralSchema($arrayType);}
+                if ($arrayType->isPrimitive()) {$arrayTypeInXML = $arrayType->getXmlName();}
+                else  {$arrayTypeInXML = $this->generateEncodedSchema($arrayType);}
                 $element->setAttribute('name', $indexType->toString().$valueType->toString().'array');
                 $element->setAttribute('type', $indexType->toString().$valueType->toString().'item');
 
@@ -672,20 +687,28 @@ class WSDLGenerator
      * This method generates schemas for RPC/ENCODED.
      *
      * @param ExtReflectionType $type
+     * @param boolean $usePrefix
+     * @param tring $prefix namespace prefix for names of complex types (for simple types it will be `xsd')
      * @return void
      */
-    protected function generateLiteralSchema($type)
+    protected function generateLiteralSchema($type, $usePrefix = true, $prefix = 'tns')
     {// mapping
 
-        $name = $type->getXMLName();
-        $returnValue = "xsd:string";
+        if (substr($prefix, -1) == ':') {
+            $prefix = substr($prefix, 0, -1);
+        }
+        
+        $name = $type->getXmlName(false); // name without namespace prefix
+        $qname = $type->getXmlName(true); // name qualified with namesspace prefix
+        $returnValue = '';
 
         if ($type->isClass())
         {
             // checks, if the generated WSDL already contains a schema for
             // that class
-            if (!(in_array($name,$this->myComplexTypes)))
+            if (!(in_array($name, $this->myComplexTypes)))
             {
+                // generate schemas for the property types
                 $myNewProperties = $type->getProperties();
                 if (!empty($myNewProperties))
                 {
@@ -701,15 +724,39 @@ class WSDLGenerator
                         }
                     }
                 }
-                $complexTypeAndContent = $type->getXmlSchema($this->dom);
+                // obtain the schema for the class from the Extended Reflection API
+                $complexTypeAndContent = $type->getXmlSchema($this->dom, $this->xmlns['xsd']);
                 $complexTypeAndContent = $this->schema->appendChild($complexTypeAndContent);
                 $this->myComplexTypes[] = $name;
             }
-            //reference to own typesection and use complexType-element
-            $returnValue = 'types:'.$name;
+            if ($usePrefix) {
+                $returnValue = $prefix . ':' .$name;
+            } else {
+                $returnValue = $name;
+            }
         }
         elseif ($type->isArray())
         {
+            // checks, if the generated WSDL already contains a schema for
+            // that array
+            if (!in_array($name, $this->myComplexTypes)) {
+                // generate schema for the array type
+                $arrayType = $type->getArrayType();
+                $this->generateLiteralSchema($arrayType);
+                // obtain the schema for the array from the Extended Reflection API
+                $complexTypeAndContent = $type->getXmlSchema($this->dom, $this->xmlns['xsd']);
+                $complexTypeAndContent = $this->schema->appendChild($complexTypeAndContent);
+                $this->myComplexTypes[] = $name;
+            }
+            if ($usePrefix) {
+                $returnValue = $prefix . ':' .$name;
+            } else {
+                $returnValue = $name;
+            }
+            //*/
+
+            /*
+            // old Code which doesn't use all Features of the Extended Reflection API
             $arrayType = $type->getArrayType();
             $complexTypeName = 'ArrayOf' . $arrayType->toString();
 
@@ -730,7 +777,7 @@ class WSDLGenerator
 
                 // now: checking, if the arrayType passed down is a Primitive
                 // if not: create the XML-Schema in the same Namespace
-                if ($arrayType->isPrimitive()) {$arrayTypeInXML = $arrayType->getXMLName();}
+                if ($arrayType->isPrimitive()) {$arrayTypeInXML = $arrayType->getXmlName();}
                 else  {$arrayTypeInXML = $this->generateLiteralSchema($arrayType);}
                 $element->setAttribute('name', $arrayType->toString());
                 $element->setAttribute('type', $arrayTypeInXML);
@@ -739,6 +786,7 @@ class WSDLGenerator
                 $this->myComplexTypes[] = $complexTypeName;
             }
             $returnValue = 'types:' . $complexTypeName;
+            //*/
         }
         elseif ($type->isMap())
         {
@@ -746,60 +794,79 @@ class WSDLGenerator
             // and an array of that item min=0 max=unbounded type= (item)
             $indexType = $type->getMapIndexType();
             $valueType = $type->getMapValueType();
-            $convertedIndexType = $this->generateLiteralSchema($indexType);
-            $convertedValueType = $this->generateLiteralSchema($valueType);
-            if (!(in_array($indexType->toString().$valueType->toString().'map',$this->myComplexTypes)))
+            
+            // Name of Map: e.g. integerstringmap
+            $mapComplexTypeName = $indexType->toString() . $valueType->toString() . 'Map';
+            
+            // checks, if the generated WSDL already contains a schema for
+            // that map
+            if (!in_array($mapComplexTypeName, $this->myComplexTypes))
             {
-                if (!(in_array($indexType->toString().$valueType->toString().'item',$this->myComplexTypes)))
+                // generate schema for the index type
+                $convertedIndexType = $this->generateLiteralSchema($indexType);
+                // generate schema for the value type
+                $convertedValueType = $this->generateLiteralSchema($valueType);
+
+                // generate schema for the item type
+                $itemComplexTypeName = $indexType->toString() . $valueType->toString() . 'Item';
+                if (!in_array($itemComplexTypeName, $this->myComplexTypes))
                 {   // create item: sequence of Index and Value of map
 
-                    $complexType = $this->dom->createElement('complexType','');
-                    $complexType->setAttribute('name', $indexType->toString().$valueType->toString().'item');
+                    $complexType = $this->dom->createElement('complexType', '');
+                    $complexType->setAttribute('name', $itemComplexTypeName);
                     $complexType = $this->schema->appendChild($complexType);
-                    $sequence = $this->dom->createElement('sequence','');
+                    $sequence = $this->dom->createElement('sequence', '');
                     $sequence = $complexType->appendChild($sequence);
                     // INDEXTYPE
-                    $indexElement = $this->dom->createElement('element','');
+                    $indexElement = $this->dom->createElement('element', '');
                     $indexElement->setAttribute('minOccurs', '1');
                     $indexElement->setAttribute('maxOccurs', '1');
                     $indexElement->setAttribute('name', 'index');
                     $indexElement->setAttribute('type', $convertedIndexType);
                     $indexElement = $sequence->appendChild($indexElement);
                     // VALUETYPE
-                    $valueElement = $this->dom->createElement('element','');
+                    $valueElement = $this->dom->createElement('element', '');
                     $valueElement->setAttribute('minOccurs', '1');
                     $valueElement->setAttribute('maxOccurs', '1');
                     $valueElement->setAttribute('name', 'value');
                     $valueElement->setAttribute('type', $convertedValueType);
                     $valueElement = $sequence->appendChild($valueElement);
-                    $this->myComplexTypes[] = $indexType->toString().$valueType->toString().'item';
+                    $this->myComplexTypes[] = $itemComplexTypeName;
                 }
-                $complexType = $this->dom->createElement('complexType','');
-                // Name of Map: e.g. integerstringmap
-                $complexType->setAttribute('name', $indexType->toString().$valueType->toString().'map');
+                
+                // generate schema for the map type
+                $complexType = $this->dom->createElement('complexType', '');
+                $complexType->setAttribute('name', $mapComplexTypeName);
                 $complexType = $this->schema->appendChild($complexType);
 
-                $sequence = $this->dom->createElement('sequence','');
+                $sequence = $this->dom->createElement('sequence', '');
                 $sequence = $complexType->appendChild($sequence);
 
-                $element = $this->dom->createElement('element','');
+                $element = $this->dom->createElement('element', '');
                 $element->setAttribute('minOccurs', '0');
                 $element->setAttribute('maxOccurs', 'unbounded');
 
-                if ($arrayType->isPrimitive()) {$arrayTypeInXML = $arrayType->getXMLName();}
-                else  {$arrayTypeInXML = $this->generateLiteralSchema($arrayType);}
-                $element->setAttribute('name', $indexType->toString().$valueType->toString().'array');
-                $element->setAttribute('type', $indexType->toString().$valueType->toString().'item');
+                $element->setAttribute('name', 'ArrayOf' . $itemComplexTypeName);
+                $element->setAttribute('type', 'tns:' . $itemComplexTypeName);
 
-                $this->myComplexTypes[] = $indexType->toString().$valueType->toString().'map';
+                $this->myComplexTypes[] = $mapComplexTypeName;
             }
 
-            $returnValue = 'types:'.$indexType->toString().$valueType->toString().'map';
-
+            if ($usePrefix) {
+                $returnValue = $prefix . ':' .$mapComplexTypeName;
+            } else {
+                $returnValue = $mapComplexTypeName;
+            }
         }
         elseif ($type->isPrimitive())
         {
-            $returnValue = $type->getXMLName();
+            // nothing to generate
+            // just return the name
+            if ($usePrefix) {
+                $returnValue = $qname;
+            } else {
+                $returnValue = $name;
+            }
         }
         return $returnValue;
     }
@@ -849,7 +916,7 @@ class WSDLGenerator
                     $element->setAttribute('maxOccurs', '1');
 
                     // type of Parameter, even for classes
-                    $element->setAttribute('type', $this->generateLiteralSchema($paramType));
+                    $element->setAttribute('type', $this->generateLiteralSchema($paramType, true));
                     $element = $sequence->appendChild($element);
                 }
                 else
@@ -898,7 +965,7 @@ class WSDLGenerator
             $element->setAttribute('maxOccurs','1');
 
             // type of Parameter, also for classes
-            $element->setAttribute('type',$this->generateLiteralSchema($returnType));
+            $element->setAttribute('type', $this->generateLiteralSchema($returnType, true));
             $element = $sequence->appendChild($element);
         }
 
