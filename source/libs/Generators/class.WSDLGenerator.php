@@ -831,7 +831,8 @@ class WSDLGenerator
 
             foreach ($params as $param)
             {
-                $paramType = $param->getType();
+                $paramType = $param->getType
+                ();
                 if (!empty($paramType))
                 {
                     $element = $this->dom->createElement('element', '');
@@ -841,8 +842,11 @@ class WSDLGenerator
                     if ($param->isOptional())
                     {
                         $element->setAttribute('minOccurs', '0');
-                        $element->setAttribute('maxOccurs', '1');
+                    } else {
+                        $element->setAttribute('minOccurs', '1');
                     }
+
+                    $element->setAttribute('maxOccurs', '1');
 
                     // type of Parameter, even for classes
                     $element->setAttribute('type', $this->generateLiteralSchema($paramType));
