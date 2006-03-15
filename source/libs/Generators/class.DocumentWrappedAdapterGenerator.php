@@ -135,7 +135,7 @@ class DocumentWrappedAdapterGenerator {
         $gen.= '    }' . "\n";
         $gen.= '' . "\n";
         foreach ($methods as $method) {
-            if (!$method->isConstructor() and !$method->isDestructor()) {
+            if (!$method->isConstructor() and !$method->isDestructor() and !$method->isMagic()) {
                 $methodName = $method->getName();
                 $params = $method->getParameters();
                 $returnType = $method->getReturnType();
