@@ -35,12 +35,15 @@ DONE - finalization method
 DONE - filter methods by policy plugin
 DONE - wsdl:documentation before every method if given by policy plugin
 DONE - constants as class constants
-     - add documentation when adding functions [should be triggered by an optional argument of addFunction()]
-     - verify doc-lit and rpc-lit output with WS-I Basic Profile 1.1
-       Possible Flaws:
-       R2206 rpc-lit
-     - use ExdReflectionMethod::isMagic() in the Document/Wrapped-Adapter-Generator
-     - use Web Service Annotations directly to avoid the need for a database
+DONE - use ExdReflectionMethod->isMagic() in the Document/Wrapped-Adapter-Generator
+     - test WSDL generation for Map-Types
+     - more test cases for rpc/literal
+V2   - verify doc-lit and rpc-lit output with WS-I Basic Profile 1.1
+REM    Possible Flaws:
+REM    R2206 rpc-lit
+V2   - add documentation when adding functions [should be triggered by an optional argument of addFunction()]
+V2   - use Web Service Annotations directly to avoid the need for a database
+V2   - cleaner use of XML Namespaces [always use DOMDocument->createElementNS()]
 V2   - XML Schema in external .xsd-file
 V2   - XML Schema validation against http://schemas.xmlsoap.org/wsdl/soap/2003-02-11.xsd
 REM    (a better validation engine is needed. The DOM extension has problems with the xsd)
