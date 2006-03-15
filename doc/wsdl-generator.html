@@ -1,0 +1,90 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<title>Tutorial zum WSDL Generator</title>
+<meta name="author" content="Gregor Gaysiak, Falko Megne" />
+<link id="style" href="style.css" rel="stylesheet" rev="stylesheet" />
+<script>
+var phpOnly = false;
+function switchCSS() {
+  if (phpOnly) {
+    document.getElementById('style').href = "style.css";
+    document.getElementById('style_link').innerHTML = "nur Quellcode";
+  }
+  else {
+    document.getElementById('style').href = "code.only.css";
+    document.getElementById('style_link').innerHTML = "mit Hinweisen";
+  }
+  phpOnly = !phpOnly;
+}
+</script>
+</head>
+
+<body>
+<a id="style_link" href="javascript:switchCSS();">nur Quellcode</a>
+<h1>Tutorial zum WSDL Generator</h1>
+<p>Man beginnt natürlich die Erstellung eines Web Services zuerst mit einer Klasse,
+aus der man den Web Service generieren will. Als Beispielklasse haben wir hier
+eine einfache HelloWorld-Klasse.</p>
+<code class="completed" style="color: #0000BB">&lt;?php</code>
+<code><span style="color: #FF9900">/**
+*&nbsp;@webservice
+*/
+</span><span style="color: #007700">class&nbsp;</span><span style="color: #0000BB">HelloWorld&nbsp;</span><span style="color: #007700">{
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FF9900">/**
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;@webmethod
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;@return&nbsp;string
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*/
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #007700">public&nbsp;function&nbsp;</span><span style="color: #0000BB">sayHello</span><span style="color: #007700">()&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;</span><span style="color: #DD0000">'Hello&nbsp;World!'</span><span style="color: #007700">;
+&nbsp;&nbsp;&nbsp;&nbsp;}
+}</span></code>
+<code class="completed"> </code>
+<p>Diese Klasse besitzt genau eine Methode, die für den Web Service genutzt werden
+kann, nämlich die sayHello(). Es gibt keine Eingabeparameter, sondern nur einen
+R&uuml;ckgabewert für diese Methode. Dies muss die zu generierende WSDL-datei
+dem Client mitteilen, damit er keine Eingabeparameter schickt um die Methode
+aufzurufen, aber einen String als Ausgabe erwartet, in diesem Fall den nämlich
+den String `Hello World!'. Diese Informationen werden über PHPDocTags
+(z.B. `@return string') von der Ext. Reflection API eingeholt und dem
+WSDLGenerator zur Verfügung gestellt. Dieser weiß dadurch, dass sayHello()
+einen String zurückliefert</p>
+<p>In unserem Beispiel muss nun die Klasse WSDLGenerator eingebunden werden, um die
+Generierung der WSDL-datei zu starten. Das könnte also ungefähr so aussehen:</p>
+<code><span style="color: #007700">require_once&nbsp;</span><span style="color: #DD0000">'class.WSDLGenerator.php'</span><span style="color: #007700">;</span></code>
+<code class="completed"> </code>
+<p>Wenn der Zugriff auf beide Klassen so sichergestellt ist, kann man mit der
+Konfiguration des WSDLGenerators beginnen. Er benötigt den eigentlichen
+Servicenamen (`HelloWorldService'), einen Servicezugangspunkt
+(`http://www.example.org/webservices/HelloWorldService.php') und einen Namespace
+für die WSDL-datei (`http://www.example.org/webservices/HelloWorldService').
+Außerdem ist es möglich, die Art der SOAP-Bindung anzupassen, aber standardmäßig
+arbeitet der Generator mit der empfohlenen Konfiguration document-wrapped.
+Man instanziiert als nächstes also den Generator:</p>
+<code><span style="color: #0000BB">$myWSDLGenerator&nbsp;</span><span style="color: #007700">=&nbsp;new&nbsp;</span><span style="color: #0000BB">WSDLGenerator</span><span style="color: #007700">(
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #DD0000">'HelloWorldService'</span><span style="color: #007700">,
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #DD0000">'http://www.example.org/webservices/HelloWorldService.php'</span><span style="color: #007700">,
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #DD0000">'http://www.example.org/webservices/HelloWorldService'</span><span style="color: #007700">);</span></code>
+<code class="completed"> </code>
+<p>und übergibt ihm dann die Klasse:</p>
+<code><span style="color: #0000BB">$myWSDLGenerator</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">setClass</span><span style="color: #007700">(</span><span style="color: #DD0000">'HelloWorld'</span><span style="color: #007700">);</span></code>
+<code class="completed"> </code>
+<p>wodurch die Bearbeitung angestoßen wird. Die fertige WSDL-beschreibung kann
+dann entweder als String</p>
+<code><span style="color: #0000BB">$myWSDL&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">$myWSDLGenerator</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">getString</span><span style="color: #007700">();</span></code>
+<p>oder als DOMDocument</p>
+<code><span style="color: #0000BB">$myDOM&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">$myWSDLGenerator</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">getDOMDocument</span><span style="color: #007700">();</span></code>
+<code class="completed"> </code>
+<p>bezogen werden.
+<br>
+Man kann sie jedoch auch gleich in eine Datei speichern mit:</p>
+<code><span style="color: #0000BB">$filename&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #DD0000">'./HelloWorldService.wsdl'</span><span style="color: #007700">;
+</span><span style="color: #0000BB">$myWSDLGenerator</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">saveToFile</span><span style="color: #007700">(</span><span style="color: #0000BB">$filename</span><span style="color: #007700">);</span></code>
+<code class="completed"> </code>
+<p>Um einen Server direkt zu starten gibt es speziell für Entwickler noch die Methode:</p>
+<code><span style="color: #0000BB">$myWSDLGenerator</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">saveToFileAndStartSOAPServer</span><span style="color: #007700">(</span><span style="color: #0000BB">$filename</span><span style="color: #007700">);</span></code>
+<code class="completed" style="color: #0000BB">?&gt;</code>
+<p> </p>
+</body>
+</html>
