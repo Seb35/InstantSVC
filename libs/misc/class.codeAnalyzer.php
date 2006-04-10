@@ -383,9 +383,7 @@ class CodeAnalyzer {
 
         $cli = (strpos(php_sapi_name(), 'cli') !== false);
         if ($cli) {
-            $fh = fopen($file, 'w');
-            fwrite($fh, $result);
-            fclose($fh);
+            file_put_contents($file, $result);
         } else {
             echo $result;
         }

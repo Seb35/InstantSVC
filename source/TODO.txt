@@ -2,8 +2,20 @@ DONE -> Erledigt
 REM  -> Remember/Merke
 Vn	 -> Bsp. V2 geplant für Version 2.0
 
+KORREKTUREN FÜR ENDBENOTUNG
+
+	DONE	- rest.dd.generator setDeploymentPath Parameter prüfen
+	DONE	- datei operationen nicht gesichert (exception handling)
+(Christoph)	- mehrere klassen in einer datei? in eigene dateien verteilen
+(Christoph) - Extended Soap Server -> auslagern von XML Code
+(Gregor&Falko) - Text
+
+
+
+
+
 allgemein
-(alle)		- Konzept für eine Seite
+(alle)	- Konzept für eine Seite
 		- Integration von Stats/Docu-Flaws ins Admin-Tool
 		- Tutorial zu Axis und .Net-WSDL.exe
 

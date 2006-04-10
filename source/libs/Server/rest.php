@@ -93,12 +93,13 @@ foreach ($restDD['mapping'] as $pattern => $methods) {
 
 	        if ($requestMethod == 'POST' or $requestMethod == 'PUT') {
 	            //Get content from stdin if it's a PUT or POST request
-                $requestData = '';
-                $httpContent = fopen('php://input', 'r');
-                while ($data = fread($httpContent, 1024)) {
-                    $requestData .= $data;
-                }
-                fclose($httpContent);
+                //$requestData = '';
+                //$httpContent = fopen('php://input', 'r');
+                //while ($data = fread($httpContent, 1024)) {
+                //    $requestData .= $data;
+                //}
+                //fclose($httpContent);
+                $requestData = file_get_contents('php://input');
 
                 if (class_exists($unSerClass)) {
                     $unSer = new $unSerClass();

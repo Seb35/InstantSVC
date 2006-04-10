@@ -140,9 +140,7 @@ class RestDeploymentDescriptorGenerator {
         $ddStr.= $ddArray;
         $ddStr.= "\n?>";
 
-        $file = fopen($this->deploymentPath.'/'.$this->ddFile, 'w');
-        fwrite($file, $ddStr);
-        fclose($file);
+        file_put_contents($this->deploymentPath.'/'.$this->ddFile, $ddStr);
     }
 
     //=========================================================================
@@ -278,7 +276,11 @@ class RestDeploymentDescriptorGenerator {
      * @param string $path
      */
     public function setDeployPath($path) {
-        $this->deploymentPath = realpath($path);
+        $rPath = realpath($path);
+        if ($rPath === false) {
+            throw new Exception('Set path does not exist.');
+        }
+        $this->deploymentPath = $rPath;
     }
 
     //=========================================================================
