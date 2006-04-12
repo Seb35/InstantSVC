@@ -130,10 +130,10 @@ das Username-Token-Profile aus dem WS-Security-Standard für PHP5 implementiert.
 Dazu wurde der SOAP-Server um einen Handler-Chain-Mechanismus für
 SOAP-Intermediaries erweitert. Zusätzlich zu den Werkzeugen für SOAP-basierte
 Web Services entstand eine Reihe von Werkzeugen zur Entwicklung von RESTful Web
-Services mit PHP5. Ein Administrations-Tool stellt eine einheitliche grafische
-Oberfläche für alle Werkzeuge zur Verfügung um automatisiert SOAP-Server und
-REST-Server für eine bestehende Anwendung zu generieren und somit
-plattformübergreifende Kommunikation mit anderen Anwendungen zu ermöglichen.
+Services mit PHP5. Ein Administrationstool stellt eine einheitliche grafische
+Oberfläche für alle Werkzeuge zur Verfügung, um automatisiert SOAP- und
+REST-Server für eine bestehende Anwendung zu generieren, wodurch eine
+plattformübergreifende Kommunikation mit anderen Anwendungen möglich wird.
 \end{abstract}
 
 \begin{keywords} PHP5, Reflection, Annotations, Web Services, WSDL-Generator,
@@ -207,35 +207,37 @@ Script, das mit Hilfe der WSDL-Beschreibung einen SOAP Server startet. Dieser
 erzeugt dann ein Exemplar der dazugehörigen Klasse und beginnt SOAP-Anfragen zu
 beantworten.
 
-Das ist natürlich bei weitem nicht so komfortabel, wie man es von .NET oder
-Java~EE gewohnt ist. Zwar ist die SOAP-Implementierung sehr einfach zu benutzen,
-aber die manuelle Erstellung von WSDL-Beschreibungen ist sehr aufwändig und
+Das ist natürlich bei weitem nicht so komfortabel, wie man es von .NET oder der
+Java~Enterprise~Edition gewohnt ist. Die SOAP-Implementierung ist zwar sehr 
+einfach zu benutzen,
+jedoch ist die manuelle Erstellung von WSDL-Beschreibungen sehr aufwändig und
 könnte prinzipiell automatisiert werden. Um also professionell in großen
-Systemen Web Services anzubieten benötigt man umfangreiche
+Systemen Web Services anzubieten, benötigt man umfangreiche
 Werkzeugunterstützung. Typischerweise verwendet man in anderen
 Programmiersprachen Annotationsmechanismen um Klassen und Methoden einer
 Anwendung zu markieren, die als Web Service verwendet werden sollen. Mit dem so
 markierten Quelltext wird eine Werkzeugkette angestoßen, die dann
 WSDL-Beschreibungen, zusätzlichen Code für Stubs und Skeletons und falls nötig
-Deployment-Deskriptoren generiert, mit denen die Web Services sofort bereit für
-den Produktiveinsatz sind.
+Deployment-Deskriptoren generiert. Damit sind die Web Services sofort bereit für
+den Produktiveinsatz.
 
 Das Ziel unserer Arbeit war es, diese Lücken in der Werkzeugunterstützung für
-PHP5 zu schließen. Im folgenden werden zunächst die entwickelten Werkzeuge
+PHP5 zu schließen. Im Folgenden werden zunächst die entwickelten Werkzeuge
 einzeln vorgestellt. Dabei wird besonders auf die Architektur und die
 getroffenen Design-Entscheidungen, die zu der jeweiligen Lösung geführt haben,
-eingegangen. Dannach wird in einer umfangreichen Beispielanwendung gezeigt, wie
+eingegangen. Danach wird in einer umfangreichen Beispielanwendung gezeigt, wie
 die Werkzeuge zusammen eingesetzt werden können, um eine Anwendung mit Web
 Service Schnittstellen auszustatten.
 
-\section{Extended Reflection API} 
+\section{Extended Reflection API}
 %eingefügt:
-Zunächst besteht das Problem, an die in einer Programmiersprache 
-formulierten Informationen zu kommen, welche die Funktion und den 
-Ablauf eines beliebigen Programms und die Schnittstellen von Komponenten 
-beschreiben. In vielen Sprachumgebungen gibt es zu diesem Zweck sogenannte 
-Reflection APIs, welche es mit der Programmiersprache selbst ermöglichen an 
-die gewünschten Metainformationen zu kommen.
+Zunächst besteht das Problem, an Informationen zu gelangen, die in einer
+Programmiersprache formuliert sind. Diese Informationen beschreiben die
+Funktionalität und den Ablauf eines beliebigen Programms sowie die
+Schnittstellen von Komponenten.
+In vielen Sprachumgebungen gibt es zu diesem Zweck sogenannte 
+Reflection APIs, welche es mit der Programmiersprache selbst ermöglichen, an 
+die gewünschten Metainformationen zu gelangen.
 %--
 
 Die in PHP5 integrierte Reflection API bietet
@@ -281,7 +283,7 @@ Dieses wird im wesentlichen von drei Klassen implementiert.
 \texttt{PrimitiveType} repräsentiert die einfachen Datentypen wie
 \texttt{Integer}, \texttt{Float} und \texttt{String}, \textsl{ArrayType} alle
 möglichen Array-Typen und \texttt{ClassType} alle Klassen. Damit ist es möglich
-aus einem programmiersprachlichen Konstrukt, nicht nur zur dessen Laufzeit,
+aus einem programmiersprachlichen Konstrukt, nicht nur zu dessen Laufzeit,
 sondern auch ohne ein Exemplar des Konstrukts, die gewünschten Typinformationen
 zu gewinnen.
 
@@ -290,7 +292,7 @@ die Verwendung einer \texttt{TypeFactory} ist es möglich für verschiedene
 Anwendungsaspekte angepasste Typenklassen zu entwickeln, die weitere
 Zusatzinformationen zur Verfügung stellen. Aktuell implementiert ist unter
 anderem die Möglichkeit, direkt aus den Typen ihre Definition in XML Schema zu
-erhalten. Das ist Hilfreich beim Erstellen von XML Schema Beschreibungen für
+erhalten. Das ist hilfreich beim Erstellen von XML~Schema Beschreibungen für
 Anwendungen, die PHP-Datenstrukturen nach XML serialisieren.
 
 Eine weitere wesentliche Erweiterung ist die Implementierung eines Annotation-Mechanismus,
@@ -311,25 +313,25 @@ einen WSDL-Generator für die Erstellung von Web Services entwickeln. Die Web
 Service Description Language (WSDL), welche in \cite{WebServicePart1} näher
 erläutert wird, verwendet man um die Schnittstellen der Dienste zu beschreiben.
 Anbieter von Web Services können ihren Nutzern WSDL-Dokumente zur Verfügung
-stellen, aus denen sie Erfahren welche Operationen angeboten werden und welche
+stellen, aus denen sie erfahren welche Operationen angeboten werden und welche
 Elemente in den SOAP-Nachrichten enthalten sein müssen um sie zu nutzen. Die
 WSDL-Beschreibung ist dann eine Art Vertrag zwischen den Kommunikationspartnern,
 an den sich beide halten müssen um erfolgreich Nachrichten auszutauschen. Der
 von uns entwickelte WSDL-Generator erzeugt WSDL-Dokumente gemäß dem WSDL 1.1
 Standard\cite{WSDL}.
 
-Bereits bei der Konzeption eines Web Services gibt es zwei 
-grundlegende Entscheidungen zu treffen: die Art des Methodenaufrufs 
+Bereits bei der Konzeption eines Web Services gibt es zwei
+grundlegende Entscheidungen zu treffen: die Art des Methodenaufrufs
 und die Art der Datenrepräsentation in XML. Zuerst widmen wir uns den Aufrufsmodi.
 
-Ein Web Service kann durch zwei verschiedene Arten angestoßen 
-werden - entweder über einen 
+Ein Web Service kann durch zwei verschiedene Arten angestoßen
+werden - entweder über einen
 "`Remote-Procedure-Call"' (RPC) oder auf Basis des "`Document"'-Stils (DOC).
-Bei RPC wird versucht, durch die Methode und deren Parameter 
-einen Methodenaufrufsstack direkt beim Server nachzuahmen. 
-Die so aufgebaute Struktur, die diesen Stack repräsentiert, 
-wird dann zur Kommunikation genutzt. Der Client nimmt den 
-Web Service als einzelne, logische Komponente mit gekapselten 
+Bei RPC wird versucht, durch die Methode und deren Parameter
+einen Methodenaufrufsstack direkt beim Server nachzuahmen.
+Die so aufgebaute Struktur, die diesen Stack repräsentiert,
+wird dann zur Kommunikation genutzt. Der Client nimmt den
+Web Service als einzelne, logische Komponente mit gekapselten
 Objekten wahr. Die Komplexität wird also durch den SOAP RPC Stack verborgen.
 
 Bei der DOC-Variante hingegen wird der Methodenaufruf direkt auf ein XML
@@ -353,13 +355,13 @@ spezifizierte SOAP-Encoding. Diese schreibt vor, wie man alle Typen der
 jeweiligen Programmiersprache, auf vom Standard definierte Typen von
 XML-Elementen abbildet. Wenn die Nachricht dann also versendet werden soll,
 müssen Client und Web Service dafür sorgen, diese Abbildungen zu nutzen. Die
-zweite Kodierungsart ist die "`Literal"'-Variante. 
+zweite Kodierungsart ist die "`Literal"'-Variante.
 Hierbei wird für die
-Nachrichten keine spezielle Kodierung verwendet sondern reines XML, welches über 
+Nachrichten keine spezielle Kodierung verwendet sondern reines XML, welches über
 XML Schema zu definieren ist. Der Nachteil hierbei ist, dass alle Datenkonstrukte
 explizit durch eigene Schemas beschrieben werden müssen.
 
-Diese zwei mal zwei Möglichkeiten lassen sich nun kombinieren und 
+Diese zwei mal zwei Möglichkeiten lassen sich nun kombinieren und
 so ergeben sich theoretisch vier Varianten, einen Web Service zu erstellen:
  	
 \begin{itemize}
@@ -412,7 +414,7 @@ benötigten Informationen zu erhalten.
 
 Jede so gefundenen Methoden bzw. jede hinzugefügte Funktion muss in
 die WSDL-Datei abgebildet werden. Sollten bestimmte Methoden nicht
-veröffentlicht werden, so kann das Policy-PlugIn, das in Abschnitt
+veröffentlicht werden, so kann das Policy-PlugIn, das im Abschnitt
 \ref{Policy-PlugIn} vorgestellt wird, genutzt werden. Es erhält als Eingabe die
 Liste der ExtReflectionMethoden und liefert eine gefilterte Liste zurück. Die
 Entscheidung, ob eine Methode veröffentlicht werden soll oder nicht, findet es
@@ -469,12 +471,12 @@ XML-Element mit einem oder mehreren Kind-Elementen vorkommt. Die
 SOAP-Implementierung von PHP5 wurde entwickelt um alle Arten der SOAP-Bindung zu
 unterstützen. Diese generische Auslegung führt allerdings dazu, dass das
 Wrapping und Unwrapping bei Document/Wrapped Web Services nicht automatisch vom
-SOAP-Server vorgenommen wird, sondern durch die gerufenen Methode oder Funktion
+SOAP-Server vorgenommen wird, sondern durch die gerufene Methode oder Funktion
 ausgeführt werden muss. 
-Auf der einen Seite bietet dieses Vorgehen Anwendungen einige Freiheiten in der
+Auf der einen Seite bietet dieses Vorgehen für Anwendungen einige Freiheiten in der
 Verwendung von SOAP. Andererseits erfordert es, die Signaturen der Methoden oder
-Funktionen anzupassen um eine Document/Wrapped Bindung zu nutzen. Eine solche
-Anpassung verhindert allerdings die parallele Nutzung als normale Methode und
+Funktionen anzupassen, um eine Document/Wrapped Bindung zu nutzen. Eine solche
+Anpassung verhindert allerdings die parallele Nutzung als reguläre Methode und
 ist in bereits bestehenden Systemen völlig undenkbar. Zudem müssten die
 PHPDoc-Kommentare, um eine WSDL-Generierung zu ermöglichen, die tatsächlichen
 Typen für Argumente und Rückgabewert verleugnen.
@@ -494,15 +496,15 @@ public function echoString($inputString) {
 }
 \end{verbatim}
 \normalsize
-Die Fallunterscheidung macht die Methode wieder in ihrem normalen Kontext
+Die Fallunterscheidung macht die Methode wieder in ihrem gewohnten Kontext
 verwendbar, ist aber nur eine partielle Lösung des Problems, da dies nur für
 Methoden mit einem einzigen Parameter funktioniert. Allgemein lässt sich das
 Problem lösen, indem man eine Adapter-Klasse einsetzt, die Methoden mit den
-gleichen Namen anbietet, und diese statt der Original-Klasse beim SOAP-Server
-registriert. Die Methoden der Adapter-Klasse rufen mit den Argumenten aus dem
-jeweiligen vom SOAP-Server übergebenen Objekt die Methode an der Orginal-Klasse
-auf und verpacken den Rückgabewert in ein Array bevor sie ihn zur Serialisierung
-an den SOAP-Server zurückgeben.
+gleichen Namen anbietet, und diese anstelle der Original-Klasse beim SOAP-Server
+registriert. Die Methoden der Adapter-Klasse rufen die Methode an der 
+Orginal-Klasse mit den Argumenten aus dem vom SOAP-Server übergebenen Objekt.
+Der jeweilige Rückgabewert wird in ein Array verpackt bevor er zur Serialisierung
+an den SOAP-Server zurückgegeben wird.
 
 Eine einfache Beispielklasse könnte so aussehen:
 \small
@@ -558,13 +560,13 @@ class AdderDocumentWrappedAdapter {
 \end{verbatim}
 \normalsize
 Die Adapter-Klasse sorgt transparent für das Unwrapping von Argumenten und das
-Wrapping von Rückgabewerten und die Orginal-Klasse muss dazu in keiner Weise
+Wrapping von Rückgabewerten. Die Orginal-Klasse muss dazu in keiner Weise
 angepasst werden.
 
 Ein solcher Adapter enthält keine anwendungsspezifische Geschäftslogik und kann
 daher automatisch generiert werden. Auf Basis unserer Extended Reflection API
 haben wir einen entsprechenden Code-Generator entwickelt. Abb.
-\ref{KlassendiagrammAdapterGenerator} zeigt die Schnittstelle über die das
+\ref{KlassendiagrammAdapterGenerator} zeigt die Schnittstelle, über die das
 Werkzeug genutzt werden kann.
 
 \begin{figure}[!htb]
@@ -577,58 +579,54 @@ Werkzeug genutzt werden kann.
 Zusätzlich zu der Generierung von WSDL-Beschreibungen wird somit auch dieser
 Schritt für die Erstellung von Web Services mit PHP5 automatisiert.
 
-\section{WS-Security} \label{sec:wss} \subsection{Übersicht}
-\label{sec:wss:Uebersicht} Nicht immer möchte man seine Web Services jedem frei
+\section{WS-Security} \label{sec:wss} 
+%\subsection{Übersicht}
+%\label{sec:wss:Uebersicht} 
+Nicht immer möchte man seine Web Services jedem frei
 verfügbar machen. Möglicherweise möchte man kostenpflichtige Dienste anbieten
 oder sie nur unternehmensintern bzw. mit ausgewählten Geschäftspartnern nutzen.
-Dabei werden die Grenzen der Spezifikationen von Web Services in ihrem normalen
-Umfang von WSDL, SOAP und UDDI schnell erreicht. Dies bedeutet nicht, dass keine
+Dabei werden die Grenzen der Grundlagenstandards SOAP, WSDL und UDDI schnell
+erreicht. Dies bedeutet nicht, dass keine
 möglichen Lösungen existieren. Doch wenn keine einheitlichen Standards verwendet
 werden, gehen die Lösungen schnell soweit auseinander, dass es an
 Interoperabilität mangelt und die Entwickler von Client-Applikationen
-Integrationsprobleme haben. Die Frage nach Sicherheitsmechanismen für Web
-Services steht nun im Zeichen dieses Kapitels.
+Integrationsprobleme haben. Dieses Kapitel wird sich mit Sicherheitsmechanismen
+für Web Services auseinander setzen.
 
-\subsection{Anforderungen an gesicherte Webservices}
+\subsection{Anforderungen an gesicherte Web Services}
 \label{sec:wss:Anforderungen} Wird allgemein von Sicherheit gesprochen, sind
-viele Dinge zu beachten. Bei Sicherheit handelt es sich meist nicht nur um
-funktionale, sondern auch um nicht-funktionale Anforderungen. Um Sicherheit in
-Software untersuchen zu können, existieren verschiedenen Kriterien. Im
-Allgemeinen sind dabei die Punkte Verfügbarkeit, Datenintegrität,
-Vertraulichkeit, Authentifikation und Autorisation anerkannt. Diese Aspekte
-werden hier im Weiteren nicht näher erläutert, sollen aber auf eine gewisse
-Sensibilität aufmerksam machen, die bei einer Umsetzung von Sicherheit
-gewährleistet werden muss.
+viele Dinge zu beachten. Dabei handelt es sich meist nicht nur um
+funktionale, sondern auch um nicht-funktionale Anforderungen. Im
+Allgemeinen sind dabei die Punkte Datenintegrität,
+Vertraulichkeit, Authentifikation und Autorisation anerkannt. 
 
-Für eine Umsetzung von Sicherheitsaspekten bei der Verwendung von Web Services
-müssen vor Beginn der Arbeiten einige Designziele aufgestellt werden, die es
-einzuhalten gilt. Diese beeinflussen die Lösungsfindung entscheidend. Hierzu
-zählt vor allem, dass die Implementierung bzw. die Benutzung von
-Sicherheitsaspekten nicht zu Lasten des Anwendungsentwicklers gehen darf. Die
-Implementierung eines Web Services muss vollständig unabhängig von möglichen
-Sicherheitstechniken sein. Dies liegt darin begründet, dass eine sichere
-Implementierung morgen schon als sehr unsicher gelten kann. Aus diesem Grund
-darf eine Sicherheits-Implementierung nur eine Erweiterung zur Business-Logik
-sein, welche schnell ausgetauscht werden kann. Ein weiterer Punkt betrifft eine
-möglichst große Interoperabilität. Auch wenn PHP nicht die klassische
-Software-Plattform für die Implementierung von Web Services ist, so muss eine
-Lösung dennoch aus Java und .Net genutzt werden können.
+Für einige dieser Sicherheitsanforderungen existieren bereits Lösungen, die
+auch mit PHP genutzt werden können. Die Integrität der Daten wird bereits
+sichergestellt durch den Einsatz des TCP-Protokolls zur Datenübertragung.
+Vertraulichkeit kann realisiert werden, indem eine SSL-Verschlüsselung zum
+Beispiel in Form des HTTPS-Protokolls genutzt wird.
+Grundvoraussetzung für eine Autorisation ist ein authentifizierter Benutzer.
+Die Authentifizierung von Benutzern ist der Aspekt mit dem sich 
+Web Services Security (WSS)
+beschäftigt. Autorisation hingegen ist immer anwendungsspezifisch und kann
+daher nicht durch Standards abgedeckt werden.
+Die entscheidende Komponente, die für sichere Web Services mit PHP5 noch fehlte,
+war also eine Implementierung des WS-Security-Standards.
 
-Das Thema Sicherheit umfasst einen riesigen Themenkomplex. Daher ist es nicht
-möglich, eine vollständige Sicherheitslösung in einem kurzen Zeitraum
-umzusetzen. Hierbei sind auch viele Reviews nötig, um wirkliche Sicherheit zu
-gewährleisten. Es musste daher auf einen Teil der zuvor genannten
-Sicherheitsaspekte das Hauptaugenmerk gelegt werden. Dies soll im Nachfolgenden
-bei der Umsetzung die Authentifizierung sein. Die Web Services werden dabei
-weiterhin unverschlüsselt übertragen. Allerdings dürfen andere Aspekte nicht
-außer Acht gelassen werden, so sollte z.B. die entstehende Lösung weiteren
-Sicherheitsstrategien nicht im Wege stehen.
+Für die Umsetzung von Sicherheitsaspekten für Web Services gilt es einige
+Designziele einzuhalten. Hierzu zählt vor allem, dass die Benutzung von
+Sicherheitsmechanismen nicht zu Lasten des Anwendungsentwicklers gehen darf. 
+Eine Sicherheits-Implementierung sollte daher nur eine Erweiterung zur Geschäftslogik
+sein, die bei Bedarf ausgetauscht werden kann. 
+Ein weiteres wichtiges Ziel ist Interoperabilität, denn Web Services dienen zur
+plattformübergreifenden Kommunikation. Die Sicherheitsmechanismen müssen also
+beispielsweise problemlos mit .NET oder Java genutzt werden können.
 
 \subsection{Mögliche Ansätze zur Absicherung von Web Services}
 \label{sec:wss:Ansaetze}
-Möchte man hier eine Lösung finden, fällt gleich ein grober Ablauf ein. Dieser besteht aus:
+Ein grober Ablauf für eine mögliche Lösung könnte folgendermaßen aussehen:
 \begin{enumerate}
-	\item Anmelden, sowie Verschlüsseln der Anmeldedaten auf Clientseite
+	\item Anmelden, sowie Verschlüsseln der Anmeldedaten auf Seite des Klienten
 	\item Die Anmeldedaten auf Serverseite abfragen und auswerten
 	\item Nach der korrekten Authentifizierung wird die Anfrage an die Web Service Implementierung weitergeleitet
 \end{enumerate}
@@ -636,63 +634,71 @@ Möchte man hier eine Lösung finden, fällt gleich ein grober Ablauf ein. Dieser b
 Lösungen eines selbst implementierten Token-Prinzips sind immer möglich, stehen
 jedoch im Kontrast zu einer geforderten Interoperabilität. Demnach muss ein
 Standard gefunden werden, welcher genau diese Anforderungen erfüllen kann. In
-der Welt von Java und .Net hat dabei Web Service Security\footnote{Basiert auf
-Standard 1.0, am 17.2.2006 wurde die Version 1.1 veröffentlicht} von Oasis eine
-weite Verbreitung gefunden. Dieser Standard umfasst mehrere Teile. Das ist auf
-der einen Seite Soap Message Security zum Verschlüsseln von Nachrichten und der
-Behandlung von Fehlern. Auf der anderen Seite gibt es die Token
-Profiles\footnote{Hier wird nur das Username Token Profil 1.0 betrachtet}. Diese
-beschreiben einen Authentifizierungsmechanismus für Web Services. Sie erfüllen
-dabei idealerweise fast alle geforderten Ziele und wurden daher für eine
-Implementierung in PHP ausgewählt. Eine Umsetzung des Username Token Profile 1.0
-steht nun im Mittelpunkt der weiteren Arbeiten.
+der Welt von Java und .NET hat dabei Web Services Security\footnote{Basiert auf
+Standard 1.0 (am 17.2.2006 wurde Version 1.1 veröffentlicht)} von OASIS \cite{wss:oasis} eine
+weite Verbreitung gefunden. Dieser Standard umfasst mehrere Teile. Das ist zum einen
+SOAP Message Security zum Verschlüsseln von Nachrichten und zur Behandlung von Fehlern.
+Zum anderen gibt es verschiedene Token Profiles, welche Authentifizierungsmechanismen
+für Web Services spezifizieren. Wir haben uns damit beschäftigt das
+Username Token Profile 1.0 für PHP5 umzusetzen.
 
 \subsection{Username Token Profile 1.0 im Detail} \label{sec:wss:UTPDetail} Das
-Username Token Profile 1.0 wurde von Oasis \cite{wss:oasis} erarbeitet. In der
-hier vorgestellten Version, handelt es sich, wie schon erwähnt nicht um die
-Version 1.1, da sie zu Beginn der Entwicklung nur als Entwurf vorlag und der
-erweiterte Funktionsumfang nicht benötigt wurde. Des Weiteren wird Version 1.0
-schon durch diverse Middleware-Plattformen unterstützt und bietet somit eine
-gute Grundlage für Interoperabilitätstest und Anwendungen. Der Standard
-beschreibt nicht neue Techniken, sondern gibt einen Rahmen vor, wie die
-benötigten Informationen in einem spezifizierten Format zu übertragen sind.
-Dabei wird kein Verschlüsselungsalgorithmus für das Passwort festgelegt, da
-dessen Wert kontinuirlich mit der Zeit abnimmt.
+Username Token Profile \cite{wss:usernameTokenProfile} wurde von OASIS erarbeitet.
+Unsere Umsetzung basiert auf Version 1.0 dieses Standards. Die Version 1.1 lag zu
+Beginn unserer Arbeit nur als Entwurf vor und der erweiterte Funktionsumfang wurde
+nicht benötigt. Des Weiteren wird Version 1.0 bereits durch diverse
+Middleware-Plattformen unterstützt und verspricht somit eine gute Interoperabilität.
+Der Standard beschreibt keine neue Techniken, sondern gibt einen Rahmen vor, wie die
+benötigten Informationen für eine Authentifizierung in einem standardisierten Format
+zu übertragen sind. Diese Informationen umfassen zum Beispiel Benutzername und
+Passwort, aber auch technische Details wie Angaben zum verwendeten
+Verschlüsselungsverfahren.
 
-Das Format besteht aus dem ersten Tag \texttt{<wsse:Security>}, welches die
-Webservice Security Daten im SoapHeader kapselt. Darauf folgt ein Tag namens
-\texttt{<wsse:UsernameToken>}, der darauf aufmerksam macht, dass hier das
-Username Token Profil benutzt wird. Nun folgen die benötigten Daten, dabei gilt,
-\texttt{<wsse:Username>} muss immer angegeben werden und ist unverschlüsselt.
-Beim nächsten Tag \texttt{<wsse:Password Type=\grqq...\grqq>} unterscheidet man
-zwei Typen: \begin{itemize} \item \emph{PasswortText (default)}
+%TODO: sind die drei Punkte vor #PasswordDigest ein Fehler?!?
+\begin{figure}[!htb]
+\centering
+\includegraphics[width=3.4in]{pics/UTPCode}
+\caption{Beispiel für die Elemente des Username Token Profils im SOAP-Header}
+\label{wss:UTPCode}
+\end{figure}
 
-Hierbei kann das type Feld leer gelassen werden und als Daten sind nur der
-Username und das Passwort (bzw. Passwortäquivalent) notwendig. \item
-\emph{PasswordDigest}
-
-Um sicherzustellen, dass keine Anfrage zweimal gesendet werden kann
-(Replayattacke), wird das Passwort mittels eines Zeitstempels und einer
-Zufallszahl (Nonce) verschlüsselt. Als \texttt{Type}-Wert muss hier
-grundsätzlich PasswordDigest gesetzt sein. Die Formel nach welcher sich die
-Verschlüsselung zusammensetzt, sieht nun wie folgt aus:
-\\
-\\
-\texttt{PasswordDigest = Base64( SHA-1( Nonce + Created + Password ))}
-\\
-\\
-
-Die Zufallszahl wird mit dem Datum und dem Passwort (bzw. Äquivalent)
-zusammengekettet, danach wird mittels eines SHA-1-Algorithmus dieser Wert
-gehasht und nochmals mit Base64 kodiert. Auf Serverseite wird mittels der
-bekannten Daten (Zufallszahl und Zeitstempel sind im Header enthalten) ebenfalls
-ein Vergleichswert erschaffen, um damit dann die Korrektheit der Anfrage zu
-überprüfen. Somit ist jede Anfrage nur genau einmal gültig (Hashwert ist jedes
-Mal verschieden). Identische Anfragen werden natürlich von der Serverseite
-negiert.
+Das Format definiert ein neues Element \texttt{<wsse:Security>} im SOAP-Header, welches
+weitere Elemente mit Web Services Security Daten kapselt. Darauf folgt ein Element
+\texttt{<wsse:UsernameToken>}, das die Verwendung des
+Username Token Profils signalisiert und die benötigten Daten-Elemente enthält. 
+Das Datenelement \texttt{<wsse:Username>} muss immer angegeben werden und enthält den
+unverschlüsselten Benutzernamen.
+Das nächste Element\verb|<wsse:Password Type="...">| enthält das Passwort des Benutzers oder
+Passwortäquivalent.
+Beim Attribut \verb|Type| dieses Elements gibt es zwei mögliche Werte:
+\begin{itemize}
+  \item \emph{PasswortText (Standardwert)}
+    Hierbei kann das \texttt{Type}-Feld leer gelassen werden und als Daten sind nur der
+    Username und das Passwort (bzw. Passwortäquivalent) notwendig.
+  \item \emph{PasswordDigest}
+    Beim \texttt{Type}-Wert \verb|PasswordDigest| wird das Passwort verschlüsselt
+    übertragen. Dabei werden vom Standard keine Verschlüsselungsalgorithmen festgelegt, da
+    diese austauschbar sein sollen.
+    Um sicherzustellen, dass keine Anfrage zweimal gesendet werden kann
+    (Replay-Attacke), wird das Passwort (\verb|Password|) zusammen mit einem Zeitstempel (\verb|Created|) und einer
+    Zufallszahl (\verb|Nonce|) verschlüsselt. Die Formel, nach der sich die
+    Verschlüsselung zusammensetzt, sieht nun wie folgt aus:
+    \\
+    \\
+    \texttt{PasswordDigest = Base64( SHA-1( Nonce + Created + Password ))}
+    \\
+    \\
+    Passwort, Zeitstempel und Zufallszahl sind Zeichenketten, die aneinander gehängt,
+    mit dem SHA-1-Algorithmus verschlüsselt und Base64 kodiert werden.
+    Zufallszahl und Zeitstempel werden ebenfalls im SOAP-Header mitgeschickt.
+    Der Server kann mit diesen beiden Informationen und dem ihm bekannten Passwort
+    eine Vergleichswert errechnen, um damit die Korrektheit der Anfrage zu
+    überprüfen. Somit ist jede Anfrage nur genau einmal gültig, denn das Ergebnis der
+    Formel ist jedes Mal verschieden. Identische Anfragen werden vom Server abgewiesen.
 \end{itemize}
 
-Die letzten zwei Tags sind optional und senden zum einen die
+Die letzten beiden Elemente werden nur für den Passworttyp \verb|PasswordDigest| benötigt
+und senden zum einen die
 Zufallszahl(\texttt{<wsse:Nonce>}) im Base64 Format und zum anderen den
 Erzeugungszeitpunkt(\texttt{<wsu:Created>}) mit.
 \\
@@ -700,31 +706,23 @@ Erzeugungszeitpunkt(\texttt{<wsu:Created>}) mit.
 \texttt{Nonce = Base64( Nonce )}
 \\
 \\
-Bei den Tags werden nun zwei Namespaces sichtbar, dabei handelt es sich einmal
-um
-wsse\footnote{http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-
-1.0.xsd} und zum anderem um
-wsu\footnote{http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-
-1.0.xsd}.
+Bei den Elementen werden die XML Namensräume
+\verb|wsse| (http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd)
+und 
+\verb|wsu| (http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd)
+verwendet.
 
-Des Weiteren sollen Anfragen mit einem alten Zeitstempel zurückgewiesen und ein
-Cache mit schon benutzen Zufallszahlen geführt werden. Als Minimum gibt der
+Der Standard sieht vor, dass Anfragen mit einem alten Zeitstempel zurückgewiesen werden und ein
+Cache mit schon benutzen Zufallszahlen geführt wird. Als Minimum gibt der
 Standard eine Empfehlung von fünf Minuten an.
 
 Passwortäquivalent bedeutet in diesem Zusammenhang, dass dieses extern
-verschlüsselt sein kann und sollte. Bei dieser Umsetzung gilt grundsätzlich das
-Passwörter immer MD5 gehasht sein müssen. Dementsprechend gilt auch beim
+verschlüsselt sein kann und sollte. Bei unserer Umsetzung gilt grundsätzlich das
+Passwörter immer MD5-verschlüsselt sein müssen. Dementsprechend gilt auch beim
 PasswortText, dass ein Passwort einem \texttt{MD5(Passwort)} entspricht und
 nicht nur durch ein reines Passwort repräsentiert wird.
 
-\begin{figure}[!htb]
-\centering
-\includegraphics[width=3.4in]{pics/UTPCode}
-\caption{Soap Header Beispiel Username Token Profil}
-\label{wss:UTPCode}
-\end{figure}
-
-Für nähere Details sei hier auf den Standard \cite{wss:usernameTokenProfile}
+Für weitere Details sei auf den Standard \cite{wss:usernameTokenProfile}
 verwiesen. Es wurde an dieser Stelle versucht kurz und knapp die grundlegenden
 Ideen des Standards zu vermitteln. Im Nachfolgenden soll die Umsetzung in PHP
 näher beleuchtet werden.
@@ -733,21 +731,21 @@ näher beleuchtet werden.
 \label{wss:UmsetzungServer}
 
 \subsubsection{Vorhandene Umsetzungen} \label{wss:VorhandeneUmsetzungen} PHP
-bietet seit der Version 5 eine SOAP Extension, welche es erlaubt Web Services
-aufzusetzen, beziehungsweise angebotene Dienste zu verwenden. Eine Möglichkeit
-der Verwendung von Sicherheitsaspekten bleibt einem dabei allerdings verwehrt.
-Die Implementierung des Username Token Profiles für PHP wird auf Basis der
-vorhandenen Klassen SoapClient und SoapServer erfolgen. Dies hat den klaren
-Vorteil, dass der gesamte Teil zum Abarbeiten von Web Services schon als gelöst
-angesehen werden kann. Im Idealfall profitiert die zu erstellende Lösung einfach
-aus Verbesserungen der SOAP Extension. Die Extension selbst ist in C
-geschriebenen und bietet somit einen klaren Geschwindigkeitsvorteil gegenüber
-PHP Klassenbibliotheken. Die erstellten PHP Klassen erben von diesen bzw.
+bietet seit der Version 5 eine Implementierung des SOAP-Protokolls, welche es
+erlaubt Web Services zu erstellen, beziehungsweise angebotene Dienste zu nutzen.
+Sicherheitsmechanismen sind in diesem Erweiterungsmodul allerdings noch nicht integriert.
+Die Umsetzung des Username Token Profiles für PHP wird auf Basis der
+vorhandenen Klassen SoapClient und SoapServer erfolgen. Dies hat den
+Vorteil, dass das Abarbeiten von SOAP-Nachrichten nicht nochmal
+neu implementiert werden muss. Im Idealfall profitiert die erstellte Lösung auch
+von zukünftigen Verbesserungen des SOAP-Erweiterungsmoduls. Die Extension selbst ist in C
+geschriebenen und bietet somit einen klaren Geschwindigkeitsvorteil gegenüber anderen
+SOAP-Implementierungen, die direkt in PHP geschrieben sind. Die erstellten PHP Klassen erben von diesen bzw.
 erweitern sie um die zusätzlichen benötigten Aspekte.
 
 \subsubsection{Probleme} \label{wss:Probleme} Diese Idealvorstellung erweist
 sich allerdings schnell als nicht trivial. Dies liegt einerseits in der
-schlechten PHP Dokumentation, welche ein Review des SourceCodes unerlässlich
+knappen Dokumentation der SOAP-Erweiterung, welche ein Review des SourceCodes unerlässlich
 macht und andererseits in den noch vorhanden \glqq Features\grqq. Unter anderem
 ruft der SoapServer anhand des Tagnamens im SoapHeader automatisch Methoden auf,
 welche den gleichen Namen besitzen. Dies kann Potential für eine
@@ -973,7 +971,7 @@ allerletztes an den \texttt{ExtendedSoapServer} übergeben werden.
 
 \subsubsection{SoapFaults}
 \label{wss:SoapFaults}
-Das Thema SoapFaults basiert ebenfalls auf dem Web Service Security Standard
+Das Thema SoapFaults basiert ebenfalls auf dem Web Services Security Standard
 (siehe \cite{wss:oasis} Soap Message Security 1.0) und ist somit wohl definiert.
 Die folgende Tabelle \ref{wss:SoapFaultsTable} zeigt den internen Fehlercode und
 den zugehörigen standardisierten Fehlercode sowie dessen Stringbeschreibung.
