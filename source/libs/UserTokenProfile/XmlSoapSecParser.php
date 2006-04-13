@@ -109,6 +109,7 @@ class XmlSoapSecParser extends XmlParserExtended {
    *
    * to control the user and delete the SecurityTag
    * true - user is available else false
+   * @param unknown $data
    */
   public function parse($data) {
     // parse the document
@@ -136,6 +137,7 @@ class XmlSoapSecParser extends XmlParserExtended {
     * addCheckUserRunnable
     *
     * add an instance to check the user
+    * @param unknown $runnable
     */
   public function addCheckUserRunnable($runnable) {
     $this->checkUserRunnable = $runnable;

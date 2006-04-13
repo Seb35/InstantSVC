@@ -1,4 +1,21 @@
 <?php
+
+//***************************************************************************
+//***************************************************************************
+//**                                                                       **
+//** SOAPServer - This server is implemented without class structur to avoid duplicate                    **
+//**                      class problems                            **
+//**                                                                       **
+//** Project: Web Services Security                                        **
+//**                                                                       **
+//** @package    soap                                               **
+//** @author     Stefan Marr <mail@stefan-marr.de>    **
+//** @copyright  2006 Stefan Marr                 **
+//** @license www.apache.org/licenses/LICENSE-2.0   Apache License 2.0     **
+//**                                                                       **
+//***************************************************************************
+//***************************************************************************
+
 /**
  * SOAPServer
  * This server is implemented without class structur to avoid duplicate
@@ -77,13 +94,13 @@ if ($getRequestPath !== false) {
             // set XmlHandler
             $server->addXmlHandler($xmlUserNameTokenParser);
             $server->addXmlHandler($xmlSoapHeaderParser);
-        }
+        } //end if
         else {
             $server = new SoapServer($service['wsdlfile']);
         }
         $server->setClass($service['classname']);
         $server->handle();
-    }
-}
+    } //end if
+} //end if
 
 ?>
