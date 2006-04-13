@@ -9,7 +9,7 @@
 //** @package Username Token                                               **
 //** @author Christoph Hartmann <christoph.hartmann@hpi.uni-potsdam.de>    **
 //** @author Michael Perscheid <michael.perscheid@hpi.uni-potsdam.de>      **
-//** @copyright 2006 ....                                                  **
+//** @copyright 2006 2006 Christoph Hartmann, Michael Perscheid            **
 //** @license www.apache.org/licenses/LICENSE-2.0   Apache License 2.0     **
 //** @lastchange 2005-12-18 - Implement the class                          **
 //**                                                                       **
@@ -28,7 +28,7 @@ require_once(dirname(__FILE__).'/../UserTokenProfile/ICheckUserRunnable.php');
 * @package libs.soap
 * @author Christoph Hartmann <christoph.hartmann@hpi.uni-potsdam.de>
 * @author  Michael Perscheid <michael.perscheid@hpi.uni-potsdam.de>
-* @copyright 2006 ....
+* @copyright 2006 Christoph Hartmann, Michael Perscheid 
 * @license http://www.apache.org/licenses/LICENSE-2.0   Apache License 2.0
 */
 class XmlSoapHeaderParser extends XmlParserExtended {

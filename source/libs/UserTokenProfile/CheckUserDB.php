@@ -10,7 +10,7 @@
 //** @package Username Token                                               **
 //** @author Christoph Hartmann <christoph.hartmann@hpi.uni-potsdam.de>    **
 //** @author Michael Perscheid <michael.perscheid@hpi.uni-potsdam.de>      **
-//** @copyright 2005 ....                                                  **
+//** @copyright 2005 2006 Christoph Hartmann, Michael Perscheid            **
 //** @license www.apache.org/licenses/LICENSE-2.0   Apache License 2.0     **
 //** @lastchange 2005-12-18 - implement the class                          **
 //**                                                                       **
@@ -35,7 +35,7 @@ require_once("User/classes/User.php");
 * @package libs.soap.wsse
 * @author  Christoph Hartmann <christoph.hartmann@hpi.uni-potsdam.de>
 * @author  Michael Perscheid <michael.perscheid@hpi.uni-potsdam.de>
-* @copyright  2006 ....
+* @copyright  2006 Christoph Hartmann, Michael Perscheid
 * @license http://www.apache.org/licenses/LICENSE-2.0   Apache License 2.0
 */
 class CheckUserDB {

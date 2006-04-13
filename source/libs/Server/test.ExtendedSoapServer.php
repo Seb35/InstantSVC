@@ -10,13 +10,12 @@
 //** @package Username Token                                               **
 //** @author Christoph Hartmann <christoph.hartmann@hpi.uni-potsdam.de>    **
 //** @author Michael Perscheid <michael.perscheid@hpi.uni-potsdam.de>      **
-//** @copyright 2006 ....                                                  **
+//** @copyright 2006 Christoph Hartmann, Michael Perscheid                 **
 //** @license www.apache.org/licenses/LICENSE-2.0   Apache License 2.0     **
 //** @lastchange 2005-12-18 - Implement the test                           **
 //**                                                                       **
 //***************************************************************************
 //***************************************************************************
-
 
 // disable WSDL Cache for development
 ini_set('soap.wsdl_cache_enabled', 0);

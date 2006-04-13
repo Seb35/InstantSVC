@@ -6,10 +6,10 @@
 //**                                                                       **
 //** Project: Web Services Security                                        **
 //**                                                                       **
-//** @package    Secure Client                                             **
+//** @package Secure Client                                                **
 //** @author Christoph Hartmann <christoph.hartmann@hpi.uni-potsdam.de>    **
 //** @author Michael Perscheid <michael.perscheid@hpi.uni-potsdam.de>      **
-//** @copyright  2006 ....                                                 **
+//** @copyright  2006 Christoph Hartmann, Michael Perscheid                **                                **
 //** @license www.apache.org/licenses/LICENSE-2.0   Apache License 2.0     **
 //** @lastchange 2006-02-04 - Test                                         **
 //**                                                                       **

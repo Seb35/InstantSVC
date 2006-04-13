@@ -10,7 +10,7 @@
 //** @package Username Token                                               **
 //** @author Christoph Hartmann <christoph.hartmann@hpi.uni-potsdam.de>    **
 //** @author Michael Perscheid <michael.perscheid@hpi.uni-potsdam.de>      **
-//** @copyright 2006 ....                                                  **
+//** @copyright 2006 Christoph Hartmann, Michael Perscheid                 **
 //** @license www.apache.org/licenses/LICENSE-2.0   Apache License 2.0     **
 //** @lastchange 2005-12-18 - Implement the class                          **
 //**                                                                       **
@@ -26,8 +26,8 @@ define("DEBUG", FALSE);
 * @package Username Token
 * @author Christoph Hartmann <christoph.hartmann@hpi.uni-potsdam.de>
 * @author Michael Perscheid <michael.perscheid@hpi.uni-potsdam.de>
-* @copyright 2006 ....
-* @license @license www.apache.org/licenses/LICENSE-2.0   Apache License 2.0 
+* @copyright 2006 Christoph Hartmann, Michael Perscheid 
+* @license @license www.apache.org/licenses/LICENSE-2.0   Apache License 2.0
 */
 class ExtendedSoapServer {
 
@@ -95,50 +95,26 @@ class ExtendedSoapServer {
   public function handle() {
 
     // --------------------------------------------------------
-    // global Access  
+    // global Access
     global $HTTP_RAW_POST_DATA;
-    
+
     // --------------------------------------------------------
-    // Debug Message  
+    // Debug Message
     if (defined("DEBUG") && DEBUG) {
       // For testing the server response his own Soap message
     	// Update the security tags
     	// Just works with the HalloWelt Web Service
-      $xml_soap_request = "<?xml version=\"1.0\"?>
-        <SOAP-ENV:Envelope 
-            SOAP-ENV:encodingStyle=\"http://schemas.xmlsoap.org/soap/encoding/\"
-            xmlns:SOAP-ENC=\"http://schemas.xmlsoap.org/soap/encoding/\"
-            xmlns:ns1=\"urn:HalloWelt\"
-            xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"
-            xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\"
-            xmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\"
-            xmlns:ns2=\"http:/docs.oasis-open.org/wss/oasis-wss-wsssecurity-secext-1.0.xsd/\">
-        <SOAP-ENV:Header>
-            <ns2:Security>
-                <UsernameToken>
-                    <Username>gert</Username>
-                    <Password>+qQYaAAmrhEqOgPiIMCGU3g9SR8=</Password>
-                    <Nonce>MTAwNzMxNTkyNA==</Nonce>
-                    <Created>2006-02-26T19:00:20+01:00</Created>
-                </UsernameToken>
-            </ns2:Security>
-        </SOAP-ENV:Header>
-        <SOAP-ENV:Body>
-            <ns1:halloWelt>
-                <inputString xsi:type=\"xsd:string\">Hello World! From Client
-                </inputString>
-            </ns1:halloWelt>
-        </SOAP-ENV:Body>
-      </SOAP-ENV:Envelope>";
-      
+      // Just insert your message here if needed
+      $xml_soap_request = "";
+
       // load local request or the request send by the client
       if (!isset( $HTTP_RAW_POST_DATA)) {
         $HTTP_RAW_POST_DATA = $xml_soap_request;
       } // end if
     }
-   
+
     // --------------------------------------------------------
-    // Main APP 
+    // Main APP
     $xmlHandlerError = 0;
 
     foreach($this->xmlParserArray as $value) {
