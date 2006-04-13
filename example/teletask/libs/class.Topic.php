@@ -41,8 +41,12 @@ class Topic extends Item {
 
   //=========================================================================
   /**
-  * setzt alle Eigenschaften auf ihren Standardwert
+  * Standard Konstruktor
+  * 
+  * @param int $id
+  * @param string[] $data
   */
+
 
   public function __construct($id = -1, $data = null) {
       $this->setPrimaryKey('id');
