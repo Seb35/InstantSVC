@@ -46,7 +46,7 @@ class XmlSoapHeaderParser extends XmlParserExtended {
    * Set default options for the xml_soap_header_parser
    */
   public function __construct() {
-    parent::XmlParser();
+    parent::__construct();
   } // end of __construct
 
   //=======================================================================

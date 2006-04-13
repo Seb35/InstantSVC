@@ -52,7 +52,7 @@ if (php_sapi_name() == 'cli') {
     $xmlSoapHeaderParser = new XmlSoapHeaderParser();
 
     // initialize secure server
-    $server = new ExtendedSoapServer('Webservice/HalloWelt.wsdl');
+    $server = new ExtendedSoapServer(dirname(__FILE__).'/../SecureClient/test/HalloWelt.wsdl');
 
     // set XmlHandler
     $server->addXmlHandler($xmlUserNameTokenParser);

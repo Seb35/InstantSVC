@@ -30,7 +30,7 @@
 	</binding>
 	<service name="HalloWeltService">
 		<port name="WebdienstPort" binding="typens:WebdienstBinding">			
-			<soap:address location="http://localhost:81/phpSec/SecWeb.php"/>
+			<soap:address location="http://localhost:81/phpSec3/source/libs/Server/test.ExtendedSoapServer.php"/>
 		</port>
 	</service>
 </definitions>
