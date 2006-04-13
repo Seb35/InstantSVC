@@ -58,7 +58,7 @@ class Users extends DbCollection {
 
     //=======================================================================
     /**
-     * @param string $user username
+     * @param string $user
      * @return integer
      */
     public function getUserId($user) {
@@ -72,7 +72,7 @@ class Users extends DbCollection {
     //=======================================================================
     /**
      * @restmethod GET /([^\/]+)/
-     * @param string $name username
+     * @param string $name
      * @return User
      */
     public function getUser($name) {

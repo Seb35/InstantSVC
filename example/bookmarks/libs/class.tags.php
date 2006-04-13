@@ -125,7 +125,7 @@ class Tags extends DbCollection {
     /**
      * @restmethod GET /\/(.*?)\/keywords\//
      * @restout TagsSerializer
-     * @param integer $id
+     * @param integer $user
      * @return string[]
      */
     public function getTagsByUser($user) {

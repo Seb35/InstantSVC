@@ -4,21 +4,15 @@
 //**                                                                       **
 //** index.php - Einstiegspunkt für alle Anfragen                          **
 //**                                                                       **
-//** Projekt: Übung 1, Projektarbeit Web-Programmierung                    **
+//** project: Übung 1, Projektarbeit Web-Programmierung                    **
 //**                                                                       **
-//** 2005 by Andreas Meyer, Sebastian Böttner, Stefan Marr                 **
-//**                                                                       **
-//** last change: 2005-10-27 Stefan Marr                                   **
+//** @package    example.teletask
+//** @copyright  2006 Andreas Meyer, Sebastian Böttner, Stefan Marr
+//** @license    http://www.apache.org/licenses/LICENSE-2.0  Apache License 2.0
+//** @author Andreas Meyer, Sebastian Böttner, Stefan Marr                 **
+
 //**                                                                       **
 //***************************************************************************
-//***************************************************************************
-
-/**
- * @package    example.teletask
- * @copyright  2006 ...
- * @license    http://www.apache.org/licenses/LICENSE-2.0  Apache License 2.0
- */
-
 
 //***** imports *************************************************************
 require_once('boot.php');

@@ -174,7 +174,7 @@ class Bookmark extends Item {
 
     //=========================================================================
     /**
-     * @return string
+     * @param string $value
      */
     public function setCreated($value) {
         $this->created = $value;

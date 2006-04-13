@@ -2,13 +2,14 @@
 //***************************************************************************
 //***************************************************************************
 //**                                                                       **
-//** Link - represents links information as php object                     **
+//** Link - represents links information as php object                          **
 //**                                                                       **
-//** Project: Web Services Description Generator                           **
+//** project: Web Services Description Generator                    **
 //**                                                                       **
-//** 2005 by Andreas Meyer, Sebastian Böttner, Stefan Marr                 **
-//**                                                                       **
-//** last change: 2005-02-26 Sebastian Böttner                             **
+//** @package    example.teletask
+//** @copyright  2006 Andreas Meyer, Sebastian Böttner
+//** @license    http://www.apache.org/licenses/LICENSE-2.0  Apache License 2.0
+//** @author Andreas Meyer, Sebastian Böttner                 **
 //**                                                                       **
 //***************************************************************************
 //***************************************************************************
@@ -19,9 +20,11 @@ include_once(TTEX_3RDLIBS.'genesis-core/class.item.php');
 
 //***** Link *************************************************************
 /**
- * @package    example.teletask
- * @copyright  2006 ...
- * @license    http://www.apache.org/licenses/LICENSE-2.0  Apache License 2.0
+//**represents links information as php object
+//** @package    example.teletask
+//** @copyright  2006 Andreas Meyer, Sebastian Böttner
+//** @license    http://www.apache.org/licenses/LICENSE-2.0  Apache License 2.0
+//** @author Andreas Meyer, Sebastian Böttner
  */
 class Link extends Item {
 

@@ -2,24 +2,25 @@
 //***************************************************************************
 //***************************************************************************
 //**                                                                       **
-//** Lectures - wickelt den Steuerungs- und Eingabeverarbeitungsteil ab    **
+//** Modul - wickelt den Steuerungs- und Eingabeverarbeitungsteil ab                          **
 //**                                                                       **
-//** Project: Web Services Description Generator                           **
+//** project: Web Services Description Generator                    **
 //**                                                                       **
-//** 2005 by Andreas Meyer, Sebastian Böttner, Stefan Marr                 **
-//**                                                                       **
-//** last change: 2005-10-27 Stefan Marr                                   **
+//** @package    example.teletask
+//** @copyright  2006 Andreas Meyer, Sebastian Böttner
+//** @license    http://www.apache.org/licenses/LICENSE-2.0  Apache License 2.0
+//** @author Andreas Meyer, Sebastian Böttner                 **
 //**                                                                       **
 //***************************************************************************
 //***************************************************************************
 
-//***** Lectures ************************************************************
+//***** Modul ************************************************************
 /**
- * wickelt den Steuerungs- und Eingabeverarbeitungsteil ab
- *
- * @package    example.teletask
- * @copyright  2006 ...
- * @license    http://www.apache.org/licenses/LICENSE-2.0  Apache License 2.0
+//**wickelt den Steuerungs- und Eingabeverarbeitungsteil ab
+//** @package    example.teletask
+//** @copyright  2006 Andreas Meyer, Sebastian Böttner
+//** @license    http://www.apache.org/licenses/LICENSE-2.0  Apache License 2.0
+//** @author Andreas Meyer, Sebastian Böttner
  */
 class Lectures {
 

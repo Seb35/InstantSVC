@@ -8,7 +8,10 @@
 include_once(dirname(__FILE__).'/../../libs/reflection/class.ExtendedReflectionApi.php');
 include_once(dirname(__FILE__).'/../teletask/libs/class.Lecture.php');
 
-
+//=======================================================================
+/**
+* @param string $name
+*/
 function testWithClass2($name) {
     $dom = new DOMDocument();
     $dom->formatOutput = true;
@@ -24,7 +27,7 @@ function testWithClass2($name) {
     echo htmlentities($dom->saveXML());
 
     echo '</pre>';
-}
+} //end testWithClass2
 
 testWithClass2('Lecture');
 testWithClass2('Lecture[]');

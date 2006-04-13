@@ -86,8 +86,8 @@ class XbelParser {
             case 'desc':
             case 'info':
                 break;
-        }
-    }
+        } //end switch
+    } //end startElement
 
     //=======================================================================
     /**
@@ -120,7 +120,7 @@ class XbelParser {
                     break;
             }
         }
-    }
+    } //end characterData
 
     //=======================================================================
     /**

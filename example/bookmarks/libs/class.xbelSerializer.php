@@ -34,8 +34,8 @@ require_once(dirname(__FILE__).'/../../../libs/misc/interface.serializer.php');
  */
 class XbelSerializer implements Serializer {
 
-    //=======================================================================
-    /**
+  //=======================================================================
+  /**
      * @param mixed $data
      * @return string
      */
@@ -68,10 +68,10 @@ class XbelSerializer implements Serializer {
 		        $res.= "</desc>\n";
 		        $res.= "</bookmark>\n";
             }
-        }
+        } //end foreach
         $res.= '</xbel>';
         return $res;
-    }
+    } //end serialize
 
     //=======================================================================
     /**

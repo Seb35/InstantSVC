@@ -2,25 +2,29 @@
 //***************************************************************************
 //***************************************************************************
 //**                                                                       **
-//** News - represents news information as php object                      **
+//** News - represents news information as php object                          **
 //**                                                                       **
-//** Project: Web Services Description Generator                           **
+//** project: Web Services Description Generator                    **
 //**                                                                       **
-//** 2005 by Andreas Meyer, Sebastian Böttner                              **
-//**                                                                       **
-//** last change: 2006-02-06 Sebastian Böttner                             **
+//** @package    example.teletask
+//** @copyright  2006 Andreas Meyer, Sebastian Böttner
+//** @license    http://www.apache.org/licenses/LICENSE-2.0  Apache License 2.0
+//** @author Andreas Meyer, Sebastian Böttner                 **
 //**                                                                       **
 //***************************************************************************
 //***************************************************************************
+
 require_once(dirname(__FILE__).'/../constants.php');
 include_once(TTEX_3RDLIBS.'genesis-core/class.item.php');
 
 
-//***** Lecture *************************************************************
+//***** News *************************************************************
 /**
- * @package    example.teletask
- * @copyright  2006 ...
- * @license    http://www.apache.org/licenses/LICENSE-2.0  Apache License 2.0
+//**represents lecture information as php object
+//** @package    example.teletask
+//** @copyright  2006 Andreas Meyer, Sebastian Böttner
+//** @license    http://www.apache.org/licenses/LICENSE-2.0  Apache License 2.0
+//** @author Andreas Meyer, Sebastian Böttner
  */
 class News extends Item {
 

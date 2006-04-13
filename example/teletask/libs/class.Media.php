@@ -2,13 +2,14 @@
 //***************************************************************************
 //***************************************************************************
 //**                                                                       **
-//** Media - represents media information as php object                    **
+//** Media - represents media information as php object                          **
 //**                                                                       **
-//** Project: Web Services Description Generator                           **
+//** project: Web Services Description Generator                    **
 //**                                                                       **
-//** 2005 by Andreas Meyer, Sebastian Böttner, Stefan Marr                 **
-//**                                                                       **
-//** last change: 2005-02-26 Sebastian Böttner                             **
+//** @package    example.teletask
+//** @copyright  2006 Andreas Meyer, Sebastian Böttner
+//** @license    http://www.apache.org/licenses/LICENSE-2.0  Apache License 2.0
+//** @author Andreas Meyer, Sebastian Böttner                 **
 //**                                                                       **
 //***************************************************************************
 //***************************************************************************
@@ -19,9 +20,11 @@ include_once(TTEX_3RDLIBS.'genesis-core/class.item.php');
 
 //***** Media *************************************************************
 /**
- * @package    example.teletask
- * @copyright  2006 ...
- * @license    http://www.apache.org/licenses/LICENSE-2.0  Apache License 2.0
+//**represents media information as php object
+//** @package    example.teletask
+//** @copyright  2006 Andreas Meyer, Sebastian Böttner
+//** @license    http://www.apache.org/licenses/LICENSE-2.0  Apache License 2.0
+//** @author Andreas Meyer, Sebastian Böttner
  */
 class Media extends Item {
 

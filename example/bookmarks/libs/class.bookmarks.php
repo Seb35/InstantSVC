@@ -50,7 +50,7 @@ class Bookmarks extends DbCollection {
 
     //=======================================================================
     /**
-     * @return Bookmarks
+     * @return Bookmark
      */
     public static function getInstance() {
         if (self::$instance == null) {

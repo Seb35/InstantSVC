@@ -2,13 +2,14 @@
 //***************************************************************************
 //***************************************************************************
 //**                                                                       **
-//** queryLecture - queries lecture objects from database                  **
+//** queryLecture - queries lecture objects from database                          **
 //**                                                                       **
-//** Project: Web Services Description Generator                           **
+//** project: Web Services Description Generator                    **
 //**                                                                       **
-//** 2006 by Andreas Meyer, Sebastian Böttner                              **
-//**                                                                       **
-//** last change: 2006-02-27 Andreas Meyer                                 **
+//** @package    example.teletask
+//** @copyright  2006 Andreas Meyer, Sebastian Böttner
+//** @license    http://www.apache.org/licenses/LICENSE-2.0  Apache License 2.0
+//** @author Andreas Meyer, Sebastian Böttner                 **
 //**                                                                       **
 //***************************************************************************
 //***************************************************************************

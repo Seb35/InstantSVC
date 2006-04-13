@@ -44,7 +44,7 @@ function testFunction($name) {
             echo ') : '.htmlspecialchars($method->getReturnType()->toString());
         }
         echo '</tt>';
-}
+} //end testFunction
 
 $functs = get_defined_functions();
 foreach ($functs['user'] as $funcName) {

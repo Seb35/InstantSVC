@@ -8,7 +8,10 @@
 include_once(dirname(__FILE__).'/../../libs/reflection/class.ExtReflectionClass.php');
 //include_once(dirname(__FILE__).'/../../sample/libs/teletask/class.Lecture.php');
 
-
+//=======================================================================
+/**
+* @param string $name
+*/
 function testWithClass($name) {
     $class = new ExtReflectionClass($name);
 
@@ -91,7 +94,8 @@ function testWithClass($name) {
         echo '</li>';
     }
     echo '</ul>';
-}
+} //end testWithClass
+
 //testWithClass('Lecture');
 testWithClass('ExtReflectionClass');
 testWithClass('ExtReflectionProperty');

@@ -31,8 +31,8 @@ require_once('class.xbelParser.php');
  */
 class XbelParserTest extends PHPUnit2_Framework_TestCase {
 
-    //=======================================================================
-    /**
+  //=======================================================================
+  /**
      * Test parser with a single bookmark
      */
     public function testSingleBookmark() {
