@@ -1,13 +1,65 @@
 <?php
+
+//***************************************************************************
+//***************************************************************************
+//**                                                                       **
+//** fileDetails									         **
+//**                                                                       **
+//** Project: Web Services Description Generator                           **
+//**                                                                       **
+//** @package    libs.misc                                                 **
+//** @author     Stefan Marr <mail@stefan-marr.de>                         **
+//** @copyright  2006 ....                                                 **
+//** @license    www.apache.org/licenses/LICENSE-2.0   Apache License 2.0  **
+//**                                                                       **
+//***************************************************************************
+//***************************************************************************
+
+//***** FileDetails *********************************************************
+/**
+ *
+ * @package    libs.misc
+ * @author     Stefan Marr <mail@stefan-marr.de>
+ * @copyright  2006 ....
+ * @license    http://www.apache.org/licenses/LICENSE-2.0   Apache License 2.0
+ */
 class FileDetails {
+
+    /**
+     * @var string
+     */
     public $mimeType;
+
+    /**
+     * @var int
+     */
     public $linesOfCode = 0;
+
+    /**
+     * @var int
+     */
     public $fileSize = 0;
+
+    /**
+     * @var string
+     */
     public $fileName = '';
 
+    /**
+     * @var MimeHandler
+     */
     private static $mimeHandler = null;
-    private static $locMimes = null;
 
+    /**
+     * @var string
+     */
+    private static $locMimes = null; 
+
+    //=======================================================================
+    /**
+     * @param string $file
+     */
+    
     public function __construct($file = '') {
         $this->fileName = realpath($file);
         if ($file != '' and file_exists($file)) {
@@ -32,8 +84,11 @@ class FileDetails {
         }
     }
 
+    //=======================================================================
     /**
      * @webmethod
+     * @param string $file
+     * @return boolean
      */
     protected function guessMimeType($file) {
         if (self::$mimeHandler == null) {

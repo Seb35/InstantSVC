@@ -71,6 +71,7 @@ abstract class XmlParser  {
    * parse the given document
    *
    * @param string $data
+   * @return int
    */
   public function parse($data)
   {

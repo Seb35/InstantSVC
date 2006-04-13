@@ -32,15 +32,55 @@ class Config implements Singleton {
   * Die folgenden Variablen sind für den schnellen Zugriff und werden bei
   * Veränderungen nicht in die Konfiguration geschrieben!
   */
+
+  /**
+   * @var string
+   */
   public $dbPrefix = '';
-  public $dbUser = '';
+
+  /**
+   * @var string
+   */
+ 
+ /**
+  * @var string
+  */ public $dbUser = '';
+
+  /**
+   * @var string
+   */
   public $dbHost = '';
+
+  /**
+   * @var string
+   */
   public $dbPassword = '';
+
+  /**
+   * @var string
+   */
   public $dbName = '';
 
+
+  /**
+   * @var string
+   */
   public $siteURL = '';
+ 
+  /**
+   * @var string
+   */
   public $siteImageURL = '';
+
+
+  /**
+   * @var string
+   */
   public $sitePath = '';
+
+  /**
+   * @var string
+   */
   public $siteTitle = '';
 
 
@@ -58,10 +98,10 @@ class Config implements Singleton {
     $this->siteImageURL = $siteImageURL;
     $this->sitePath = $sitePath;
     $this->siteTitle = $siteTitle;
-  }
+  } //end of __construct
 
   /**
-   * Singleton instance
+   * @ var Singleton instance
    */
   private static $instance;
 

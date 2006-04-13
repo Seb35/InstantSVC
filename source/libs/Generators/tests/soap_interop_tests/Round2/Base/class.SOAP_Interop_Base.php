@@ -1,62 +1,95 @@
 <?php
+//***************************************************************************
+//***************************************************************************
+//**                                                                       **
+//** SOAP_Interop_Base.php                                                 **
+//**                                                                       **
+//** Project: Web Services Description Generator                           **
+//**                                                                       **
+//** @package    WSDLGenerator                                             **
+//** @author     Gregor Gabrysiak <gregor_abrak at web dot de>             **
+//** @author     Falko Menge <mail@falko-menge.de>                         **
+//** @author     Stefan Marr <mail@stefan-marr.de>                         **
+//** @copyright  2005-2006 ...                                             **
+//** @license    www.apache.org/licenses/LICENSE-2.0   Apache License 2.0  **
+//**                                                                       **
+//***************************************************************************
+//***************************************************************************
+
+//***** SOAP_Interop_Base ***************************************************
 /**
+ * @package    libs.generator
+ * @author     Gregor Gabrysiak <gregor_abrak at web dot de>
+ * @author     Falko Menge <mail@falko-menge.de>
+ * @author     Stefan Marr <mail@stefan-marr.de>
+ * @copyright  2006 ...
+ * @license    http://www.apache.org/licenses/LICENSE-2.0  Apache License 2.0
+ *
  * @webservice
  */
 class SOAP_Interop_Base {
+   
+   //==========================================================================
    /**
     * @webmethod   
-	* @param string $inputString
-	* @return string
-	*/
+    * @param string $inputString
+    * @return string
+    */
     function echoString($inputString)
     {
       return $inputString;
     }
+   //==========================================================================
    /**
     * @webmethod
-	* @param string[] $inputStringArray
-	* @return string[]
-	*/
+    * @param string[] $inputStringArray
+    * @return string[]
+    */
     function echoStringArray($inputStringArray)
     {
       return $inputStringArray;
     }
 
+   
+   //==========================================================================
    /**
     * @webmethod
-	* @param integer $inputInteger
-	* @return integer
-	*/
+    * @param integer $inputInteger
+    * @return integer
+    */
     function echoInteger($inputInteger)
     {
       return $inputInteger;
     }
-    
+   
+   //========================================================================== 
    /**
     * @webmethod
-	* @param integer[] $inputIntegerArray
-	* @return integer[]
-	*/
+    * @param integer[] $inputIntegerArray
+    * @return integer[]
+    */
     function echoIntegerArray($inputIntegerArray)
     {
       return $inputIntegerArray;
     }
     
+   //==========================================================================
    /**
     * @webmethod
-	* @param float $inputFloat
-	* @return float
-	*/
+    * @param float $inputFloat
+    * @return float
+    */
     function echoFloat($inputFloat)
     {
       return $inputFloat;
     }
     
+   //==========================================================================
    /**
     * @webmethod
-	* @param float[] $inputFloatArray
-	* @return float[]
-	*/
+    * @param float[] $inputFloatArray
+    * @return float[]
+    */
     function echoFloatArray($inputFloatArray)
     {
       return $inputFloatArray;
@@ -73,10 +106,11 @@ function echoStructArray($inputStructArray)
   return $inputStructArray;
 }//*/
 
+   //==========================================================================
    /**
     * @webmethod
-	* @return void
-	*/
+    * @return void
+    */
     function echoVoid()
     {
       return NULL;
@@ -102,11 +136,13 @@ function echoDecimal($dec)
 {
   return $dec;
 }//*/
+
+   //==========================================================================
    /**
     * @webmethod
-	* @param boolean $inputBoolean
-	* @return boolean
-	*/
+    * @param boolean $inputBoolean
+    * @return boolean
+    */
     function echoBoolean($inputBoolean)
     {
       return $inputBoolean;

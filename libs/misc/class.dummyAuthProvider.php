@@ -34,6 +34,7 @@ class dummyAuthProvider implements authProvider {
      * Dummy implementation, returns $accountName reversed
      *
      * @param string $accountName
+     * @param string $type
      * @return string
      */
     function getPassword($accountName, $type = null) {

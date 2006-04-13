@@ -32,6 +32,7 @@ interface authProvider {
     const DIGEST = 'digest';
     const MD5    = 'md5';
 
+    //=======================================================================
     /**
      * Returns the users password
      * If it is a plain or a md5 value should be checked
@@ -41,6 +42,7 @@ interface authProvider {
      */
     function getPassword($accountName, $type = null);
 
+    //=======================================================================
     /**
      * Returns whether the password will be provided as plaintext
      * by getPassword
@@ -48,24 +50,28 @@ interface authProvider {
      */
     function isPlain();
 
+    //=======================================================================
     /**
      * Returns true if getPassword returns password md5 encrypted
      * @return boolean
      */
     function isMd5();
 
+    //=======================================================================
     /**
      * Is true if getPassword returns md5(username:realm:passwd)
      * @return boolean
      */
     function isRFC2617Md5();
 
+    //======================================================================
     /**
      * Return preferd password type, supported by implementation
      * @return string
      */
     function getPasswordType();
 
+    //======================================================================
     /**
      * If not md5 and not plaintext return the used method
      * is call via call_user_func

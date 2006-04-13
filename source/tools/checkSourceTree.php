@@ -1,18 +1,25 @@
 #!/usr/bin/php5.1
 <?php
-/**
- * Console script to check includability of whole sourcetree
- * it's necessary to recognize duplicate classnames
- *
- * @package    tools
- * @author     Stefan Marr <mail@stefan-marr.de>
- * @copyright  2006 Stefan Marr
- * @license    http://www.apache.org/licenses/LICENSE-2.0  Apache License 2.0
- */
 
-error_reporting(E_ALL|E_STRICT);
+//***************************************************************************
+//***************************************************************************
+//**                                                                       **
+//** Console script to check includability of whole sourcetree	         **
+//** it's necessary to recognize duplicate classnames				   **
+//**                                                                       **
+//** @package    tools		                                             **
+//** @author     Stefan Marr <mail@stefan-marr.de>				   **
+//** @copyright  2006 Stefan Marr                                          **
+//** @license    www.apache.org/licenses/LICENSE-2.0   Apache License 2.0  **
+//**                                                                       **
+//***************************************************************************
+//***************************************************************************
+
+//***** imports *************************************************************
 require_once(dirname(__FILE__).'/../../libs/misc/class.console.php');
 require_once(dirname(__FILE__).'/../../libs/misc/class.classLoader.php');
+
+error_reporting(E_ALL|E_STRICT);
 
 $console = new Console();
 
@@ -45,6 +52,7 @@ else {
     grdd_usage($console);
 }
 
+//=========================================================================
 /**
  * @param Console $console
  */

@@ -1,12 +1,17 @@
 <?php
-/**
- * Web tool to check for explicit dependency resolution
- * uses virtual() to get separated php contexts for each file
- * @package    tools
- * @author     Stefan Marr <mail@stefan-marr.de>
- * @copyright  2006 Stefan Marr
- * @license    http://www.apache.org/licenses/LICENSE-2.0  Apache License 2.0
- */
+//***************************************************************************
+//***************************************************************************
+//**												   **
+//** Web tool to check for explicit dependency resolution			   **
+//** uses virtual() to get separated php contexts for each file            **
+//** @package    tools									   **
+//** @author     Stefan Marr <mail@stefan-marr.de>				   **
+//** @copyright  2006 Stefan Marr							   **
+//** @license    www.apache.org/licenses/LICENSE-2.0  Apache License 2.0   **
+//**												   **
+//***************************************************************************
+//***************************************************************************
+ 
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -64,8 +69,13 @@ search path: <input type="text" name="path" style="width:300px;" value="../.." /
 <?php
 
 
+ //=========================================================================
+ /**
+  * @param string $path
+  * @return string[]
+  */
 
-function findPhpFiles($path) {
+ function findPhpFiles($path) {
     $files = array();
     if (is_dir($path)) {
         if ($dir = opendir($path)) {

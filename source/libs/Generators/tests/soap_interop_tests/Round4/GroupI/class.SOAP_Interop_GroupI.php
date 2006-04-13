@@ -1,9 +1,34 @@
 <?php
+//***************************************************************************
+//***************************************************************************
+//**                                                                       **
+//** SOAP_Interop_Groupl.php                                               **
+//**                                                                       **
+//** Project: Web Services Description Generator                           **
+//**                                                                       **
+//** @package    WSDLGenerator                                             **
+//** @author     Gregor Gabrysiak <gregor_abrak at web dot de>             **
+//** @author     Falko Menge <mail@falko-menge.de>                         **
+//** @author     Stefan Marr <mail@stefan-marr.de>                         **
+//** @copyright  2005-2006 ...                                             **
+//** @license    www.apache.org/licenses/LICENSE-2.0   Apache License 2.0  **
+//**                                                                       **
+//***************************************************************************
+//***************************************************************************
+
+//***** SOAP_Interop_Groupl *************************************************
 /**
+ * @package    libs.generator
+ * @author     Gregor Gabrysiak <gregor_abrak at web dot de>
+ * @author     Falko Menge <mail@falko-menge.de>
+ * @author     Stefan Marr <mail@stefan-marr.de>
+ * @copyright  2006 ...
+ * @license    http://www.apache.org/licenses/LICENSE-2.0  Apache License 2.0
  * @webservice
  */
 class SOAP_Interop_GroupI {
     
+    //==========================================================================
     /**
      * @webmethod
      * @param string $inputString
@@ -17,6 +42,7 @@ class SOAP_Interop_GroupI {
         return $inputString;
     }
     
+    //==========================================================================
     /**
      * @webmethod
      * @param integer $inputInteger
@@ -27,6 +53,7 @@ class SOAP_Interop_GroupI {
         return $inputInteger;
     }
     
+    //==========================================================================
     /**
      * @webmethod
      * @param Float $inputFloat
@@ -36,7 +63,8 @@ class SOAP_Interop_GroupI {
     {
         return $inputFloat;
     }
-    
+
+    //==========================================================================    
     /**
      * @webmethod
      * @return void
@@ -45,6 +73,7 @@ class SOAP_Interop_GroupI {
     {
     }  
     
+    //==========================================================================
     /**
      * @webmethod
      * @param Integer[] $inputIntegerMultiOccurs
@@ -54,7 +83,8 @@ class SOAP_Interop_GroupI {
     {
         return $inputIntegerMultiOccurs;
     }
-    
+
+    //==========================================================================
     /**
      * @webmethod
      * @param Float[] $inputFloatMultiOccurs
@@ -64,7 +94,8 @@ class SOAP_Interop_GroupI {
     {
         return $inputFloatMultiOccurs;
     }
-    
+
+    //==========================================================================
     /**
      * @webmethod
      * @param string[] $inputStringMultiOccurs
@@ -74,7 +105,8 @@ class SOAP_Interop_GroupI {
     {
         return $inputStringMultiOccurs;
     }
-    
+
+    //==========================================================================
     /**
      * @webmethod
      * @param boolean $boolean
@@ -84,7 +116,8 @@ class SOAP_Interop_GroupI {
     {
         return $boolean;
     }
-    
+
+    //==========================================================================
     /**
      * @webmethod
      * @param string $input
@@ -95,5 +128,5 @@ class SOAP_Interop_GroupI {
         return $input;
     }
     
-}
+}  // end of SOAP_Interop_Groupl 
 ?>

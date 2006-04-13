@@ -126,7 +126,7 @@ private function lwrite($content) {
   fwrite($this->log_file,
     "\r\n===========================>\r\n");
 
-} // Ende von logWrite
+} // end of logWrite
 
 
 //***************************************************************************
@@ -171,7 +171,7 @@ public function insertClass($className) {
   else {
     return $rset->fields["class_table_id"];
   }
-} // Ende von insertClass
+} // end of insertClass
 
 
 //===========================================================================
@@ -201,7 +201,7 @@ public function getClassByName($class_name) {
     return $class;
   }
 
-} // Ende von getClassByName
+} // end of getClassByName
 
 
 //===========================================================================
@@ -231,7 +231,7 @@ public function getClassByID($class_id) {
     return $class;
   }
 
-} // Ende von getClassByID
+} // end of getClassByID
 
 
 //===========================================================================
@@ -336,7 +336,7 @@ public function getMethodState($className, $methodName) {
       return $rset->fields["publish"];
     }
   }
-} // Ende von getMethodState
+} // end of getMethodState
 
 
 //===========================================================================
@@ -398,7 +398,7 @@ public function getMethodByName($class_id, $method_name) {
     return $method;
   }
 
-} // Ende von getClassByName
+} //end of  getClassByName
 
 
 //===========================================================================
@@ -430,7 +430,7 @@ public function getMethodByID($method_id) {
     return $method;
   }
 
-} // Ende von getClassByName
+} //end of getClassByName
 
 
 //===========================================================================
@@ -490,6 +490,7 @@ public function setMethodPublished($method_id, $published = 1) {
  * Des Weiteren wird ein flag in der Datenbank gesetzt, wenn ein alter Source-Code
  * Kommentar überschrieben wurde. Neuer Kommentar.
  * @param int $method_id - ID der Methode
+ * @param string $comment
  * @return int - ID des SourceCode-Kommentars, -1 bei Fehler
  */
 public function insertSourceCodeComment($method_id, $comment) {
@@ -557,7 +558,7 @@ public function insertSourceCodeComment($method_id, $comment) {
     }
   }
 
-} // Ende von insertSourceCodeComment
+} // end of insertSourceCodeComment
 
 
 //===========================================================================
@@ -620,7 +621,7 @@ public function insertUserComment($method_id, $comment) {
 
   }
 
-}
+}  //end of  insertUserComment
 
     //=======================================================================
     /**
@@ -682,7 +683,7 @@ public function getUserCommentByMethod($method_id) {
   else {
     return null;
   }
-}
+}  //end of  getUserCommentByMethod
 
 
 //===========================================================================
@@ -714,7 +715,7 @@ public function getSourceCodeCommentByMethod($method_id) {
     return null;
   }
 
-}
+} //end of getSourceCodeCommentByMethod
 
 
 //===========================================================================
@@ -756,7 +757,7 @@ public function setSecurity($class_id, $security_flag = 1) {
   } else {
     return 1;
   }
-}
+} //end of setSecurity
 
 //===========================================================================
 /**
@@ -776,7 +777,7 @@ public function isSecurity($class_id) {
   } else {
     return $rset->fields["use_wss"];
   }
-}
+} // end of  isSecurity
 
 
 //***************************************************************************
@@ -787,6 +788,7 @@ public function isSecurity($class_id) {
 //===========================================================================
 /**
  * Gibt eine Eigenschaft des Admin-Tools zurück
+ * @param string $property
  * @return string - den Wert der Eigenschaft oder null wenn
  *                  diese noch nicht vorhanden war
  */
@@ -806,12 +808,14 @@ public function getProperty($property) {
     }
   }
 
-}
+} //end of getProperty
 
 
 //===========================================================================
 /**
  * Setzt eine Eigenschaft in der DB
+ * @param string $property
+ * @param string $value
  * @return void
  */
 public function setProperty($property, $value) {
@@ -835,9 +839,9 @@ public function setProperty($property, $value) {
   if (!$rset) {
     $this->lwrite($this->db->ErrorMsg());
   }
-}
+} //end of setProperty
 
-} // Ende von Database
+} // end of Database
 
 
 ?>

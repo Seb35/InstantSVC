@@ -1,11 +1,38 @@
 <?php
+//***************************************************************************
+//***************************************************************************
+//**                                                                       **
+//** WSDLGenerator                                                         **
+//**                                                                       **
+//** Project: Web Services Description Generator                           **
+//**                                                                       **
+//** @package    WSDLGenerator                                             **
+//** @author     Gregor Gabrysiak <gregor_abrak at web dot de>             **
+//** @author     Falko Menge <mail@falko-menge.de>                         **
+//** @author     Stefan Marr <mail@stefan-marr.de>                         **
+//** @copyright  2005-2006 ...                                             **
+//** @license    www.apache.org/licenses/LICENSE-2.0   Apache License 2.0  **
+//**                                                                       **
+//***************************************************************************
+//***************************************************************************
+
+//***** imports *************************************************************
 require_once 'class.Foo.php';
 
 /**
  * class for testing WSDL generation for methods with different parameter and return types
  * @webservice
+ * @package    WSDLGenerator                                             
+ * @author     Gregor Gabrysiak <gregor_abrak at web dot de>             
+ * @author     Falko Menge <mail@falko-menge.de>                         
+ * @author     Stefan Marr <mail@stefan-marr.de>                         
+ * @copyright  2005-2006 ...                                             
+ * @license    www.apache.org/licenses/LICENSE-2.0   Apache License 2.0  
+ *
  */
 class WSDLGeneratorTest {
+
+    //=========================================================================
     /**
      * @webmethod
      * @return string
@@ -14,6 +41,7 @@ class WSDLGeneratorTest {
         return 'Hello World!';
     }
 
+    //=========================================================================
     /**
      * @webmethod
      * @param int $x
@@ -24,6 +52,7 @@ class WSDLGeneratorTest {
         return $x+$y;
     }
 
+    //=========================================================================
     /**
      * @webmethod
      * @param float[] $array
@@ -36,6 +65,8 @@ class WSDLGeneratorTest {
       }
       return $sum;
     }   
+  
+    //=========================================================================
     /**
      * @webmethod
      * @return Foo
@@ -44,6 +75,8 @@ class WSDLGeneratorTest {
         $returnValue = new Foo();
 	return $returnValue;
     }
+    
+    //=========================================================================
     /**
      * @webmethod
      * @param Foo $inputFoo
@@ -54,5 +87,5 @@ class WSDLGeneratorTest {
         $returnValue[] = $inputFoo;
 	return $returnValue;
     }
-}
+} //end of WSDLGeneratorTest
 ?>

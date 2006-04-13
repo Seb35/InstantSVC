@@ -28,6 +28,13 @@
 * @license @license www.apache.org/licenses/LICENSE-2.0   Apache License 2.0 
 */
 class HelloWorldWebservice {
+
+  //=========================================================================
+  /**
+   * @param string $string
+   * @return string
+   */
+
   public function halloWelt($string) {
   $name = $GLOBALS['USER']->getUsername();
   

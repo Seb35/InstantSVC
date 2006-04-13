@@ -1,4 +1,21 @@
 <?php
+//***************************************************************************
+//***************************************************************************
+//**                                                                       **
+//** WSDLGenerator - TestClass                                             **
+//**                                                                       **
+//** Project: Web Services Description Generator                           **
+//**                                                                       **
+//** @package    WSDLGenerator                                             **
+//** @author     Gregor Gabrysiak <gregor_abrak at web dot de>             **
+//** @author     Falko Menge <mail@falko-menge.de>                         **
+//** @author     Stefan Marr <mail@stefan-marr.de>                         **
+//** @copyright  2005-2006 ...                                             **
+//** @license    www.apache.org/licenses/LICENSE-2.0   Apache License 2.0  **
+//**                                                                       **
+//***************************************************************************
+//***************************************************************************
+
     /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
     echo 'Note: The test cases do NOT delete the generated WSDL files.' . "\n";

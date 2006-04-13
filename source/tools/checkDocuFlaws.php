@@ -1,16 +1,23 @@
 #!/usr/bin/php5.1
 <?php
-/**
- * Console script to check for documentation flaws in definied classes
- *
- * @package    tools
- * @author     Stefan Marr <mail@stefan-marr.de>
- * @copyright  2006 Stefan Marr
- * @license    http://www.apache.org/licenses/LICENSE-2.0  Apache License 2.0
- */
 
+//***************************************************************************
+//***************************************************************************
+//**                                                                       **
+//** Console script to check for documentation flaws in definied classes   **
+//**                                                                       **
+//** @package    tools		                                             **
+//** @author     Stefan Marr <mail@stefan-marr.de>				   **
+//** @copyright  2006 Stefan Marr                                          **
+//** @license    www.apache.org/licenses/LICENSE-2.0   Apache License 2.0  **
+//**                                                                       **
+//***************************************************************************
+//***************************************************************************
 
+//***** imports *************************************************************
 require_once(dirname(__FILE__).'/../../libs/misc/class.codeAnalyzer.php');
+
+
 //at this point only buildin classes should be listed
 $declaredClasses = get_declared_classes();
 

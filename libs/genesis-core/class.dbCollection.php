@@ -120,8 +120,10 @@ abstract class DbCollection implements Singleton {
 	 * Löscht das angegebene Item aus der Datenbank
 	 * kann überschrieben werden um Verknüpfte Daten gleich mit aus
 	 * der Datenbank zu entfernen
+       * 
+       * @param int $id
 	 * @access public
-	 * @virtal
+	 * @virtual
 	 */
 	public function deleteItem($id) {
 		$this->_deleteItem($id);
@@ -131,6 +133,7 @@ abstract class DbCollection implements Singleton {
   /**
    * Löscht das angegebene Item aus der Datenbank
    * Darf nicht überschrieben werden
+   * @param int $id
    */
 	final protected function _deleteItem($id) {
 		$this->_db->Execute('DELETE FROM '.$this->_tableName.' WHERE '.

@@ -82,7 +82,7 @@ class DocumentWrappedAdapterGenerator {
      * generates adapter classes for document-literal Web Services.
      *
      * @param string $className name of the class
-     * @param ExtReflectionMethod[] array of ExtReflectionMethod objects
+     * @param ExtReflectionMethod[] $methods array of ExtReflectionMethod objects
      * @param string $adapterClassName name of the generated class
      */
     public function __construct($className, $methods = NULL, $adapterClassName = '') {

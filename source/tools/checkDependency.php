@@ -1,23 +1,30 @@
 #!/usr/bin/php5.1
 <?php
-/**
- * Console script to check whether all dependencies has been made explicitly
- * in every code file
- * Script checks every .php file
- *
- * @package    tools
- * @author     Stefan Marr <mail@stefan-marr.de>
- * @copyright  2006 Stefan Marr
- * @license    http://www.apache.org/licenses/LICENSE-2.0  Apache License 2.0
- */
 
-/**
- * Find all .php files in all subdirectory
- *
- * @param string $path
- * @return string[]
- */
-function findPhpFiles($path) {
+//***************************************************************************
+//***************************************************************************
+//**                                                                       **
+//** Console script to check whether all dependencies has been made        **
+//** explicitly in every code file							   **
+//** Script checks every .php file                                         **
+//**  						                                 **
+//**                                                                       **
+//** @package    tools		                                             **
+//** @author     Stefan Marr <mail@stefan-marr.de>				   **
+//** @copyright  2006 Stefan Marr                                          **
+//** @license    www.apache.org/licenses/LICENSE-2.0   Apache License 2.0  **
+//**                                                                       **
+//***************************************************************************
+//***************************************************************************
+
+ //=========================================================================
+ /**
+  * Find all .php files in all subdirectory
+  *
+  * @param string $path
+  * @return string[]
+  */
+ function findPhpFiles($path) {
     $files = array();
     if (is_dir($path)) {
         if ($dir = opendir($path)) {

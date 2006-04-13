@@ -1,18 +1,44 @@
 <?php
+//***************************************************************************
+//***************************************************************************
+//**                                                                       **
+//** ClassLoader                                                           **
+//**                                                                       **
+//** Project: Web Services Description Generator                           **
+//**                                                                       **
+//** @package    libs.misc                                                 **
+//** @author     Stefan Marr <mail@stefan-marr.de>                         **
+//** @copyright  2006 ....                                                 **
+//** @license    www.apache.org/licenses/LICENSE-2.0   Apache License 2.0  **
+//**                                                                       **
+//***************************************************************************
+//***************************************************************************
 
+//***** imports *************************************************************
 require_once(dirname(__FILE__).'/class.mimetypes.php');
 
+//***** CodeAnalyzer ********************************************************
+/**
+ * @package    libs.misc
+ * @author     Stefan Marr <mail@stefan-marr.de>
+ * @copyright  2006 ....
+ * @license    http://www.apache.org/licenses/LICENSE-2.0   Apache License 2.0
+ */
 class ClassLoader {
     /**
      * @var Mime_Types
      */
     private static $mimeHandler;
+    /**
+     * @var Singleton
+     */
     private static $instance = null;
     /**
      * @var boolean
      */
     private static $debug = false;
 
+    //=======================================================================
     private function __construct() {
 
     }

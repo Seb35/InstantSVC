@@ -111,6 +111,7 @@ class CodeAnalyzer {
      * Parse the given directory recursivly
      *
      * @param string $path
+     * @param array $statsArray
      */
     protected function parseDir($path, &$statsArray) {
     	if (is_dir($path)) {
@@ -389,6 +390,10 @@ class CodeAnalyzer {
         }
     }
 
+    //=======================================================================
+    /**
+     * @param string $path
+     */
 
     public function setPhpBinPath($path) {
         $this->phpBin = $path;

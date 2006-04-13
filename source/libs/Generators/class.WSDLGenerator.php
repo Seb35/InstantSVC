@@ -16,6 +16,7 @@
 //***************************************************************************
 //***************************************************************************
 
+//***** imports *************************************************************
 require_once dirname(__FILE__).'/../../../libs/reflection/class.ExtReflectionClass.php';
 
 //***** WSDLGenerator *******************************************************
@@ -982,7 +983,7 @@ class WSDLGenerator
      * This function is used for DOCUMENT LITERAL WRAPPED.
      *
      * @param ExtReflectionMethod $method
-     * @return return boolean
+     * @return boolean
      */
     protected function generateMessageDocLit($method)
     {

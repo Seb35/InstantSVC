@@ -19,7 +19,7 @@
 //***************************************************************************
 //***************************************************************************
 
-// base datastructure
+//***** imports *************************************************************
 require_once('./UserTokenProfile/class.SecurityStruct.php');
 
 //***** SecureSoapClient *******************************************************
@@ -48,7 +48,7 @@ class SecureSoapClient extends SoapClient {
   *
   * @param string $wsdl
   * @param string[] $options
-  * @param string $name
+  * @param string $user
   * @param string $pw
   */
   public function __construct($wsdl , $options, $user, $pw) {

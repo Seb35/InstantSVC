@@ -1,4 +1,20 @@
 <?php
+//***************************************************************************
+//***************************************************************************
+//**                                                                       **
+//** xslTransformator.php								   **
+//**                                                                       **
+//** Project: Web Services Description Generator                           **
+//**                                                                       **
+//** @package    libs.misc                                                 **
+//** @author     Stefan Marr <mail@stefan-marr.de>                         **
+//** @copyright  2006 ....                                                 **
+//** @license    www.apache.org/licenses/LICENSE-2.0   Apache License 2.0  **
+//**                                                                       **
+//***************************************************************************
+//***************************************************************************
+
+//***** XslTransformator ****************************************************
 /**
  * @package    libs.misc
  * @author     Stefan Marr <mail@stefan-marr.de>
@@ -16,6 +32,7 @@ class XslTransformator {
      */
     protected $data;
 
+    //=======================================================================
     /**
      * @param string $data
      */
@@ -23,6 +40,7 @@ class XslTransformator {
         $this->data = $data;
     }
 
+    //=======================================================================
     public function process() {
         $x = new XSLTProcessor();
         //$x->

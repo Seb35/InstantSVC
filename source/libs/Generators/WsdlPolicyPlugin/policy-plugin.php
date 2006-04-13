@@ -59,7 +59,7 @@ public function __construct() {
 /**
  * Die Funktion nimmt Methoden in die DB auf und gibt alle Methoden zurück
  * die veröffentlicht werden dürfen
- * @param ReflectionMethod[] - Liste mit Methoden-Objekten
+ * @param ReflectionMethod[] $methods - Liste mit Methoden-Objekten
  * @return ReflectionMethod[] - gefilterte Liste mit Methoden-Objekten, nur
  *         diejenigen, die veröffentlicht werden sollen
  */

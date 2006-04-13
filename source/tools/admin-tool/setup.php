@@ -1,5 +1,20 @@
 <?php
+//***************************************************************************
+//***************************************************************************
+//**                                                                       **
+//** setup.php Some enviroment settings for the admin-tool                 **
+//**                                                                       **
+//** @package    admintool                                                 **
+//** @author     Martin Sprengel <martin.sprengel@hpi.uni-potsdam.de>      **
+//** @copyright  2006 ....                                                 **
+//** @license    www.apache.org/licenses/LICENSE-2.0   Apache License 2.0  **
+//**                                                                       **
+//***************************************************************************
+//***************************************************************************
+
 error_reporting(E_ALL);
+
+//***** imports *************************************************************
 require_once(dirname(__FILE__).'/admin-tool-config.php');
 require_once(dirname(__FILE__).'/admin-tool-smarty-connect.php');
 require_once(dirname(__FILE__).'/readsqldump.php');

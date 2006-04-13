@@ -1,18 +1,24 @@
 #!/usr/bin/php5.1
 <?php
-/**
- * Console script to generate a rest.dd.php file
- *
- * @package    tools
- * @author     Stefan Marr <mail@stefan-marr.de>
- * @copyright  2006 Stefan Marr
- * @license    http://www.apache.org/licenses/LICENSE-2.0  Apache License 2.0
- */
 
-error_reporting(E_ALL);
+//***************************************************************************
+//***************************************************************************
+//**                                                                       **
+//** Console script to generate a rest.dd.php file				   **
+//**                                                                       **
+//** @package    tools									   **
+//** @author     Stefan Marr <marr@stefan-marr.de>                         **
+//** @copyright  2006 Stefan Marr                                          **
+//** @license    www.apache.org/licenses/LICENSE-2.0   Apache License 2.0  **
+//**                                                                       **
+//***************************************************************************
+//***************************************************************************
 
+//***** imports *************************************************************
 require_once('../../libs/misc/class.console.php');
 
+
+error_reporting(E_ALL);
 $console = new Console();
 $args = $console->getArgs('?a:s:d:f:b:');
 //look through the cmd line args to know what to do now
@@ -122,8 +128,11 @@ $console->writeLn('Copy REST Server: '.$ddPath.DIRECTORY_SEPARATOR.'rest.php');
 copy(dirname(__FILE__).'/../libs/Server/rest.php', $ddPath.'/rest.php');
 $console->writeLn('Deployment successful completed');
 
+//=========================================================================
 /**
- * Parses the given string as format map param and returns the mapping table
+ * Parses the given string as format map param and returns the mapping 
+ * table
+ *
  * @param string $str
  * @return array<string,string>
  */
@@ -137,6 +146,7 @@ function parseFormatMap($str) {
     return $map;
 }
 
+//=========================================================================
 /**
  * @param Console $console
  */

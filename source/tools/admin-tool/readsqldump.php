@@ -1,24 +1,35 @@
 <?php
-/**
- * @todo Mit Anpassungen aus phpMyAdmin übernommen
- * das löschen der komments ist von mir,
- * sollte aber unbedingt komplett neu geschrieben werden, da phpMyAdmin GPL nutzt und somit
- * nicht kompatibel ist zum rest des projekts
- * @license http://www.gnu.org/copyleft/gpl.html GNU GENERAL PUBLIC LICENSE (GPL)
- * @author phpMyAdmin
- * @author Stefan Marr <mail@stefan-marr.de>
- */
+//***************************************************************************
+//***************************************************************************
+//**                                                                       **
+//** Config - Provides settings like database connection infos             **
+//**                                                                       **
+//** Project: TOOLSLAVE Genesis Framework                                  **
+//**                                                                       **
+//** @package    libs.genesis-core                                         **
+//** @author     phpMyAdmin				                           **
+//** @author Stefan Marr <mail@stefan-marr.de>                             **
+//** @license    www.gnu.org/copyleft/gpl.html GPL                         **
+//** @todo Mit Anpassungen aus phpMyAdmin übernommen				   **
+//** das löschen der komments ist von mir,					   **
+//** sollte aber unbedingt komplett neu geschrieben werden,			   **
+//** da phpMyAdmin GPL nutzt und somit nicht kompatibel ist zum rest des   **
+//** projekts										   **
+//**                                                                       **
+//***************************************************************************
+//***************************************************************************
 
 /* $Id: read_dump.lib.php,v 2.11 2006/01/17 17:02:30 cybot_tm Exp $ */
 // vim: expandtab sw=4 ts=4 sts=4:
 
+//=========================================================================
 /**
- * Removes comment lines and splits up large sql files into individual queries
+ * Removes comment lines and splits up large sql files into 
+ * individual queries
  *
  * Last revision: September 23, 2001 - gandon
  *
- * @param   array    the splitted sql commands
- * @param   string   the sql commands
+ * @param   string[] $sql
  *
  * @return  string[] array of queries
  *

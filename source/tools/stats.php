@@ -1,24 +1,31 @@
 #!/usr/bin/php5.1
 <?php
-/**
- * Script to generate statistics
- *
- * This script uses the CodeAnalyser to extract informations about used
- * comments and is intended to provied a visual feedback for flaws within
- * the documentation in terms of correctnes for generate a webservice from it.
- *
- * @package    tools
- * @author     Stefan Marr <mail@stefan-marr.de>
- * @copyright  2006 Stefan Marr
- * @license    http://www.apache.org/licenses/LICENSE-2.0  Apache License 2.0
- */
+//***************************************************************************
+//***************************************************************************
+//**                                                                       **
+//** Script to generate statistics							   **
+//**                                                                       **
+//** This script uses the CodeAnalyser to extract informations about used  **
+//** comments and is intended to provied a visual feedback for flaws 	   **
+//** within the documentation in terms of correctnes for generate		   ** 
+//** a webservice from it.                                                 **
+//** @package    tools		                                             **
+//** @author     Stefan Marr <mail@stefan-marr.de>                         **
+//** @copyright  2006 Stefan Marr                                          **
+//** @license    www.apache.org/licenses/LICENSE-2.0   Apache License 2.0  **
+//**                                                                       **
+//***************************************************************************
+
+//***** imports *************************************************************
+include_once('../../libs/misc/class.codeAnalyzer.php');
+
+
 define('CODE_PATH', realpath(dirname(__FILE__).'/../'));
+
 $getcwd = getcwd();
 error_reporting(E_ALL);
 
 $declaredClasses = get_declared_classes();
-
-include_once('../../libs/misc/class.codeAnalyzer.php');
 
 $cli = (strpos(php_sapi_name(), 'cli') !== false);
 

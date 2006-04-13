@@ -24,6 +24,7 @@
  */
 interface Serializer {
 
+    //=======================================================================
     /**
      * Convert given data into a string representation
      * @param mixed $data
@@ -31,6 +32,7 @@ interface Serializer {
      */
     public function serialize($data);
 
+    //=======================================================================
     /**
      * Extracts data from a string and returns it as php data structure
      * @param string $str

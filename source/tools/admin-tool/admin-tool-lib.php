@@ -60,6 +60,8 @@ public function __construct() {
 //===========================================================================
 /**
  * Speichert Methoden einer Klasse
+ * @param int $class_id
+ * @param string[] $method_list
  * @return void
  */
 public function saveMethods($class_id, $method_list = array()) {
@@ -82,7 +84,7 @@ public function saveMethods($class_id, $method_list = array()) {
  * Parst einen Pfad und gibt alle Klassen des Pfades zurück.
  *
  * @param string $path
- * @return array
+ * @return string[]
  */
 public function getAllClasses($path) {
   $path = realpath($path);
@@ -110,8 +112,8 @@ public function getAllClasses($path) {
 /**
  * Parst einen Pfad und gibt alle Klassen des Pfades zurück.
  *
- * @param array
- * @return array
+ * @param string[] $classes
+ * @return string[]
  */
 public function filterWebServiceClasses($classes) {
   $class_list = array();
@@ -136,7 +138,7 @@ public function filterWebServiceClasses($classes) {
  * im übergebenen Pfad
  *
  * @param string $path
- * @return array
+ * @return string[]
  */
 public function getWebServiceClasses($path) {
 
@@ -161,6 +163,8 @@ public function getWebServiceClasses($path) {
 //===========================================================================
 /**
  * Speichert Benutzer-Kommentar in der Datenbank
+ * @param int $method_id
+ * @param string $user_comment
  * @return void
  */
 public function saveUserComment($method_id, $user_comment) {
@@ -253,7 +257,7 @@ public function getRegisteredClasses() {
     /**
      * Die Funktion nimmt Methoden in die DB auf und gibt alle Methoden zurück
      * die veröffentlicht werden dürfen
-     * @param ReflectionMethod[] - Liste mit Methoden-Objekten
+     * @param ReflectionMethod[] $methods - Liste mit Methoden-Objekten
      * @return ReflectionMethod[] - gefilterte Liste mit Methoden-Objekten, nur
      *         diejenigen, die veröffentlicht werden sollen
      */

@@ -54,6 +54,7 @@ abstract class Item {
   /**
   * initializes object with data from given array
   *
+  * @param int $id
   * @param array $data
   */
   public function __construct($id = -1, $data = null){
@@ -80,6 +81,9 @@ abstract class Item {
   /**
   * Holt die Daten aus der Datenbank und legt sie in den dafür vorgesehenen
   * Variablen ab
+  * @param int $id
+  * @param string $table
+  * @return boolean
   */
   private function __loadFromDB($id, $table) {
     $this->__adodbResult = $this->_db->Execute('SELECT * FROM '.$table.
@@ -99,6 +103,7 @@ abstract class Item {
   /**
   * lädt die Daten aus der Datenbank
   * @param integer $id
+  * @return mixed
   */
   protected function _loadFromDB($id){
     return $this->__loadFromDB($id, $this->_tableName);
@@ -111,6 +116,9 @@ abstract class Item {
   abstract protected function _restoreStandardValues();
 
   //=========================================================================
+  /**
+   * @param mixed $update
+   */
   protected function _flushInsert($update) {
     unset($update[$this->_primaryKey]);
     $sql = $this->_db->GetInsertSQL($this->__adodbResult, $update);
@@ -119,6 +127,9 @@ abstract class Item {
   }
 
   //=========================================================================
+  /**
+   * @param mixed $update
+   */
   protected function _flushUpdate($update) {
     $sql = $this->_db->GetUpdateSQL($this->__adodbResult, $update);
     $this->_db->Execute($sql);

@@ -141,6 +141,9 @@ class RenderEngine {
   }
 
   //=========================================================================
+  /**
+   * @param string $tpl
+   */
   public function setTemplate($tpl) {
     $this->__tplfile = $tpl;
   }
@@ -148,6 +151,8 @@ class RenderEngine {
   //=========================================================================
   /**
   * Wrapper for smarty's assign
+  * @param string $name
+  * @param string $data
   */
   public function assign($name, $data) {
     $this->_smarty->assign($name, $data);

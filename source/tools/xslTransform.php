@@ -1,13 +1,17 @@
 #!/usr/bin/php5.1
 <?php
-/**
- * Tech Test for transformat xml input with xslt
- *
- * @package    proof-of-concept
- * @author     Stefan Marr <mail@stefan-marr.de>
- * @copyright  2006 Stefan Marr
- * @license    http://www.apache.org/licenses/LICENSE-2.0  Apache License 2.0
- */
+//***************************************************************************
+//***************************************************************************
+//**                                                                       **
+//** Tech Test for transformat xml input with xslt		   		   **
+//**                                                                       **
+//** @package    proof-of-concept							   **
+//** @author     Stefan Marr <mail@stefan-marr.de>                         **
+//** @copyright  2006 Stefan Marr                                          **
+//** @license    www.apache.org/licenses/LICENSE-2.0   Apache License 2.0  **
+//**                                                                       **
+//***************************************************************************
+//***************************************************************************
 
 
 $file = $_SERVER['argv'][1];
