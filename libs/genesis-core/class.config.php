@@ -42,9 +42,10 @@ class Config implements Singleton {
    * @var string
    */
  
- /**
-  * @var string
-  */ public $dbUser = '';
+  /**
+   * @var string
+   */ 
+  public $dbUser = '';
 
   /**
    * @var string
@@ -72,7 +73,6 @@ class Config implements Singleton {
    */
   public $siteImageURL = '';
 
-
   /**
    * @var string
    */
@@ -82,7 +82,6 @@ class Config implements Singleton {
    * @var string
    */
   public $siteTitle = '';
-
 
   //=========================================================================
   private function __construct() {
@@ -101,13 +100,14 @@ class Config implements Singleton {
   } //end of __construct
 
   /**
-   * @ var Singleton instance
+   * @var Config
    */
   private static $instance;
 
   //=========================================================================
   /**
    * get singleton instance
+   * @return Config
    */
   static public function getInstance() {
     if (!isset(self::$instance)) {

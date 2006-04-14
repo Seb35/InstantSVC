@@ -3,8 +3,7 @@
 //***************************************************************************
 //***************************************************************************
 //**                                                                       **
-//** CodeAnalyzer - searchs through source tree and collects infos about   **
-//**                found classes and files                                **
+//** Test Suite for class.file.php                                         **
 //**                                                                       **
 //** Project: Web Services Description Generator                           **
 //**                                                                       **

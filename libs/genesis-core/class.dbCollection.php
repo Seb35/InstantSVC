@@ -120,9 +120,8 @@ abstract class DbCollection implements Singleton {
 	 * Löscht das angegebene Item aus der Datenbank
 	 * kann überschrieben werden um Verknüpfte Daten gleich mit aus
 	 * der Datenbank zu entfernen
-       * 
-       * @param int $id
-	 * @access public
+     * 
+     * @param int $id
 	 * @virtual
 	 */
 	public function deleteItem($id) {

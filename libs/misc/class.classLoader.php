@@ -17,7 +17,7 @@
 //***** imports *************************************************************
 require_once(dirname(__FILE__).'/class.mimetypes.php');
 
-//***** CodeAnalyzer ********************************************************
+//***** ClassLoader *********************************************************
 /**
  * @package    libs.misc
  * @author     Stefan Marr <mail@stefan-marr.de>
@@ -30,7 +30,7 @@ class ClassLoader {
      */
     private static $mimeHandler;
     /**
-     * @var Singleton
+     * @var ClassLoader
      */
     private static $instance = null;
     /**

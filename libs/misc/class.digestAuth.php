@@ -14,6 +14,91 @@
 //**                                                                         **
 //*****************************************************************************
 //*****************************************************************************
+// Digest and Basic authentication PHP implementation by Thomas Pike
+// Comments on this implementation can be left at:
+// http://www.xiven.com/blog.php?start=73&count=1
+// RFC: http://www.ietf.org/rfc/rfc2617.txt
+
+// As of 2005-09-12 I have explicitly released this code as public domain.  This means you can do
+// anything you want with it - I have given up all rights to the work with no strings attached.
+// You do not need to credit me if you use this code (though it is always welcomed).
+
+// Usage:
+// - Include this file in every page.
+// - The following constant needs to be defined:
+//     'REALM' - specifies the name of the realm of this login system.
+// - Somewhere at top of every page, have a line like the following:
+//     $auth = new authentication;
+// - Create a login page with the following code in:
+//     if(!$auth->loggedIn) {
+//         $auth->authenticate();
+//     } else {
+//         echo '<p>Login successful</p>';
+//       ....
+//     }
+// - A users table is required in a database with at least the following fields:
+//     userid     INT PRIMARY        Unique user id
+//     username   VARCHAR            User name
+//     a1         CHAR(32)           Password hash
+
+// - Passwords should be stored in the database in the form:
+//     a1 = md5($username.":".REALM.":".$password);
+//   where REALM is the predefined realm name for this login system.
+// - (OPTIONAL) Somewhere at the bottom of every page, include the following code:
+//     $auth->authenticationInfo($contentMD5);
+//   where $contentMD5 is the md5 checksum of the web page.
+
+// Notes:
+// - Digest Authentication is not the world's answer to web security.  If you need a truly secure
+//   system you should almost certainly be using SSL instead.  In particular, all data except for
+//   the user's password is sent in plain text as usual.  Additionally, this implementation is
+//   unavoidably vulnerable to certain "Man in the Middle" attacks as detailed in section 4.8 of
+//   RFC 2617 - HTTP Authentication (http://www.ietf.org/rfc/rfc2617.txt).  Also, if Auth is used
+//   instead of Auth-int, POST requests could potentially be modified en-route by a malicious
+//   proxy.
+// - ':' symbol is not allowed in user name to allow for compatibility with Basic authentication.
+
+// Current browser issues:
+// - Currently only Opera is known to support Auth-int.  IE and Mozilla only support Auth.
+//   Mozilla bug: http://bugzilla.mozilla.org/show_bug.cgi?id=168942
+// - Mozilla and IE completely ignore the Authentication-Info header (they neither reject the page
+//   if the server sends an incorrect rspauth, nor do they use the nextnonce value for the next
+//   request, resulting in a 401 with stale=true being sent after the 2 minute stale nonce grace
+//   period has expired even if other pages have been accessed).
+//   Mozilla bug: http://bugzilla.mozilla.org/show_bug.cgi?id=116177
+// - IE doesn't resend the Opaque value for subsequent requests, therefore if it is not present, we
+//   allow the request anyway.  I don't believe this should actually affect security in any way
+//   since the Opaque value never changes, and if the response is valid then the client must have
+//   the correct Opaque value.
+// - If the URI has a querystring (ie. ?foo=bar) IE does not include it in the URI it sends in the
+//   Authorization header.  This is a violation of RFC2617 section 3.2.2.5.  This implementation
+//   works around this bug by being more leniant than the spec allows.  This functionality can be
+//   disabled by setting the IECOMPAT constant to false.
+// - WWW-Authenticate line specifies Digest before Basic since otherwise IE will use Basic.  Note
+//   that this goes against the advice in RFC 2617: "Note that many browsers will only recognize
+//   Basic and will require that it be the first auth-scheme presented."
+
+// Current implementation issues:
+// - Nonce count is currently ignored by this system.  This should be implemented as extra security
+//   against replay attacks.  To do this, we need a method of "remembering" which nonce counts have
+//   been used for the current nonce.  Maybe this could be stored in the database, but this would
+//   result in extra queries.  Another alternative is to write the used nonce values in a file.
+// - Error logging code for incorrect password not yet implemented
+
+// Issues fixed since last release
+// - FIXED: Auth-int support will almost certainly break when faced with multipart form data.
+//   eg. <form enctype="multipart/form-data"> which is commonly used for uploading files via HTTP.
+// - FIXED: 2004-01-10 Authentication fails when URI contains an apostrophe (')
+// - FIXED: 2004-05-03 Basic Authentication broken
+// - FIXED: 2004-05-03 Workaround for IE bug: URI in Authorization header does not include
+//   querystring
+
+// Changes by Stefan Marr
+// - change db queries for getting authentication infos into useage of a authProvider
+// - remove db dependencies
+// - move code to php5
+// TODO
+// - update documentation
 
 //***** digestAuth ************************************************************
 /**
