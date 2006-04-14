@@ -723,166 +723,174 @@ PasswortText, dass ein Passwort einem \texttt{MD5(Passwort)} entspricht und
 nicht nur durch ein reines Passwort repräsentiert wird.
 
 Für weitere Details sei auf den Standard \cite{wss:usernameTokenProfile}
-verwiesen. Es wurde an dieser Stelle versucht kurz und knapp die grundlegenden
-Ideen des Standards zu vermitteln. Im Nachfolgenden soll die Umsetzung in PHP
+verwiesen. Es wurden an dieser Stelle kurz und knapp die grundlegenden
+Ideen des Standards zu vermittelt. Im Nachfolgenden soll die Umsetzung in PHP
 näher beleuchtet werden.
 
-\subsection{Umsetzung des Servers in PHP}
+\subsection{Erweiterter SOAP-Server mit WS-Security}
 \label{wss:UmsetzungServer}
 
-\subsubsection{Vorhandene Umsetzungen} \label{wss:VorhandeneUmsetzungen} PHP
-bietet seit der Version 5 eine Implementierung des SOAP-Protokolls, welche es
-erlaubt Web Services zu erstellen, beziehungsweise angebotene Dienste zu nutzen.
-Sicherheitsmechanismen sind in diesem Erweiterungsmodul allerdings noch nicht integriert.
+\subsubsection{Vorhandene Komponenten} \label{wss:VorhandeneUmsetzungen} PHP
+bietet seit der Version 5 eine Implementierung des SOAP-Protokolls in Form eines
+Erweiterungsmoduls. Mit dem Modul lassen sich eigene Web Services erstellen
+und vorhandene Dienste nutzen.
+Sicherheitsmechanismen sind darin allerdings noch nicht integriert.
 Die Umsetzung des Username Token Profiles für PHP wird auf Basis der
-vorhandenen Klassen SoapClient und SoapServer erfolgen. Dies hat den
-Vorteil, dass das Abarbeiten von SOAP-Nachrichten nicht nochmal
+vorhandenen Klassen \verb|SoapClient| und \verb|SoapServer| erfolgen.
+Die erstellten PHP Klassen erben von diesen bzw.
+erweitern sie um die zusätzlich benötigten Aspekte.
+Dies hat den Vorteil, dass das Abarbeiten von SOAP-Nachrichten nicht nochmal
 neu implementiert werden muss. Im Idealfall profitiert die erstellte Lösung auch
-von zukünftigen Verbesserungen des SOAP-Erweiterungsmoduls. Die Extension selbst ist in C
-geschriebenen und bietet somit einen klaren Geschwindigkeitsvorteil gegenüber anderen
-SOAP-Implementierungen, die direkt in PHP geschrieben sind. Die erstellten PHP Klassen erben von diesen bzw.
-erweitern sie um die zusätzlichen benötigten Aspekte.
+von zukünftigen Verbesserungen des SOAP-Erweiterungsmoduls. Das Erweiterungsmodul selbst ist in C
+geschrieben und bietet somit einen klaren Geschwindigkeitsvorteil gegenüber anderen
+SOAP-Stacks, die direkt in PHP implementiert sind.
 
-\subsubsection{Probleme} \label{wss:Probleme} Diese Idealvorstellung erweist
-sich allerdings schnell als nicht trivial. Dies liegt einerseits in der
-knappen Dokumentation der SOAP-Erweiterung, welche ein Review des SourceCodes unerlässlich
-macht und andererseits in den noch vorhanden \glqq Features\grqq. Unter anderem
-ruft der SoapServer anhand des Tagnamens im SoapHeader automatisch Methoden auf,
-welche den gleichen Namen besitzen. Dies kann Potential für eine
-Sicherheitslücke darstellen. Es muss daher eine Lösung gefunden werden, welche
-es ermöglicht alle Headerinformationen aus der SoapMessage nach deren Verwendung
-zu löschen. Die vorhandene Implementierung des SoapServers hat noch einen
-weiteren Nachteil. Sie wirft nicht unter allen Umständen korrekte SoapFaults.
-Das Werfen eigener Fehler sollte hingegen immer korrekt ablaufen, gerade wenn
+\subsubsection{Probleme} \label{wss:Probleme} Dieses Vorhaben erwies
+sich allerdings als etwas problematisch. Das liegt einerseits an der
+knappen Dokumentation der SOAP-Erweiterung, welche ein Review des C-Quelltextes unerlässlich
+machte, und andererseits an einigen besonderen Features der SOAP-Erweiterung. Beispielsweise
+ruft der SOAP-Server anhand der Namen von Elementen im SOAP-Header automatisch Methoden
+gleichen Namens auf. Dies stellt eine potentielle Sicherheitslücke dar, weil damit auch
+Methoden aufgerufen werden können, für die keine WSDL-Ports spezifiziert wurden.
+Es muss daher eine Lösung gefunden werden, welche
+es ermöglicht die Header-Informationen aus der SOAP-Nachricht nach deren Verwendung
+zu entfernen. Die aktuelle Implementierung des SOAP-Servers hat noch einen
+weiteren Nachteil. Sie sendet nicht unter allen Umständen korrekte SOAP-Faults.
+Das senden sicherheitsrelevanter Fehler-Nachrichten sollte aber immer korrekt ablaufen, gerade wenn
 Exceptions zur Laufzeit auftreten.
 
-\subsubsection{Extended Soap Server}
+\subsubsection{Extended SOAP-Server}
 \label{wss:ExtendedSoapServer}
 \begin{figure}[!htb]
 \centering
 \includegraphics[width=3.4in]{pics/klassenstrukturServer}
-\caption{Klassenstruktur der Webservice Security}
+\caption{Erweiterungen des SOAP-Servers für Web Services Security}
 \label{wss:klassenstrukturServer}
 \end{figure}
-Um die Sicherheit kapseln zu können, wurde der \glqq Extended Soap Server\grqq~entwickelt.
+Um die Sicherheitsmechanismen in SOAP zu integrieren, wurde der \glqq Extended SOAP-Server\grqq~entwickelt.
 
-Es sei an ein wichtiges Designziel erinnert: Weitere Standards sollten möglichst
-einfach integrierbar sein. Aus diesem Grund muss dass Problem der Behandlung von
-Sicherheitsaspekten abstrahiert werden. Dies ist hier geschehen und wird im
-Weiteren näher erläutert.
+Dabei war ein wichtiges Designziel, dass weitere Standards möglichst
+einfach integrierbar sind. Dazu wurde von dem Problem der Behandlung von
+Sicherheitsaspekten abstrahiert.
 
 \begin{itemize}
-\item \emph{XmlParser}
+\item \verb|XmlParser|
 
-Bei Web Services handelt es sich um eine Übertragung von XML konformen
-Dokumenten. Da ist es nur offensichtlich, dass die Implementierung von XML
-Handlern den Weg zum Designziel massiv erleichtern können. Es gibt zwei
-grundsätzlich verschiedene Arten ein Dokument zu parsen. Einerseits die
-DOM-Parser, welche im Speicher die gesamte Baumstruktur aufbauen und
-andererseits die SAX-Parser (Event-Driven). Sie sind einfach beschrieben
-Tagsucher, welche bei jedem vorkommenden Tag eine Methode aufrufen. Für eine
-Umsetzung in PHP empfehlen sich dabei klar die SAX-Parser, da sie
-speichereffizienter agieren. Diese lassen sich in PHP nicht direkt realisieren,
-doch stehen Grundelemente bereit. Eine abstrakte Implementierung eines solchen
-Parsers, welcher leere Methoden implementiert, aber schon eine Methode
-\texttt{parse()} bereitstellt, ist der \texttt{XmlParser}. Diese Methode hat als
-Rückgabewert einen Fehlercode, welcher angibt ob die Abarbeitung und Auswertung
-des Parsens erfolgreich war (\texttt{return 0}).
+Bei Web Services handelt es sich um eine Übertragung von XML-Nachrichten
+Daher ist es offensichtlich, dass die Implementierung von XML-Handlern
+die Umsetzung von Web Service Standards massiv erleichtern kann. Es gibt zwei
+grundsätzlich verschiedene Arten ein XML-Dokument zu parsen. Auf dem Document
+Object Model (DOM) basierende Parser entwickeln im Speicher eine Baumstruktur, 
+die wahlfreien Zugriff auf alle Strukturelemente der, und
+andererseits sequentielle, Ereignis-getriebene SAX-Parser. Sie sind einfach beschrieben
+Tagsucher, welche bei jedem vorkommenden Tag eine Methode aufrufen.
+Für das Parsen von SOAP-Nachrichten empfehlen sich dabei klar die SAX-Parser, da sie
+performanter sind und speichereffizienter agieren.
+Eine abstrakte Implementierung eines solchen
+Parsers, welcher Methodensignaturen definiert und eine Methode
+\verb|parse()| bereitstellt, ist der \verb|XmlParser|. Diese Methode hat als
+Rückgabewert einen Fehlercode, der angibt, ob die Abarbeitung und Auswertung
+des Parsens erfolgreich war (\verb|return 0|).
 
-\item \emph{XmlParserExtended}
+\item \verb|XmlParserExtended|
 
-Der \texttt{XmlParser} wird durch \texttt{XmlParserExtended} erweitert, wodurch
-es möglich ist, Headerabschnitte zu löschen. Da jeder Parser das gesamte
-Dokument durchsucht, ist es nötig schon benutzte Teile zu entfernen, um doppelte
-Datenauswertungen zu verhindern. Somit ist es ebenso möglich, durch die richtige
-Implementation der Methode \texttt{deleteHeader()} das Sicherheitsproblem der
-Ausführung von Methoden durch Header-Tags zu verhindern (siehe
+Der \verb|XmlParser| wird durch \verb|XmlParserExtended| erweitert.
+Da jeder Parser das gesamte
+Dokument durchsucht, ist es sinnvoll schon benutzte Elemente zu entfernen, um doppelte
+Datenauswertungen zu verhindern. Ebenso ist es möglich, durch die richtige
+Implementation der Methode \verb|deleteHeader()| das Sicherheitsproblem der
+Ausführung von Methoden durch Header-Elemente zu verhindern (siehe
 \ref{wss:XmlSoapHeaderParser} \emph{XmlSoapHeaderParser}).
 
-Die XML Soap Parser sind demnach eine Anwendung des
-Strategy-Pattern\footnote{\glqq Define a family of algorithms, encapsulate each
+Die XML-SOAP-Parser sind demnach eine Anwendung des
+Strategy-Patterns\footnote{\glqq Define a family of algorithms, encapsulate each
 one, and make them interchangeable. Strategy lets the algorithm vary
-independently from clients that use it.\grqq \cite{wss:designPatterns}}, welches
-es erlaubt mehrere Algorithmen unter einem einheitlichen Interface anzusprechen
-und auszutauschen. Mit dieser Möglichkeit kann ein Chainhandler aufgebaut
-werden. Dabei handelt es sich um die Möglichkeit, beliebig viele XML Soap Parser
-dem \texttt{ExtendedSoapServer} zu übergeben und diese nach der Reihenfolge
+independently from clients that use it.\grqq \cite{wss:designPatterns}}, denn sie
+erlauben es, mehrere Algorithmen unter einem einheitlichen Interface anzusprechen
+und auszutauschen. Damit können Handlerchains aus mehreren
+SOAP-Intermediaries realisiert werden, denn es ist möglich,
+dem Extended SOAP-Server beliebig viele XML-SOAP-Parser
+zu übergeben und diese sequentiell der Reihenfolge nach
 abzuarbeiten.
 
 Das Username Token Profile ist folglich nur als eine konkrete Umsetzung des
 \texttt{XmlParserExtended} (siehe \ref{wss:XmlSoapSecParser}
 \emph{XmlSoapSecParser}) anzusehen. Dabei wird in der \texttt{parse()}-Methode
-auf das Interface \texttt{ICheckUserRunnable} verwiesen und überlässt ihm
-mittels der geparsten Werte für Username, Passwort, Nonce und Created die
-Auswertung der Anfrage. Nachdem diese erfolgt ist, werden alle entsprechenden
-Tags mittels der \texttt{delete()}-Methode gelöscht. 
+auf das Interface \texttt{ICheckUserRunnable} verwiesen und es einer Implementierung
+dieser Schnittstelle überlassen,
+mit den geparsten Werten für \verb|Username|, \verb|Password|, \verb|Nonce| und \verb|Created| die
+die Anfrage auszuwerten. Nachdem die Authentifikation erfolgt ist, werden alle entsprechenden
+Elemente mit der \texttt{delete()}-Methode gelöscht. 
 \end{itemize}
 
-Durch die Trennung von Parser und SoapServer ist die Lösung unabhängig vom
-Parser und somit dem zu implementierenden Standard. Eine Umstellung auf andere
-Möglichkeiten ist somit leicht möglich.
+Durch die Trennung von Parser und SOAP-Server ist die Lösung unabhängig vom
+implementierten Standard. Eine Umstellung auf andere Token Profiles oder die
+Implementierung weiterer Web Service Standards ist somit leicht möglich.
 
-Damit eine Behandlung der SoapMessage noch vor der Weiterleitung an den PHP
-eigenen SoapServer erfolgen kann, muss der Inhalt aus
-\texttt{\$HTTP\underline~RAW\underline~POST\underline~DATA} ausgelesen und durch
-die Parser jeweils, wenn nötig, angepasst werden. Das Ergebnis muss wiederum in
-dieser Variable gespeichert werden, da die gekapselte SoapServer-Implementierung
+Damit eine Behandlung der SOAP-Nachricht noch vor der Weiterleitung an den
+eigentlichen SOAP-Server (Ultimate Receiver) erfolgen kann, wird die SOAP-Nachricht aus
+der globalen Variablen
+\texttt{\$HTTP\underline~RAW\underline~POST\underline~DATA} ausgelesen und falls nötig durch
+die Parser angepasst. Das Ergebnis wird wieder in
+dieser Variablen gespeichert, da die gekapselte SOAP-Server-Implementierung
 auf diese Variable zugreift.
 
 Es soll hierbei erwähnt werden, dass die Reihenfolge der Parser einen
-entscheidenden Faktor spielen kann. Ein Parser, welcher den gesamten SoapHeader
-löscht, darf erst zum Schluß ausgeführt werden. Da allerdings der
-\texttt{ExtendedSoapServer} keine Kenntnis über den semantischen Inhalt der
-genutzten XML Parser hat, ist der Entwickler des \texttt{ExtendedSoapServer}
-dazu aufgefordert, die XML Parser in der richtigen Reihenfolge dem
-\texttt{ExtendedSoapServer} mitzuteilen. Diese Reihenfolge wird bei der
+entscheidende Bedeutung hat. Ein Parser, welcher den gesamten SOAP-Header
+entfernt, sollte erst zum Schluss ausgeführt werden. Da allerdings der
+Extended SOAP-Server keine Kenntnis über die Semantik der
+genutzten XML-Parser hat, ist der Entwickler
+dafür verantwortlich, die XML Parser in der richtigen Reihenfolge beim
+Extended SOAP-Server zu registrieren. Diese Reihenfolge wird bei der
 Ausführung beachtet.
 
-Nachdem die großen Probleme gelöst werden konnten, bleibt nur noch die Frage
-nach den SoapFaults(siehe \ref{wss:SoapFaults} \emph{SoapFaults}). Als gute
-Lösung erwies sich in Tests die Verwendung eines extra SoapServers nur für
-Fehlermeldungen. Dabei muss ein minimaler Web Service bereitgestellt werden,
-welcher nicht einmal Dienste anbieten muss. Dieser dient nur zum Aufsetzen des
-Servers. Damit ist es möglich korrekte SoapFaults zu erstellen. Die Verhinderung
-der genannten Sicherheitsprobleme ist damit erfolgt.
+Nachdem die anspruchsvolleren Probleme gelöst werden konnten, blieb nur noch die Frage
+nach den SOAP-Faults (siehe \ref{wss:SoapFaults} \emph{SoapFaults}) offen. Als gute
+Lösung erwies sich die Verwendung eines weiteren SOAP-Servers für das Versenden von
+Fehlermeldungen. Dabei wird ein minimaler Web Service bereitgestellt,
+der nicht einmal Dienste anbietet, denn er dient nur zum Initialisieren des
+Servers. Mit diesem SOAP-Server ist es nun möglich korrekte SOAP-Faults zu erstellen.
 
-Allerdings ist es nun leider nicht mehr möglich einen
-\texttt{ExtendedSoapServer} als Ableitung von SoapServer zu implementieren, da
-nun zwei Exemplare eines SoapServers benötigt werden. Demnach kapselt der
-\texttt{ExtendedSoapServer} nun sämtliche Funktionen des SoapServers und
-erweitert ihn um unsere Bestandteile (siehe Abb.
+Damit sind alle der eingangs benannten Sicherheitsprobleme erfolgreich gelöst.
+
+Allerdings ist es nun vom Design her nicht möglich einen
+Extended SOAP-Server als Ableitung von \verb|SoapServer| zu implementieren, da
+zwei Exemplare eines SOAP-Servers benötigt werden. Daher kapselt der
+Extended SOAP-Server nun sämtliche Funktionen des SOAP-Servers und
+erweitert ihn um die zusätzlichen Bestandteile (siehe Abb.
 \ref{wss:klassenstrukturServer}).
 
-Sollten später die Probleme in PHP behoben werden, ist eine Umstellung auf
-Vererbung aber nicht grundsätzlich unmöglich. Da eine Trennung der XML
-Behandlung erfolgte, ist dies sogar mit relativ wenig Aufwand möglich.
+Sollten später die Probleme in der SOAP-Implementierung behoben werden, ist eine Umstellung auf
+Vererbung aber nicht grundsätzlich unmöglich. Da eine Trennung der
+XML-Behandlung erfolgte, ist dies sogar mit relativ wenig Aufwand möglich.
 
-Die Verwendung des \texttt{ExtendedSoapServers} ist nun nahezu identisch zu der
-des normalen SoapServers. Es wurde lediglich eine Funktion nach außen
-hinzugefügt: \texttt{addXmlHandler()} fügt entsprechend der Erläuterung des
-ChainHandlers neue XML Soap Parser hinzu und führt sie aus.
+Die Verwendung des Extended SOAP-Servers ist nun nahezu identisch zu der
+des normalen SOAP-Servers. Es wurde lediglich eine Methode nach außen
+hinzugefügt: \verb|addXmlHandler()| registriert entsprechend der Erläuterung des
+Chain-Handlers neue XML-SOAP-Parser und führt sie aus.
 
 \subsubsection{XmlSoapSecParser} \label{wss:XmlSoapSecParser} Nachdem die
 Umsetzung eines Servers näher erläutert wurde, besteht nun die spannende Frage,
-wie der XML Soap Parser für das Username Token Profile aussieht.
+wie der XML-SOAP-Parser für das Username Token Profile aussieht.
 
-Der Parser sammelt aus dem Header alle notwendigen Daten zusammen. Dazu zählen
-Username, Password, Nonce und das Created-Tag. Sind die benötigten Daten
+Der Parser sammelt aus dem SOAP-Header alle notwendigen Daten zusammen. Dazu zählen
+die Elemente \verb|Username|, \verb|Password|, \verb|Nonce| und \verb|Created|.
+Sind die benötigten Daten
 ermittelt, so werden die Daten an eine Implementierung des Interfaces
 \texttt{ICheckUserRunnable} übergeben. Dieses wird intern in der Methode
-\texttt{parse()} aufgerufen, welche damit auch die Fehler nach außen reichen
+\texttt{parse()} aufgerufen, die damit auch Fehler nach außen reichen
 kann.
 
 Die schon oft erwähnte Methode \texttt{deleteHeader()} dient nun dazu alle oder
 nur Teile eines Headers zu entfernen. Grundsätzlich ist es hiermit auch möglich
-den Inhalt der gesamten SoapMessage zu löschen, was aber wenig Sinn macht. Bei
+den Inhalt der gesamten SOAP-Nachricht zu löschen, was aber wenig Sinn macht. Bei
 der Implementierung muss die Variable \texttt{\$this->deleteTag} einfach mit dem
 betreffenden Tag gesetzt werden. Nach der \texttt{parse()} Methode wird dann
 automatisch eine Methode des XML Parsers durch den \texttt{ExtendedSoapServer}
-aufgerufen, welche den gesamten Inhalt des Tags löscht. Soll kein Inhalt des
-SoapHeaders entfernt werden, so braucht die Variable \texttt{\$this->deleteTag}
-einfach nicht gesetzt zu werden. In der konkreten Implementierung des
-\texttt{XmlSoapSecParsers} wird der gesamte Inhalt des Security Tags gelöscht.
+aufgerufen, welche den gesamten Inhalt des Tags löscht. Sollen keine Elemente des
+SOAP-Headers entfernt werden, so braucht die Variable \texttt{\$this->deleteTag}
+nicht gesetzt zu werden. In der konkreten Implementierung des
+\texttt{XmlSoapSecParsers} wird der gesamte Inhalt des \verb|Security|-Elements gelöscht.
 
 \subsubsection{ICheckUserRunnable und CheckUserRunnable}
 \label{wss:CheckUserRunnable} Die Trennung ist notwendig, da bei einer Anwendung
@@ -917,7 +925,7 @@ PHP Soap Client nicht gesetzt werden kann. Um nun zu erkennen, ob \texttt{Passwo
 
 \emph{Ablauf}
 
-Als erstes wird, wie schon oft beschrieben, der SoapHeader ausgelesen und die
+Als erstes wird, wie schon oft beschrieben, der SOAP-Header ausgelesen und die
 notwendigen Daten übermittelt. Es lassen sich mehrere Wege durch das Petrinetz
 finden, von links nach rechts gilt:
 
@@ -931,7 +939,7 @@ finden, von links nach rechts gilt:
 	als auch Created fehlen. Anschließend findet die Authentifikation statt.
 	Hierbei kann es passieren, dass ein Benutzer unbekannt ist (-104), sein
 	Passwort ungültig ist (-105) oder im Erfolgsfall das globale Userobjekt
-	erzeugt und die Anfrage an den Webservice weitergeleitet wird, sofern
+	erzeugt und die Anfrage an den Web Service weitergeleitet wird, sofern
 	keine anderen Parser Fehler auslösen.
 	\item Der gesamte Security Header fehlt und es kann somit an dieser
 	Stelle ein Gastaccount geladen werden.
@@ -962,16 +970,16 @@ ein Fehler zurückgegeben (-105)
 
 \subsubsection{XmlSoapHeaderParser}
 \label{wss:XmlSoapHeaderParser}
-Dieser Parser löscht den gesamten SoapHeader. Demnach nutzt er die
+Dieser Parser löscht den gesamten SOAP-Header. Demnach nutzt er die
 Funktionalität des \texttt{XmlParserExtended} zum Löschen von Tag-Abschitten.
 Dies funktioniert wie schon zuvor in \texttt{XmlSoapSecParser} beschrieben.
 Dabei ist der einzige Unterschied, dass nicht nur das Security-Tag entfernt
-wird, sondern gleich der gesamte SoapHeader. Dieser Parser sollte demnach als
+wird, sondern gleich der gesamte SOAP-Header. Dieser Parser sollte demnach als
 allerletztes an den \texttt{ExtendedSoapServer} übergeben werden.
 
-\subsubsection{SoapFaults}
+\subsubsection{SOAP-Faults}
 \label{wss:SoapFaults}
-Das Thema SoapFaults basiert ebenfalls auf dem Web Services Security Standard
+Das Thema SOAP-Faults basiert ebenfalls auf dem Web Services Security Standard
 (siehe \cite{wss:oasis} Soap Message Security 1.0) und ist somit wohl definiert.
 Die folgende Tabelle \ref{wss:SoapFaultsTable} zeigt den internen Fehlercode und
 den zugehörigen standardisierten Fehlercode sowie dessen Stringbeschreibung.
@@ -1014,7 +1022,7 @@ Stategy-Pattern gelöst werden. Eine Umsetzung von weiteren Standards steht
 demzufolge nichts entgegen.
 
 Etwas unschön ist dabei, dass der \texttt{ExtendedSoapServer} nicht direkt von
-dem PHP eigenen SoapServer abgeleitet werden konnte. Es ist daher eher eine
+dem PHP eigenen SOAP-Server abgeleitet werden konnte. Es ist daher eher eine
 Frage der Zeit, bis diese Lösung etwas umstrukturiert werden muss. Dies wird
 aber, wie schon zuvor erwähnt, mit wenigen Handgriffen zu machen sein.
 
@@ -1046,10 +1054,10 @@ denen die zusätzlichen Informationen übergeben werden.
 
 Mit den zusätzlichen Daten generiert der Client bei jedem
 \texttt{\underline~\underline~call()} Aufruf automatisch den benötigten
-SoapHeader. Die Benutzung der Klasse ist dabei idealerweise nahezu identisch zum
+SOAP-Header. Die Benutzung der Klasse ist dabei idealerweise nahezu identisch zum
 SoapClient und unterscheidet sich lediglich im erweiterten Konstruktor.
 
-Die Erstellung des SoapHeaders ist unter PHP allerdings eine Sache für sich. Es
+Die Erstellung des SOAP-Headers ist unter PHP allerdings eine Sache für sich. Es
 ist erforderlich eine Struktur von Structs zu generieren, um einen konformen
 Header erzeugen zu können. Hierbei kommen auch die PHP eigenen Klassen
 \texttt{SoapVar} und \texttt{SoapHeader} zum Einsatz. Der sogenannte

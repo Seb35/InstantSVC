@@ -9,8 +9,7 @@
 //** @package    WSDLGenerator                                             **
 //** @author     Gregor Gabrysiak <gregor_abrak at web dot de>             **
 //** @author     Falko Menge <mail@falko-menge.de>                         **
-//** @author     Stefan Marr <mail@stefan-marr.de>                         **
-//** @copyright  2005-2006 ...                                             **
+//** @copyright  2006 ...                                                  **
 //** @license    www.apache.org/licenses/LICENSE-2.0   Apache License 2.0  **
 //**                                                                       **
 //***************************************************************************
@@ -22,12 +21,11 @@ require_once 'class.Foo.php';
 /**
  * class for testing WSDL generation for methods with different parameter and return types
  * @webservice
- * @package    WSDLGenerator                                             
- * @author     Gregor Gabrysiak <gregor_abrak at web dot de>             
- * @author     Falko Menge <mail@falko-menge.de>                         
- * @author     Stefan Marr <mail@stefan-marr.de>                         
- * @copyright  2005-2006 ...                                             
- * @license    www.apache.org/licenses/LICENSE-2.0   Apache License 2.0  
+ * @package    WSDLGenerator
+ * @author     Gregor Gabrysiak <gregor_abrak at web dot de>
+ * @author     Falko Menge <mail@falko-menge.de>
+ * @copyright  2006 ...
+ * @license    www.apache.org/licenses/LICENSE-2.0   Apache License 2.0
  *
  */
 class WSDLGeneratorTest {
