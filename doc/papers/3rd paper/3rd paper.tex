@@ -307,7 +307,9 @@ wäre es, diesen Annotation-Mechanismus durch eine geeignete Laufzeitumgebung zu
 nutzen, um aspektorientierte Programmierung unterstützen zu können. Dies ist in
 diesem Projekt jedoch nicht realisiert.
 
-\section{WSDL Generator} Nachdem die Extended Reflection API das Problem gelöst
+\section{WSDL Generator}
+\label{WSDLGenerator}
+Nachdem die Extended Reflection API das Problem gelöst
 hatte, Typinformationen für PHP5 Sprachkonstrukte zu ermitteln, konnten wir nun
 einen WSDL-Generator für die Erstellung von Web Services entwickeln. Die Web
 Service Description Language (WSDL), welche in \cite{WebServicePart1} näher
@@ -672,7 +674,7 @@ Das nächste Element\verb|<wsse:Password Type="...">| enthält das Passwort des Be
 Passwortäquivalent.
 Beim Attribut \verb|Type| dieses Elements gibt es zwei mögliche Werte:
 \begin{itemize}
-  \item \emph{PasswortText (Standardwert)}
+  \item \emph{PasswordText (Standardwert)}
     Hierbei kann das \texttt{Type}-Feld leer gelassen werden und als Daten sind nur der
     Username und das Passwort (bzw. Passwortäquivalent) notwendig.
   \item \emph{PasswordDigest}
@@ -719,7 +721,7 @@ Standard eine Empfehlung von fünf Minuten an.
 Passwortäquivalent bedeutet in diesem Zusammenhang, dass dieses extern
 verschlüsselt sein kann und sollte. Bei unserer Umsetzung gilt grundsätzlich das
 Passwörter immer MD5-verschlüsselt sein müssen. Dementsprechend gilt auch beim
-PasswortText, dass ein Passwort einem \texttt{MD5(Passwort)} entspricht und
+PasswordText, dass ein Passwort einem \texttt{MD5(Passwort)} entspricht und
 nicht nur durch ein reines Passwort repräsentiert wird.
 
 Für weitere Details sei auf den Standard \cite{wss:usernameTokenProfile}
@@ -881,7 +883,7 @@ ermittelt, so werden die Daten an eine Implementierung des Interfaces
 \texttt{parse()} aufgerufen, die damit auch Fehler nach außen reichen
 kann.
 
-Die schon oft erwähnte Methode \texttt{deleteHeader()} dient nun dazu alle oder
+Die schon oft erwähnte Methode \texttt{deleteHeader()} dient nun dazu den gesamten oder
 nur Teile eines Headers zu entfernen. Grundsätzlich ist es hiermit auch möglich
 den Inhalt der gesamten SOAP-Nachricht zu löschen, was aber wenig Sinn macht. Bei
 der Implementierung muss die Variable \texttt{\$this->deleteTag} einfach mit dem
@@ -893,12 +895,13 @@ nicht gesetzt zu werden. In der konkreten Implementierung des
 \texttt{XmlSoapSecParsers} wird der gesamte Inhalt des \verb|Security|-Elements gelöscht.
 
 \subsubsection{ICheckUserRunnable und CheckUserRunnable}
-\label{wss:CheckUserRunnable} Die Trennung ist notwendig, da bei einer Anwendung
-in einem Unternehmen immer wieder verschiedene Datenhaltungstechniken verwendet
-werden. Nur so ist gewährleistet, eine flexible Implementierung zu erstellen. In
+\label{wss:CheckUserRunnable} Die Trennung ist notwendig, da verschiedenste
+Datenhaltungstechniken zur Speicherung der für die Authentifikation benötigten
+Benutzerdaten zum Einsatz kommen können.
+Nur so ist gewährleistet, eine flexible Implementierung zu erstellen. In
 der Implementierung des Interfaces \texttt{ICheckUserRunnable} ist die
 eigentliche Logik des Standards enthalten. Hier wurde als Beispiel eine
-Implementierung für die tele-TASK-Benutzerverwaltung erstellt.
+Implementierung für die Benutzerverwaltung von tele-TASK erstellt.
 
 Um den Ablauf zu verdeutlichen wurde ein Petrinetz erstellt, welches die
 Reihenfolge der Überprüfungen verdeutlicht. Es besteht aus zwei Teilen um die
@@ -913,34 +916,38 @@ Komplexität etwas zu verringern. (siehe Abb.
 \label{wss:WebserviceSecurityAblaufPart1}
 \end{figure}
 
-Vorweg sei gesagt, die Umsetzung des Username Token Profile benötigt eine eigene
-Tabelle. Diese wird durch ADOdb und der Klasse \texttt{CheckUserDB} gekapselt.
-Die Tabelle besitzt zwei Spalten mit den Attributen für Nonce (Primary Key) und
-dem Created Zeitstempel. Mittels derer lassen sich doppelte und zu alte Anfragen
+Die Implementierung des Username Token Profiles benötigt eine 
+relationale Datenbank. Diese wird durch ADOdb und der Klasse \texttt{CheckUserDB} gekapselt.
+Die entsprechende Datenbanktabelle besitzt zwei Spalten mit den Attributen für Nonce (Primary Key) und
+dem Created-Zeitstempel. Mit diesen Informationen lassen sich doppelte und zu alte Anfragen
 filtern.
 
-Ein weiterer wichtiger Punkt ist, dass das \texttt{type}-Feld im Password Tag durch den
-PHP Soap Client nicht gesetzt werden kann. Um nun zu erkennen, ob \texttt{PasswordText} oder
-\texttt{PasswordDigest} verwendet wurde, wird in diesem Fall auf die gesetzten Tags geachtet.
+Etwas problematisch ist, dass das \verb|type|-Attribut im \verb|Password|-Element durch den
+PHP5 SOAP-Client nicht gesetzt werden kann. Um nun zu erkennen, ob \texttt{PasswordText} oder
+\texttt{PasswordDigest} verwendet wurde, wird in diesem Fall auf das
+Vorhandensein der Elemente \verb|Nonce| und \verb|Created| geachtet.
 
-\emph{Ablauf}
-
-Als erstes wird, wie schon oft beschrieben, der SOAP-Header ausgelesen und die
-notwendigen Daten übermittelt. Es lassen sich mehrere Wege durch das Petrinetz
-finden, von links nach rechts gilt:
+Nachdem der SOAP-Header ausgelesen und die notwendigen Daten übermittelt
+wurden, beginnt der Authentifikationsprozess, der in dem Petrinetz
+(Abb. \ref{wss:WebserviceSecurityAblaufPart1} und
+Abb. \ref{wss:WebserviceSecurityAblaufPart2}) dargestellt ist.
+Es lassen sich mehrere Wege durch das Petrinetz
+finden. Von links nach rechts gilt:
 
 \begin{enumerate}
 
-	\item Sollte die Zufallszahl exklusiv oder der Zeitstempel fehlen wird
-	ein Fehler zurückgegeben. Daher liefert die \texttt{parse()} Funktion
+	\item Sollte entweder die Zufallszahl oder der Zeitstempel fehlen wird
+	ein Fehler zurückgegeben. Dazu liefert die Methode \texttt{parse()}
 	des \texttt{XmlSoapSecParser} nicht 0 sondern -101 (siehe
 	\ref{wss:SoapFaults} \emph{SoapFaults})
-	\item Hierbei handelt es sich um PasswordText, dafür müssen sowohl Nonce
-	als auch Created fehlen. Anschließend findet die Authentifikation statt.
-	Hierbei kann es passieren, dass ein Benutzer unbekannt ist (-104), sein
-	Passwort ungültig ist (-105) oder im Erfolgsfall das globale Userobjekt
-	erzeugt und die Anfrage an den Web Service weitergeleitet wird, sofern
-	keine anderen Parser Fehler auslösen.
+	\item Handelt es sich um eine Anfrage vom Typ \verb|PasswordText|, dürfen weder \verb|Nonce|
+	noch \verb|Created| im SOAP-Header auftauchen. Ist dies erfüllt findet die Authentifikation statt.
+	Dabei kann es vorkommen, dass ein Benutzer unbekannt ist (-104) oder sein
+	Passwort ungültig ist (-105). Bei einer erfolgreichen Authentifikation
+	wird in unserer Beispielanwendung ein globales User-Objekt erzeugt, das später
+	für die Autorisation verwendet werden kann.
+	Anschließend wird die Anfrage an den Web Service weitergeleitet, sofern
+	keine anderen Parser einen Fehler melden.
 	\item Der gesamte Security Header fehlt und es kann somit an dieser
 	Stelle ein Gastaccount geladen werden.
 	\item Als letzter Zweig wird nun PasswordDigest abgearbeitet. Dafür wird
@@ -950,41 +957,42 @@ finden, von links nach rechts gilt:
 	werden entfernt und es wird überprüft ob diese Zahl schon vorhanden ist
 	(-106).
 
-\begin{figure}[!htb]
-\centering
-\includegraphics[width=3.4in]{pics/WebserviceSecurityAblaufPart2}
-\caption{Username Token Profile - Ablauf Teil 2}
-\label{wss:WebserviceSecurityAblaufPart2}
-\end{figure}
-	
-Sollte nun die gestellte Anfrage nicht doppelt oder zu alt sein, so wird zuerst
-das Passwort (MD5 verschlüsselt) vom Server geholt. Sollte dies fehlschlagen ist
-hier ebenfalls der Benutzer unbekannt(-104). Mit dem nun erhaltenen Passwort
-wird auf Serverseite ein zweiter Vergleichshashwert erzeugt und mit dem
-Zugesandten verglichen. Konnte der Hashwert korrekt erzeugt werden, so ist die
-Anfrage gültig und kann weitergereicht werden (Globales Userobjekt wird erzeugt
-und \texttt{return 0} als Rückgabewert geliefert). Andernfalls wird auch hier
-ein Fehler zurückgegeben (-105) 
+	\begin{figure}[!htb]
+	\centering
+	\includegraphics[width=3.4in]{pics/WebserviceSecurityAblaufPart2}
+	\caption{Username Token Profile - Ablauf Teil 2}
+	\label{wss:WebserviceSecurityAblaufPart2}
+	\end{figure}
+		
+	Sollte nun die gestellte Anfrage nicht doppelt oder zu alt sein, so wird zuerst
+	das Passwort (MD5 verschlüsselt) vom Server geholt. Sollte dies fehlschlagen ist
+	hier ebenfalls der Benutzer unbekannt(-104). Mit dem nun erhaltenen Passwort
+	wird auf Serverseite ein zweiter Vergleichshashwert berechnet und mit dem
+	Wert aus der SOAP-Nachricht verglichen. Konnte der Hashwert korrekt erzeugt werden, so ist die
+	Anfrage gültig und kann weitergereicht werden (Globales Userobjekt wird erzeugt
+	und \texttt{return 0} als Rückgabewert geliefert). Andernfalls wird auch hier
+	ein Fehler zurückgegeben (-105) 
 \end{enumerate}
 
 
 \subsubsection{XmlSoapHeaderParser}
 \label{wss:XmlSoapHeaderParser}
-Dieser Parser löscht den gesamten SOAP-Header. Demnach nutzt er die
-Funktionalität des \texttt{XmlParserExtended} zum Löschen von Tag-Abschitten.
+Dieser Parser löscht den gesamten SOAP-Header. Dazu nutzt er die
+Funktionalität des \texttt{XmlParserExtended} zum Entfernen von Header-Elementen.
 Dies funktioniert wie schon zuvor in \texttt{XmlSoapSecParser} beschrieben.
 Dabei ist der einzige Unterschied, dass nicht nur das Security-Tag entfernt
-wird, sondern gleich der gesamte SOAP-Header. Dieser Parser sollte demnach als
-allerletztes an den \texttt{ExtendedSoapServer} übergeben werden.
+wird, sondern sogar der gesamte SOAP-Header. Dieser Parser sollte daher als
+letzter an den Extended SOAP-Server übergeben werden.
 
 \subsubsection{SOAP-Faults}
 \label{wss:SoapFaults}
-Das Thema SOAP-Faults basiert ebenfalls auf dem Web Services Security Standard
-(siehe \cite{wss:oasis} Soap Message Security 1.0) und ist somit wohl definiert.
-Die folgende Tabelle \ref{wss:SoapFaultsTable} zeigt den internen Fehlercode und
-den zugehörigen standardisierten Fehlercode sowie dessen Stringbeschreibung.
+Die passenden SOAP-Faults für die jeweiligen Fehlersituationen sind ebenfalls
+im Web Services Security Standard spezifiziert
+(siehe \cite{wss:oasis} Soap Message Security 1.0).
+Tabelle \ref{wss:SoapFaultsTable} zeigt die internen Fehlercodes und
+die zugehörigen standardisierten SOAP-Faults sowie deren Beschreibung.
 
-\begin{table}[!h]
+\begin{table}[!hbt]
 \caption{Fehlercodes}
 \label{wss:SoapFaultsTable}
 \begin{tabular}{|l|l|l|}
@@ -1012,30 +1020,33 @@ Code & Code & String \\
 \subsubsection{Fazit}
 \label{wss:Fazit}
 Als Abschluss soll noch einmal ein kritischer Blick auf die erstellte Lösung
-geworfen werden. Dabei sind viele der geforderten Ziele umgesetzt worden. Die
-Benutzung des \texttt{ExtendedSoapServer} unterscheidet sich nur durch die
-Anwendung von XML Parsern. Die WSDL-Beschreibung und die Web Service-Klasse
-bleiben dagegen völlig identisch.
+geworfen werden. Es sind alle geforderten Ziele umgesetzt worden. Die
+Benutzung des Extended SOAP-Servers unterscheidet sich nur durch die
+Anwendung von XML Parsern. Die WSDL-Beschreibung und die anwendungsspezifischen
+Klassen, welche die WSDL-Ports implementieren, bleiben dagegen völlig identisch.
+Dadurch ist der 
 
 Die unabhängige Implementierung der Sicherheitsaspekte konnte durch das
-Stategy-Pattern gelöst werden. Eine Umsetzung von weiteren Standards steht
-demzufolge nichts entgegen.
+Strategy-Pattern gelöst werden. Für eine Umsetzung von weiteren Web Services Standards wurde
+damit eine solide Grundlage geschaffen.
 
-Etwas unschön ist dabei, dass der \texttt{ExtendedSoapServer} nicht direkt von
-dem PHP eigenen SOAP-Server abgeleitet werden konnte. Es ist daher eher eine
-Frage der Zeit, bis diese Lösung etwas umstrukturiert werden muss. Dies wird
-aber, wie schon zuvor erwähnt, mit wenigen Handgriffen zu machen sein.
+Etwas unschön ist lediglich, dass der Extended SOAP-Server nicht direkt von
+dem SOAP-Server der PHP-Erweiterung abgeleitet werden konnte. Falls
+zukünftige Versionen der SOAP-Implementierung dies wieder möglich machen, ist
+ein Refactoring des Extended SOAP-Servers mit sehr geringem Aufwand möglich.
 
-Es kann auf Grund dessen im Gesamten eine positive Bilanz gezogen werden, vor
-allem dadurch, dass die Interoperabilität gewährleistet ist. (siehe
-\ref{wss:Interoperabilitaet} Interoperabilität)
+Nachdem die Implementierung von Web Services Security und dem
+Usernam Token Profile auf Serverseite erklärt wurden, soll nun ein
+entsprechender SOAP-Client vorgestellt werden.
 
-Der Server ist vollständig erstellt. Es fehlt dabei allerdings die Möglichkeit
-die abgesicherten Web Services unter PHP zu verwenden. Dies soll an dieser
-Stelle nachgeholt werden.
-
-\subsection{Umsetzung des Clients in PHP}
+\subsection{Umsetzung eines SOAP-Clients mit WS-Security}
 \label{wss:UmsetzungClient}
+
+Das SOAP-Erweiterungsmodul von PHP5 stellt stellt einen SOAP-Client zur
+Verfügung, der punktuell für das Username Token Profile erweitert wurde. Dabei
+konnte hier wie in Abb. \ref{wss:UMLSecureSoapClient} gezeigt von einer
+Vererbung profitiert werden. Aus der von vorhandenen
+Klasse \texttt{SoapClient} wurde der \texttt{SecureSoapClient} entwickelt.
 
 \begin{figure}[!htb]
 \centering
@@ -1044,59 +1055,53 @@ Stelle nachgeholt werden.
 \label{wss:UMLSecureSoapClient}
 \end{figure}
 
-Der Client ist punktuell für das Username Token Profile erweitert worden. Dabei
-konnte hier von einer Vererbung profitiert werden. Aus der von PHP gelieferten
-Klasse \texttt{SoapClient} wird der \texttt{SecureSoapClient}. Dazu wurde der
+Dazu wurde der
 Konstruktor leicht verändert, damit die zusätzlichen Parameter wie Name und
 Passwort entgegengenommen werden können. Dieser bietet demnach nun 4 Parameter
-an \texttt{\underline~\underline~construct(\$wsdl , \$options, \$user, \$pw)} in
-denen die zusätzlichen Informationen übergeben werden.
+an in denen die zusätzlichen Informationen übergeben werden:
+\verb|__construct($wsdl , $options, $user, $pw)|.
 
 Mit den zusätzlichen Daten generiert der Client bei jedem
-\texttt{\underline~\underline~call()} Aufruf automatisch den benötigten
-SOAP-Header. Die Benutzung der Klasse ist dabei idealerweise nahezu identisch zum
-SoapClient und unterscheidet sich lediglich im erweiterten Konstruktor.
+Aufruf von \verb|__call()| automatisch den benötigten
+SOAP-Header. Die Benutzung der Klasse ist dabei verglichen mit
+\verb|SoapClient| nahezu identisch und unterscheidet sich lediglich im
+erweiterten Konstruktor. Das macht es Anwendern sehr leicht die
+Sicherheitsmechanismen zu integrieren.
 
-Die Erstellung des SOAP-Headers ist unter PHP allerdings eine Sache für sich. Es
+Die Erstellung des SOAP-Headers ist allerdings mit der SOAP-Erweiterung von
+PHP5 etwas umständlich. Es
 ist erforderlich eine Struktur von Structs zu generieren, um einen konformen
-Header erzeugen zu können. Hierbei kommen auch die PHP eigenen Klassen
-\texttt{SoapVar} und \texttt{SoapHeader} zum Einsatz. Der sogenannte
-\texttt{SecurityStruct}, welcher das Username Token kapselt, wird
-\texttt{SoapVar} übergeben, welcher daraus eine XML konforme Darstellung
+Header erzeugen zu können. Hierbei kommen auch die Klassen
+\texttt{SoapVar} und \texttt{SoapHeader} aus der SOAP-Erweiterung zum Einsatz. Der sogenannte
+\texttt{SecurityStruct}, der das Username Token kapselt, wird an
+\texttt{SoapVar} übergeben, welches daraus eine XML konforme Darstellung
 erzeugt. Das Ergebnis wird anschließend dem \texttt{SoapHeader} übergeben. Dabei
-ist leider zu beachten das type-Attribute innerhalb eines Tags nicht erzeugt
-werden können. Damit ist die Interoperabilität vom PHP Client zu beliebigen Web
-Service Security Servern leider nicht möglich. Auf Grund dessen, dass der Client
-nur PasswortDigest unterstützt, aber dies im Tag nicht identifizieren kann, wird
-er von anderen Servern als PasswortText interpretiert und dies sorgt für eine
-Ablehnung der Anfrage (PasswordText versus PasswortDigest). Bei dem erstellten
-\texttt{ExtendesSoapServer} ist dies kein Problem, da er dies an Hand der
+ist leider zu beachten, dass type-Attribute innerhalb eines Elements nicht erzeugt
+werden können. Damit ist die Interoperabilität vom PHP-Client zu beliebigen Web
+Services Security Servern leider nicht möglich. Aufgrund dessen, dass der Client
+nur PasswordDigest unterstützt, aber dies im Tag nicht identifizieren kann, wird
+er von anderen Servern als PasswordText interpretiert und dies sorgt für eine
+Ablehnung der Anfrage. Bei dem erstellten
+Extended SOAP-Server ist dies kein Problem, da er dies anhand der
 übergebenen Argumente herleitet und somit der Server einfach und problemlos mit
 dem Client kommunizieren kann. Demnach ist ein Erfolg bei anderen Servern
 abhängig von deren Implementierung.
 
-Im Großen und Ganzen ist die Implementierung des Clients recht unspektakulär,
-jedoch werden einige nicht dokumentierte Funktionen in PHP benutzt, was die
-Entwicklung weitaus schwieriger gestaltete, als anfänglich gedacht wurde.
+Im Prinzip ist die Implementierung des Clients recht unspektakulär.
+Jedoch wurden einige undokumentierte Funktionen der SOAP-Erweiterung benutzt, was die
+Entwicklung weitaus schwieriger gestaltete, als anfänglich angenommen wurde.
 
-Dieser Client kann somit durchaus als Vorlage für eigene Security Vorstellungen
+Dieser Client kann durchaus als Vorlage für die Implementierung weiterer Token Profiles
 dienen. Eine Umstellung auf PasswordText wäre relativ problemlos möglich, um
 Interoperabilität zu anderen Servern gewährleisten zu können.
  
 \subsection{Einbettung in das Gesamtsystem}
 \label{wss:Einbettung}
 
-Da nun die Implementierung des Servers und des Clients abgeschlossen wurde, soll
-nun ein Blick auf das Gesamtsystem geworfen werden. Dabei wird das altbekannte
-Bild \cite{WebServicePart2} Abb. \ref{wss:AufbauWithDetailSecurity} zu Grunde
-gelegt. In diesem wurde nun der Security Agent detaillierter dargestellt.
-Extended Server übernimmt dabei die Kapselung des eigentlichen PHP Soap Server
-und leitet die Anfrage an die zwei Parser weiter, die damit entsprechend ihrer
-Funktion umgehen. Als letzten neuen Bestandteil übernimmt User Token Check die
-Authetifikation mittels der Datenbank und dem User Management.
-
-Die WSDL Adminoberfläche wurde so erweitert, dass sie mit einem zusätzlichen
-Flag sichere Web Services erstellen kann.
+Nachdem die Implementierungen von Server und Client vorgestellt wurden, soll
+nun ein Blick auf das Gesamtsystem geworfen werden. Dabei wird das aus
+\cite{WebServicePart2} bekannte Modell zu Grunde
+gelegt (siehe Abb. \ref{wss:AufbauWithDetailSecurity}).
 
 \begin{figure}[!htb]
 \centering
@@ -1105,22 +1110,31 @@ Flag sichere Web Services erstellen kann.
 \label{wss:AufbauWithDetailSecurity}
 \end{figure}
 
+In diesem Aufbaumodell wurde nun der Security Agent detaillierter dargestellt.
+Extended Server übernimmt dabei die Kapselung des eigentlichen SOAP-Server
+und leitet die Anfrage an die zwei Parser weiter, die damit entsprechend ihrer
+Funktion umgehen. Als letzter neuer Bestandteil übernimmt User Token Check die
+Authetifikation mit Hilfe der Datenbank und dem User Management.
+
+Das Administrations-Tool, das in Kapitel \ref{admintool} näher erläutert wird,
+wurde so erweitert, dass es mit einem zusätzlichen Flag sichere Web Services
+erstellen kann.
+
 \subsection{Interoperabilität}
 \label{wss:Interoperabilitaet}
-
-Um die Interoperabilität nachzuweisen, wurde der sichere Web Service einmal mit
-einem C\# und zum anderen mit einem Java Client getestet. Beide
-Interoperabilitätstest verliefen erfolgreich und sind dem Anhang des Projektes
-zu entnehmen. Die Umsetzung des User Token Profil auf Client Seite wird hier
+Um die Interoperabilität zu überprüfen, wurde der sichere Web Service mit
+einem C\# und einem Java Client getestet. Beide
+Interoperabilitätstests verliefen erfolgreich.
+Die Umsetzung des User Token Profiles auf Client Seite wird hier
 nicht näher erläutert. Es sei hier auf die
 Referenzimplementierungen\footnote{Microsoft Web Services Enhancements 3.0
 www.microsoft.com und Java Axis 1.3 http://ws.apache.org/axis/} verwiesen.
 
 %Stefan: wo bzw. an welcher stelle sinnvoller weise informationen zu REST eingebunden werden sollte, müsste nochmal durchdacht werden. hier erstmal der erste rohtext. Anmerkung und Kommentare sind willkommen
 \section{RESTful Web Services}
-\subsection{Representational State Transfer}
+\subsection{Representational State Transfer (REST)}
 Der Begriff REST bzw. Representational State Transfer geht auf 
-R. T. Fielding zurück und wird in \cite{RESTServices} im Zusammenhang 
+Roy Thomas Fielding zurück und wird in \cite{RESTServices} im Zusammenhang 
 mit Web Services näher beleuchtet. Für Web Services im Allgemeinen 
 ist eine Implementierung des REST-Archtiekturstils in Verbindung mit 
 dem \emph{Hypertext Transfer Protocol} (HTTP) besonders interessant 
@@ -1129,9 +1143,9 @@ und soll hier kurz aufgegriffen werden.
 Der Hauptgedanke bei RESTful Web Services liegt in der Verwendung 
 eines uniformen und minimalen Interfaces für alle Web Services, 
 unabhängig von einem speziellen Einsatzbereich. Dies steht damit 
-im Gegensatz  zu den auf SOAP aufbauenden Web Services, welche als 
-gemeinsame Basis nur das SOAP-Nachrichtenformat verwenden, selbst 
-jedoch jeweils komplett unabhängig davon eigene Nachrichtenprotokolle 
+im Gegensatz zu den auf SOAP aufbauenden Web Services, welche als 
+gemeinsame Basis nur das SOAP-Nachrichtenformat verwenden und 
+darauf aufbauend jeweils eigene anwendungsspezifische Nachrichtenprotokolle 
 und Schnittstellen definieren.
 
 Wie in \cite{RESTServices} dargelegt, hat es verschiedene Vorteile, 
@@ -1158,7 +1172,7 @@ das System nach außen hin in geeigneter Weise kapselt und die
 Methoden zum Abfragen und Manipulieren der Ressourcen des Dienstes 
 bereitstellt.
 
-Der Toolkit stellt nun die benötigten Mechanismen bereit, um den 
+Das Toolkit stellt nun die benötigten Mechanismen bereit, um den 
 entworfenen URI-Namensraum des REST Services auf diese Methoden 
 abzubilden und die Ressourcenrepräsentationen in geeigneter Weise 
 wählen zu können. Dafür lässt sich über einen regulären Ausdruck 
@@ -1169,7 +1183,7 @@ angegeben werden, um die Anfragedaten in programmiersprachliche
 Konstrukte bzw. in ein gewähltes Datenformat zu überführen.
 
 Als Ergebnis wird mit Hilfe eines Tools aus diesen Angaben heraus 
-eine Art \emph{Deployment Descriptor} generiert, welcher vom durch das 
+ein \emph{Deployment Descriptor} generiert, welcher von dem durch das 
 Toolkit bereitgestellten \texttt{RESTServer} interpretiert wird, um die 
 Anfragen an den Service abzuarbeiten.
 
@@ -1194,24 +1208,24 @@ einer geeigneten Art und Weise abgelegt werden. Details dazu sind
 in der Beschreibung des Interfaces bzw. im entsprechenden Abschnitt 
 des Tutorials zu finden.
 
-\section{Administrations-Tool \& Policy-PlugIn}
-Das Administrations-Tool ist eine klassische Web-Applikation, die der 
-einfachen Konfiguration des Web Service Frameworks dient. 
+\section{Administrations-Tool \& Policy-PlugIn} \label{admintool}
+Das Administrations-Tool ist eine grafische Oberfläche, die der 
+einfachen Konfiguration und Verwendung der Werkzeuge des Web Service Frameworks dient. 
 %Stefan: +während der Erstellung, oder noch allgemeiner, aber auch für eine Einleitung ein wenig zu knapp, oder?
 Das Policy-PlugIn hingegen fungiert als Filter für Web Service Klassen bzw. deren Methoden.
 
-\subsection{Administration Tool}
+\subsection{Administrations-Tool}
 Das Administrations-Tool soll dem Benutzer die Handhabung 
 des Web Service Frameworks erleichtern. Das Web Service 
-Framework stellt eine Handvoll n\"{u}tzlicher Programme 
-zur Verf\"{u}gung, die jedoch einzeln bedient werden m\"{u}ssen. 
+Framework stellt eine Reihe nützlicher Programme 
+zur Verfügung, die völlig unabhängig voneinander eingesetzt werden können. 
 Hier setzt das Administrations-Tool an, dass eine intuitive und 
-zentrale M\"{o}glichkeit der Administration und Konfiguration 
+zentrale M\"{o}glichkeit der Administration und Konfiguration der Werkzeuge
 bieten soll. 
 
 Das Administrations-Tool nutzt eine eigene Bibliothek, 
-die die grundlegende Funktionalit\"{a}t zur Verf\"{u}gung stellt,
-in dem sie die Anbindung an die externen Tools kapselt. 
+die die grundlegende Funktionalit\"{a}t zur Verf\"{u}gung stellt
+und die Anbindung an die externen Tools kapselt. 
 Darüber hinaus wird für die Anbindung der Datenbank ADOdb genutzt
 und das Benutzerinterface wird mit Hilfe der Smarty Template Engine 
 realisiert. 
@@ -1221,34 +1235,39 @@ realisiert.
 Allgemein hat der Nutzer die M\"{o}glichkeit Klassen beim 
 Administrations-Tool zu registrieren und diese anschlie\ss{}end 
 zu konfigurieren. Klassen werden entweder automatisch in einem 
-gegebenen Verzeichnis gesucht oder k\"{o}nnen einzeln angegeben 
+gegebenen Klassenpfad gesucht oder k\"{o}nnen einzeln angegeben 
 werden. Dabei kann schon der Programmierer einer Web Service 
-Klasse mit Hilfe des Tags \texttt{@webservice} seine Klasse 
+Klasse mit Hilfe der Annotation \texttt{@webservice} seine Klasse 
 als Web Service Klasse markieren. So markierte Klassen k\"{o}nnen 
 vom Administrations-Tool herausgefiltert bzw. explizit gesucht werden. 
 Zu einer registrierten Klasse kann nun angegeben werden, welche ihrer 
-Methoden letztendlich ver\"{o}ffentlicht werden sollen. Des Weiteren 
+Methoden letztendlich ver\"{o}ffentlicht werden sollen.
+Auch dafür gibt es eine Annotation (\verb|@webmethod|);
+Des Weiteren 
 hat der Administrator die Möglichkeit sich Kommentare zu den Klassen 
 und Methoden aus dem Quellcode anzeigen zu lassen. Zu diesen kann er 
 zus\"{a}tzlich eigene Kommentare hinzuf\"{u}gen, die dann von anderen 
 Programmen weiterverwendet werden k\"{o}nnen. Eines dieser Programme 
 ist der WSDL-Generator, der vom Administrations-Tool genutzt wird 
-um WSDL-Dateien zu erzeugen. Diesem k\"{o}nnen die eigenen Kommentare 
+um WSDL-Dateien zu erzeugen (siehe Kapitel \ref{WSDLGenerator}).
+Diesem k\"{o}nnen die eigenen Kommentare 
 zur Beschreibung von Web Service Klassen und Methoden \"{u}bergeben 
 werden. Ein weiteres Programm, das vom Administrations-Tool genutzt 
-wird, ist der Adapter-Generator, der zur Erzeugung von speziellen Adapter-Klassen dient. 
+wird, ist der Adapter-Generator, der zur Erzeugung von speziellen
+Adapter-Klassen für Document/Wrapped Web Services dient 
+(siehe Kapitel \ref{DWAG}). 
 
-Letzendlich erzeugt das Administrations-Tool mit Hilfe der Generatoren und 
+Letztendlich erzeugt das Administrations-Tool mit Hilfe der Generatoren und 
 der Informationen zu den Web Service Klassen die jeweils 
 notwendigen Dateien zur Bereitstellung eins Web Services und legt
-diese an dem vom Benutzer gewünschten Pfad im Dateisystem ab.
+diese in dem vom Benutzer gewünschten Verzeichnis im Dateisystem ab.
 
 %del Stefan: Das Resultat dieses Generators kann dazu verwendet werden, 
 %Stefan: der bezog zum rest-server ist hier etwas unglücklich
 %Stefan: muss wohl noch nen abschnitt zu rest einfügen (weiter vorne), mal sehen wie es dann aussieht
 %del Stefan: einen SOAP bzw. REST-Server aus einem Template heraus zur Verf\"{u}gung zu stellen. 
-Das Administrations-Tool bietet auch einen Wizard, mit Hilfe 
-dessen Web Services im Frage-Antwort-Stil aufgesetzt werden k\"{o}nnen.
+Das Administrations-Tool bietet auch einen Assistenten (Wizard), mit dessen Hilfe 
+Web Services im Frage-Antwort-Stil aufgesetzt werden k\"{o}nnen.
 
 \begin{figure}[!htb]
 	\centering
@@ -1273,9 +1292,9 @@ wie beschrieben konfiguriert werden.
 \section{Anwendungsbeispiel}
 \label{sec:Anwendungsbeispiel}
 Parallel zur Erstellung des Web Service Toolkits wurde 
-eine Beispielanwendung, die auf der alten tele-TASK-Datenbank 
-aufbaut, entwickelt. 
-Die Beispielimplementierung zeigt den Einsatz von Web Services 
+eine Beispielanwendung entwickelt, die auf der Datenbank des
+Teleteaching-Anbieters tele-TASK aufbaut. 
+Diese Beispielimplementierung zeigt den Einsatz von Web Services 
 und erm\"{o}glicht das Manipulieren der tele-TASK-Datenbank. 
 Diesbez\"{u}glich stehen allerdings nur vorgegebene 
 Anfragemöglichkeiten zur Verf\"{u}gung. Die einzigen zu 
@@ -1283,27 +1302,27 @@ Anfragemöglichkeiten zur Verf\"{u}gung. Die einzigen zu
 wie z.B. Lectures oder News.
 Aus diesen Klassen k\"{o}nnen WSDL-Dateien erzeugt und dann auf 
 Funktionalit\"{a}t getestet werden. Daf\"{u}r ist eine Kommentierung 
-strikt nach dem Style Guide erforderlich. Ansonsten kann der 
-WSDL-Generator die Elemente nicht korrekt identifizieren und es kann 
-keine WSDL-Datei erzeugt werden.
+strikt nach dem Style Guide (siehe \cite{WebServicePart2}) erforderlich.
+Sonst kann die Extended Reflection API die programmiersprachlichen
+Elemente nicht korrekt identifizieren und ohne diese Informationen kann der
+WSDL-Generator keine WSDL-Beschreibung für den Web Service erzeugen.
 Für eine korrekte Implementierung der auf ADOdb basierenden Datenbankabstraktionsschicht, 
-welche mittels einem Web Service angesprochen wird, müssen minimal das 
-Mapping und die Initialisierung durchgeführt werden. Sie bilden 
-den Grundbedarf an Klassen.
+welche mit einem Web Service angesprochen wird, müssen das 
+Mapping und die Initialisierung durchgeführt werden.
 
 \subsection{Aufbau des Beispiels}
 \label{sec:Anwendungsbeispiel:Basis}
-Es werden je Datenbanktabelle zwei Klassen ben\"{o}tigt. Zum einen müssen
-die Werte der Tabellenzeilen angesprochen werden können. Dazu werden
-diese als Objekte behandelt. So lassen sich alle Werte mittels 
-Gettern und Settern adressieren. Zum anderen wird je eine 
+Es werden zu jeder Datenbanktabelle zwei Klassen ben\"{o}tigt. Zum einen müssen
+die Datensätze (Entitäten) repräsentiert werden können. Dazu werden
+sie als Objekte behandelt, denn auf diese Weise lassen sich alle Werte mittels 
+Get- und Set-Methoden adressieren. Zum anderen wird je eine 
 Klasse ben\"{o}tigt, welche sich um den Datenbankzugriff 
 k\"{u}mmert und die gew\"{u}nschten Anfragen auf der gesamten Tabelle
 durchf\"{u}hrt. 
-Im gegebenen Beispiel ist class.Lecture.php und queryLecture.php 
-ein solches Klassenp\"{a}rchen, wobei letzteres die Datenbankanfragen 
+Im gegebenen Beispiel sind \verb|Lecture| und \verb|queryLecture| 
+ein solches Klassenp\"{a}rchen, wobei letztere die Datenbankanfragen 
 zur Verf\"{u}gung stellt und abarbeitet. Daf\"{u}r werden die Objekte 
-aus der Anwendungslogik auf die entsprechende Zeile in der 
+aus der Anwendungslogik auf die entsprechenden Datensätze in der 
 Datenbanktabelle gemappt.
 
 \subsection{Datenbankentitäten}
@@ -1313,37 +1332,38 @@ Elemente f\"{u}r die
 Datenbankzugriffsklasse bereit, indem die Objektattribute 
 entweder mit Standardwerten, \"{u}bergebenen Werten oder Daten
 aus der Datenbank initialisiert werden. In der Datenbank sind die Objekte derart
-hinterlegt, dass jedes Objekt einer Zeile in der Datenbanktabelle entspricht. Zudem ist je eine 
+hinterlegt, dass jedes Objekt einem Datensatz in der Datenbanktabelle entspricht. Zudem ist je eine 
 Funktion, welche alle Werte auf den Standardwert zur\"{u}cksetzen 
 kann, eingef\"{u}gt worden. Den gr\"{o}ßten Umfang nehmen die 
-Getter und Setter ein, die f\"{u}r jedes Objektattribut, das lesbar und/oder 
+Get- und Set-Methoden ein, die f\"{u}r jedes Objektattribut, das lesbar und/oder 
 modifizierbar ist, angelegt wurden.
 
 \subsection{Abfragen der Datenbank}
 \label{sec:Anwendungsbeispiel:Initialisierung}
 F\"{u}r lesende oder modifizierende Zugriffe auf die Datenbank 
-wird der entsprechenden Methode der queryXyz.php der ben\"{o}tigte 
+wird der entsprechenden Methode der Datenbankzugriffsklasse der ben\"{o}tigte 
 Datenblock \"{u}bergeben und nach der Anfrage das Ergebnis in 
-erwarteter Form zur\"{u}ckgeliefert. Um dies zu erm\"{o}glichen, 
+der erwarteten Form zur\"{u}ckgeliefert. Um dies zu erm\"{o}glichen, 
 muss f\"{u}r jede denkbare, sinnvolle Anfrage eine Methode mit 
-der gew\"{u}nschten Funktionalit\"{a}t vorliegen. In der 
-queryLecture.php ist es unter anderem sinnvoll alle Vorlesungs-Elemente, 
+der gew\"{u}nschten Funktionalit\"{a}t vorliegen. In der Klasse
+\verb|queryLecture| ist es beispielsweise sinnvoll alle Vorlesungs-Elemente, 
 alle Vorlesungen eines bestimmtes Autors oder eines bestimmten Themas 
 zur\"{u}ckzugeben.
-Zudem wird eine Methode ben\"{o}tigt, um eine Instanz der Zielklasse 
-zu erm\"{o}glichen, damit der Zugriff auf die Datenbank serialisierbar 
+Zudem wird eine Methode ben\"{o}tigt, um Instanzen der Zielklasse 
+zu erzeugen, damit der Zugriff auf die Datenbank serialisierbar 
 wird. Im gegebenen Beispiel ist die Erzeugung des R\"{u}ckgabewertes der 
-\"{U}bersichtlichkeit halber in einer weiteren Methode gekapselt worden. Dabei werden
-Rückgabewerte der Datenbank abgefangen und auf die Objekte gemappt, so dass diese abschließend
+aus Gründen der \"{U}bersichtlichkeit in einer weiteren Methode gekapselt worden. Dabei werden
+Rückgabewerte der Datenbank abgefangen und auf die Objekte abgebildet, so dass diese abschließend
 zur Verfügung gestellt werden können.
 
 \section{Zusammenfassung und Ausblick}
 Die von uns entwickelte Erweiterung der PHP5 Reflection API ermöglichte uns auf
-äußerst elegante Weise einen WSDL-Generator zu implementieren. Da die
-Algorithmen zum Ermitteln der Typinformationen sich nicht direkt im
-WSDL-Generator befanden, konnten wir gleich eine ganze Familie von Web Service
+äußerst elegante Weise einen WSDL-Generator zu implementieren. Der entscheidende
+Vorteil dabei ist, dass die Algorithmen zum Ermitteln der Typinformationen sich
+nicht direkt im WSDL-Generator befinden. Dadurch konnten wir gleich eine ganze
+Familie von weiteren Web Service
 Werkzeugen auf Basis der Extended Reflection API entwickeln. Die Fähigkeiten der
-Extended Reflection API sind sicherlich für viele weitere PHP Projekte
+Extended Reflection API sind aber auch für viele weitere PHP Projekte
 interessant. Der eingeführte Annotation-Mechanismus könnte zudem eine Grundlage
 für die Nutzung von neuen dynamischen Programmiertechniken wie zum Beispiel
 aspekt-orientierter Programmierung in PHP sein.
