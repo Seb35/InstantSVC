@@ -98,6 +98,8 @@
 % paper title
 \title{Web Service Toolkit für PHP5}
 %
+
+%Stefan: Nach welchem Schema sind eigentlich diese Namen geordnet?
 \author{
 \begin{center}
 Stefan~Marr, Falko~Menge, Gregor~Gabrysiak, Martin~Sprengel, Michael~Perscheid,
@@ -407,19 +409,18 @@ deren Funktionalität angeboten werden soll, einlesen lassen oder per
 \texttt{addFunction()} eine beliebige Menge von Methoden zur Erbringung 
 dieser Funktionalität nutzen. Es ist jedoch nicht möglich, diese beiden 
 Methoden der Erstellung zu mischen, da sie sich gegenseitig ausschließen.
-Ab diesem Punkt wird die Extended Reflection API aktiv. Sie liefert uns
-nämlich nicht nur die Methodennamen, sondern wir erhalten Listen von
-ExtReflectionMethods, die wir direkt nach ihren Parametern und
-Rückgabewerten fragen können. Dies ist einer der Hauptvorteile des 
-\texttt{WSDLGenerators}, da er nicht selbst die Klassen parsen muss, um die 
-benötigten Informationen zu erhalten.
+Ab diesem Punkt wird die Extended Reflection API aktiv. Sie liefert nicht 
+nur die Methodennamen, sondern Listen von \texttt{ExtReflectionMethod}-Objekten, 
+an denen direkt Informationen zu Parametern und Rückgabewerten abgefragen werden können. 
+Dies ist ein großer Vorteile für den \texttt{WSDLGenerator}, da er so nicht selbst 
+die Klassen parsen muss, um die benötigten Informationen zu erhalten.
 
 Alle so gefundenen Methoden bzw. jede hinzugefügte Funktion muss in
 die WSDL-Datei abgebildet werden. Sollten bestimmte Methoden nicht
 veröffentlicht werden, so kann das Policy-PlugIn, das im Abschnitt
 \ref{Policy-PlugIn} vorgestellt wird, genutzt werden. Es erhält als Eingabe die
-Liste der ExtReflectionMethoden und liefert eine gefilterte Liste zurück. Die
-Entscheidung, ob eine Methode veröffentlicht werden soll oder nicht, findet es
+Liste der \texttt{ExtReflectionMethod}-Objekte und liefert eine gefilterte Liste zurück. Die
+Information, ob eine Methode veröffentlicht werden soll oder nicht, findet es
 in der angeschlossenen Datenbank, die der Entwickler zuvor mit Hilfe des
 AdminTools für die entsprechende Klasse füllen muss. Im AdminTool kann außerdem
 eine Beschreibung der Methode in die Datenbank eingepflegt werden, die dann
@@ -440,11 +441,11 @@ Damit dabei kein redundanter Code erzeugt wird, vermerkt der Generator die
 erzeugten Schemanamen in einer Liste und greift während 
 der Verarbeitung auch auf diese zu.
 
-Der Generator erzeugt ein DOM-Dokument, das die WSDL-Struktur enthält. Das heißt
-im Einzelnen: Es gibt das Definition-Element, in dem alle verwendeten Namespaces
+Der Generator erzeugt ein DOM-Dokument, das die WSDL-Struktur enthält. Der Aufbau dieser 
+Struktur beginnt mit dem Definition-Element, in dem alle verwendeten Namespaces
 definiert werden und das alle anderen Beschreibungselemente enthält. Dann folgt
 die Type-Sektion, die XML Schema Beschreibungen für alle komplexen Datentypen
-enthält und, bei Verwendung einer Literalkombination, außerdem die Anfrage- und
+enthält und, bei Verwendung einer Literal-Kombination, außerdem die Anfrage- und
 Antwortnachrichten definiert. Eine Liste der Methoden ist indirekt durch den
 Message-Teil gegeben, bei dem für jede Methode ein Element für die Anfrage und
 ein Element für die entsprechende Antwort vorhanden ist. Darauf folgt die
@@ -504,7 +505,7 @@ Methoden mit einem einzigen Parameter funktioniert. Allgemein lässt sich das
 Problem lösen, indem man eine Adapter-Klasse einsetzt, die Methoden mit den
 gleichen Namen anbietet, und diese anstelle der Original-Klasse beim SOAP-Server
 registriert. Die Methoden der Adapter-Klasse rufen die Methode an der 
-Orginal-Klasse mit den Argumenten aus dem vom SOAP-Server übergebenen Objekt.
+Original-Klasse mit den Argumenten aus dem vom SOAP-Server übergebenen Objekt.
 Der jeweilige Rückgabewert wird in ein Array verpackt bevor er zur Serialisierung
 an den SOAP-Server zurückgegeben wird.
 
@@ -562,7 +563,7 @@ class AdderDocumentWrappedAdapter {
 \end{verbatim}
 \normalsize
 Die Adapter-Klasse sorgt transparent für das Unwrapping von Argumenten und das
-Wrapping von Rückgabewerten. Die Orginal-Klasse muss dazu in keiner Weise
+Wrapping von Rückgabewerten. Die Original-Klasse muss dazu in keiner Weise
 angepasst werden.
 
 Ein solcher Adapter enthält keine anwendungsspezifische Geschäftslogik und kann
@@ -628,7 +629,7 @@ beispielsweise problemlos mit .NET oder Java genutzt werden können.
 \label{sec:wss:Ansaetze}
 Ein grober Ablauf für eine mögliche Lösung könnte folgendermaßen aussehen:
 \begin{enumerate}
-	\item Anmelden, sowie Verschlüsseln der Anmeldedaten auf Seite des Klienten
+	\item Anmelden, sowie Verschlüsseln der Anmeldedaten auf Seite des Clients
 	\item Die Anmeldedaten auf Serverseite abfragen und auswerten
 	\item Nach der korrekten Authentifizierung wird die Anfrage an die Web Service Implementierung weitergeleitet
 \end{enumerate}
@@ -670,7 +671,7 @@ weitere Elemente mit Web Services Security Daten kapselt. Darauf folgt ein Eleme
 Username Token Profils signalisiert und die benötigten Daten-Elemente enthält. 
 Das Datenelement \texttt{<wsse:Username>} muss immer angegeben werden und enthält den
 unverschlüsselten Benutzernamen.
-Das nächste Element\verb|<wsse:Password Type="...">| enthält das Passwort des Benutzers oder
+Das nächste Element \verb|<wsse:Password Type="...">| enthält das Passwort des Benutzers oder
 Passwortäquivalent.
 Beim Attribut \verb|Type| dieses Elements gibt es zwei mögliche Werte:
 \begin{itemize}
@@ -701,13 +702,9 @@ Beim Attribut \verb|Type| dieses Elements gibt es zwei mögliche Werte:
 
 Die letzten beiden Elemente werden nur für den Passworttyp \verb|PasswordDigest| benötigt
 und senden zum einen die
-Zufallszahl(\texttt{<wsse:Nonce>}) im Base64 Format und zum anderen den
+Zufallszahl(\texttt{<wsse:Nonce>}) im Base64-Format und zum anderen den
 Erzeugungszeitpunkt(\texttt{<wsu:Created>}) mit.
-\\
-\\
-\texttt{Nonce = Base64( Nonce )}
-\\
-\\
+
 Bei den Elementen werden die XML Namensräume
 \verb|wsse| (http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd)
 und 
@@ -782,9 +779,9 @@ Bei Web Services handelt es sich um eine Übertragung von XML-Nachrichten
 Daher ist es offensichtlich, dass die Implementierung von XML-Handlern
 die Umsetzung von Web Service Standards massiv erleichtern kann. Es gibt zwei
 grundsätzlich verschiedene Arten ein XML-Dokument zu parsen. Auf dem Document
-Object Model (DOM) basierende Parser entwickeln im Speicher eine Baumstruktur, 
-die wahlfreien Zugriff auf alle Strukturelemente der, und
-andererseits sequentielle, Ereignis-getriebene SAX-Parser. Sie sind einfach beschrieben
+Object Model (DOM) basierende Parser bilden im Speicher die Baumstruktur, des XML-Dokuments 
+nach und ermöglichen somit den wahlfreien Zugriff auf alle Elemente. Die andere
+Möglichkeit sind sequentielle, Ereignis-getriebene SAX-Parser. Sie sind einfach beschrieben
 Tagsucher, welche bei jedem vorkommenden Tag eine Methode aufrufen.
 Für das Parsen von SOAP-Nachrichten empfehlen sich dabei klar die SAX-Parser, da sie
 performanter sind und speichereffizienter agieren.
@@ -853,7 +850,7 @@ Fehlermeldungen. Dabei wird ein minimaler Web Service bereitgestellt,
 der nicht einmal Dienste anbietet, denn er dient nur zum Initialisieren des
 Servers. Mit diesem SOAP-Server ist es nun möglich korrekte SOAP-Faults zu erstellen.
 
-Damit sind alle der eingangs benannten Sicherheitsprobleme erfolgreich gelöst.
+Damit sind alle eingangs benannten Sicherheitsprobleme erfolgreich gelöst.
 
 Allerdings ist es nun vom Design her nicht möglich einen
 Extended SOAP-Server als Ableitung von \verb|SoapServer| zu implementieren, da
@@ -1024,7 +1021,6 @@ geworfen werden. Es sind alle geforderten Ziele umgesetzt worden. Die
 Benutzung des Extended SOAP-Servers unterscheidet sich nur durch die
 Anwendung von XML Parsern. Die WSDL-Beschreibung und die anwendungsspezifischen
 Klassen, welche die WSDL-Ports implementieren, bleiben dagegen völlig identisch.
-Dadurch ist der 
 
 Die unabhängige Implementierung der Sicherheitsaspekte konnte durch das
 Strategy-Pattern gelöst werden. Für eine Umsetzung von weiteren Web Services Standards wurde
@@ -1036,7 +1032,7 @@ zukünftige Versionen der SOAP-Implementierung dies wieder möglich machen, ist
 ein Refactoring des Extended SOAP-Servers mit sehr geringem Aufwand möglich.
 
 Nachdem die Implementierung von Web Services Security und dem
-Usernam Token Profile auf Serverseite erklärt wurden, soll nun ein
+Username Token Profile auf Serverseite erklärt wurden, soll nun ein
 entsprechender SOAP-Client vorgestellt werden.
 
 \subsection{Umsetzung eines SOAP-Clients mit WS-Security}
