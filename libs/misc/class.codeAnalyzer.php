@@ -197,7 +197,6 @@ class CodeAnalyzer {
                 $detail->fileName = strtr($detail->fileName, DIRECTORY_SEPARATOR, '/');
 
                 $cmd = $this->phpBin.' "'.dirname(__FILE__).'/inc.codeAnalyzer.php" exec "'.$detail->fileName.'"';
-                echo $cmd."\n";
                 if ($cli) {
                     $out = shell_exec($cmd);
                 }
