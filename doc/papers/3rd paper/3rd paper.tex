@@ -438,20 +438,20 @@ ergänzen, sollten in einer Klasse selbst neue, komplexe Datentypen als Attribute
 enthalten sein.
 
 Damit dabei kein redundanter Code erzeugt wird, vermerkt der Generator die 
-erzeugten Schemanamen in einer Liste und greift während 
+Namen der erzeugten Typen in einer Liste und greift während 
 der Verarbeitung auch auf diese zu.
 
 Der Generator erzeugt ein DOM-Dokument, das die WSDL-Struktur enthält. Der Aufbau dieser 
-Struktur beginnt mit dem Definition-Element, in dem alle verwendeten Namespaces
+Struktur beginnt mit dem \verb|Definition|-Element, in dem alle verwendeten Namespaces
 definiert werden und das alle anderen Beschreibungselemente enthält. Dann folgt
-die Type-Sektion, die XML Schema Beschreibungen für alle komplexen Datentypen
+die \verb|Types|-Sektion, die XML Schema Beschreibungen für alle komplexen Datentypen
 enthält und, bei Verwendung einer Literal-Kombination, außerdem die Anfrage- und
 Antwortnachrichten definiert. Eine Liste der Methoden ist indirekt durch den
-Message-Teil gegeben, bei dem für jede Methode ein Element für die Anfrage und
+\verb|Message|-Teil gegeben, bei dem für jede Methode ein Element für die Anfrage und
 ein Element für die entsprechende Antwort vorhanden ist. Darauf folgt die
-PortType-Abteilung, in der die Methoden auf Operationen abgebildet werden.
+\verb|PortType|-Abteilung, in der die Methoden auf Operationen abgebildet werden.
 Anschließend wird die Kombination aus Aufruf und Kodierung explizit in
-der Binding-Sektion angegeben und abschließend folgt das Service-Element, bei dem
+der \verb|Binding|-Sektion angegeben und abschließend folgt das \verb|Service|-Element, bei dem
 der Service an einen Port gebunden wird.
 
 Auf die erzeugte Struktur kann der Anwender dann mit den Methoden 
@@ -657,7 +657,9 @@ zu übertragen sind. Diese Informationen umfassen zum Beispiel Benutzername und
 Passwort, aber auch technische Details wie Angaben zum verwendeten
 Verschlüsselungsverfahren.
 
-%TODO: sind die drei Punkte vor #PasswordDigest ein Fehler?!?
+%DONE: sind die drei Punkte vor #PasswordDigest ein Fehler?!?
+%Falko: Micha sagt, der Standard definiert das als URI der auf Type enden muss.
+%       Ist also ok.
 \begin{figure}[!htb]
 \centering
 \includegraphics[width=3.4in]{pics/UTPCode}
@@ -1210,6 +1212,7 @@ einfachen Konfiguration und Verwendung der Werkzeuge des Web Service Frameworks 
 %Stefan: +während der Erstellung, oder noch allgemeiner, aber auch für eine Einleitung ein wenig zu knapp, oder?
 Das Policy-PlugIn hingegen fungiert als Filter für Web Service Klassen bzw. deren Methoden.
 
+
 \subsection{Administrations-Tool}
 Das Administrations-Tool soll dem Benutzer die Handhabung 
 des Web Service Frameworks erleichtern. Das Web Service 
@@ -1228,6 +1231,13 @@ realisiert.
 %Stefan: was willst du damit alles ausdrücken? könntest du das hier mit ausformulieren, das es in einer "`eigenen PHP-Datei"' ist, dürfte nicht von all zu großem interesse sein
 %gelöscht stefan: Der Anwendungskern befindet sich letztendlich in einer eigenen PHP-Datei. 
 
+\begin{figure}[htb]
+	\centering
+		\framebox[\linewidth]{\includegraphics[width=0.98\linewidth]{pics/AdminTool.eps}}
+	\caption{Grafische Oberfläche des Administrations-Tools}
+	\label{fig:AdminTool}
+\end{figure}
+
 Allgemein hat der Nutzer die M\"{o}glichkeit Klassen beim 
 Administrations-Tool zu registrieren und diese anschlie\ss{}end 
 zu konfigurieren. Klassen werden entweder automatisch in einem 
@@ -1238,7 +1248,7 @@ als Web Service Klasse markieren. So markierte Klassen k\"{o}nnen
 vom Administrations-Tool herausgefiltert bzw. explizit gesucht werden. 
 Zu einer registrierten Klasse kann nun angegeben werden, welche ihrer 
 Methoden letztendlich ver\"{o}ffentlicht werden sollen.
-Auch dafür gibt es eine Annotation (\verb|@webmethod|);
+Auch dafür gibt es eine Annotation (\verb|@webmethod|).
 Des Weiteren 
 hat der Administrator die Möglichkeit sich Kommentare zu den Klassen 
 und Methoden aus dem Quellcode anzeigen zu lassen. Zu diesen kann er 
@@ -1321,7 +1331,7 @@ zur Verf\"{u}gung stellt und abarbeitet. Daf\"{u}r werden die Objekte
 aus der Anwendungslogik auf die entsprechenden Datensätze in der 
 Datenbanktabelle gemappt.
 
-\subsection{Datenbankentitäten}
+\subsection{Repräsentation der Datenbankentitäten}
 \label{sec:Anwendungsbeispiel:Datenbankaktivitäten}
 Die Klassen für die Datenbankentitäten, stellen die grundlegenden 
 Elemente f\"{u}r die 
@@ -1401,10 +1411,14 @@ Oberfläche um alle Werkzeuge zu konfigurieren und zu starten und damit
 automatisiert SOAP-Server und REST-Server für eine bestehende Anwendung zu
 generieren.
 
-Trotzdem es Pläne gibt die entwickelten Werkzeuge in einem konkreten Projekt
+
+Trotzdem es Pläne gibt die entwickelten Werkzeuge in ei-
+%TODO: readjust this pagebreak after modififications of the document
+\newpage
+\setlength{\parindent}{0pt}
+nem konkreten Projekt
 einzusetzen, lag ein besonderes Augenmerk darauf alle Komponenten so allgemein
 und wiederverwendbar wie möglich zu gestalten.
-
 
 \begin{thebibliography}{99}
 
@@ -1441,7 +1455,7 @@ http://www-128.ibm.com/developerworks/webservices/library/ws-soapenc/
 \emph {OASIS}: www.oasis-open.org, 2006
 
 \bibitem{wss:usernameTokenProfile}
-\emph {Username Token Profil}: http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-username-token-profile-1.0.pdf, 2004
+\emph {Username Token Profile}: http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-username-token-profile-1.0.pdf, 2004
 
 \bibitem{wss:designPatterns} E.~Gamma, R.~Helm, R~Johnson und J.~Vlissides \emph
 {Design Patterns} Addision-Wesley, 1995
@@ -1466,5 +1480,3 @@ and Digest Access Authentication}. Internet Engineering Task Force, Juni 1999.
 \end{thebibliography}
 
 \end{document}
-
-
