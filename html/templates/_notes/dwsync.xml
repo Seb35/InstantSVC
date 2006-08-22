@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<dwsync>
+<file name="README" local="128000685670000000" remote="128000685670000000" testing="0" />
+<file name="site_header.cs" local="128004111380000000" remote="128004111380000000" testing="0" />
+<file name="site_footer.cs" local="128000685670000000" remote="128000685670000000" testing="0" />
+<file name="site_css.cs" local="128000685670000000" remote="128000685670000000" testing="0" />
+<file name="site_newticket.cs" local="128000685670000000" remote="128000685670000000" testing="0" />
+<file name="attachment.cs" local="127799815690000000" remote="127799815690000000" testing="0" />
+<file name="browser.cs" local="127741381890000000" remote="127741381890000000" testing="0" />
+<file name="changeset.cs" local="127743756080000000" remote="127743756080000000" testing="0" />
+<file name="error.cs" local="127710416640000000" remote="127710416640000000" testing="0" />
+<file name="footer.cs" local="127743807470000000" remote="127743807470000000" testing="0" />
+<file name="header.cs" local="127743807470000000" remote="127743807470000000" testing="0" />
+<file name="log.cs" local="127718062340000000" remote="127718062340000000" testing="0" />
+<file name="log_changelog.cs" local="127590805480000000" remote="127590805480000000" testing="0" />
+<file name="log_rss.cs" local="127826585990000000" remote="127826585990000000" testing="0" />
+<file name="macros.cs" local="127703972130000000" remote="127703972130000000" testing="0" />
+<file name="milestone.cs" local="127844826870000000" remote="127844826870000000" testing="0" />
+<file name="newticket.cs" local="127743807470000000" remote="127743807470000000" testing="0" />
+<file name="query.cs" local="127840611150000000" remote="127840611150000000" testing="0" />
+<file name="query_rss.cs" local="127815043610000000" remote="127815043610000000" testing="0" />
+<file name="report.cs" local="127842959310000000" remote="127842959310000000" testing="0" />
+<file name="report_rss.cs" local="127701665680000000" remote="127701665680000000" testing="0" />
+<file name="roadmap.cs" local="127844826870000000" remote="127844826870000000" testing="0" />
+<file name="search.cs" local="127703972130000000" remote="127703972130000000" testing="0" />
+<file name="settings.cs" local="127609846080000000" remote="127609846080000000" testing="0" />
+<file name="ticket.cs" local="127743807470000000" remote="127743807470000000" testing="0" />
+<file name="ticket_notify_email.cs" local="127732443470000000" remote="127732443470000000" testing="0" />
+<file name="timeline.cs" local="127685933350000000" remote="127685933350000000" testing="0" />
+<file name="timeline_rss.cs" local="127844838420000000" remote="127844838420000000" testing="0" />
+<file name="wiki.cs" local="127779154190000000" remote="127779154190000000" testing="0" />
+</dwsync>
