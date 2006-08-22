@@ -13,7 +13,6 @@
    <li class="last">Page History</li>
   <?cs /if ?>
  </ul>
- <hr />
 </div>
 
 <div id="content" class="wiki">

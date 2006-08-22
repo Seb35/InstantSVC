@@ -1,0 +1,356 @@
+/* CSS Document */
+html { background-image:url(/chrome/site/bg.gif); background-position:0px -12px; background-repeat:repeat-x;}
+html, body {margin:0; padding:0;}
+form {margin:0; padding:0; display:inline;}
+img {border:0;}
+/** Background Color **/
+html {background-color:#F2FAFF;}
+.d8 hr {margin-left:-18px; margin-right:-18px; height:20px; background-color:#fff; border:0;}
+
+
+/** Navigation  and Header **/
+#header {
+	width:70%;
+	height:45px; /* -12 */
+	
+	padding-left:20px;
+	padding-right:30px;
+	margin:auto;
+	white-space:nowrap;
+}
+
+#header a {text-decoration:none; font-weight:bold; background-color:#FFFFFF;}
+
+#logo {position:absolute; top:5px; left:15%; margin-left:18px;}
+
+#header ul {
+	margin:0; padding:0;
+	display:block; float:right;
+	list-style:none; 
+	/*border:1px solid #f0f;*/
+}
+#header ul li {display:inline; margin-left:10px;}
+#nav {position:absolute; right:15%; top:3px;text-align:right; width:410px; padding-right:22px}
+.nav1 {margin-top:20px;}
+.nav2 {font-size:0.7em;}
+.nav2 li {}
+.nav2 input {
+	border:1px solid #005080;
+	color:#005080;
+	font-weight:bold;
+	font-size:1em;
+	width:100px;
+}
+
+/** footer **/
+#footer {
+	width:70%;
+	padding-left:20px;
+	padding-right:30px;
+	margin:auto;
+	font-size:0.7em;
+	text-align:right;
+}
+
+#footer a {text-decoration:none;}
+
+/** Design Divs **/
+.d1 {background-image:url(/chrome/site/border-l.gif); background-repeat:repeat-y; width:70%; margin:auto;}
+.d2 {background-image:url(/chrome/site/border-r.gif); background-repeat:repeat-y; background-position:right;}
+.d3 {background-image:url(/chrome/site/bottom.gif); background-repeat:repeat-x; background-position:bottom;}
+.d4 {background-image:url(/chrome/site/edge-r.gif); background-repeat:no-repeat; background-position:right bottom;}
+.d5 {background-image:url(/chrome/site/edge-l.gif); background-repeat:no-repeat; background-position:left bottom;}
+.d6 {background-image:url(/chrome/site/top.gif); background-repeat:repeat-x; background-position:0px 1px;}
+.d7 {background-image:url(/chrome/site/topborder-l.gif); background-repeat:no-repeat; background-position:left top}
+.d8 {background-image:url(/chrome/site/topborder-r.gif); background-repeat:no-repeat; background-position:right top; padding:7px 30px;}
+
+/** content bereich alles unter .d8 **/
+#ctxtnav h2 {display:none;}
+#ctxtnav ul {
+	margin:0; padding:0;
+	float:right;
+	list-style:none; 
+}
+#ctxtnav ul li {display:inline; margin-left:10px;}
+#ctxtnav a {text-decoration:none; background-color:transparent;font-size:0.7em;}
+
+
+/** Fonts and Text-Colors */
+html {
+	font-family:Verdana, Arial, Helvetica, sans-serif;
+	font-size:0.9em;
+}
+h1 {
+	color:#005080;
+	font-weight:bold;
+	font-size:1.4em;
+	letter-spacing:2px;
+}
+
+
+/* Link styles */
+a {	font-weight:bold;
+	color:#005080;
+	text-decoration: none;
+}
+
+.d8 a {	border-bottom: 1px dotted #005080; }
+#ctxtnav a {border:none;}
+@media screen {
+ a.ext-link .icon {
+  background: url(../extlink.gif) left center no-repeat;
+  padding-left: 16px;
+ }
+ * html a.ext-link .icon { display: inline-block; }
+}
+
+
+/* .d8 h1 :link, .d8 h1 :visited ,.d8 h2 :link, .d8 h2 :visited, .d8 h3 :link, .d8 h3 :visited,
+.d8 h4 :link, .d8 h4 :visited, .d8 h5 :link, .d8 h5 :visited, .d8 h6 :link, .d8 h6 :visited {
+ color: inherit;
+}*/
+
+
+/***********************************************************************************/
+/***********************************************************************************/
+/***********************************************************************************/
+/***********************************************************************************/
+/** TRAC STYLES **/
+
+address { font-style: normal }
+
+.underline { text-decoration: underline }
+ol.loweralpha { list-style-type: lower-alpha }
+ol.upperalpha { list-style-type: upper-alpha }
+ol.lowerroman { list-style-type: lower-roman }
+ol.upperroman { list-style-type: upper-roman }
+ol.arabic     { list-style-type: decimal }
+
+/* Forms */
+.d8 input, .d8 textarea, .d8 select { margin: 2px }
+.d8 input, .d8 select { vertical-align: middle }
+.d8 input[type=button], .d8 input[type=submit], .d8 input[type=reset] {
+ background: #eee;
+ color: #222;
+ border: 1px outset #ccc;
+ padding: .1em .5em;
+}
+.d8 input[type=button]:hover, .d8 input[type=submit]:hover, .d8 input[type=reset]:hover {
+ background: #ccb;
+}
+.d8 input[type=button][disabled], .d8 input[type=submit][disabled],
+.d8 input[type=reset][disabled] {
+ background: #f6f6f6;
+ border-style: solid;
+ color: #999;
+}
+.d8 input[type=text], .d8 input.textwidget, .d8 textarea { border: 1px solid #d7d7d7 }
+.d8 input[type=text], .d8 input.textwidget { padding: .25em .5em }
+.d8 input[type=text]:focus, .d8 input.textwidget:focus, .d8 textarea:focus {
+ border: 1px solid #886;
+}
+.d8 option { border-bottom: 1px dotted #d7d7d7 }
+.d8 fieldset { border: 1px solid #d7d7d7; padding: .5em; margin: 0 }
+.d8 fieldset.iefix { background: transparent; border: none; padding: 0; margin: 0 }
+* html .d8 fieldset.iefix { width: 98% }
+.d8 fieldset.iefix p { margin: 0 }
+.d8 legend { color: #999; padding: 0 .25em; font-size: 90%; font-weight: bold }
+.d8 label.disabled { color: #d7d7d7 }
+.d8 .buttons { margin: .5em .5em .5em 0 }
+.d8 .buttons form, .d8 .buttons form div { display: inline }
+.d8 .buttons input { margin: 1em .5em .1em 0 }
+
+
+/* Alternate links */
+#altlinks { clear: both; text-align: center }
+#altlinks h3 { font-size: 12px; letter-spacing: normal; margin: 0 }
+#altlinks ul { list-style: none; margin: 0; padding: 0 0 1em }
+#altlinks li {
+ border-right: 1px solid #d7d7d7;
+ display: inline;
+ font-size: 11px;
+ line-height: 16px;
+ padding: 0 1em;
+ white-space: nowrap;
+}
+#altlinks li.last { border-right: none }
+#altlinks li :link, #altlinks li :visited {
+ background-position: 0 -1px;
+ background-repeat: no-repeat;
+ border: none;
+}
+#altlinks li a.ics { background-image: url(../ics.png); padding-left: 22px }
+#altlinks li a.rss { background-image: url(../xml.png); padding-left: 42px }
+
+
+#content { padding-bottom: 2em; position: relative }
+
+#help {
+ clear: both;
+ color: #999;
+ font-size: 90%;
+ margin: 1em;
+ text-align: right;
+}
+#help :link, #help :visited { cursor: help }
+
+
+/* Page preferences form */
+#prefs {
+ background: #f7f7f0;
+ border: 1px outset #998;
+ float: right;
+ font-size: 9px;
+ padding: .8em;
+ position: relative;
+ margin: 0 1em 1em;
+}
+* html #prefs { width: 26em } /* Set width only for IE */
+#prefs input, #prefs select { font-size: 9px; vertical-align: middle }
+#prefs fieldset {
+ background: transparent;
+ border: none;
+ margin: .5em;
+ padding: 0;
+}
+#prefs fieldset legend {
+ background: transparent;
+ color: #000;
+ font-size: 9px;
+ font-weight: normal;
+ margin: 0 0 0 -1.5em;
+ padding: 0;
+}
+#prefs .buttons { text-align: right }
+
+/* Wiki */
+.wikipage { padding-left: 18px }
+.wikipage h1, .wikipage h2, .wikipage h3 { margin-left: -18px }
+
+a.missing:link, a.missing:visited { background: #fafaf0; color: #998 }
+a.missing:hover { color: #000; }
+a.closed:link, a.closed:visited { text-decoration: line-through }
+
+dl.wiki dt { font-weight: bold }
+dl.compact dt { float: left; padding-right: .5em }
+dl.compact dd { margin: 0; padding: 0 }
+
+pre.wiki, pre.literal-block {
+ background: #f7f7f7;
+ border: 1px solid #d7d7d7;
+ margin: 1em 1.75em;
+ padding: .25em;
+ overflow: auto;
+}
+table.wiki {
+ border: 2px solid #ccc;
+ border-collapse: collapse;
+ border-spacing: 0;
+}
+table.wiki td { border: 1px solid #ccc;  padding: .1em .25em; }
+
+.wikitoolbar {
+ border: solid #d7d7d7;
+ border-width: 1px 1px 1px 0;
+ height: 18px;
+ width: 156px;
+}
+.wikitoolbar :link, .wikitoolbar :visited {
+ background: transparent url(../edit_toolbar.png) no-repeat;
+ border: 1px solid #fff;
+ border-left-color: #d7d7d7;
+ cursor: default;
+ display: block;
+ float: left;
+ width: 24px;
+ height: 16px;
+}
+.wikitoolbar :link:hover, .wikitoolbar :visited:hover {
+ background-color: transparent;
+ border: 1px solid #fb2;
+}
+.wikitoolbar a#em { background-position: 0 0 }
+.wikitoolbar a#strong { background-position: 0 -16px }
+.wikitoolbar a#heading { background-position: 0 -32px }
+.wikitoolbar a#link { background-position: 0 -48px }
+.wikitoolbar a#code { background-position: 0 -64px }
+.wikitoolbar a#hr { background-position: 0 -80px }
+
+/* Styles for the form for adding attachments. */
+#attachment .field { margin-top: 1.3em }
+#attachment label { padding-left: .2em }
+#attachment fieldset { margin-top: 2em }
+#attachment fieldset .field { float: left; margin: 0 1em .5em 0 }
+#attachment .options { float: left; padding: 0 0 1em 1em }
+#attachment br { clear: left }
+.attachment #preview { margin-top: 1em }
+
+/* Styles for tabular listings such as those used for displaying directory
+   contents and report results. */
+table.listing {
+ clear: both;
+ border-bottom: 1px solid #d7d7d7;
+ border-collapse: collapse;
+ border-spacing: 0;
+ margin-top: 1em;
+ width: 100%;
+}
+table.listing th { text-align: left; padding: 0 1em .1em 0; font-size: 12px }
+table.listing thead { background: #f7f7f0 }
+table.listing thead th {
+ border: 1px solid #d7d7d7;
+ border-bottom-color: #999;
+ font-size: 11px;
+ font-weight: bold;
+ padding: 2px .5em;
+ vertical-align: bottom;
+}
+table.listing thead th :link:hover, table.listing thead th :visited:hover {
+ background-color: transparent;
+}
+table.listing thead th a { border: none; padding-right: 12px }
+table.listing th.asc a, table.listing th.desc a { font-weight: bold }
+table.listing th.asc a, table.listing th.desc a {
+ background-position: 100% 50%;
+ background-repeat: no-repeat;
+}
+table.listing th.asc a { background-image: url(../asc.png) }
+table.listing th.desc a { background-image: url(../desc.png) }
+table.listing tbody td, table.listing tbody th {
+ border: 1px dotted #ddd;
+ padding: .33em .5em;
+ vertical-align: top;
+}
+table.listing tbody td a:hover, table.listing tbody th a:hover {
+ background-color: transparent;
+}
+table.listing tbody tr { border-top: 1px solid #ddd }
+table.listing tbody tr.even { background-color: #fcfcfc }
+table.listing tbody tr.odd { background-color: #f7f7f7 }
+table.listing tbody tr:hover { background: #eed !important }
+
+/* Styles for the error page (and rst errors) */
+#content.error .message, div.system-message {
+ background: #fdc;
+ border: 2px solid #d00;
+ color: #500;
+ padding: .5em;
+ margin: 1em 0;
+}
+#content.error pre, div.system-message pre { margin-left: 1em; overflow: auto }
+div.system-message p { margin: 0; }
+div.system-message p.system-message-title { font-weight: bold; }
+
+/* Styles for search word highlighting */
+@media screen {
+ .searchword0 { background: #ff9 }
+ .searchword1 { background: #cfc }
+ .searchword2 { background: #cff }
+ .searchword3 { background: #ccf }
+ .searchword4 { background: #fcf }
+}
+
+@media print {
+ #header, #altlinks, #footer { display: none }
+ .nav, form, .buttons form { display: none }
+}

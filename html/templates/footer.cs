@@ -13,23 +13,25 @@ if:len(chrome.links.alternate) ?>
  /each ?></ul></div><?cs
 /if ?>
 
-</div>
 
-<div id="footer">
- <hr />
- <a id="tracpowered" href="http://trac.edgewall.com/"><img src="<?cs
-   var:htdocs_location ?>trac_logo_mini.png" height="30" width="107"
-   alt="Trac Powered"/></a>
- <p class="left">
-  Powered by <a href="<?cs var:trac.href.about ?>"><strong>Trac <?cs
-  var:trac.version ?></strong></a><br />
-  By <a href="http://www.edgewall.com/">Edgewall Software</a>.
- </p>
- <p class="right">
-  <?cs var:project.footer ?>
- </p>
-</div>
+</div></div></div>
+</div></div></div>
+</div></div>
 
-<?cs include "site_footer.cs" ?>
- </body>
+<?cs # hier die nav generation so auseinander genommen, dass eigentlich login/logout context sensitiv erzeugt werden muesste # ?>
+<?cs def:nav(items) ?><?cs
+ if:len(items) ?><?cs
+  set:idx = 0 ?><?cs
+  set:max = len(items) - 1 ?><?cs
+  each:item = items ?><?cs
+   set:first = idx == 0 ?><?cs
+   set:last = idx == max ?><?cs if:first ?><?cs var:item ?><?cs /if ?><?cs
+   set:idx = idx + 1 ?><?cs
+  /each ?><?cs
+ /if ?><?cs
+/def ?>
+
+<div id="footer"><?cs call:nav(chrome.nav.metanav) ?> | valid <a href="#">CSS</a> &amp; <a href="#">XHTML</a> | <a href="#">powered by TOOLSLAVE.NET</a>
+</div>
+</body>
 </html>

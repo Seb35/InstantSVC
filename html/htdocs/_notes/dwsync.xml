@@ -27,4 +27,15 @@
 <file name="trac_logo_mini.png" local="127696317210000000" remote="127696317210000000" testing="0" />
 <file name="wiki.png" local="127451592990000000" remote="127451592990000000" testing="0" />
 <file name="xml.png" local="127696317210000000" remote="127696317210000000" testing="0" />
+<file name="favicon.ico" local="128001383821352048" remote="128007151970000000" testing="0" />
+<file name="instantsvc.logo.gif" local="128002215387460928" remote="128007190970000000" testing="0" />
+<file name="bg.gif" local="127972771020813712" remote="128007190930000000" testing="0" />
+<file name="border-l.gif" local="127972783547726528" remote="128007190940000000" testing="0" />
+<file name="border-r.gif" local="127972783986757824" remote="128007190940000000" testing="0" />
+<file name="bottom.gif" local="127973618222780816" remote="128007190950000000" testing="0" />
+<file name="edge-l.gif" local="127972777026449392" remote="128007190960000000" testing="0" />
+<file name="edge-r.gif" local="127972776703685280" remote="128007190960000000" testing="0" />
+<file name="top.gif" local="127973606605976672" remote="128007190970000000" testing="0" />
+<file name="topborder-l.gif" local="127974309815429696" remote="128007190980000000" testing="0" />
+<file name="topborder-r.gif" local="127974308799687504" remote="128007190990000000" testing="0" />
 </dwsync>
