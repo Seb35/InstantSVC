@@ -27,7 +27,7 @@
  
  <link href="/chrome/site/css/style.css" rel="stylesheet" type="text/css" />
  <script type="text/javascript" src="<?cs var:htdocs_location ?>js/trac.js"></script>
- <script type="text/javascript" src="/site/js/misc.js"></script>
+ <script type="text/javascript" src="/chrome/site/js/misc.js"></script>
 </head>
 <body>
 <?cs include "site_header.cs" ?>
@@ -45,7 +45,7 @@
 		<li><a href="/wiki/About">About</a></li>
 		<li><a href="/wiki/Documentation">Docs</a></li>
 		<li><a href="/roadmap">Roadmap</a></li>
-		<li><a href="/wiki/Documentation">Downloads</a></li> 
+		<li><a href="/wiki/Downloads">Downloads</a></li> 
 	</ul>
 	</div>
 </div>

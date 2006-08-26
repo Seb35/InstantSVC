@@ -31,7 +31,7 @@ if:len(chrome.links.alternate) ?>
  /if ?><?cs
 /def ?>
 
-<div id="footer"><?cs call:nav(chrome.nav.metanav) ?> | valid <a href="#">CSS</a> &amp; <a href="#">XHTML</a> | <a href="#">powered by TOOLSLAVE.NET</a>
+<div id="footer"><?cs call:nav(chrome.nav.metanav) ?> | valid <a href="#">CSS</a> &amp; <a href="#">XHTML</a> | <a href="http://www.toolslave.com/">powered by TOOLSLAVE</a>
 </div>
 </body>
 </html>
