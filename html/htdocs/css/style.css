@@ -1,3 +1,15 @@
+@import url(/chrome/site/css/about.css);
+@import url(/chrome/site/css/browser.css);
+@import url(/chrome/site/css/changeset.css);
+@import url(/chrome/site/css/code.css);
+@import url(/chrome/site/css/diff.css);
+@import url(/chrome/site/css/report.css);
+@import url(/chrome/site/css/roadmap.css);
+@import url(/chrome/site/css/search.css);
+@import url(/chrome/site/css/ticket.css);
+@import url(/chrome/site/css/wiki.css);
+
+
 /* CSS Document */
 html { background-image:url(/chrome/site/bg.gif); background-position:0px -12px; background-repeat:repeat-x;}
 html, body {margin:0; padding:0;}
@@ -5,7 +17,7 @@ form {margin:0; padding:0; display:inline;}
 img {border:0;}
 /** Background Color **/
 html {background-color:#F2FAFF;}
-.d8 hr {margin-left:-18px; margin-right:-18px; height:20px; background-color:#fff; border:0;}
+.d8 hr {height:10px; background-color:transparent; border:0; border-top:12px solid #fff; margin-left:-30px; margin-right:-20px; padding-bottom:15px;}
 
 
 /** Navigation  and Header **/
@@ -65,14 +77,18 @@ html {background-color:#F2FAFF;}
 .d8 {background-image:url(/chrome/site/topborder-r.gif); background-repeat:no-repeat; background-position:right top; padding:7px 30px;}
 
 /** content bereich alles unter .d8 **/
+#ctxtnav {display:block; width:100%; height:20px;}
 #ctxtnav h2 {display:none;}
 #ctxtnav ul {
 	margin:0; padding:0;
 	float:right;
 	list-style:none; 
 }
-#ctxtnav ul li {display:inline; margin-left:10px;}
-#ctxtnav a {text-decoration:none; background-color:transparent;font-size:0.7em;}
+#ctxtnav ul li {display:inline; margin-left:10px; font-weight:bold; color:#005080;font-size:0.7em;}
+#ctxtnav a, #ctxtnav li {text-decoration:none; background-color:transparent;}
+
+.item {clear:left;vertical-align:middle; padding-bottom:5px;}
+.item img {float:left; padding-right:15px; padding-bottom:25px;}
 
 
 /** Fonts and Text-Colors */
@@ -80,13 +96,19 @@ html {
 	font-family:Verdana, Arial, Helvetica, sans-serif;
 	font-size:0.9em;
 }
+h1, h2, h3 {color:#005080; font-weight:bold; background:none;}
 h1 {
-	color:#005080;
-	font-weight:bold;
 	font-size:1.4em;
 	letter-spacing:2px;
 }
-
+h2 {
+	font-size:1.2em;
+	letter-spacing:1px;
+}
+h3 {
+	font-size:1em;
+	letter-spacing:0px;
+}
 
 /* Link styles */
 a {	font-weight:bold;
@@ -104,11 +126,10 @@ a {	font-weight:bold;
  * html a.ext-link .icon { display: inline-block; }
 }
 
-
-/* .d8 h1 :link, .d8 h1 :visited ,.d8 h2 :link, .d8 h2 :visited, .d8 h3 :link, .d8 h3 :visited,
+.d8 h1 :link, .d8 h1 :visited ,.d8 h2 :link, .d8 h2 :visited, .d8 h3 :link, .d8 h3 :visited,
 .d8 h4 :link, .d8 h4 :visited, .d8 h5 :link, .d8 h5 :visited, .d8 h6 :link, .d8 h6 :visited {
  color: inherit;
-}*/
+}
 
 
 /***********************************************************************************/
@@ -227,7 +248,7 @@ ol.arabic     { list-style-type: decimal }
 .wikipage { padding-left: 18px }
 .wikipage h1, .wikipage h2, .wikipage h3 { margin-left: -18px }
 
-a.missing:link, a.missing:visited { background: #fafaf0; color: #998 }
+a.missing:link, a.missing:visited { color: #998 }
 a.missing:hover { color: #000; }
 a.closed:link, a.closed:visited { text-decoration: line-through }
 
@@ -354,3 +375,4 @@ div.system-message p.system-message-title { font-weight: bold; }
  #header, #altlinks, #footer { display: none }
  .nav, form, .buttons form { display: none }
 }
+
