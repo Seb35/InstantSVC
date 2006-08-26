@@ -71,7 +71,7 @@ class queryLecture extends DbCollection {
   * Stores new (id = -1) sets into database or updates old entries (valid id)
   *
   * @webmethod
-  * @param Lecture
+  * @param Lecture $lecture
   * @return void
   */
   public function updateOrAddLecture(Lecture $lecture) {
@@ -285,6 +285,7 @@ class queryLecture extends DbCollection {
   //=========================================================================
   /**
   * get singleton instance
+  * @param string $class
   * @return queryLecture
   */
   static public function getInstance($class = 'queryLecture') {
