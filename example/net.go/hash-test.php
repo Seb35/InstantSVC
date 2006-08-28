@@ -31,6 +31,7 @@ foreach ($arr as $url) {
   echo $url;
   echo '<br>  <b>';
   $hash = DJBHash($url);
+
   echo $hash;
   echo '  '.base_convert($hash, 10, 36);
 
