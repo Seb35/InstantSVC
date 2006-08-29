@@ -74,7 +74,7 @@ class CodeAnalyzer {
     /**
     * @param string $path
     */
-    public function __construct($path) {
+    public function __construct($path = '.') {
         $this->path = $path;
         $this->declaredClasses = get_declared_classes();
     }
@@ -180,23 +180,53 @@ class CodeAnalyzer {
 
     //=======================================================================
     /**
+     * Tries to guess the right Php Bin Path, if not set properbly
+     */
+    public function ensurePhpBin() {
+        if (isset($_ENV['PHPBIN']) and !empty($_ENV['PHPBIN'])) {
+            $this->phpBin = $_ENV['PHPBIN'];
+        }
+        elseif (isset($_ENV['PHPEXE']) and !empty($_ENV['PHPEXE'])) {
+            $this->phpBin = $_ENV['PHPEXE'];
+        }
+        else {
+            $this->phpBin = 'C:\Programme\php5\php.exe -c C:\Programme\php5';
+        }
+    }
+
+    //=======================================================================
+    /**
      * Collects informations about classes, functions by spawning a new
      * php process for each file
+     *
+     * If parameter $files is given it will be used instead of
+     * $this->flatStatsArray
+     *
+     * @param FileDetails[] $files
      */
-    public function inspectFiles() {
+    public function inspectFiles($files = null) {
 
         //commandline interface or apache?
         $cli = true; (strpos(php_sapi_name(), 'cli') !== false);
 
+        if ($cli and empty($this->phpBin)) {
+            $this->ensurePhpBin();
+        }
+
+
         $this->docuFlaws = array();
         $this->docuFlaws['classes'] = array();
         $this->docuFlaws['functions'] = array();
-        foreach ($this->flatStatsArray as $detail) {
+        if ($files == null) {
+            $files = $this->flatStatsArray;
+        }
+        foreach ($files as $detail) {
             //var_dump($detail);
             if ($detail->mimeType == 'application/x-httpd-php') {
                 $detail->fileName = strtr($detail->fileName, DIRECTORY_SEPARATOR, '/');
 
                 $cmd = $this->phpBin.' "'.dirname(__FILE__).'/inc.codeAnalyzer.php" exec "'.$detail->fileName.'"';
+
                 if ($cli) {
                     $out = shell_exec($cmd);
                 }
@@ -252,6 +282,19 @@ class CodeAnalyzer {
                                         (strlen($class->getDocComment()) > 10);
             $result[$className]['webservice'] = $class->isWebService();
 
+            $result[$className]['isInternal'] = $class->isInternal();
+            $result[$className]['isAbstract'] = $class->isAbstract();
+            $result[$className]['isFinal'] = $class->isFinal();
+            $result[$className]['isInterface'] = $class->isInterface();
+            if ($class->getParentClass() != null) {
+                $result[$className]['parentClass'] =
+                                          $class->getParentClass()->getName();
+            }
+            else {
+                $result[$className]['parentClass'] = null;
+            }
+            $result[$className]['modifiers'] = $class->getModifiers();
+
             //Collect Class properties
             $props = $class->getProperties();
             $result[$className]['properties'] = array();
@@ -280,6 +323,23 @@ class CodeAnalyzer {
                 }
 
                 //Collect more infos about this method
+                $result[$className]['methods'][$method->getName()]['isInternal']
+                            = $method->isInternal();
+                $result[$className]['methods'][$method->getName()]['isAbstract']
+                            = $method->isAbstract();
+                $result[$className]['methods'][$method->getName()]['isFinal']
+                            = $method->isFinal();
+                $result[$className]['methods'][$method->getName()]['isPublic']
+                            = $method->isPublic();
+                $result[$className]['methods'][$method->getName()]['isPrivate']
+                            = $method->isPrivate();
+                $result[$className]['methods'][$method->getName()]['isProtected']
+                            = $method->isProtected();
+                $result[$className]['methods'][$method->getName()]['isStatic']
+                            = $method->isStatic();
+                $result[$className]['methods'][$method->getName()]['modifiers']
+                            = $method->getModifiers();
+
             	$result[$className]['methods'][$method->getName()]['comment']
             	            = (strlen($method->getDocComment()) > 10);
             	if (strlen($method->getDocComment()) > 10) {
@@ -331,6 +391,7 @@ class CodeAnalyzer {
         foreach ($functions['user'] as $funcName) {
         	$func = new ExtReflectionFunction($funcName);
         	$functs[$funcName]['comment'] = (strlen($func->getDocComment()) > 10);
+            $functs[$funcName]['file'] = $func->getFileName();
 
         	if (is_object($func->getReturnType())) {
         	    $functs[$funcName]['return'] = $func->getReturnType()->toString();
