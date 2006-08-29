@@ -89,7 +89,7 @@ class MappingTable {
      * @return array<integer,string>
      */
     public function getMostRecentMappings() {
-        $result = $this->db->prepare('SELECT id, url FROM mapping ORDER BY creation DESC LIMIT 10');
+        $result = $this->db->query('SELECT * FROM mapping ORDER BY creation DESC LIMIT 10');
         $r = array();
         foreach ($result as $row) {
             $r[$row['id']] = $row['url'];
@@ -105,9 +105,9 @@ class MappingTable {
     public function getCount() {
         $result = $this->db->query('SELECT count(*) FROM mapping');
         if ($result) {
-            var_dump($result);
+            //var_dump($result);
             $row = $result->fetch();
-            var_dump($row);
+            //var_dump($row);
             return $row[0];
         }
         return 0;
@@ -122,6 +122,16 @@ class MappingTable {
     public function insertUrl($id, $url) {
         $stmt = $this->db->prepare('INSERT INTO mapping (id, url) VALUES (?, ?)');
         $stmt->execute(array($id, $url));
+    }
+
+    /**
+     * Delete the mapping with the given id
+     *
+     * @param integer $id
+     */
+    public function deleteById($id) {
+        $stmt = $this->db->prepare('DELETE FROM mapping WHERE id = ?');
+        $stmt->execute(array($id));
     }
 }
 ?>

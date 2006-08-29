@@ -13,14 +13,16 @@ class MappingTableTest extends PHPUnit_Extensions_TestSetup
 
     protected function setUp()
     {
+        if (file_exists(dirname(__FILE__).'/test.sq3')) {
+            unlink(dirname(__FILE__).'/test.sq3');
+        }
         $this->table = MappingTable::getInstance();
     }
 
     protected function tearDown()
     {
-        $this->table = NULL;
         unset($this->table);
-        unlink(dirname(__FILE__).'/test.sq3');
+        $this->table = NULL;
     }
 
     public static function suite()
@@ -43,9 +45,20 @@ class MappingTableTestSuite extends PHPUnit_Framework_TestCase
     }
 
     public function testMostRecent() {
+        $this->table->insertUrl(0, 'dfsdfsdff');
+        $this->table->insertUrl(1, 'dfsdfsdff');
+        $this->table->insertUrl(2, 'dfsdfsdff');
+        $this->table->insertUrl(3, 'dfsdfsdff');
+        $this->table->insertUrl(4, 'dfsdfsdff');
+        $this->table->insertUrl(5, 'dfsdfsdff');
+        $this->table->insertUrl(6, 'dfsdfsdff');
+        $this->table->insertUrl(7, 'dfsdfsdff');
+        $this->table->insertUrl(8, 'dfsdfsdff');
+        $this->table->insertUrl(9, 'dfsdfsdff');
+        $this->table->insertUrl(10, 'dfsdfsdff');
+        $this->table->insertUrl(11, 'dfsdfsdff');
         $map = $this->table->getMostRecentMappings();
-        var_dump($map);
-        $this->assertTrue(count($map) <= 10);
+        $this->assertTrue(count($map) == 10);
     }
 
     public function testCount()

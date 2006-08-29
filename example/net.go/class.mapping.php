@@ -1,5 +1,8 @@
 <?php
 
+require_once(dirname(__FILE__).'/class.MappingTable.php');
+require_once(dirname(__FILE__).'/func.hash.php');
+
 class Mapping {
 
     /**
@@ -19,7 +22,7 @@ class Mapping {
     /**
      * Constructor of Mapping
      */
-    private function __constructs() {
+    private function __construct() {
         $this->table = MappingTable::getInstance();
     }
 
@@ -47,7 +50,7 @@ class Mapping {
             return $this->int2alias($id);
         }
         else {
-            $id = calculateHash($url, $this->getCount());
+            $id = calculateHash($url, $this->getCount() * 4 + 36);
 
             //Check for collisions
             $wrongUrl = $this->table->getUrl($id);
@@ -78,7 +81,7 @@ class Mapping {
      * @return string
      */
     public function getUrl($alias) {
-        return getUrlById($this->alias2int($alias));
+        return $this->getUrlById($this->alias2int($alias));
     }
 
     /**
@@ -99,7 +102,7 @@ class Mapping {
      * @param string $alias
      */
     public function deleteAlias($alias) {
-        throw new Exception('Not Implemented');
+        $this->table->deleteById($this->alias2int($alias));
     }
 
     /**
@@ -136,7 +139,7 @@ class Mapping {
      * @return integer
      */
     public function getCount() {
-        $this->table->getCount();
+        return $this->table->getCount();
     }
 
     /**
