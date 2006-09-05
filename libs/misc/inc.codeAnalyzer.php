@@ -23,7 +23,10 @@ if ($exec and $inc != null) {
     require_once('class.codeAnalyzer.php');
     $classes = get_declared_classes();
     require_once($inc);
-    $classes = array_diff(get_declared_classes(), $classes);
+    $analyzeClasses = array_diff(get_declared_classes(), $classes);
+    if (count($analyzeClasses) > 0) {
+		$classes = $analyzeClasses;
+	}
     echo '#-#-#-#-#';
     echo serialize(CodeAnalyzer::collectCodeSummary($classes));
     echo '#-#-#-#-#';
