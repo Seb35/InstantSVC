@@ -170,5 +170,14 @@ class ExtReflectionClass extends ReflectionClass {
             return $this->docParser->getTagsByName($name);
         }
     }
+    
+    //=======================================================================
+    /**
+    * @TODO: implement
+    * @return ExtReflectionExtension
+    */
+    public function getExtension() {
+        throw new Exception('Not implemented');
+    }
 }
 ?>
