@@ -1,0 +1,33 @@
+Usage of ezComponents for self implemented features
+
+Console
+Settings
+	ezcConfigurationManager - looks nice, if it's as speedy an easy to use as 
+							  the current solution with simple array includes
+							  it could be a good choice.
+							  Probably it's a bit slower, may be it's not for be
+							  used in rest.php or soap.php but in the deployment
+							  descriptor generators.
+Database
+DatabaseSchema
+	The Schema handling looks nice and portable.
+	At the moment we are using a sql script (mysql) to generate the database
+	and a modified phpmyadmin sql parser, which is GPL. So this should be
+	removed.
+	With different databases in mind a sql script is less portable, but could be
+	easily tweaked for a different database.
+	At the moment there is no plain SQL import for the DBSchema manager but a 
+	an xml file including the db schema for installation should be easy to use
+	to especialy for tooldriven installation. 
+File
+	ezcFile
+		may be we could contribute the relative path method?
+Base
+	ezcBaseStruct
+		think it's a good choise for some of the data types defined like
+		FileDetails
+PhpGenerator
+	Why to use it? Seams not add any benefit?
+SystemInformation
+	While Console-Tools have problems on Windows (doesn't understand ANSI escape
+	sequences) used to dectivate format infos on win32.
