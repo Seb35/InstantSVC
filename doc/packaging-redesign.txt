@@ -1,0 +1,99 @@
+Liste der Klassen geordnet nach Paketen bzw. Inhalt der Pakete
+
+Toolkit
+	xslTransform.php - ungenutzt, gehört hier nicht rein
+	stats.php - vielleicht näher an die reflection api binden (eigene reflection tools)
+	generateRestDd.php
+	checkSourceTree.php
+	checkDocuFlaws.php
+	checkDependency.php
+	checkDependencies.php
+	AdminTool
+	Docu-Tools
+		extract-interface-def.php
+	
+
+InstantSVC
+#-----     -----     -----     -----     -----     -----#
+eZ
+
+Misc
+	Console (kann ersetzt werden)
+	DigestAuth (HTTP Digest Lib)
+	IAuthProvider (interface for authentication wrappers)
+	DummyAuthProvider (beispiel Auth provider, sollte als Tut irgendwo auftauchen, eventuell aus Trunk entfernen)
+	File (nur zum erzeugen von Relativen Pfaden, kann eventuell ersetzt werden)
+	FileDetails (kann eventuell ersetzt werden, oder wenigstens umbenannt und zum Analyser zugeordnet, da sonst nicht weiter verwendet)
+	Mime_Types (Mime Type Mapper, da GPL Lizenz ersetzen)
+	XsltTransformater (entfernen, da nicht implementiert, war für Rest gedacht)
+
+Serializer
+	ISerializer (generalize usage of (Un)Serializers)
+	PearSerializer (Wrapper für Pear XML_Serializer bzw. XML_Unserializer)
+	XML_Serializer
+	XML_Unserializer (sollten beide entfernt werden, vorher 
+
+
+PHP::ExtReflectionApi
+	AbstractType
+	ArrayType
+	ClassType
+	ExtendedReflectionApi
+	ExtReflectionClass
+	ExtReflectionExtension
+	ExtReflectionMethod
+	ExtReflectionParameter
+	ExtReflectionProperty
+	PHPDocTag (standard incarnation of a parsed doc tag)
+	    PHPDocParamTag
+	    PHPDocRestInTag
+	    PHPDocRestMethodTag
+	    PHPDocRestOutTag
+	    PHPDocReturnTag
+	    PHPDocVarTag
+	    PHPDocWebMethodTag
+	    PHPDocWebServiceTag
+	PrimitiveType
+	TypeFactory
+	TypeMapper
+	IType
+	ITypeFactory
+
+
+PHP::ClassLoader
+	ClassLoader (prüfen ob veraltet)
+	CodeAnalyzer (prüfen ob noch anders verwendet als nur zum 
+	inc.CodeAnalyzer Script (so bleiben? oder vielleicht andere datei endung, oder so? .inc .php.inc .inc.php??)analysieren)
+WS::WSSecurity
+	ITokenProfile* (interface mit authenticate methode)
+	UsernameTokenProfile* (implemenitert Interface)
+	XmlSoapSecParser
+	ICheckUserRunnable
+	CheckUserRunnable
+	CheckUserDB
+WS::ExtSoapServer
+- Hier ist der HandlerChain/Interceptor-Pattern noch nicht implementiert, wäre aber für weitere WS-* Unterstützung notwendig
+	
+	SoapIntermediary* - HC
+		XmlParser (ist eventuell nicht mehr sinnvoll in der Art, bzw wird durch HC abgelöst. Funktionell durch Extension zu ersetzen die sich besser programmieren lässt)
+	SoapNode*
+	RemoveHeaderIntermediary*
+	WebServiceSecurityHandler*
+	WsdlPolicyPlugin
+
+WS::SoapHeader - veraltet
+	XmlParserExtended
+	XmlSoapHeaderParser
+	
+WS::DeploymentDescriptorGenerator
+	RestDdGenerator
+	SoapDdGenerator
+WS::WsdlGenerator
+WS::RestServer
+sollten die gemachten änderungen validiert werden und eventuell als Patch vorgeschlagen werden)
+WS::DocWrappedAdapterGenerator
+WS::SoapClient
+	SecureSoapClient
+
+rest.php
+soap.php
