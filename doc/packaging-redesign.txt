@@ -31,7 +31,7 @@ Serializer
 	ISerializer (generalize usage of (Un)Serializers)
 	PearSerializer (Wrapper für Pear XML_Serializer bzw. XML_Unserializer)
 	XML_Serializer
-	XML_Unserializer (sollten beide entfernt werden, vorher 
+	XML_Unserializer (sollten beide entfernt werden, vorher sollten die gemachten änderungen validiert werden und eventuell als Patch vorgeschlagen werden)
 
 
 PHP::ExtReflectionApi
@@ -90,7 +90,7 @@ WS::DeploymentDescriptorGenerator
 	SoapDdGenerator
 WS::WsdlGenerator
 WS::RestServer
-sollten die gemachten änderungen validiert werden und eventuell als Patch vorgeschlagen werden)
+
 WS::DocWrappedAdapterGenerator
 WS::SoapClient
 	SecureSoapClient

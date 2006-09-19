@@ -18,7 +18,8 @@ DatabaseSchema
 	easily tweaked for a different database.
 	At the moment there is no plain SQL import for the DBSchema manager but a 
 	an xml file including the db schema for installation should be easy to use
-	to especialy for tooldriven installation. 
+	to especialy for tooldriven installation.
+	
 File
 	ezcFile
 		may be we could contribute the relative path method?
@@ -26,8 +27,10 @@ Base
 	ezcBaseStruct
 		think it's a good choise for some of the data types defined like
 		FileDetails
+
 PhpGenerator
 	Why to use it? Seams not add any benefit?
+
 SystemInformation
 	While Console-Tools have problems on Windows (doesn't understand ANSI escape
 	sequences) used to dectivate format infos on win32.
