@@ -48,9 +48,9 @@ DONE - filter methods by policy plugin
 DONE - wsdl:documentation before every method if given by policy plugin
 DONE - constants as class constants
 DONE - use ExdReflectionMethod->isMagic() in the Document/Wrapped-Adapter-Generator
-     - test WSDL generation for Map-Types
+     - test WSDL generation for Map-Types (JAX and WCF/Indigo compatible?)
      - more test cases for rpc/literal
-V2   - verify doc-lit and rpc-lit output with WS-I Basic Profile 1.1
+     - verify doc-lit and rpc-lit output with WS-I Basic Profile 1.1
 REM    Possible Flaws:
 REM    R2206 rpc-lit
 V2   - add documentation when adding functions [should be triggered by an optional argument of addFunction()]
@@ -65,6 +65,7 @@ V3   - redesign (driver architecture)
 V3   - WSDL 2.0 support
 V3   - Adapters or Extended SOAPClient for doument wrapped clients
 V3   - SOAPServer wich generates WSDL if(!file_exists($wsdl_file)) [may be started with new ExtSOAPServer($wsdl_file,  array('soap_binding_style' => WSDLGenerator::DOCUMENT_WRAPPED);]
+
 
 
 webservices identifizieren
@@ -101,7 +102,8 @@ REST
 		DONE  - im generator als allgemeines und im @restin/@restout
 		DONE  - reihenfolge: angabe über &f -> @restin Angabe -> globale angabe, default im dd
 		DONE  - wobei angabe &f sich nur auf ausgabe bezieht
-			
+		
+			  - ez Style Array-Angabe array(string=>ezcFile)
 		V2	  - angabe des status-codes über @ muss möglich sein, um hier sinnvolle rückgaben ermöglichen zu können
 		V2	  - weitere sinnvolle header senden?
 			  - known issues auflisten (erkennen der pattern abhängig von reihenfolge im quelltext)
