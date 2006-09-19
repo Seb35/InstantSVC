@@ -10,45 +10,166 @@
 
 class ezcExtendedReflectionPhpDocParserTest extends ezcTestCase
 {
+    /**
+     * @var string[]
+     */
+    private static $docs;
+
     public function testGetTagsByName() {
-        throw new Exception('not implemented');
+        $parser = new PHPDocParser(self::$docs[0]);
+        $parser->parse();
+        $tags = $parser->getTagsByName('copyright');
+        self::assertEquals(1, count($tags));
+
+        $tags = $parser->getTagsByName('filesource');
+        self::assertEquals(1, count($tags));
+
+        $tags = $parser->getTagsByName('noneExistingTag');
+        self::assertEquals(0, count($tags));
+
+        $parser = new PHPDocParser(self::$docs[2]);
+        $parser->parse();
+        $tags = $parser->getTagsByName('onetagonly');
+        self::assertEquals(1, count($tags));
+
+        $parser = new PHPDocParser(self::$docs[3]);
+        $parser->parse();
+        $tags = $parser->getTagsByName('param');
+        self::assertEquals(1, count($tags));
+
+        $parser = new PHPDocParser(self::$docs[4]);
+        $parser->parse();
+        $tags = $parser->getTagsByName('foobar');
+        self::assertEquals(1, count($tags));
+
+        $parser = new PHPDocParser(self::$docs[6]);
+        $parser->parse();
+        $tags = $parser->getTagsByName('author');
+        self::assertEquals(1, count($tags));
     }
 
     public function testGetTags() {
-        throw new Exception('not implemented');
+        $parser = new PHPDocParser(self::$docs[0]);
+        $parser->parse();
+        $tags = $parser->getTags();
+        self::assertEquals(6, count($tags));
+
+        $parser = new PHPDocParser(self::$docs[1]);
+        $parser->parse();
+        $tags = $parser->getTags();
+        self::assertEquals(0, count($tags));
+
+        $parser = new PHPDocParser(self::$docs[2]);
+        $parser->parse();
+        $tags = $parser->getTags();
+        self::assertEquals(1, count($tags));
+
+        $parser = new PHPDocParser(self::$docs[3]);
+        $parser->parse();
+        $tags = $parser->getTags();
+        self::assertEquals(2, count($tags));
+
+        $parser = new PHPDocParser(self::$docs[4]);
+        $parser->parse();
+        $tags = $parser->getTags();
+        self::assertEquals(3, count($tags));
+
+        $parser = new PHPDocParser(self::$docs[5]);
+        $parser->parse();
+        $tags = $parser->getTags();
+        self::assertEquals(0, count($tags));
+
+        $parser = new PHPDocParser(self::$docs[6]);
+        $parser->parse();
+        $tags = $parser->getTags();
+        self::assertEquals(6, count($tags));
     }
 
     public function testGetParamTags() {
-        throw new Exception('not implemented');
-    }
+        $parser = new PHPDocParser(self::$docs[0]);
+        $parser->parse();
+        $tags = $parser->getParamTags();
+        self::assertEquals(0, count($tags));
 
-    public function testParse() {
-        throw new Exception('not implemented');
+        $parser = new PHPDocParser(self::$docs[3]);
+        $parser->parse();
+        $tags = $parser->getParamTags();
+        self::assertEquals(1, count($tags));
+
+        $parser = new PHPDocParser(self::$docs[6]);
+        $parser->parse();
+        $tags = $parser->getParamTags();
+        self::assertEquals(3, count($tags));
+        self::assertEquals('test', $tags[0]->getParamName());
+        self::assertEquals('string', $tags[0]->getType());
+
+        self::assertEquals('test3', $tags[2]->getParamName());
+        self::assertEquals('NoneExistingType', $tags[2]->getType());
     }
 
     public function testGetVarTags() {
-        throw new Exception('not implemented');
+        $comment = <<<EOF
+/**
+* @var string
+*/
+EOF;
+        $parser = new PHPDocParser($comment);
+        $parser->parse();
+        $tags = $parser->getVarTags();
+        self::assertEquals('string', $tags[0]->getType());
     }
 
     public function testGetReturnTags() {
-        throw new Exception('not implemented');
+        $parser = new PHPDocParser(self::$docs[6]);
+        $parser->parse();
+        $tags = $parser->getReturnTags();
+
+        self::assertEquals('Hello World', $tags[0]->getDescription());
+        self::assertEquals('string', $tags[0]->getType());
     }
 
     public function testIsTagged() {
-        throw new Exception('not implemented');
+        $parser = new PHPDocParser(self::$docs[6]);
+        $parser->parse();
+        self::assertTrue($parser->isTagged('return'));
     }
 
     public function testGetShortDescription() {
-        throw new Exception('not implemented');
+        $class = new ReflectionClass('TestWebservice');
+        $doc = $class->getDocComment();
+        $parser = new PHPDocParser($doc);
+        $parser->parse();
+        $desc = $parser->getShortDescription();
+
+        self::assertEquals('This is the short description', $desc);
     }
 
     public function testGetLongDescription() {
-        throw new Exception('not implemented');
+        $class = new ReflectionClass('TestWebservice');
+        $doc = $class->getDocComment();
+        $parser = new PHPDocParser($doc);
+        $parser->parse();
+        $desc = $parser->getLongDescription();
+
+        $expected = "This is the long description with may be additional infos and much more lines\nof text.\n\nEmpty lines are valide to.\n\nfoo bar";
+        self::assertEquals($expected, $desc);
     }
 
     public static function suite()
     {
-         return new ezcTestSuite( "ezcExtendedReflectionPhpDocParserTest" );
+        self::$docs = array();
+        $class = new ReflectionClass('ezcExtendedReflectionPhpDocParserTest');
+        self::$docs[] = $class->getDocComment();
+
+        $class = new ReflectionClass('TestMethods');
+        self::$docs[] = $class->getDocComment();
+        $methods = $class->getMethods();
+
+        foreach ($methods as $method) {
+            self::$docs[] = $method->getDocComment();
+        }
+
+        return new ezcTestSuite( "ezcExtendedReflectionPhpDocParserTest" );
     }
 }
 ?>

@@ -49,6 +49,7 @@ class ExtReflectionParameter extends ReflectionParameter {
         else {
             parent::__construct($mixed, $parameter);
         }
+
     }
 
     //=======================================================================
@@ -145,7 +146,7 @@ class ExtReflectionParameter extends ReflectionParameter {
     * @return ClassType
     */
     public function getClass() {
-        if ($this->type->isClass()) {
+        if ($this->type && $this->type->isClass()) {
             return $this->type;
         }
         return null;
@@ -156,9 +157,14 @@ class ExtReflectionParameter extends ReflectionParameter {
     * @return ExtReflectionFunction
     */
     public function getDeclaringFunction() {
-        if (!empty(parent::getDeclaringFunction())) {
-            return new ExtReflectionFunction(parent::getDeclaringFunction()
-                                             ->getName());
+        if ($this->parameter != null) {
+            $func = $this->parameter->getDeclaringFunction();
+        }
+        else {
+            $func = parent::getDeclaringFunction();
+        }
+        if (!empty($func)) {
+            return new ExtReflectionFunction($func->getName());
         }
         else {
             return null;
@@ -170,8 +176,15 @@ class ExtReflectionParameter extends ReflectionParameter {
     * @return ClassType
     */
     function getDeclaringClass() {
-		if (!empty(parent::getDeclaringClass())) {
-		    return new ClassType(parent::getDeclaringClass()->getName());
+        if ($this->parameter != null) {
+            $class = $this->parameter->getDeclaringClass();
+        }
+        else {
+            $class = parent::getDeclaringClass();
+        }
+
+		if (!empty($class)) {
+		    return new ClassType($class->getName());
 		}
 		else {
 		    return null;

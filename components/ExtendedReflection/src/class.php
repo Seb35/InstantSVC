@@ -15,12 +15,6 @@
 //***************************************************************************
 //***************************************************************************
 
-//***** imports *************************************************************
-//require_once(dirname(__FILE__).'/class.PHPDocParser.php');
-//require_once(dirname(__FILE__).'/class.ClassType.php');
-//require_once(dirname(__FILE__).'/class.ExtReflectionMethod.php');
-//require_once(dirname(__FILE__).'/class.ExtReflectionProperty.php');
-
 //***** ExtReflectionClass **************************************************
 /**
 * Extends the reflection API using PHPDoc comments to provied
@@ -68,8 +62,13 @@ class ExtReflectionClass extends ReflectionClass {
     */
     public function getConstructor() {
         $con = parent::getConstructor();
-        $extCon = new ExtReflectionMethod($this->getName(), $con->getName());
-        return $extCon;
+        if ($con != null) {
+            $extCon = new ExtReflectionMethod($this->getName(), $con->getName());
+            return $extCon;
+        }
+        else {
+            return null;
+        }
     }
 
     //=======================================================================

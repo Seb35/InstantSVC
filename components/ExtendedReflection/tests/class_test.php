@@ -30,19 +30,19 @@ class ezcExtendedReflectionClassTest extends ezcTestCase
     public function testGetMethods() {
         $class = new ExtReflectionClass('TestWebservice');
         $methods = $class->getMethods();
-        self::assertTrue(count($methods) == 0);
+        self::assertEquals(0, count($methods));
 
         $class = new ExtReflectionClass('TestMethods');
         $methods = $class->getMethods();
 
-        $expectedMethos = array('m1', 'm2', 'm3', 'm4');
+        $expectedMethods = array('__construct', 'm1', 'm2', 'm3', 'm4');
         foreach ($methods as $method) {
             self::assertType('ExtReflectionMethod', $method);
-            self::assertContains($method->getName(), $expectedMethos);
+            self::assertContains($method->getName(), $expectedMethods);
 
-            $this->deleteFromArray($method->getName(), $expectedMethos);
+            ExtendedReflectionTestHelper::deleteFromArray($method->getName(), $expectedMethods);
         }
-        self::assertTrue(count($expectedMethos) == 0);
+        self::assertEquals(0, count($expectedMethods));
     }
 
     public function testGetParentClass() {
@@ -82,9 +82,9 @@ class ezcExtendedReflectionClassTest extends ezcTestCase
             self::assertType('ExtReflectionProperty', $prop);
             self::assertContains($prop->getName(), $expected);
 
-            $this->deleteFromArray($prop->getName(), $expected);
+            ExtendedReflectionTestHelper::deleteFromArray($prop->getName(), $expected);
         }
-        self::assertTrue(count($expected) == 0);
+        self::assertEquals(0, count($expected));
     }
 
     public function testIsWebService() {
@@ -118,20 +118,7 @@ class ezcExtendedReflectionClassTest extends ezcTestCase
         self::assertTrue($class->isTagged('foobar'));
     }
 
-    /**
-     * Helper method to delete a given value from an array
-     *
-     * @param mixed $needle
-     * @param mixed $array
-     */
-    private function deleteFromArray($needle, &$array) {
-        foreach ($array as $key => $value) {
-            if ($value == $needle) {
-                unset($array[$key]);
-                return;
-            }
-        }
-    }
+
 
     public function testGetTags() {
         $class = new ExtReflectionClass('ExtReflectionClass');
@@ -139,24 +126,12 @@ class ezcExtendedReflectionClassTest extends ezcTestCase
 
         $expectedTags = array('package', 'author', 'author', 'copyright',
                               'license');
-        foreach ($tags as $tag) {
-            self::assertType('PHPDocTag', $tag);
-            self::assertContains($tag->getName(), $expectedTags);
-
-            $this->deleteFromArray($tag->getName(), $expectedTags);
-        }
-        self::assertTrue(count($expectedTags) == 0);
+        ExtendedReflectionTestHelper::expectedTags($expectedTags, $tags, $this);
 
         $expectedTags = array('webservice', 'foobar');
         $class = new ExtReflectionClass('TestWebservice');
         $tags = $class->getTags();
-        foreach ($tags as $tag) {
-            self::assertType('PHPDocTag', $tag);
-            self::assertContains($tag->getName(), $expectedTags);
-
-            $this->deleteFromArray($tag->getName(), $expectedTags);
-        }
-        self::assertTrue(count($expectedTags) == 0);
+        ExtendedReflectionTestHelper::expectedTags($expectedTags, $tags, $this);
     }
 
     public function testGetExtension() {

@@ -133,7 +133,7 @@ class ExtReflectionMethod extends ReflectionMethod {
     * @return PHPDocTag[]
     */
     public function getTags($name = '') {
-        if ($name = '') {
+        if ($name == '') {
             return $this->docParser->getTags();
         }
         else {

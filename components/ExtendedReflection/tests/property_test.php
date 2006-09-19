@@ -11,11 +11,19 @@
 class ezcExtendedReflectionPropertyTest extends ezcTestCase
 {
     public function testGetType() {
-        throw new Exception('not implemented');
+        $method = new ExtReflectionMethod('ExtReflectionClass', 'isTagged');
+        $params = $method->getParameters();
+        $type = $params[0]->getType();
+        self::assertType('PrimitiveType', $type);
+        self::assertEquals('string', $type->toString());
     }
 
     public function testGetDeclaringClass() {
-        throw new Exception('not implemented');
+        $method = new ExtReflectionMethod('ExtReflectionClass', 'isTagged');
+        $params = $method->getParameters();
+        $class = $params[0]->getDeclaringClass();
+        self::assertType('ClassType', $class);
+        self::assertEquals('ExtReflectionClass', $class->toString());
     }
 
 

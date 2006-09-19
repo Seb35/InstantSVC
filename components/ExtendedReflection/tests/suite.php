@@ -26,6 +26,10 @@ require_once 'tag_factory_test.php';
 /** Test Subjects */
 require_once 'test_classes/webservice.php';
 require_once 'test_classes/methods.php';
+require_once 'test_classes/functions.php';
+
+/** Helper Lib */
+require_once 'test_helper.php';
 
 /**
  * @package ExtendedReflection
@@ -38,6 +42,9 @@ class ezcExtendedReflectionSuite extends ezcTestSuite
         parent::__construct();
         $this->setName("ExtendedReflection");
 
+        $this->addTest( ezcExtendedReflectionPhpDocParserTest::suite() );
+        $this->addTest( ezcExtendedReflectionPhpDocTagFactoryTest::suite() );
+
         $this->addTest( ezcExtendedReflectionTest::suite() );
         $this->addTest( ezcExtendedReflectionFunctionTest::suite() );
         $this->addTest( ezcExtendedReflectionParameterTest::suite() );
@@ -47,8 +54,6 @@ class ezcExtendedReflectionSuite extends ezcTestSuite
         $this->addTest( ezcExtendedReflectionExtensionTest::suite() );
         $this->addTest( ezcExtendedReflectionTypeFactoryTest::suite() );
         $this->addTest( ezcExtendedReflectionTypeMapperTest::suite() );
-        $this->addTest( ezcExtendedReflectionPhpDocParserTest::suite() );
-        $this->addTest( ezcExtendedReflectionPhpDocTagFactoryTest::suite() );
     }
 
     public static function suite()

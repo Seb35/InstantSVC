@@ -11,7 +11,15 @@
 class ezcExtendedReflectionPhpDocTagFactoryTest extends ezcTestCase
 {
     public function testCreateTag() {
-        throw new Exception('not implemented');
+        $param  = PHPDocTagFactory::createTag('param', array('param', 'string', 'param'));
+
+        self::assertType('PHPDocParamTag', $param);
+
+        $var    = PHPDocTagFactory::createTag('var', array('var', 'string'));
+        self::assertType('PHPDocVarTag', $var);
+
+        $return = PHPDocTagFactory::createTag('return', array('return', 'string', 'hello', 'world'));
+        self::assertType('PHPDocReturnTag', $return);
     }
 
     public static function suite()
