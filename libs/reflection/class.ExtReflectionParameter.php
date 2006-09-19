@@ -142,9 +142,6 @@ class ExtReflectionParameter extends ReflectionParameter {
     //=======================================================================
     /**
     * Returns reflection object identified by php type hinting
-    * @TODO: Rework design, naming is missleading, because getDeclaringClass
-    *        had been introduced in the Reflection API, and this function
-    *        adds no value over getType
     * @return ClassType
     */
     public function getClass() {
@@ -153,23 +150,32 @@ class ExtReflectionParameter extends ReflectionParameter {
         }
         return null;
     }
-    
+
     //=======================================================================
     /**
-    * @TODO: implement
     * @return ExtReflectionFunction
     */
     public function getDeclaringFunction() {
-		throw new Exception('Not implemented');
+        if (!empty(parent::getDeclaringFunction())) {
+            return new ExtReflectionFunction(parent::getDeclaringFunction()
+                                             ->getName());
+        }
+        else {
+            return null;
+        }
 	}
-    
+
     //=======================================================================
     /**
-    * @TODO: implement
     * @return ClassType
     */
-    public function getDeclaringClass() {
-		throw new Exception('Not implemented');
+    function getDeclaringClass() {
+		if (!empty(parent::getDeclaringClass())) {
+		    return new ClassType(parent::getDeclaringClass()->getName());
+		}
+		else {
+		    return null;
+		}
     }
 }
 ?>

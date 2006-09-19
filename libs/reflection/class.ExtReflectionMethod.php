@@ -153,14 +153,18 @@ class ExtReflectionMethod extends ReflectionMethod {
         $magicArray =  array('__construct','__destruct','__call','__get','__set','__isset','__unset','__sleep','__wakeup','__toString','__clone');
         return in_array($this->getName(),$magicArray);
     }
-    
+
     //=======================================================================
     /**
-     * @TODO: implement
      * @return ClassType
      */
     function getDeclaringClass() {
-		throw new Exception('Not implemented');
+		if (!empty(parent::getDeclaringClass())) {
+		    return new ClassType(parent::getDeclaringClass()->getName());
+		}
+		else {
+		    return null;
+		}
     }
 }
 ?>
