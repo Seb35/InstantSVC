@@ -16,7 +16,7 @@
 //***************************************************************************
 
 //***** imports *************************************************************
-require_once(dirname(__FILE__).'/class.PHPDocTagFactory.php');
+//require_once(dirname(__FILE__).'/class.PHPDocTagFactory.php');
 
 //***** Parser Constants ****************************************************
 define('BEGINNING',  10);
@@ -152,7 +152,7 @@ class PHPDocParser {
                 $line = substr($line, 1);
                 $words = explode(' ', $line, 4);
                 $tag = PHPDocTagFactory::createTag($words[0], $words);
-                $this->tags[$tag->getTagName()][] = $tag;
+                $this->tags[$tag->getName()][] = $tag;
                 $this->lastTag = $tag;
             }
             else {
@@ -183,7 +183,13 @@ class PHPDocParser {
     * @return PHPDocTag[]
     */
     public function getTags() {
-        return $this->tags;
+        $result = array();
+        foreach ($this->tags as $tags) {
+            foreach ($tags as $tag) {
+                $result[] = $tag;
+            }
+        }
+        return $result;
     }
 
     //=======================================================================

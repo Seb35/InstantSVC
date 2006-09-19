@@ -16,10 +16,10 @@
 //***************************************************************************
 
 //***** imports *************************************************************
-require_once(dirname(__FILE__).'/class.PHPDocParser.php');
-require_once(dirname(__FILE__).'/class.ClassType.php');
-require_once(dirname(__FILE__).'/class.ExtReflectionMethod.php');
-require_once(dirname(__FILE__).'/class.ExtReflectionProperty.php');
+//require_once(dirname(__FILE__).'/class.PHPDocParser.php');
+//require_once(dirname(__FILE__).'/class.ClassType.php');
+//require_once(dirname(__FILE__).'/class.ExtReflectionMethod.php');
+//require_once(dirname(__FILE__).'/class.ExtReflectionProperty.php');
 
 //***** ExtReflectionClass **************************************************
 /**
@@ -91,11 +91,11 @@ class ExtReflectionClass extends ReflectionClass {
     */
     public function getParentClass() {
         $class = parent::getParentClass();
-        if ($class != null) {
+        if (is_object($class)) {
             return new ClassType($class->getName());
         }
         else {
-            return $class;
+            return null;
         }
     }
 
@@ -163,7 +163,7 @@ class ExtReflectionClass extends ReflectionClass {
     * @return PHPDocTag[]
     */
     public function getTags($name = '') {
-        if ($name = '') {
+        if ($name == '') {
             return $this->docParser->getTags();
         }
         else {
@@ -176,8 +176,9 @@ class ExtReflectionClass extends ReflectionClass {
     * @return ExtReflectionExtension
     */
     public function getExtension() {
-        if ($this->getExtensionName() === null) {
-            return new ExtReflectionExtension($this->getExtensionName());
+        $name = $this->getExtensionName();
+        if (!empty($name)) {
+            return new ExtReflectionExtension($name);
         }
         else {
             return null;

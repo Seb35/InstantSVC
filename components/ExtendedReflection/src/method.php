@@ -16,7 +16,7 @@
 //***************************************************************************
 
 //***** imports *************************************************************
-require_once(dirname(__FILE__).'/class.ExtReflectionParameter.php');
+//require_once(dirname(__FILE__).'/class.ExtReflectionParameter.php');
 
 //***** ExtReflectionMethod *************************************************
 /**
@@ -159,8 +159,9 @@ class ExtReflectionMethod extends ReflectionMethod {
      * @return ClassType
      */
     function getDeclaringClass() {
-		if (!empty(parent::getDeclaringClass())) {
-		    return new ClassType(parent::getDeclaringClass()->getName());
+        $class = parent::getDeclaringClass();
+		if (!empty($class)) {
+		    return new ClassType($class->getName());
 		}
 		else {
 		    return null;

@@ -14,12 +14,6 @@
 //***************************************************************************
 //***************************************************************************
 
-//***** imports *************************************************************
-require_once(dirname(__FILE__).'/class.PHPDocParser.php');
-require_once(dirname(__FILE__).'/class.ClassType.php');
-require_once(dirname(__FILE__).'/class.ExtReflectionMethod.php');
-require_once(dirname(__FILE__).'/class.ExtReflectionProperty.php');
-
 //***** ExtReflectionExtension **********************************************
 /**
 * Extends the reflection API using PHPDoc comments to provied
@@ -31,10 +25,6 @@ require_once(dirname(__FILE__).'/class.ExtReflectionProperty.php');
 * @license    http://www.apache.org/licenses/LICENSE-2.0   Apache License 2.0
 */
 class ExtReflectionExtension extends ReflectionExtension {
-    /**
-    * @var PHPDocParser
-    */
-    protected $docParser;
 
     //=======================================================================
     /**
@@ -42,8 +32,6 @@ class ExtReflectionExtension extends ReflectionExtension {
     */
     public function __construct($name) {
         parent::__construct($name);
-        $this->docParser = new PHPDocParser($this->getDocComment());
-        $this->docParser->parse();
     }
 
     //=======================================================================

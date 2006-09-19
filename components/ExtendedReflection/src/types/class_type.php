@@ -16,8 +16,8 @@
 //***************************************************************************
 
 //***** imports *************************************************************
-require_once(dirname(__FILE__).'/class.ExtReflectionClass.php');
-require_once(dirname(__FILE__).'/interface.Type.php');
+//require_once(dirname(__FILE__).'/class.ExtReflectionClass.php');
+//require_once(dirname(__FILE__).'/interface.Type.php');
 
 //***** ClassType ***********************************************************
 /**
@@ -106,7 +106,7 @@ class ClassType extends ExtReflectionClass implements Type {
     /**
      * Returns XML Schema name of the complexType for the class
      *
-     * The `this namespace' (tns) prefix is comonly used to refer to the 
+     * The `this namespace' (tns) prefix is comonly used to refer to the
      * current XML Schema document.
      *
      * @param boolean $usePrefix augments common prefix `tns:' to the name
@@ -170,7 +170,7 @@ class ClassType extends ExtReflectionClass implements Type {
     /**
         <xs:schema xmlns:tns="http://tele-task.de/model/" xmlns:ttm="http://tele-task.de/model/" elementFormDefault="qualified" targetNamespace="http://tele-task.de/model/" xmlns:xs="http://www.w3.org/2001/XMLSchema">
            <xs:complexType name="Item" />
-        
+
            <xs:complexType name="Lecture">
               <xs:complexContent mixed="false">
                  <xs:extension base="tns:Item">
@@ -190,7 +190,7 @@ class ClassType extends ExtReflectionClass implements Type {
               </xs:complexContent>
            </xs:complexType>
         </xs:schema>
-        
+
      */
 }
 ?>

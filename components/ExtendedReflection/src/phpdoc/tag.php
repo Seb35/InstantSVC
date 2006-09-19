@@ -15,7 +15,7 @@
 //***************************************************************************
 
 //***** imports *************************************************************
-require_once(dirname(__FILE__).'/tags/require.tags.php');
+//require_once(dirname(__FILE__).'/tags/require.tags.php');
 
 //***** PHPDocTag ***********************************************************
 /**
@@ -84,7 +84,7 @@ class PHPDocTag {
     /**
     * @return string
     */
-    public function getTagName() {
+    public function getName() {
         return $this->tagName;
     }
 }
