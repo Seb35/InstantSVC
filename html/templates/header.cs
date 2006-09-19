@@ -38,6 +38,7 @@
 	<ul class="nav2">
 		<li><a href="/browser">Browse Source</a></li>
 		<li><a href="/report">Bug Tracker</a></li>
+		<li><a href="/newticket">New Ticket</a></li>
 		<li><?cs if:trac.acl.SEARCH_VIEW ?><form id="search" action="<?cs var:trac.href.search ?>" method="get"><input type="text" id="proj-search" name="q" size="10" accesskey="f" value="Search" onfocus="searchOnFocus();" onblur="searchOnBlur();" /><input type="hidden" name="wiki" value="on" /><input type="hidden" name="changeset" value="on" /><input type="hidden" name="ticket" value="on" /></form><?cs /if ?></li>
 	</ul>
 	<ul style="margin-top:5px;" class="nav1">
