@@ -12,6 +12,7 @@ function __autoload( $className ) { ezcBase::autoload( $className ); }
 require_once '../src/extended_reflection.php';
 require_once '../src/class.php';
 require_once '../src/method.php';
+require_once '../src/property.php';
 require_once '../src/extension.php';
 require_once '../src/phpdoc/parser.php';
 require_once '../src/phpdoc/tag_factory.php';

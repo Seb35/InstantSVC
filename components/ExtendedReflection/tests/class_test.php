@@ -14,25 +14,42 @@ class ezcExtendedReflectionClassTest extends ezcTestCase
     public function testGetMethod() {
         $class = new ExtReflectionClass('ExtReflectionClass');
         $method = $class->getMethod('getMethod');
-        self::assertTrue($method instanceof ExtReflectionMethod);
+        self::assertType('ExtReflectionMethod', $method);
         self::assertEquals($method->getName(), 'getMethod');
     }
 
 
     public function testGetConstructor() {
-        throw new Exception('not implemented');
+        $class = new ExtReflectionClass('ExtReflectionClass');
+        $method = $class->getConstructor();
+        self::assertType('ExtReflectionMethod', $method);
+        self::assertEquals($method->getName(), '__construct');
     }
 
 
     public function testGetMethods() {
-        throw new Exception('not implemented');
+        $class = new ExtReflectionClass('TestWebservice');
+        $methods = $class->getMethods();
+        self::assertTrue(count($methods) == 0);
+
+        $class = new ExtReflectionClass('TestMethods');
+        $methods = $class->getMethods();
+
+        $expectedMethos = array('m1', 'm2', 'm3', 'm4');
+        foreach ($methods as $method) {
+            self::assertType('ExtReflectionMethod', $method);
+            self::assertContains($method->getName(), $expectedMethos);
+
+            $this->deleteFromArray($method->getName(), $expectedMethos);
+        }
+        self::assertTrue(count($expectedMethos) == 0);
     }
 
     public function testGetParentClass() {
         $class = new ExtReflectionClass('ExtReflectionClass');
         $parent = $class->getParentClass();
 
-        self::assertTrue($parent instanceof ReflectionClass);
+        self::assertType('ReflectionClass', $parent);
         self::assertEquals($parent->getName(), 'ReflectionClass');
 
         $parentParent = $parent->getParentClass();
@@ -40,11 +57,34 @@ class ezcExtendedReflectionClassTest extends ezcTestCase
     }
 
     public function testGetProperty() {
-        throw new Exception('not implemented');
+        $class = new ExtReflectionClass('ExtReflectionClass');
+        $prop = $class->getProperty('docParser');
+
+        self::assertType('ExtReflectionProperty', $prop);
+        self::assertEquals('docParser', $prop->getName());
+
+        try {
+            $prop = $class->getProperty('none-existing-property');
+        }
+        catch (ReflectionException $expected) {
+            return;
+        }
+        $this->fail('ReflectionException has not been raised on none existing property.');
     }
 
     public function testGetProperties() {
-        throw new Exception('not implemented');
+        $class = new ExtReflectionClass('TestWebservice');
+        $properties = $class->getProperties();
+
+        $expected = array('prop1', 'prop2', 'prop3');
+
+        foreach ($properties as $prop) {
+            self::assertType('ExtReflectionProperty', $prop);
+            self::assertContains($prop->getName(), $expected);
+
+            $this->deleteFromArray($prop->getName(), $expected);
+        }
+        self::assertTrue(count($expected) == 0);
     }
 
     public function testIsWebService() {
@@ -56,11 +96,18 @@ class ezcExtendedReflectionClassTest extends ezcTestCase
     }
 
     public function testGetShortDescription() {
-        throw new Exception('not implemented');
+        $class = new ExtReflectionClass('TestWebservice');
+        $desc = $class->getShortDescription();
+
+        self::assertEquals('This is the short description', $desc);
     }
 
     public function testGetLongDescription() {
-        throw new Exception('not implemented');
+        $class = new ExtReflectionClass('TestWebservice');
+        $desc = $class->getLongDescription();
+
+        $expected = "This is the long description with may be additional infos and much more lines\nof text.\n\nEmpty lines are valide to.\n\nfoo bar";
+        self::assertEquals($expected, $desc);
     }
 
     public function testIsTagged() {
@@ -71,6 +118,12 @@ class ezcExtendedReflectionClassTest extends ezcTestCase
         self::assertTrue($class->isTagged('foobar'));
     }
 
+    /**
+     * Helper method to delete a given value from an array
+     *
+     * @param mixed $needle
+     * @param mixed $array
+     */
     private function deleteFromArray($needle, &$array) {
         foreach ($array as $key => $value) {
             if ($value == $needle) {

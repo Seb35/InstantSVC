@@ -13,6 +13,7 @@
  */
 require_once 'class_test.php';
 require_once 'test_classes/webservice.php';
+require_once 'test_classes/methods.php';
 
 /**
  * @package ExtendedReflection

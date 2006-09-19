@@ -103,6 +103,7 @@ class ExtReflectionClass extends ReflectionClass {
     /**
     * @param string $name
     * @return ExtReflectionProperty
+    * @throws RelectionException if property doesn't exists
     */
     public function getProperty($name) {
         $pro = parent::getProperty($name);
