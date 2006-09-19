@@ -104,7 +104,7 @@ class TypeMapper {
             following legal literals {true, false, 1, 0}.
         */
         $this->xmlMappingTable[$boolean] = 'boolean';
-        
+
         /*
         PHP Manual:
             The size of an integer is platform-dependent, although a maximum value
@@ -114,7 +114,7 @@ class TypeMapper {
             If you specify a number beyond the bounds of the integer type,
             it will be interpreted as a float instead. Also, if you perform
             an operation that results in a number beyond the bounds of the
-            integer type, a float will be returned instead. 
+            integer type, a float will be returned instead.
             [...]
             boundaries of integer (usually +/- 2.15e+9 = 2^31)
         XML Schema Part 2 - Datatypes Second Edition (24 Oktober 2004):
@@ -124,7 +124,7 @@ class TypeMapper {
         $this->xmlMappingTable[$integer] = 'int';
 
         /*
-        PHP Manual: 
+        PHP Manual:
             The size of a float is platform-dependent, although a maximum
             of ~1.8e308 with a precision of roughly 14 decimal digits is a
             common value (that's 64 bit IEEE format).
@@ -211,7 +211,7 @@ class TypeMapper {
             if ($type{strlen($type)-1} == ']') {
                 return true;
             }
-            //my be the auther just wrote 'array'
+            //my be the author just wrote 'array'
             if ($type == 'array') {
                 return true;
             }

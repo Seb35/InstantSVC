@@ -62,6 +62,9 @@ class PHPDocTag {
         elseif (count($line) == 2) {
             $this->params[] = $line[1];
         }
+        else {
+            $this->params = $line;
+        }
     }
 
     //=======================================================================
@@ -86,6 +89,14 @@ class PHPDocTag {
     */
     public function getName() {
         return $this->tagName;
+    }
+
+    //=======================================================================
+    /**
+    * @return string[]
+    */
+    public function getParams() {
+        return $this->params;
     }
 }
 ?>

@@ -14,11 +14,6 @@
 //***************************************************************************
 //***************************************************************************
 
-//***** imports *************************************************************
-require_once(dirname(__FILE__).'/class.ExtReflectionParameter.php');
-require_once(dirname(__FILE__).'/class.PHPDocParser.php');
-require_once(dirname(__FILE__).'/class.ExtendedReflectionApi.php');
-
 //***** ExtReflectionFunction ***********************************************
 /**
 * Extends the reflection API using PHPDoc comments to provied

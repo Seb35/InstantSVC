@@ -17,9 +17,14 @@ require_once '../src/extension.php';
 require_once '../src/phpdoc/parser.php';
 require_once '../src/phpdoc/tag_factory.php';
 require_once '../src/phpdoc/tag.php';
+require_once '../src/type_mapper.php';
 require_once '../src/interfaces/type.php';
+require_once '../src/interfaces/type_factory.php';
 require_once '../src/types/class_type.php';
-
+require_once '../src/types/abstract_type.php';
+require_once '../src/types/array_type.php';
+require_once '../src/types/primitive_type.php';
+require_once '../src/type_factory.php';
 
 include('suite.php');
 ?>
