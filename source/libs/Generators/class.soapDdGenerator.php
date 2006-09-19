@@ -47,6 +47,12 @@ class SoapDeploymentDescriptorGenerator {
      * @var array<string,string>[]
      */
     protected $services;
+    
+    /**
+     * @var bool
+     */
+    protected $utpIncludes = false;
+    
 
     //=======================================================================
     /**
@@ -78,6 +84,20 @@ class SoapDeploymentDescriptorGenerator {
         $ddStr.= "//** constants **//\n\n";
 
         $ddStr.= "//** imports **//\n";
+        
+        if ($this->utpIncludes) {
+			$file = $this->makeBasedOnDeployPath(dirname(__FILE__).'/../Server/class.ExtendedSoapServer.php');
+			$ddStr.= 'require_once(\''.$file.'\');'."\n\n";
+			
+			$file = $this->makeBasedOnDeployPath(dirname(__FILE__).'/../UserTokenProfile/XmlSoapSecParser.php');
+			$ddStr.= 'require_once(\''.$file.'\');'."\n\n";
+			
+			$file = $this->makeBasedOnDeployPath(dirname(__FILE__).'/../SoapHeader/XmlSoapHeaderParser.php');
+			$ddStr.= 'require_once(\''.$file.'\');'."\n\n";
+			
+			$file = $this->makeBasedOnDeployPath(dirname(__FILE__).'/../UserTokenProfile/CheckUserRunnable.php');
+			$ddStr.= 'require_once(\''.$file.'\');'."\n\n";
+        }
         $ddStr.= "\n";
         $ddStr.= "//** settings **//\n";
         $ddStr.= $ddArray;
@@ -136,6 +156,9 @@ class SoapDeploymentDescriptorGenerator {
         $service['classfile']   = $classfile;
         $service['classname']   = $classname;
         $this->services[$servicename] = $service;
+        if ($utp) {
+			$this->utpIncludes = true;
+        }
     }
 }
 

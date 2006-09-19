@@ -128,7 +128,18 @@ class DocumentWrappedAdapterGenerator {
         $gen.= '     */' . "\n";
         $gen.= '    public function __construct($target = null) {' . "\n";
         $gen.= '        if (empty($target)) {' . "\n";
-        $gen.= '            $this->target = new ' . $this->className . '();' . "\n";
+        
+        $gen.= '			//May be we have a singleton class, just check for some common names' . "\n";
+        $gen.= '			if (is_callable(array(\''.$this->className.'\', \'__contruct\'), false)) {' . "\n";
+	    $gen.= '		       $obj = new '.$this->className.'();' . "\n";
+        $gen.= '		    }' . "\n";
+        $gen.= '			elseif (is_callable(array(\''.$this->className.'\', \'getInstance\'), false)) {' . "\n";
+	    $gen.= '			   $obj = call_user_func(array(\''.$this->className.'\', \'getInstance\'));' . "\n";
+        $gen.= '		    }' . "\n";
+        $gen.= '		    elseif (is_callable(array(\''.$this->className.'\', \'getSingleton\'), false)) {' . "\n";
+	    $gen.= '		       $obj = call_user_func(array(\''.$this->className.'\', \'getSingleton\'));' . "\n";
+        $gen.= '		    }' . "\n";
+        $gen.= '            $this->target = $obj;' . "\n";
         $gen.= '        } else {' . "\n";
         $gen.= '            $this->target = $target;' . "\n";
         $gen.= '        }' . "\n";

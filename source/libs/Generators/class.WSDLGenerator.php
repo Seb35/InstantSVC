@@ -292,7 +292,7 @@ class WSDLGenerator
             $myExtReflectionClass = new ExtReflectionClass($classname);
             $myMethods = $myExtReflectionClass->getMethods();
 
-            if ($usePolicyPlugIn) {
+            if ($usePolicyPlugIn and class_exists('PolicyPlugIn')) {
                 $plugin = new PolicyPlugIn();
                 $myMethods = $plugin->getPublishedMethods($myMethods);
                 $this->documentationForMethods = $plugin->getUserComments($myMethods);
@@ -400,7 +400,7 @@ class WSDLGenerator
      */
     protected function addOperation($method)
     {
-        if (!empty($method) and !$method->isConstructor() and !$method->isDestructor() and !$method->isMagic())
+        if (!empty($method) and $method->isPublic() and !$method->isConstructor() and !$method->isDestructor() and !$method->isMagic() and $method->getName() != 'getInstance') //HACK STEFAN: singleton method not needed
         {
             if ($this->bindingStyle != 'rpc')
             {
@@ -707,7 +707,7 @@ class WSDLGenerator
         {
             // checks, if the generated WSDL already contains a schema for
             // that class
-            if (!(in_array($name, $this->myComplexTypes)))
+            if (!(in_array($name, $this->myComplexTypes)) and strpos($name, 'ADO') === false) //HACK STEFAN: prevent inclusion of ADODB Classes
             {
                 // generate schemas for the property types
                 $myNewProperties = $type->getProperties();
@@ -716,7 +716,7 @@ class WSDLGenerator
                     foreach($myNewProperties as $prop)
                     {
                         $propType = $prop->getType();
-                        if (($propType->isClass()) or ($propType->isArray()) or ($propType->isMap()))
+                        if ($propType and (($propType->isClass()) or ($propType->isArray()) or ($propType->isMap())))
                         {
                             // create recursively all the schemas needed for the
                             // classes which are properties in classes we need
