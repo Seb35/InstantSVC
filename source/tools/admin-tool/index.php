@@ -334,7 +334,6 @@ private function showIntro() {
                                     $classfile = $classes[$id]['class_file'];
                                 }
 
-
                                 $service['wsdlfile']    = $serviceName.'.wsdl';
                                 $service['servicename'] = $serviceName;
                                 $service['utp']         = isset($_REQUEST['useutp'][$id]);
@@ -465,6 +464,7 @@ private function showIntro() {
                         foreach ($_REQUEST['servicename'] as $className => $serviceName) {
                             $serviceName = stripslashes($serviceName);
                     	    if (isset($classes[$className])) {
+								$origClassName = $className;
                     	        $_REQUEST['serviceuri'][$className] = stripslashes($_REQUEST['serviceuri'][$className]);
                     	        $_REQUEST['namespace'][$className] = stripslashes($_REQUEST['namespace'][$className]);
 
@@ -483,16 +483,16 @@ private function showIntro() {
 
                                 if ((int)$_REQUEST['wsdlstyle'][$className] == WSDLGenerator::DOCUMENT_WRAPPED) {
                                     $classfile = AdminToolLibrary::generateAdapter($className, $targetPath);
+                                    
                                     $className = AdminToolLibrary::getAdapterClassName($className);
                                 }
                                 else {
                                     $classfile = $classes[$className]['file'];
                                 }
 
-
                                 $service['wsdlfile']    = $serviceName.'.wsdl';
                                 $service['servicename'] = $serviceName;
-                                $service['utp']         = isset($_REQUEST['useutp'][$className]);
+                                $service['utp']         = isset($_REQUEST['useutp'][$origClassName]);
                                 $service['classfile']   = $classfile;
                                 $service['classname']   = $className;
 
