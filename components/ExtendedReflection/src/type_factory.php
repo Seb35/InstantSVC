@@ -14,12 +14,6 @@
 //***************************************************************************
 //***************************************************************************
 
-//***** imports *************************************************************
-require_once(dirname(__FILE__).'/interface.TypeFactory.php');
-require_once(dirname(__FILE__).'/class.PrimitiveType.php');
-require_once(dirname(__FILE__).'/class.ArrayType.php');
-require_once(dirname(__FILE__).'/class.ClassType.php');
-
 //***** TypeFactoryImpl *****************************************************
 /**
  * @package    libs.reflection

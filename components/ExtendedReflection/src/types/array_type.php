@@ -15,9 +15,6 @@
 //***************************************************************************
 //***************************************************************************
 
-//***** imports *************************************************************
-require_once(dirname(__FILE__).'/class.AbstractType.php');
-
 //***** ArrayType ***********************************************************
 /**
  * Provides type information of the array item type or map types
@@ -189,7 +186,7 @@ class ArrayType extends AbstractType {
     /**
      * Returns XML Schema name of the complexType for the array
      *
-     * The `this namespace' (tns) prefix is comonly used to refer to the 
+     * The `this namespace' (tns) prefix is comonly used to refer to the
      * current XML Schema document.
      *
      * @param boolean $usePrefix augments common prefix `tns:' to the name

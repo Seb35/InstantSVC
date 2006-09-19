@@ -65,6 +65,7 @@ interface Type {
     /**
      * Return the name of this type as string
      * @return string
+     * @todo aprove name, may be getName is better
      */
     function toString();
 

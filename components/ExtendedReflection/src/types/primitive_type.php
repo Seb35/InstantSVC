@@ -16,9 +16,6 @@
 //***************************************************************************
 //***************************************************************************
 
-//***** imports *************************************************************
-require_once(dirname(__FILE__).'/class.AbstractType.php');
-
 //***** PrimitiveType *******************************************************
 /**
  * @package    libs.reflection
@@ -72,7 +69,7 @@ class PrimitiveType extends AbstractType {
     /**
      * Returns name of the correspondent XML Schema datatype
      *
-     * The prefix `xsd' is comonly used to refer to the 
+     * The prefix `xsd' is comonly used to refer to the
      * XML Schema namespace.
      *
      * @param boolean $usePrefix augments common prefix `xsd:' to the name
