@@ -1,0 +1,1 @@
+WSDL2Java.bat D:\p\sst\WebP\source\repo\example\teletask\queryLecture.wsdl -o D:\p\sst\WebP\source\repo\testing\Java\sampleClient\src
