@@ -77,11 +77,12 @@ if ($getRequestPath !== false) {
 
         $server = null;
         if ($service['utp']) {
-            require_once('libs/phpSec/Server/ExtendedSoapServer.php');
+			//inludes im DD
+            //require_once('libs/phpSec/Server/ExtendedSoapServer.php');
             // include Security-Parser
-            require_once('libs/phpSec/Server/Parser/XmlSoapSecParser.php');
+            //require_once('libs/phpSec/Server/Parser/XmlSoapSecParser.php');
             // include SoapHeader-Parser
-            require_once('libs/phpSec/Server/Parser/XmlSoapHeaderParser.php');
+            //require_once('libs/phpSec/Server/Parser/XmlSoapHeaderParser.php');
 
             // init UsernameToken parser
             $xmlUserNameTokenParser = new XmlSoapSecParser();
