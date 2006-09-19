@@ -1,6 +1,5 @@
 #!/usr/bin/php5.1
 <?php
-
 require_once(dirname(__FILE__).'/../../../libs/misc/class.codeAnalyzer.php');
 
 /*** EZC ***/
@@ -11,9 +10,11 @@ function __autoload( $className ) { ezcBase::autoload( $className ); }
 $input = new ezcConsoleInput();
 //$input->registerOption(new ezcConsoleOption('f', 'file', ezcConsoleInput::TYPE_STRING, null, false, 'Source file to be analysed', 'The sourcefile to be analysed and to create the output'));
 
-//$out = new ezcConsoleOutput();
-//$out->formats->keyword->style = array('bold');
-
+$out = new ezcConsoleOutput();
+$out->formats->keyword->style = array('bold');
+if (ezcSystemInfo::getInstance()->osType == 'win32') {
+	$out->options->useFormats = false;
+}
 try {
     $input->process();
 }
@@ -35,9 +36,11 @@ else {
 
     $analyzer->inspectFiles($files);
     $summary = $analyzer->getCodeSummary();
+	//var_dump($files);
+	//var_dump($summary);
 
     foreach ($summary['classes'] as $name => $class) {
-        if ($class['file'] == $args[0]) {
+        if (realpath($class['file']) == realpath($args[0])) {
             outputClass($name, $class);
         }
     }
@@ -54,7 +57,8 @@ else {
  * @param array $class
  */
 function outputClass($name, $class) {
-    echo implode(' ', Reflection::getModifierNames($class['modifiers']));
+    $mods = implode(' ', Reflection::getModifierNames($class['modifiers']));
+    if (strlen($mods) > 0) {echo $mods.' ';}
 
     echo ($class['isFinal']) ? 'final ' : '';
     echo ($class['isInterface']) ? 'interface ' : 'class ';
