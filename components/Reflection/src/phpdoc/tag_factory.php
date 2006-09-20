@@ -32,7 +32,7 @@ class iscReflectionDocTagFactory {
     * @return iscReflectionDocTag
     */
     static public function createTag($type, $line) {
-        $tagClassName = 'PHPDoc'.$type.'Tag';
+        $tagClassName = 'iscReflectionDocTag'.$type;
         $tag = null;
         if (class_exists($tagClassName)) {
             $tag = new $tagClassName($line);

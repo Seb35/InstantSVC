@@ -42,8 +42,8 @@ class ezcReflectionSuite extends ezcTestSuite
         parent::__construct();
         $this->setName("Reflection");
 
-        $this->addTest( ezcReflectioniscReflectionDocParserTest::suite() );
         $this->addTest( ezcReflectioniscReflectionDocTagFactoryTest::suite() );
+        $this->addTest( ezcReflectioniscReflectionDocParserTest::suite() );
 
         $this->addTest( ezcReflectionTest::suite() );
         $this->addTest( ezcReflectionFunctionTest::suite() );
