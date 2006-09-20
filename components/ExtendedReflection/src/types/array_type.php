@@ -24,6 +24,7 @@
  * @author     Falko Menge <mail@falko-menge.de>
  * @copyright  2006 ....
  * @license    http://www.apache.org/licenses/LICENSE-2.0   Apache License 2.0
+ * @todo       add support for ArrayAccess stuff from http://www.php.net/~helly/php/ext/spl/
  */
 class ArrayType extends AbstractType {
 

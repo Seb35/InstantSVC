@@ -11,11 +11,24 @@
 class ezcExtendedReflectionExtensionTest extends ezcTestCase
 {
     public function testGetFunctions() {
-        throw new Exception('not implemented');
+        $ext = new ExtReflectionExtension('Spl');
+        $functs = $ext->getFunctions();
+        foreach ($functs as $func) {
+            self::assertType('ExtReflectionFunction', $func);
+        }
+
+        $ext = new ExtReflectionExtension('Reflection');
+        $functs = $ext->getFunctions();
+        self::assertEquals(0, count($functs));
     }
 
     public function testGetClasses() {
-        throw new Exception('not implemented');
+        $ext = new ExtReflectionExtension('Reflection');
+        $classes = $ext->getClasses();
+
+        foreach ($classes as $class) {
+            self::assertType('ClassType', $class);
+        }
     }
 
     public static function suite()

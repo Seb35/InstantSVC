@@ -50,13 +50,13 @@ class ExtReflectionExtension extends ReflectionExtension {
 
     //=======================================================================
     /**
-     * @return ExtReflectionClass[]
+     * @return ClassType[]
      */
     public function getClasses() {
         $classes = parent::getClasses();
         $result = array();
         foreach ($classes as $class) {
-        	$extClass = new ExtReflectionClass($class->getName());
+        	$extClass = new ClassType($class->getName());
         	$result[] = $extClass;
         }
         return $result;

@@ -29,6 +29,12 @@ class TypeFactoryImpl implements TypeFactory {
         $this->mapper = TypeMapper::getInstance();
     }
 
+    /**
+     * Creates a type object for given typename
+     * @param string $typename
+     * @return Type
+     * @todo ArrayAccess stuff, how to handle? has to be implemented
+     */
     public function getType($type) {
         $type = trim($type);
         //Gibt für void null zurück
