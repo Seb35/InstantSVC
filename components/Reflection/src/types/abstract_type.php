@@ -2,7 +2,7 @@
 //***************************************************************************
 //***************************************************************************
 //**                                                                       **
-//** AbstractType - Abstract class provides default implementation         **
+//** iscReflectionAbstractType - Abstract class provides default implementation         **
 //**                                                                       **
 //** Project: Web Services Description Generator                           **
 //**                                                                       **
@@ -14,30 +14,30 @@
 //***************************************************************************
 //***************************************************************************
 
-//***** AbstractType ********************************************************
+//***** iscReflectionAbstractType ********************************************************
 /**
 * Provides default implementation and default null or false return falues
 *
-* @package    libs.reflection
+* @package    Reflection
 * @author     Stefan Marr <mail@stefan-marr.de>
 * @copyright  2006 ....
 * @license    http://www.apache.org/licenses/LICENSE-2.0   Apache License 2.0
 */
-abstract class AbstractType implements Type {
+abstract class iscReflectionAbstractType implements iscReflectionType {
 
     //=======================================================================
     /**
      * Returns type of array items or null
-     * @return Type
+     * @return iscReflectionType
      */
-    public function getArrayType() {
+    public function getiscReflectionArrayType() {
         return null;
     }
 
     //=======================================================================
     /**
      * Returns key type of map items or null
-     * @return Type
+     * @return iscReflectionType
      */
     public function getMapIndexType() {
         return null;
@@ -46,7 +46,7 @@ abstract class AbstractType implements Type {
     //=======================================================================
     /**
      * Returns value type of map items or null
-     * @return Type
+     * @return iscReflectionType
      */
     public function getMapValueType() {
         return null;

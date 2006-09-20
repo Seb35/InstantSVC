@@ -2,7 +2,7 @@
 //***************************************************************************
 //***************************************************************************
 //**                                                                       **
-//** ExtendedReflectionApi - Main Class, holds type factory                **
+//** iscReflectionApi - Main Class, holds type factory                **
 //**                                                                       **
 //** Project: Web Services Description Generator                           **
 //**                                                                       **
@@ -14,26 +14,26 @@
 //***************************************************************************
 //***************************************************************************
 
-//***** ExtendedReflectionApi ***********************************************
+//***** iscReflectionApi ***********************************************
 /**
 * Holds type factory for generating type objects by given name
 *
-* @package    libs.reflection
+* @package    Reflection
 * @author     Stefan Marr <mail@stefan-marr.de>
 * @copyright  2006 ....
 * @license    http://www.apache.org/licenses/LICENSE-2.0   Apache License 2.0
 */
-class ExtendedReflectionApi {
+class iscReflectionApi {
 
 	/**
-	* @var ExtendedReflectionApi
+	* @var iscReflectionApi
 	*/
 	private static $instance = null;
 
 	/**
-	 * @var TypeFactory
+	 * @var iscReflectionTypeFactory
 	 */
-	private $typeFactory = null;
+	private $iscReflectionTypeFactory = null;
 
 
     //=======================================================================
@@ -43,11 +43,11 @@ class ExtendedReflectionApi {
 
     //=======================================================================
     /**
-    * @return ExtendedReflectionApi
+    * @return iscReflectionApi
     */
     public static function getInstance() {
     	if (self::$instance == null) {
-    		self::$instance = new ExtendedReflectionApi();
+    		self::$instance = new iscReflectionApi();
     	}
         return self::$instance;
     }
@@ -55,25 +55,25 @@ class ExtendedReflectionApi {
     //=======================================================================
     /**
      * Factory to create type objects
-     * @param TypeFactory $factory
+     * @param iscReflectionTypeFactory $factory
      * @return void
      */
-    public function setTypeFactory($factory) {
-        $this->typeFactory = $factory;
+    public function setiscReflectionTypeFactory($factory) {
+        $this->iscReflectionTypeFactory = $factory;
     }
 
     //=======================================================================
     /**
-     * Returns a Type object for the given typename
+     * Returns a iscReflectionType object for the given typename
      *
      * @param string $typeName
-     * @return Type
+     * @return iscReflectionType
      */
     public function getTypeByName($typeName) {
-        if ($this->typeFactory == null) {
-            $this->typeFactory = new TypeFactoryImpl();
+        if ($this->iscReflectionTypeFactory == null) {
+            $this->iscReflectionTypeFactory = new iscReflectionTypeFactoryImpl();
         }
-        return $this->typeFactory->getType($typeName);
+        return $this->iscReflectionTypeFactory->getType($typeName);
     }
 }
 

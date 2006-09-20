@@ -2,7 +2,7 @@
 //***************************************************************************
 //***************************************************************************
 //**                                                                       **
-//** TypeMapperImpl - implements type mapping from string to Type          **
+//** iscReflectionTypeMapperImpl - implements type mapping from string to Type          **
 //**                                                                       **
 //** Project: Web Services Description Generator                           **
 //**                                                                       **
@@ -14,25 +14,25 @@
 //***************************************************************************
 //***************************************************************************
 
-//***** TypeFactoryImpl *****************************************************
+//***** iscReflectionTypeFactoryImpl *****************************************************
 /**
- * @package    libs.reflection
+ * @package    Reflection
  * @author     Stefan Marr <mail@stefan-marr.de>
  * @copyright  2006 Stefan Marr
  * @license    http://www.apache.org/licenses/LICENSE-2.0  Apache License 2.0
  */
-class TypeFactoryImpl implements TypeFactory {
+class iscReflectionTypeFactoryImpl implements iscReflectionTypeFactory {
 
     private $mapper;
 
     public function __construct() {
-        $this->mapper = TypeMapper::getInstance();
+        $this->mapper = iscReflectionTypeMapper::getInstance();
     }
 
     /**
      * Creates a type object for given typename
      * @param string $typename
-     * @return Type
+     * @return iscReflectionType
      * @todo ArrayAccess stuff, how to handle? has to be implemented
      */
     public function getType($type) {
@@ -43,15 +43,15 @@ class TypeFactoryImpl implements TypeFactory {
         }
         //First check whether it is an primitive type
         if ($this->mapper->isPrimitive($type)) {
-            return new PrimitiveType($this->mapper->getType($type));
+            return new iscReflectionPrimitiveType($this->mapper->getType($type));
         }
         //then check whether it is an array type
         elseif ($this->mapper->isArray($type)) {
-            return new ArrayType($type);
+            return new iscReflectionArrayType($type);
         }
         //else it has to be a user class
         else {
-            return new ClassType($type);
+            return new iscReflectionClassType($type);
         }
     }
 }

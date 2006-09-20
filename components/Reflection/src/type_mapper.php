@@ -2,7 +2,7 @@
 //***************************************************************************
 //***************************************************************************
 //**                                                                       **
-//** TypeMapper - Provides mapping between different type names used in    **
+//** iscReflectionTypeMapper - Provides mapping between different type names used in    **
 //**              documentation                                            **
 //**                                                                       **
 //** Project: Web Services Description Generator                           **
@@ -16,21 +16,21 @@
 //***************************************************************************
 //***************************************************************************
 
-//***** TypeMapper **********************************************************
+//***** iscReflectionTypeMapper **********************************************************
 /**
  * Provides mapping from type names used in documentation to standardized
  * type names
  *
- * @package    libs.reflection
+ * @package    Reflection
  * @author     Stefan Marr <mail@stefan-marr.de>
  * @author     Falko Menge <mail@falko-menge.de>
  * @copyright  2006 ....
  * @license    http://www.apache.org/licenses/LICENSE-2.0   Apache License 2.0
  */
-class TypeMapper {
+class iscReflectionTypeMapper {
 
     /**
-     * @var TypeMapper
+     * @var iscReflectionTypeMapper
      */
     private static $instance = null;
 
@@ -51,11 +51,11 @@ class TypeMapper {
 
     //=======================================================================
     /**
-     * @return TypeMapper
+     * @return iscReflectionTypeMapper
      */
     public static function getInstance() {
         if (self::$instance == null) {
-            self::$instance = new TypeMapper();
+            self::$instance = new iscReflectionTypeMapper();
         }
         return self::$instance;
     }

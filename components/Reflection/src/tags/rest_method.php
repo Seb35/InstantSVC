@@ -2,7 +2,7 @@
 //***************************************************************************
 //***************************************************************************
 //**                                                                       **
-//** PHPDocRestMethodTag                                                   **
+//** iscReflectionDocTagRestMethod                                                   **
 //**                                                                       **
 //** Project: Web Services Description Generator                           **
 //**                                                                       **
@@ -14,14 +14,14 @@
 //***************************************************************************
 //***************************************************************************
 
-//***** PHPDocRestMethodTag *************************************************
+//***** iscReflectionDocTagRestMethod *************************************************
 /**
 * @package    reflection.tags
 * @author     Stefan Marr <mail@stefan-marr.de>
 * @copyright  2005 ....
 * @license    http://www.apache.org/licenses/LICENSE-2.0   Apache License 2.0
 */
-class PHPDocRestMethodTag extends PHPDocTag {
+class iscReflectionDocTagRestMethod extends iscReflectionDocTag {
 
     /**
      * @var string

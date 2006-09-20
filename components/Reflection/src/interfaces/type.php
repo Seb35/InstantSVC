@@ -18,27 +18,27 @@
 /**
 * Interface for type objects representing a type
 *
-* @package    libs.reflection
+* @package    Reflection
 * @author     Stefan Marr <mail@stefan-marr.de>
 * @copyright  2006 ....
 * @license    http://www.apache.org/licenses/LICENSE-2.0   Apache License 2.0
 */
-interface Type {
+interface iscReflectionType {
     /**
      * Return type of elements in an array type or null if is not an array
-     * @return Type
+     * @return iscReflectionType
      */
-    function getArrayType();
+    function getiscReflectionArrayType();
 
     /**
      * Returns type of key used in a map
-     * @return Type
+     * @return iscReflectionType
      */
     function getMapIndexType();
 
     /**
      * Returns type of values used in a map
-     * @return Type
+     * @return iscReflectionType
      */
     function getMapValueType();
 

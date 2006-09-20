@@ -2,7 +2,7 @@
 //***************************************************************************
 //***************************************************************************
 //**                                                                       **
-//** PHPDocTag - Provides structured data from PHP Documentation comments  **
+//** iscReflectionDocTag - Provides structured data from PHP Documentation comments  **
 //**                                                                       **
 //** Project: Web Services Description Generator                           **
 //**                                                                       **
@@ -17,16 +17,16 @@
 //***** imports *************************************************************
 //require_once(dirname(__FILE__).'/tags/require.tags.php');
 
-//***** PHPDocTag ***********************************************************
+//***** iscReflectionDocTag ***********************************************************
 /**
 * Provides structured data from PHP Documentation comments
 *
-* @package    libs.reflection
+* @package    Reflection
 * @author     Stefan Marr <mail@stefan-marr.de>
 * @copyright  2006 Stefan Marr
 * @license    http://www.apache.org/licenses/LICENSE-2.0   Apache License 2.0
 */
-class PHPDocTag {
+class iscReflectionDocTag {
     /**
     * @var string
     */

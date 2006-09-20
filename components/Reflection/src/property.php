@@ -2,7 +2,7 @@
 //***************************************************************************
 //***************************************************************************
 //**                                                                       **
-//** ExtReflectionProperty - Reflection API extended with PHPDoc Infos     **
+//** iscReflectionProperty - Reflection API extended with PHPDoc Infos     **
 //**                                                                       **
 //** Project: Web Services Description Generator                           **
 //**                                                                       **
@@ -14,19 +14,19 @@
 //***************************************************************************
 //***************************************************************************
 
-//***** ExtReflectionProperty ***********************************************
+//***** iscReflectionProperty ***********************************************
 /**
 * Extends the reflection API using PHPDoc comments to provied
 * type information
 *
-* @package    libs.reflection
+* @package    Reflection
 * @author     Stefan Marr <mail@stefan-marr.de>
 * @copyright  2005 ....
 * @license    http://www.apache.org/licenses/LICENSE-2.0   Apache License 2.0
 */
-class ExtReflectionProperty extends ReflectionProperty {
+class iscReflectionProperty extends ReflectionProperty {
     /**
-    * @var PHPDocParser
+    * @var iscReflectionDocParser
     */
     protected $docParser = null;
 
@@ -39,14 +39,14 @@ class ExtReflectionProperty extends ReflectionProperty {
         parent::__construct($class, $name);
 
         if (method_exists($this, 'getDocComment')) {
-            $this->docParser = new PHPDocParser($this->getDocComment());
+            $this->docParser = new iscReflectionDocParser($this->getDocComment());
             $this->docParser->parse();
         }
     }
 
     //=======================================================================
     /**
-    * @return Type
+    * @return iscReflectionType
     */
     public function getType() {
         if ($this->docParser == null) {
@@ -56,7 +56,7 @@ class ExtReflectionProperty extends ReflectionProperty {
 
         $vars = $this->docParser->getVarTags();
         if (isset($vars[0])) {
-            return ExtendedReflectionApi::getInstance()->getTypeByName($vars[0]->getType());
+            return iscReflectionApi::getInstance()->getTypeByName($vars[0]->getType());
         }
         else {
             return null;
@@ -65,11 +65,11 @@ class ExtReflectionProperty extends ReflectionProperty {
 
     //=======================================================================
     /**
-    * @return ClassType
+    * @return iscReflectionClassType
     */
     public function getDeclaringClass() {
         $class = parent::getDeclaringClass();
-        return new ClassType($class->getName());
+        return new iscReflectionClassType($class->getName());
     }
 }
 ?>

@@ -9,7 +9,7 @@ function __autoload( $className ) { ezcBase::autoload( $className ); }
 //require_once '../../UnitTest/src/test/case.php';
 //require_once '../../UnitTest/src/test/suite.php';
 
-require_once '../src/extended_reflection.php';
+require_once '../src/reflection.php';
 require_once '../src/class.php';
 require_once '../src/method.php';
 require_once '../src/property.php';

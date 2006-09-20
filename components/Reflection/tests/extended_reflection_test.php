@@ -4,14 +4,14 @@
  * @license http://ez.no/licenses/new_bsd New BSD License
  * @version //autogentag//
  * @filesource
- * @package ExtendedReflection
+ * @package Reflection
  * @subpackage Tests
  */
 
-class ezcExtendedReflectionTest extends ezcTestCase
+class ezcReflectionTest extends ezcTestCase
 {
     public function testGetTypeByName() {
-        $api = ExtendedReflectionApi::getInstance();
+        $api = iscReflectionApi::getInstance();
         $string = $api->getTypeByName('string');
         self::assertEquals('string', $string->toString());
 
@@ -21,14 +21,14 @@ class ezcExtendedReflectionTest extends ezcTestCase
         $webservice = $api->getTypeByName('TestWebservice');
         self::assertEquals('TestWebservice', $webservice->toString());
 
-        $class = $api->getTypeByName('ExtReflectionClass');
-        self::assertEquals('ExtReflectionClass', $class->toString());
+        $class = $api->getTypeByName('iscReflectionClass');
+        self::assertEquals('iscReflectionClass', $class->toString());
 
     }
 
     public static function suite()
     {
-         return new ezcTestSuite( "ezcExtendedReflectionTest" );
+         return new ezcTestSuite( "ezcReflectionTest" );
     }
 }
 ?>

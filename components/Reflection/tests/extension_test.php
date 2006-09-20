@@ -4,36 +4,36 @@
  * @license http://ez.no/licenses/new_bsd New BSD License
  * @version //autogentag//
  * @filesource
- * @package ExtendedReflection
+ * @package Reflection
  * @subpackage Tests
  */
 
-class ezcExtendedReflectionExtensionTest extends ezcTestCase
+class ezcReflectionExtensionTest extends ezcTestCase
 {
     public function testGetFunctions() {
-        $ext = new ExtReflectionExtension('Spl');
+        $ext = new iscReflectionExtension('Spl');
         $functs = $ext->getFunctions();
         foreach ($functs as $func) {
-            self::assertType('ExtReflectionFunction', $func);
+            self::assertType('iscReflectionFunction', $func);
         }
 
-        $ext = new ExtReflectionExtension('Reflection');
+        $ext = new iscReflectionExtension('Reflection');
         $functs = $ext->getFunctions();
         self::assertEquals(0, count($functs));
     }
 
     public function testGetClasses() {
-        $ext = new ExtReflectionExtension('Reflection');
+        $ext = new iscReflectionExtension('Reflection');
         $classes = $ext->getClasses();
 
         foreach ($classes as $class) {
-            self::assertType('ClassType', $class);
+            self::assertType('iscReflectionClassType', $class);
         }
     }
 
     public static function suite()
     {
-         return new ezcTestSuite( "ezcExtendedReflectionExtensionTest" );
+         return new ezcTestSuite( "ezcReflectionExtensionTest" );
     }
 }
 ?>

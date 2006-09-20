@@ -6,36 +6,36 @@
  * @license http://ez.no/licenses/new_bsd New BSD License
  * @version //autogentag//
  * @filesource
- * @package ExtendedReflection
+ * @package Reflection
  */
 
 return array(
-    'ExtendedReflectionApi' => 'ExtendedReflection/extended_reflection.php',
-    'ExtReflectionClass' => 'ExtendedReflection/class.php',
-    'ExtReflectionMethod' => 'ExtendedReflection/method.php',
-    'ExtReflectionProperty' => 'ExtendedReflection/property.php',
-    'ExtReflectionParameter' => 'ExtendedReflection/parameter.php',
-    'ExtReflectionExtension' => 'ExtendedReflection/extension.php',
-    'ExtReflectionFunction' => 'ExtendedReflection/function.php',
-    'TypeFactory' => 'ExtendedReflection/type_factory.php',
-    'Type' => 'ExtendedReflection/interfaces/type.php',
-    'TypeFactoryImpl' => 'ExtendedReflection/interfaces/type_factory.php',
-    'TypeMapper' => 'ExtendedReflection/type_mapper.php',
-    'PHPDocReturnTag' => 'ExtendedReflection/tags/return.php',
-    'PHPDocParamTag' => 'ExtendedReflection/tags/param.php',
-    'PHPDocVarTag' => 'ExtendedReflection/tags/var.php',
-    'PHPDocRestInTag' => 'ExtendedReflection/tags/rest_in.php',
-    'PHPDocRestOutTag' => 'ExtendedReflection/tags/rest_out.php',
-    'PHPDocRestMethodTag' => 'ExtendedReflection/tags/rest_method.php',
-    'PHPDocWebMethodTag' => 'ExtendedReflection/tags/webmethod.php',
-    'PHPDocWebServiceTag' => 'ExtendedReflection/tags/webservice.php',
-    'PHPDocParser' => 'ExtendedReflection/phpdoc/parser.php',
-    'PHPDocTagFactory' => 'ExtendedReflection/phpdoc/tag_factory.php',
-    'PHPDocTag' => 'ExtendedReflection/phpdoc/tag.php',
-    'ClassType' => 'ExtendedReflection/types/class_type.php',
-    'AbstractType' => 'ExtendedReflection/types/abstract_type.php',
-    'ArrayType' => 'ExtendedReflection/types/array_type.php',
-    'PrimitiveType' => 'ExtendedReflection/types/primitive_type.php'
+    'iscReflectionApi' => 'Reflection/reflection.php',
+    'iscReflectionClass' => 'Reflection/class.php',
+    'iscReflectionMethod' => 'Reflection/method.php',
+    'iscReflectionProperty' => 'Reflection/property.php',
+    'iscReflectionParameter' => 'Reflection/parameter.php',
+    'iscReflectionExtension' => 'Reflection/extension.php',
+    'iscReflectionFunction' => 'Reflection/function.php',
+    'iscReflectionTypeFactory' => 'Reflection/type_factory.php',
+    'iscReflectionType' => 'Reflection/interfaces/type.php',
+    'iscReflectionTypeFactoryImpl' => 'Reflection/interfaces/type_factory.php',
+    'iscReflectionTypeMapper' => 'Reflection/type_mapper.php',
+    'iscReflectionDocTagReturn' => 'Reflection/tags/return.php',
+    'iscReflectionDocTagParam' => 'Reflection/tags/param.php',
+    'iscReflectionDocTagVar' => 'Reflection/tags/var.php',
+    'iscReflectionDocTagRestIn' => 'Reflection/tags/rest_in.php',
+    'iscReflectionDocTagRestOut' => 'Reflection/tags/rest_out.php',
+    'iscReflectionDocTagRestMethod' => 'Reflection/tags/rest_method.php',
+    'iscReflectionDocTagWebMethod' => 'Reflection/tags/webmethod.php',
+    'iscReflectionDocTagWebService' => 'Reflection/tags/webservice.php',
+    'iscReflectionDocParser' => 'Reflection/phpdoc/parser.php',
+    'iscReflectionDocTagFactory' => 'Reflection/phpdoc/tag_factory.php',
+    'iscReflectionDocTag' => 'Reflection/phpdoc/tag.php',
+    'iscReflectionClassType' => 'Reflection/types/class_type.php',
+    'iscReflectionAbstractType' => 'Reflection/types/abstract_type.php',
+    'iscReflectionArrayType' => 'Reflection/types/array_type.php',
+    'iscReflectionPrimitiveType' => 'Reflection/types/primitive_type.php'
 );
 
 ?>

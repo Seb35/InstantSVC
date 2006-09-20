@@ -4,23 +4,23 @@
  * @license http://ez.no/licenses/new_bsd New BSD License
  * @version //autogentag//
  * @filesource
- * @package ExtendedReflection
+ * @package Reflection
  * @subpackage Tests
  */
 
-class ezcExtendedReflectionTypeMapperTest extends ezcTestCase
+class ezcReflectioniscReflectionTypeMapperTest extends ezcTestCase
 {
     public function testIsPrimitive() {
-        $primitiveTypes = array('integer', 'int', 'INT', 'float', 'double',
+        $iscReflectionPrimitiveTypes = array('integer', 'int', 'INT', 'float', 'double',
                                 'string', 'bool', 'boolean');
-        foreach ($primitiveTypes as $type) {
-        	self::assertTrue(TypeMapper::getInstance()->isPrimitive($type));
+        foreach ($iscReflectionPrimitiveTypes as $type) {
+        	self::assertTrue(iscReflectionTypeMapper::getInstance()->isPrimitive($type));
         }
 
-        $nonePrimitiveTypes = array('ReflectionClass', 'array', 'int[]',
+        $noneiscReflectionPrimitiveTypes = array('ReflectionClass', 'array', 'int[]',
                                     'string[]', 'NoneExistingClassFooBar');
-        foreach ($nonePrimitiveTypes as $type) {
-        	self::assertFalse(TypeMapper::getInstance()->isPrimitive($type));
+        foreach ($noneiscReflectionPrimitiveTypes as $type) {
+        	self::assertFalse(iscReflectionTypeMapper::getInstance()->isPrimitive($type));
         }
     }
 
@@ -28,20 +28,20 @@ class ezcExtendedReflectionTypeMapperTest extends ezcTestCase
         $arrayDefs = array('array', 'string[]', 'bool[]', 'ReflectionClass[]',
                            'NoneExistingTypeFooBar[]');
         foreach ($arrayDefs as $type) {
-        	self::assertTrue(TypeMapper::getInstance()->isArray($type));
+        	self::assertTrue(iscReflectionTypeMapper::getInstance()->isArray($type));
         }
 
         $arrayDefs = array('array<int, string>', 'array<string, ReflectionClass>',
                            'array<ReflectionClass, float>');
         foreach ($arrayDefs as $type) {
-        	self::assertTrue(TypeMapper::getInstance()->isArray($type));
+        	self::assertTrue(iscReflectionTypeMapper::getInstance()->isArray($type));
         }
 
-        $noneArrayTypes = array('integer', 'int', 'INT', 'float', 'double',
+        $noneiscReflectionArrayTypes = array('integer', 'int', 'INT', 'float', 'double',
                                 'string', 'bool', 'boolean', 'NoneExistingClassFooBar',
                                 'ReflectionClass');
-        foreach ($noneArrayTypes as $type) {
-        	self::assertFalse(TypeMapper::getInstance()->isArray($type));
+        foreach ($noneiscReflectionArrayTypes as $type) {
+        	self::assertFalse(iscReflectionTypeMapper::getInstance()->isArray($type));
         }
 
     }
@@ -53,13 +53,13 @@ class ezcExtendedReflectionTypeMapperTest extends ezcTestCase
         $arrayDefs = array('array(string=>float)', 'array( int => ReflectionClass )',
                            'array( string => array( int => ReflectionClass ) )');
         foreach ($arrayDefs as $type) {
-        	self::assertTrue(TypeMapper::getInstance()->isArray($type));
+        	self::assertTrue(iscReflectionTypeMapper::getInstance()->isArray($type));
         }
     }
 
     public static function suite()
     {
-         return new ezcTestSuite( "ezcExtendedReflectionTypeMapperTest" );
+         return new ezcTestSuite( "ezcReflectioniscReflectionTypeMapperTest" );
     }
 }
 ?>

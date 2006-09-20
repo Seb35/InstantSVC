@@ -2,7 +2,7 @@
 //***************************************************************************
 //***************************************************************************
 //**                                                                       **
-//** PHPDocParamTag                                                        **
+//** iscReflectionDocTagParam                                                        **
 //**                                                                       **
 //** Project: Web Services Description Generator                           **
 //**                                                                       **
@@ -14,14 +14,14 @@
 //***************************************************************************
 //***************************************************************************
 
-//***** PHPDocParamTag ******************************************************
+//***** iscReflectionDocTagParam ******************************************************
 /**
 * @package    reflection.tags
 * @author     Stefan Marr <mail@stefan-marr.de>
 * @copyright  2005 ....
 * @license    http://www.apache.org/licenses/LICENSE-2.0   Apache License 2.0
 */
-class PHPDocParamTag extends PHPDocTag {
+class iscReflectionDocTagParam extends iscReflectionDocTag {
 
     //=======================================================================
     /**
@@ -31,7 +31,7 @@ class PHPDocParamTag extends PHPDocTag {
         $this->tagName = $line[0];
 
         if (isset($line[1])) {
-            $this->params[0] = TypeMapper::getInstance()->getType($line[1]);
+            $this->params[0] = iscReflectionTypeMapper::getInstance()->getType($line[1]);
         }
         if (isset($line[2]) and strlen($line[2])>0) {
             if ($line[2]{0} == '$') {

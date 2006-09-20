@@ -4,32 +4,32 @@
  * @license http://ez.no/licenses/new_bsd New BSD License
  * @version //autogentag//
  * @filesource
- * @package ExtendedReflection
+ * @package Reflection
  * @subpackage Tests
  */
 
-class ezcExtendedReflectionPropertyTest extends ezcTestCase
+class ezcReflectionPropertyTest extends ezcTestCase
 {
     public function testGetType() {
-        $method = new ExtReflectionMethod('ExtReflectionClass', 'isTagged');
+        $method = new iscReflectionMethod('iscReflectionClass', 'isTagged');
         $params = $method->getParameters();
         $type = $params[0]->getType();
-        self::assertType('PrimitiveType', $type);
+        self::assertType('iscReflectionPrimitiveType', $type);
         self::assertEquals('string', $type->toString());
     }
 
     public function testGetDeclaringClass() {
-        $method = new ExtReflectionMethod('ExtReflectionClass', 'isTagged');
+        $method = new iscReflectionMethod('iscReflectionClass', 'isTagged');
         $params = $method->getParameters();
         $class = $params[0]->getDeclaringClass();
-        self::assertType('ClassType', $class);
-        self::assertEquals('ExtReflectionClass', $class->toString());
+        self::assertType('iscReflectionClassType', $class);
+        self::assertEquals('iscReflectionClass', $class->toString());
     }
 
 
     public static function suite()
     {
-         return new ezcTestSuite( "ezcExtendedReflectionPropertyTest" );
+         return new ezcTestSuite( "ezcReflectionPropertyTest" );
     }
 }
 ?>

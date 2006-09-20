@@ -4,11 +4,11 @@
  * @license http://ez.no/licenses/new_bsd New BSD License
  * @version //autogentag//
  * @filesource
- * @package ExtendedReflection
+ * @package Reflection
  * @subpackage Tests
  */
 
-class ExtendedReflectionTestHelper {
+class ReflectionTestHelper {
 
     /**
      * Helper method to delete a given value from an array
@@ -29,12 +29,12 @@ class ExtendedReflectionTestHelper {
      * Checks if all expected tags and only these are set
      *
      * @param string[] $expectedTags
-     * @param PHPDocTag[] $tags
+     * @param iscReflectionDocTag[] $tags
      * @param ezcTestCase $test
      */
     static public function expectedTags($expectedTags, $tags, $test) {
         foreach ($tags as $tag) {
-            $test->assertType('PHPDocTag', $tag);
+            $test->assertType('iscReflectionDocTag', $tag);
             $test->assertContains($tag->getName(), $expectedTags);
 
             self::deleteFromArray($tag->getName(), $expectedTags);
@@ -47,12 +47,12 @@ class ExtendedReflectionTestHelper {
      * Checks if all expected parameters and only these are set
      *
      * @param string[] $expectedTags
-     * @param PHPDocTag[] $tags
+     * @param iscReflectionDocTag[] $tags
      * @param ezcTestCase $test
      */
     static public function expectedParams($expectedParams, $params, $test) {
         foreach ($params as $param) {
-            $test->assertType('ExtReflectionParameter', $param);
+            $test->assertType('iscReflectionParameter', $param);
             $test->assertContains($param->getName(), $expectedParams);
 
             self::deleteFromArray($param->getName(), $expectedParams);

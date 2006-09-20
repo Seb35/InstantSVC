@@ -4,27 +4,27 @@
  * @license http://ez.no/licenses/new_bsd New BSD License
  * @version //autogentag//
  * @filesource
- * @package ExtendedReflection
+ * @package Reflection
  * @subpackage Tests
  */
 
-class ezcExtendedReflectionPhpDocTagFactoryTest extends ezcTestCase
+class ezcReflectioniscReflectionDocTagFactoryTest extends ezcTestCase
 {
     public function testCreateTag() {
-        $param  = PHPDocTagFactory::createTag('param', array('param', 'string', 'param'));
+        $param  = iscReflectionDocTagFactory::createTag('param', array('param', 'string', 'param'));
 
-        self::assertType('PHPDocParamTag', $param);
+        self::assertType('iscReflectionDocTagParam', $param);
 
-        $var    = PHPDocTagFactory::createTag('var', array('var', 'string'));
-        self::assertType('PHPDocVarTag', $var);
+        $var    = iscReflectionDocTagFactory::createTag('var', array('var', 'string'));
+        self::assertType('iscReflectionDocTagVar', $var);
 
-        $return = PHPDocTagFactory::createTag('return', array('return', 'string', 'hello', 'world'));
-        self::assertType('PHPDocReturnTag', $return);
+        $return = iscReflectionDocTagFactory::createTag('return', array('return', 'string', 'hello', 'world'));
+        self::assertType('iscReflectionDocTagReturn', $return);
     }
 
     public static function suite()
     {
-         return new ezcTestSuite( "ezcExtendedReflectionPhpDocTagFactoryTest" );
+         return new ezcTestSuite( "ezcReflectioniscReflectionDocTagFactoryTest" );
     }
 }
 ?>

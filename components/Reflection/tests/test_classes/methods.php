@@ -46,7 +46,7 @@ class TestMethods {
      * @webmethod
      * @author
      * @param string $test
-     * @param ExtendedReflectionApi $test2
+     * @param iscReflectionApi $test2
      * @param NoneExistingType $test3
      * @return string Hello World
      */

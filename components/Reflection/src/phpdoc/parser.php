@@ -2,7 +2,7 @@
 //***************************************************************************
 //***************************************************************************
 //**                                                                       **
-//** PHPDocParser - Returns infos from a given PHP Documentation comment   **
+//** iscReflectionDocParser - Returns infos from a given PHP Documentation comment   **
 //**                                                                       **
 //** Project: Web Services Description Generator                           **
 //**                                                                       **
@@ -16,7 +16,7 @@
 //***************************************************************************
 
 //***** imports *************************************************************
-//require_once(dirname(__FILE__).'/class.PHPDocTagFactory.php');
+//require_once(dirname(__FILE__).'/class.iscReflectionDocTagFactory.php');
 
 //***** Parser Constants ****************************************************
 define('BEGINNING',  10);
@@ -24,17 +24,17 @@ define('SHORT_DESC', 0);
 define('LONG_DESC',  1);
 define('TAGS',       2);
 
-//***** PHPDocParser ********************************************************
+//***** iscReflectionDocParser ********************************************************
 /**
 * Provides structured data from PHP Documentation comments
 *
-* @package    libs.reflection
+* @package    Reflection
 * @author     Stefan Marr <mail@stefan-marr.de>
 * @author     Falko Menge <mail@falko-menge.de>
 * @copyright  2006 ...
 * @license    http://www.apache.org/licenses/LICENSE-2.0   Apache License 2.0
 */
-class PHPDocParser {
+class iscReflectionDocParser {
     /**
     * @var string
     */
@@ -53,7 +53,7 @@ class PHPDocParser {
                                    LONG_DESC  => LONG_DESC,
                                    TAGS       => TAGS);
     /**
-    * @var PHPDocTag
+    * @var iscReflectionDocTag
     */
     protected $lastTag = null;
 
@@ -68,7 +68,7 @@ class PHPDocParser {
     protected $longDesc;
 
     /**
-    * @var PHPDocTag[]
+    * @var iscReflectionDocTag[]
     */
     protected $tags;
 
@@ -151,7 +151,7 @@ class PHPDocParser {
             if ($line{0} == '@') {
                 $line = substr($line, 1);
                 $words = explode(' ', $line, 4);
-                $tag = PHPDocTagFactory::createTag($words[0], $words);
+                $tag = iscReflectionDocTagFactory::createTag($words[0], $words);
                 $this->tags[$tag->getName()][] = $tag;
                 $this->lastTag = $tag;
             }
@@ -167,7 +167,7 @@ class PHPDocParser {
     //=======================================================================
     /**
     * @param string $name
-    * @return PHPDocTag[]
+    * @return iscReflectionDocTag[]
     */
     public function getTagsByName($name) {
         if (isset($this->tags[$name])) {
@@ -180,7 +180,7 @@ class PHPDocParser {
 
     //=======================================================================
     /**
-    * @return PHPDocTag[]
+    * @return iscReflectionDocTag[]
     */
     public function getTags() {
         $result = array();
@@ -194,7 +194,7 @@ class PHPDocParser {
 
     //=======================================================================
     /**
-    * @return PHPDocParamTag[]
+    * @return iscReflectionDocTagParam[]
     */
     public function getParamTags() {
         return $this->getTagsByName('param');
@@ -202,7 +202,7 @@ class PHPDocParser {
 
     //=======================================================================
     /**
-    * @return PHPDocVarTag[]
+    * @return iscReflectionDocTagVar[]
     */
     public function getVarTags() {
         return $this->getTagsByName('var');
@@ -210,7 +210,7 @@ class PHPDocParser {
 
     //=======================================================================
     /**
-    * @return PHPDocReturnTag[]
+    * @return iscReflectionDocTagReturn[]
     */
     public function getReturnTags() {
         return $this->getTagsByName('return');

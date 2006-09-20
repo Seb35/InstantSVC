@@ -2,7 +2,7 @@
 //***************************************************************************
 //***************************************************************************
 //**                                                                       **
-//** ExtReflectionExtension - Reflection API extended with PHPDoc Infos    **
+//** iscReflectionExtension - Reflection API extended with PHPDoc Infos    **
 //**                                                                       **
 //** Project: Web Services Description Generator                           **
 //**                                                                       **
@@ -14,17 +14,17 @@
 //***************************************************************************
 //***************************************************************************
 
-//***** ExtReflectionExtension **********************************************
+//***** iscReflectionExtension **********************************************
 /**
 * Extends the reflection API using PHPDoc comments to provied
 * type information
 *
-* @package    libs.reflection
+* @package    Reflection
 * @author     Stefan Marr <mail@stefan-marr.de>
 * @copyright  2006 ...
 * @license    http://www.apache.org/licenses/LICENSE-2.0   Apache License 2.0
 */
-class ExtReflectionExtension extends ReflectionExtension {
+class iscReflectionExtension extends ReflectionExtension {
 
     //=======================================================================
     /**
@@ -36,13 +36,13 @@ class ExtReflectionExtension extends ReflectionExtension {
 
     //=======================================================================
     /**
-    * @return ExtReflectionFunction[]
+    * @return iscReflectionFunction[]
     */
     public function getFunctions() {
         $functs = parent::getFunctions();
         $result = array();
         foreach ($functs as $func) {
-        	$function = new ExtReflectionFunction($func->getName());
+        	$function = new iscReflectionFunction($func->getName());
         	$result[] = $function;
         }
         return $result;
@@ -50,13 +50,13 @@ class ExtReflectionExtension extends ReflectionExtension {
 
     //=======================================================================
     /**
-     * @return ClassType[]
+     * @return iscReflectionClassType[]
      */
     public function getClasses() {
         $classes = parent::getClasses();
         $result = array();
         foreach ($classes as $class) {
-        	$extClass = new ClassType($class->getName());
+        	$extClass = new iscReflectionClassType($class->getName());
         	$result[] = $extClass;
         }
         return $result;

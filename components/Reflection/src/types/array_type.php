@@ -2,7 +2,7 @@
 //***************************************************************************
 //***************************************************************************
 //**                                                                       **
-//** ArrayType - Provide infos for array tyes                              **
+//** iscReflectionArrayType - Provide infos for array tyes                              **
 //**                                                                       **
 //** Project: Web Services Description Generator                           **
 //**                                                                       **
@@ -15,18 +15,18 @@
 //***************************************************************************
 //***************************************************************************
 
-//***** ArrayType ***********************************************************
+//***** iscReflectionArrayType ***********************************************************
 /**
  * Provides type information of the array item type or map types
  *
- * @package    libs.reflection
+ * @package    Reflection
  * @author     Stefan Marr <mail@stefan-marr.de>
  * @author     Falko Menge <mail@falko-menge.de>
  * @copyright  2006 ....
  * @license    http://www.apache.org/licenses/LICENSE-2.0   Apache License 2.0
  * @todo       add support for ArrayAccess stuff from http://www.php.net/~helly/php/ext/spl/
  */
-class ArrayType extends AbstractType {
+class iscReflectionArrayType extends iscReflectionAbstractType {
 
     /**
      * @var string
@@ -34,17 +34,17 @@ class ArrayType extends AbstractType {
     private $typeName = null;
 
     /**
-     * @var Type
+     * @var iscReflectionType
      */
-    private $arrayType = null;
+    private $iscReflectionArrayType = null;
 
     /**
-     * @var Type
+     * @var iscReflectionType
      */
     private $mapKeyType = null;
 
     /**
-     * @var Type
+     * @var iscReflectionType
      */
     private $mapValueType = null;
 
@@ -60,16 +60,16 @@ class ArrayType extends AbstractType {
     //=======================================================================
     /**
      * Returns type of array items or null
-     * @return Type
+     * @return iscReflectionType
      */
-    public function getArrayType() {
-        return $this->arrayType;
+    public function getiscReflectionArrayType() {
+        return $this->iscReflectionArrayType;
     }
 
     //=======================================================================
     /**
      * Returns key type of map items or null
-     * @return Type
+     * @return iscReflectionType
      */
     public function getMapIndexType() {
         return $this->mapKeyType;
@@ -78,7 +78,7 @@ class ArrayType extends AbstractType {
     //=======================================================================
     /**
      * Returns key type of map items or null
-     * @return Type
+     * @return iscReflectionType
      */
     public function getMapValueType() {
         return $this->mapValueType;
@@ -89,7 +89,7 @@ class ArrayType extends AbstractType {
      * @return boolean
      */
     public function isArray() {
-        return ($this->arrayType != null);
+        return ($this->iscReflectionArrayType != null);
     }
 
     //=======================================================================
@@ -127,31 +127,31 @@ class ArrayType extends AbstractType {
             if ($posm !== false) {
                 if ($posm < $pos) {
                     $typeName = substr($this->typeName, 0, $pos);
-                    $this->arrayType
-                       = ExtendedReflectionApi::getInstance()->getTypeByName($typeName);
+                    $this->iscReflectionArrayType
+                       = iscReflectionApi::getInstance()->getTypeByName($typeName);
                 }
             }
             else {
                 $typeName = substr($this->typeName, 0, $pos);
-                $this->arrayType
-                   = ExtendedReflectionApi::getInstance()->getTypeByName($typeName);
+                $this->iscReflectionArrayType
+                   = iscReflectionApi::getInstance()->getTypeByName($typeName);
             }
         }
         if (preg_match('/(.*)(<(.*?)(,(.*?))?>)/', $this->typeName, $matches)) {
             $type1 = null;
             $type2 = null;
             if (isset($matches[3])) {
-                $type1 = ExtendedReflectionApi::getInstance()->getTypeByName($matches[3]);
+                $type1 = iscReflectionApi::getInstance()->getTypeByName($matches[3]);
             }
             if (isset($matches[5])) {
-                $type2 = ExtendedReflectionApi::getInstance()->getTypeByName($matches[3]);
+                $type2 = iscReflectionApi::getInstance()->getTypeByName($matches[3]);
             }
 
             if ($type1 == null and $type2 != null) {
-                $this->arrayType = $type2;
+                $this->iscReflectionArrayType = $type2;
             }
             elseif ($type1 != null and $type2 == null) {
-                $this->arrayType = $type1;
+                $this->iscReflectionArrayType = $type1;
             }
             elseif ($type1 != null and $type2 != null) {
                 $this->mapKeyType = $type1;
@@ -166,7 +166,7 @@ class ArrayType extends AbstractType {
      */
     public function toString() {
         if ($this->isArray()) {
-            return $this->arrayType->toString().'[]';
+            return $this->iscReflectionArrayType->toString().'[]';
         }
         else if ($this->isMap()) {
             return 'array<'.$this->mapKeyType->toString()
@@ -200,7 +200,7 @@ class ArrayType extends AbstractType {
             $prefix = '';
         }
         if ($this->isArray()) {
-            return $prefix . 'ArrayOf'.$this->arrayType->getXmlName(false);
+            return $prefix . 'ArrayOf'.$this->iscReflectionArrayType->getXmlName(false);
         }
         elseif ($this->isMap()) {
             throw new Exception('XML Schema mapping is not supported for map-types');
@@ -251,8 +251,8 @@ class ArrayType extends AbstractType {
         $elm->setAttribute('maxOccurs', 'unbounded');
         $elm->setAttribute('nillable', 'true');
 
-        $elm->setAttribute('name', $this->arrayType->getXmlName(false));
-        $elm->setAttribute('type', $this->arrayType->getXmlName(true));
+        $elm->setAttribute('name', $this->iscReflectionArrayType->getXmlName(false));
+        $elm->setAttribute('type', $this->iscReflectionArrayType->getXmlName(true));
 
         return $schema;
     }

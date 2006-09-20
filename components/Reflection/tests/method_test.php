@@ -4,21 +4,21 @@
  * @license http://ez.no/licenses/new_bsd New BSD License
  * @version //autogentag//
  * @filesource
- * @package ExtendedReflection
+ * @package Reflection
  * @subpackage Tests
  */
 
-class ezcExtendedReflectionMethodTest extends ezcTestCase
+class ezcReflectionMethodTest extends ezcTestCase
 {
     public function testGetDeclaringClass() {
-        $method = new ExtReflectionMethod('TestMethods', 'm1');
+        $method = new iscReflectionMethod('TestMethods', 'm1');
         $class = $method->getDeclaringClass();
-        self::assertType('ClassType', $class);
+        self::assertType('iscReflectionClassType', $class);
         self::assertEquals('TestMethods', $class->getName());
     }
 
     public function testIsMagic() {
-        $method = new ExtReflectionMethod('TestMethods', 'm1');
+        $method = new iscReflectionMethod('TestMethods', 'm1');
         self::assertFalse($method->isMagic());
 
         $class = $method->getDeclaringClass();
@@ -26,35 +26,35 @@ class ezcExtendedReflectionMethodTest extends ezcTestCase
     }
 
     public function testGetTags() {
-        $class = new ExtReflectionClass('ExtReflectionClass');
+        $class = new iscReflectionClass('iscReflectionClass');
         $method = $class->getMethod('getMethod');
         $tags = $method->getTags();
         self::assertEquals(2, count($tags));
 
 
-        $method = new ExtReflectionMethod('TestMethods', 'm4');
+        $method = new iscReflectionMethod('TestMethods', 'm4');
         $tags = $method->getTags();
         $expectedTags = array('webmethod', 'author', 'param', 'param', 'param', 'return');
-        ExtendedReflectionTestHelper::expectedTags($expectedTags, $tags, $this);
+        ReflectionTestHelper::expectedTags($expectedTags, $tags, $this);
 
         $tags = $method->getTags('param');
         $expectedTags = array('param', 'param', 'param');
-        ExtendedReflectionTestHelper::expectedTags($expectedTags, $tags, $this);
+        ReflectionTestHelper::expectedTags($expectedTags, $tags, $this);
 
-        $method = new ExtReflectionMethod('TestMethods', 'm1');
+        $method = new iscReflectionMethod('TestMethods', 'm1');
         $tags = $method->getTags();
         $expectedTags = array('param', 'author');
-        ExtendedReflectionTestHelper::expectedTags($expectedTags, $tags, $this);
+        ReflectionTestHelper::expectedTags($expectedTags, $tags, $this);
     }
 
     public function testIsTagged() {
-        $method = new ExtReflectionMethod('TestMethods', 'm4');
+        $method = new iscReflectionMethod('TestMethods', 'm4');
         self::assertTrue($method->isTagged('webmethod'));
         self::assertFalse($method->isTagged('fooobaaar'));
     }
 
     public function testGetLongDescription() {
-        $method = new ExtReflectionMethod('TestMethods', 'm3');
+        $method = new iscReflectionMethod('TestMethods', 'm3');
         $desc = $method->getLongDescription();
 
         $expected = "This is the long description with may be additional infos and much more lines\nof text.\n\nEmpty lines are valide to.\n\nfoo bar";
@@ -62,7 +62,7 @@ class ezcExtendedReflectionMethodTest extends ezcTestCase
     }
 
     public function testGetShortDescription() {
-        $method = new ExtReflectionMethod('TestMethods', 'm3');
+        $method = new iscReflectionMethod('TestMethods', 'm3');
         $desc = $method->getShortDescription();
 
         $expected = "This is the short description";
@@ -70,42 +70,42 @@ class ezcExtendedReflectionMethodTest extends ezcTestCase
     }
 
     public function testIsWebmethod() {
-        $method = new ExtReflectionMethod('TestMethods', 'm3');
+        $method = new iscReflectionMethod('TestMethods', 'm3');
         self::assertFalse($method->isWebmethod());
-        $method = new ExtReflectionMethod('TestMethods', 'm4');
+        $method = new iscReflectionMethod('TestMethods', 'm4');
         self::assertTrue($method->isWebmethod());
     }
 
     public function testGetReturnDescription() {
-        $method = new ExtReflectionMethod('TestMethods', 'm4');
+        $method = new iscReflectionMethod('TestMethods', 'm4');
         $desc = $method->getReturnDescription();
         self::assertEquals('Hello World', $desc);
     }
 
     public function testGetReturnType() {
-        $method = new ExtReflectionMethod('TestMethods', 'm4');
+        $method = new iscReflectionMethod('TestMethods', 'm4');
         $type = $method->getReturnType();
-        self::assertType('Type', $type);
+        self::assertType('iscReflectionType', $type);
         self::assertEquals('string', $type->toString());
     }
 
     public function testGetParameters() {
-        $method = new ExtReflectionMethod('ExtReflectionMethod', 'getTags');
+        $method = new iscReflectionMethod('iscReflectionMethod', 'getTags');
         $params = $method->getParameters();
 
         $expectedParams = array('name');
         foreach ($params as $param) {
-            self::assertType('ExtReflectionParameter', $param);
+            self::assertType('iscReflectionParameter', $param);
             self::assertContains($param->getName(), $expectedParams);
 
-            ExtendedReflectionTestHelper::deleteFromArray($param->getName(), $expectedParams);
+            ReflectionTestHelper::deleteFromArray($param->getName(), $expectedParams);
         }
         self::assertEquals(0, count($expectedParams));
     }
 
     public static function suite()
     {
-         return new ezcTestSuite( "ezcExtendedReflectionMethodTest" );
+         return new ezcTestSuite( "ezcReflectionMethodTest" );
     }
 }
 ?>

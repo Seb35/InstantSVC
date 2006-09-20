@@ -2,7 +2,7 @@
 //***************************************************************************
 //***************************************************************************
 //**                                                                       **
-//** ExtReflectionClass - Reflection API extended with PHPDoc Infos        **
+//** iscReflectionClass - Reflection API extended with PHPDoc Infos        **
 //**                                                                       **
 //** Project: Web Services Description Generator                           **
 //**                                                                       **
@@ -15,20 +15,20 @@
 //***************************************************************************
 //***************************************************************************
 
-//***** ExtReflectionClass **************************************************
+//***** iscReflectionClass **************************************************
 /**
 * Extends the reflection API using PHPDoc comments to provied
 * type information
 *
-* @package    libs.reflection
+* @package    Reflection
 * @author     Stefan Marr <mail@stefan-marr.de>
 * @author     Falko Menge <mail@falko-menge.de>
 * @copyright  2005-2006 ...
 * @license    http://www.apache.org/licenses/LICENSE-2.0   Apache License 2.0
 */
-class ExtReflectionClass extends ReflectionClass {
+class iscReflectionClass extends ReflectionClass {
     /**
-    * @var PHPDocParser
+    * @var iscReflectionDocParser
     */
     protected $docParser;
 
@@ -43,27 +43,27 @@ class ExtReflectionClass extends ReflectionClass {
         catch (Exception $e) {
             return;
         }
-        $this->docParser = new PHPDocParser($this->getDocComment());
+        $this->docParser = new iscReflectionDocParser($this->getDocComment());
         $this->docParser->parse();
     }
 
     //=======================================================================
     /**
     * @param string $name
-    * @return ExtReflectionMethod
+    * @return iscReflectionMethod
     */
     public function getMethod($name) {
-        return new ExtReflectionMethod($this->getName(), $name);
+        return new iscReflectionMethod($this->getName(), $name);
     }
 
     //=======================================================================
     /**
-    * @return ExtReflectionMethod
+    * @return iscReflectionMethod
     */
     public function getConstructor() {
         $con = parent::getConstructor();
         if ($con != null) {
-            $extCon = new ExtReflectionMethod($this->getName(), $con->getName());
+            $extCon = new iscReflectionMethod($this->getName(), $con->getName());
             return $extCon;
         }
         else {
@@ -73,25 +73,25 @@ class ExtReflectionClass extends ReflectionClass {
 
     //=======================================================================
     /**
-    * @return ExtReflectionMethod[]
+    * @return iscReflectionMethod[]
     */
     public function getMethods() {
         $extMethodes = array();
         $methodes = parent::getMethods();
         foreach ($methodes as $method) {
-            $extMethodes[] = new ExtReflectionMethod($this->getName(), $method->getName());
+            $extMethodes[] = new iscReflectionMethod($this->getName(), $method->getName());
         }
         return $extMethodes;
     }
 
     //=======================================================================
     /**
-    * @return ClassType
+    * @return iscReflectionClassType
     */
     public function getParentClass() {
         $class = parent::getParentClass();
         if (is_object($class)) {
-            return new ClassType($class->getName());
+            return new iscReflectionClassType($class->getName());
         }
         else {
             return null;
@@ -101,23 +101,23 @@ class ExtReflectionClass extends ReflectionClass {
     //=======================================================================
     /**
     * @param string $name
-    * @return ExtReflectionProperty
+    * @return iscReflectionProperty
     * @throws RelectionException if property doesn't exists
     */
     public function getProperty($name) {
         $pro = parent::getProperty($name);
-        return new ExtReflectionProperty($this->getName(), $name);
+        return new iscReflectionProperty($this->getName(), $name);
     }
 
     //=======================================================================
     /**
-    * @return ExtReflectionProperty[]
+    * @return iscReflectionProperty[]
     */
     public function getProperties() {
         $props = parent::getProperties();
         $extProps = array();
         foreach ($props as $prop) {
-            $extProps[] = new ExtReflectionProperty($this->getName(),
+            $extProps[] = new iscReflectionProperty($this->getName(),
                                                     $prop->getName());
         }
         return $extProps;
@@ -160,7 +160,7 @@ class ExtReflectionClass extends ReflectionClass {
     //=======================================================================
     /**
     * @param string $name
-    * @return PHPDocTag[]
+    * @return iscReflectionDocTag[]
     */
     public function getTags($name = '') {
         if ($name == '') {
@@ -173,12 +173,12 @@ class ExtReflectionClass extends ReflectionClass {
 
     //=======================================================================
     /**
-    * @return ExtReflectionExtension
+    * @return iscReflectionExtension
     */
     public function getExtension() {
         $name = $this->getExtensionName();
         if (!empty($name)) {
-            return new ExtReflectionExtension($name);
+            return new iscReflectionExtension($name);
         }
         else {
             return null;

@@ -2,12 +2,12 @@
 //***************************************************************************
 //***************************************************************************
 //**                                                                       **
-//** PrimitiveType - representation for all primitive types like string,   **
+//** iscReflectionPrimitiveType - representation for all primitive types like string,   **
 //**                 integer, float aso.                                   **
 //**                                                                       **
 //** Project: Web Services Description Generator                           **
 //**                                                                       **
-//** @package    libs.reflection                                           **
+//** @package    Reflection                                           **
 //** @author     Stefan Marr <mail@stefan-marr.de>                         **
 //** @author     Falko Menge <mail@falko-menge.de>                         **
 //** @copyright  2006 ....                                                 **
@@ -16,14 +16,14 @@
 //***************************************************************************
 //***************************************************************************
 
-//***** PrimitiveType *******************************************************
+//***** iscReflectionPrimitiveType *******************************************************
 /**
- * @package    libs.reflection
+ * @package    Reflection
  * @author     Stefan Marr <mail@stefan-marr.de>
  * @copyright  2006 Stefan Marr
  * @license    http://www.apache.org/licenses/LICENSE-2.0  Apache License 2.0
  */
-class PrimitiveType extends AbstractType {
+class iscReflectionPrimitiveType extends iscReflectionAbstractType {
 
     /**
      * @var string
@@ -81,7 +81,7 @@ class PrimitiveType extends AbstractType {
         } else {
             $prefix = '';
         }
-        return $prefix . TypeMapper::getInstance()->getXmlType($this->typeName);
+        return $prefix . iscReflectionTypeMapper::getInstance()->getXmlType($this->typeName);
     }
 
     //=======================================================================

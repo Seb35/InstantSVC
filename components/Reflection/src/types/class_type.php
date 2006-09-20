@@ -2,11 +2,11 @@
 //***************************************************************************
 //***************************************************************************
 //**                                                                       **
-//** ClassType - representation for all class types                        **
+//** iscReflectionClassType - representation for all class types                        **
 //**                                                                       **
 //** Project: Web Services Description Generator                           **
 //**                                                                       **
-//** @package    libs.reflection                                           **
+//** @package    Reflection                                           **
 //** @author     Stefan Marr <mail@stefan-marr.de>                         **
 //** @author     Falko Menge <mail@falko-menge.de>                         **
 //** @copyright  2006 ....                                                 **
@@ -16,30 +16,30 @@
 //***************************************************************************
 
 //***** imports *************************************************************
-//require_once(dirname(__FILE__).'/class.ExtReflectionClass.php');
+//require_once(dirname(__FILE__).'/class.iscReflectionClass.php');
 //require_once(dirname(__FILE__).'/interface.Type.php');
 
-//***** ClassType ***********************************************************
+//***** iscReflectionClassType ***********************************************************
 /**
- * @package    libs.reflection
+ * @package    Reflection
  * @author     Stefan Marr <mail@stefan-marr.de>
  * @author     Falko Menge <mail@falko-menge.de>
  * @copyright  2006 Stefan Marr
  * @license    http://www.apache.org/licenses/LICENSE-2.0  Apache License 2.0
  */
-class ClassType extends ExtReflectionClass implements Type {
+class iscReflectionClassType extends iscReflectionClass implements iscReflectionType {
 
     //=======================================================================
     /**
-     * @return Type
+     * @return iscReflectionType
      */
-    public function getArrayType() {
+    public function getiscReflectionArrayType() {
         return null;
     }
 
     //=======================================================================
     /**
-     * @return Type
+     * @return iscReflectionType
      */
     function getMapIndexType() {
         return null;
@@ -47,7 +47,7 @@ class ClassType extends ExtReflectionClass implements Type {
 
     //=======================================================================
     /**
-     * @return Type
+     * @return iscReflectionType
      */
     function getMapValueType() {
         return null;

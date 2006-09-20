@@ -2,7 +2,7 @@
 //***************************************************************************
 //***************************************************************************
 //**                                                                       **
-//** ExtReflectionFunction - Reflection API extended with PHPDoc Infos     **
+//** iscReflectionFunction - Reflection API extended with PHPDoc Infos     **
 //**                                                                       **
 //** Project: Web Services Description Generator                           **
 //**                                                                       **
@@ -14,19 +14,19 @@
 //***************************************************************************
 //***************************************************************************
 
-//***** ExtReflectionFunction ***********************************************
+//***** iscReflectionFunction ***********************************************
 /**
 * Extends the reflection API using PHPDoc comments to provied
 * type information
 *
-* @package    libs.reflection
+* @package    Reflection
 * @author     Stefan Marr <mail@stefan-marr.de>
 * @copyright  2005-2006 ...
 * @license    http://www.apache.org/licenses/LICENSE-2.0   Apache License 2.0
 */
-class ExtReflectionFunction extends ReflectionFunction {
+class iscReflectionFunction extends ReflectionFunction {
     /**
-    * @var PHPDocParser
+    * @var iscReflectionDocParser
     */
     protected $docParser;
 
@@ -36,13 +36,13 @@ class ExtReflectionFunction extends ReflectionFunction {
     */
     public function __construct($name) {
         parent::__construct($name);
-        $this->docParser = new PHPDocParser($this->getDocComment());
+        $this->docParser = new iscReflectionDocParser($this->getDocComment());
         $this->docParser->parse();
     }
 
     //=======================================================================
     /**
-    * @return ExtReflectionParameter[]
+    * @return iscReflectionParameter[]
     */
     function getParameters() {
         $params = $this->docParser->getParamTags();
@@ -52,14 +52,14 @@ class ExtReflectionFunction extends ReflectionFunction {
             $found = false;
             foreach ($params as $tag) {
             	if ($tag->getParamName() == $param->getName()) {
-            	   $extParams[] = new ExtReflectionParameter($tag->getType(),
+            	   $extParams[] = new iscReflectionParameter($tag->getType(),
             	                                             $param);
             	   $found = true;
             	   break;
             	}
             }
             if (!$found) {
-                $extParams[] = new ExtReflectionParameter(null, $param);
+                $extParams[] = new iscReflectionParameter(null, $param);
             }
         }
         return $extParams;
@@ -68,12 +68,12 @@ class ExtReflectionFunction extends ReflectionFunction {
     //=======================================================================
     /**
     * Returns the type definied in PHPDoc tags
-    * @return Type
+    * @return iscReflectionType
     */
     function getReturnType() {
         $re = $this->docParser->getReturnTags();
         if (count($re) == 1 and isset($re[0])) {
-            return ExtendedReflectionApi::getInstance()->getTypeByName($re[0]->getType());
+            return iscReflectionApi::getInstance()->getTypeByName($re[0]->getType());
         }
         return null;
     }
@@ -128,7 +128,7 @@ class ExtReflectionFunction extends ReflectionFunction {
     //=======================================================================
     /**
     * @param string $name
-    * @return PHPDocTag[]
+    * @return iscReflectionDocTag[]
     */
     public function getTags($name = '') {
         if ($name == '') {
