@@ -35,7 +35,8 @@ class ezcReflectionParameterTest extends ezcTestCase
         //none existing type??
         //@TODO: fix this error
         //fix or change documentation of handling of not existing classes
-        //with type system
+        //with type system, at the moment type with name with empty string is
+        //return, this is wrong and have to be fixed.
         $type = $params[2]->getClass();
         self::assertType('iscReflectionType', $type);
         self::assertEquals('test3', $params[2]->getName());
