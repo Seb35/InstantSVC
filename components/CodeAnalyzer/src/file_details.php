@@ -2,27 +2,27 @@
 //***************************************************************************
 //***************************************************************************
 //**                                                                       **
-//** fileDetails				                                           **
-//**                                                                       **
-//** Project: Web Services Description Generator                           **
+//** iscCodeAnalyzerFileDetails                                            **
 //**                                                                       **
 //** @package    CodeAnalyzer                                              **
 //** @author     Stefan Marr <mail@stefan-marr.de>                         **
-//** @copyright  2006 ....                                                 **
+//** @copyright  2006 InstantSVC Team                                      **
 //** @license    www.apache.org/licenses/LICENSE-2.0   Apache License 2.0  **
 //**                                                                       **
 //***************************************************************************
 //***************************************************************************
 
-//***** FileDetails *********************************************************
+//***** iscCodeAnalyzerFileDetails ******************************************
 /**
+ * Struct containing details about a file.
+ * Guessing MimeType, counting lines of code, and retrieving file size are done.
  *
  * @package    CodeAnalyzer
  * @author     Stefan Marr <mail@stefan-marr.de>
  * @copyright  2006 InstantSVC Team
- * @license    http://www.apache.org/licenses/LICENSE-2.0   Apache License 2.0
+ * @license    http://www.apache.org/licenses/LICENSE-2.0  Apache License 2.0
  */
-class FileDetails extends ezcBaseStruct {
+class iscCodeAnalyzerFileDetails extends ezcBaseStruct {
 
     /**
      * @var string
@@ -54,20 +54,58 @@ class FileDetails extends ezcBaseStruct {
      */
     private static $locMimes = null;
 
+    /**
+     * @var array(string => string)
+     */
+    private static $mimes = null;
+
+    /**
+     * Handle for mime database
+     * @var resource
+     */
+    private static $finfo;
+
+    /**
+     * Init class variables and detects available mime guess method
+     */
+    private static function initClass() {
+        if (function_exists('finfo_file') && function_exists('finfo_open')) {
+            self::$mimeHandler = 1;
+            self::$finfo = finfo_open(FILEINFO_MIME);
+        }
+        elseif (function_exists('mime_content_type')) {
+            self::$mimeHandler = 2;
+        }
+        else {
+            $php = array('php', 'php3', 'php4', 'php5', 'inc');
+            foreach ($php as $key) {
+                self::$mimes[$key] = 'application/x-httpd-php';
+            }
+
+            $image = array('jpg', 'bmp', 'gif', 'png', 'tiff', 'tif');
+            foreach ($image as $key) {
+                self::$mimes[$key] = 'image';
+            }
+
+            self::$locMimes[] = 'application/x-httpd-php';
+            self::$locMimes[] = 'application/x-php';
+            self::$locMimes[] = 'application/x-javascript';
+            self::$mimeHandler = 3;
+        }
+    }
+
     //=======================================================================
     /**
      * @param string $file
      */
-
     public function __construct($file = '') {
+        if (self::$mimeHandler == null) {
+            self::initClass();
+        }
+
         $this->fileName = realpath($file);
         if ($file != '' and file_exists($file)) {
-            if (function_exists('mime_content_type')) {
-                $this->mimeType = mime_content_type($file);
-            }
-            else {
-                $this->mimeType = $this->guessMimeType($file);
-            }
+            $this->mimeType = $this->guessMimeType($file);
 
             if ($this->shouldCountLines($this->mimeType)) {
                 $this->linesOfCode = count(file($file));
@@ -76,35 +114,40 @@ class FileDetails extends ezcBaseStruct {
                 $this->linesOfCode = null;
             }
             $this->fileSize = filesize($file);
-
-            //if ($this->mimeType == 'application/x-httpd-php') {
-            //    include_once($file);
-            //}
         }
     }
 
     //=======================================================================
     /**
-     * @webmethod
+     * Guess the mime type using the file extension
      * @param string $file
      * @return boolean
      */
     protected function guessMimeType($file) {
-        if (self::$mimeHandler == null) {
-            require_once('class.mimetypes.php');
-            self::$mimeHandler = new Mime_Types(dirname(__FILE__).'/mime.types');
+        switch (self::$mimeHandler) {
+        	case 1:
+                return finfo_file(self::$finfo, $file);
+        	case 2:
+        		return mime_content_type($file);
+        	default:
+        		break;
         }
+
         $parts = explode('.', $file);
-        return self::$mimeHandler->get_type($parts[count($parts)-1]);
+        if (isset(self::$mimes[$parts[count($parts)-1]])) {
+            return self::$mimes[$parts[count($parts)-1]];
+        }
+
+        return 'unknown/mimetype';
     }
 
+    /**
+     * Use mime type to decide wheter the lines of code are counable
+     *
+     * @param string $mime
+     * @return boolean
+     */
     protected function shouldCountLines($mime) {
-        if (self::$locMimes == null) {
-            self::$locMimes[] = 'application/x-httpd-php';
-            self::$locMimes[] = 'application/x-php';
-            self::$locMimes[] = 'application/x-javascript';
-        }
-
         if (in_array($mime, self::$locMimes) or strpos($mime, 'text') !== false) {
             return true;
         }

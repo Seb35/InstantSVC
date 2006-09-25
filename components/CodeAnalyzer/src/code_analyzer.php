@@ -39,17 +39,12 @@ class iscCodeAnalyzer {
 	protected $path;
 
 	/**
-	 * @var String[]
-	 */
-	protected $declaredClasses;
-
-	/**
 	 * @var array<string,mixed>
 	 */
 	protected $statsArray;
 
 	/**
-	 * @var array<string,FileDetails>
+	 * @var array<string,iscCodeAnalyzerFileDetails>
 	 */
 	protected $flatStatsArray;
 
@@ -64,15 +59,6 @@ class iscCodeAnalyzer {
     */
     public function __construct($path = '.') {
         $this->path = $path;
-        $this->declaredClasses = get_declared_classes();
-    }
-
-    //=======================================================================
-    /**
-    * @param String[] $declaredClasses
-    */
-    public function setDeclaredClasses($declaredClasses) {
-        $this->declaredClasses = $declaredClasses;
     }
 
     //=======================================================================
@@ -92,6 +78,7 @@ class iscCodeAnalyzer {
     public function collect() {
         $this->parseDir($this->path, $this->statsArray);
         $this->flatStatsArray = $this->flatoutStatsArray($this->statsArray, '');
+        $this->inspectFiles(null);
     }
 
     //=======================================================================
@@ -105,31 +92,21 @@ class iscCodeAnalyzer {
     	if (is_dir($path)) {
     	    if ($dir = opendir($path)) {
                 while (($file = readdir($dir)) !== false) {
-                    if ($file != '..' && $file != '.' && $file != '.svn' && $file != 'CVS') {
+                    if ($file != '..' && $file != '.' &&
+                        $file != '.svn' && $file != 'CVS') {
                         if (is_dir($path.'/'.$file)) {
                             $statsArray[$file] = array();
                             $this->parseDir($path.'/'.$file,$statsArray[$file]);
                         }
                         else {
-                            $statsArray[$file] =
-                                        $this->getStatsForFile($path.'/'.$file);
+                            $statsArray[$file] = new iscCodeAnalyzerFileDetails
+                                                        ($path.'/'.$file);
                         }
                     }
                 }
                 closedir($dir);
     	    }
     	}
-    }
-
-    //=======================================================================
-    /**
-     * Enter description here...
-     *
-     * @param string $file
-     * @return StatisticDetails
-     */
-    protected function getStatsForFile($file) {
-        return new FileDetails($file);
     }
 
     //=======================================================================
@@ -141,7 +118,7 @@ class iscCodeAnalyzer {
      */
     protected function flatoutStatsArray($array, $basekey) {
         $result = array();
-        $dirDetails = new FileDetails($basekey);
+        $dirDetails = new iscCodeAnalyzerFileDetails($basekey);
         $dirDetails->mimeType = 'folder';
         $result[$basekey] = $dirDetails;
         foreach ($array as $key => $value) {
@@ -171,34 +148,35 @@ class iscCodeAnalyzer {
      * Collects informations about classes, functions by spawning a new
      * php process for each file
      *
-     * If parameter $files is given it will be used instead of
-     * $this->flatStatsArray
-     *
-     * @param FileDetails[] $files
+     * @param string[] $files array of filenames
      */
-    public function inspectFiles($files = null) {
+    public function inspectFiles($files) {
         $this->docuFlaws = array();
         $this->docuFlaws['classes'] = array();
         $this->docuFlaws['functions'] = array();
+        $this->docuFlaws['interfaces'] = array();
 
         if ($files == null) {
             $files = $this->flatStatsArray;
         }
 
-        foreach ($files as $detail) {
-            if ($detail->mimeType == 'application/x-httpd-php') {
-                $detail->fileName = strtr($detail->fileName, DIRECTORY_SEPARATOR, '/');
-
-
-                //TODO: which classes to inspect?
-                $result = self::summarizeInSandbox($detail->fileName);
-                $this->docuFlaws['classes'] = array_merge($this->docuFlaws['classes'], $result['classes']);
-                $this->docuFlaws['functions'] = array_merge($this->docuFlaws['functions'], $result['functions']);
-
-                if (strlen(trim($arr[0])) > 1) {
-                    $this->docuFlaws['messages'][$detail->fileName] = trim($arr[0]);
-                }
+        foreach ($files as $file) {
+            $filename = '';
+            if (is_string($file)) {
+                $filename = $file;
             }
+            elseif ($detail->mimeType == 'application/x-httpd-php') {
+                $filename = $file->fileName;
+            }
+
+            $filename = strtr($filename, DIRECTORY_SEPARATOR, '/');
+            $result = self::summarizeInSandbox($filename);
+            $this->docuFlaws['classes'] = array_merge($this->docuFlaws['classes'],
+                                                      $result['classes']);
+            $this->docuFlaws['functions'] = array_merge($this->docuFlaws['functions'],
+                                                      $result['functions']);
+            $this->docuFlaws['functions'] = array_merge($this->docuFlaws['interfaces'],
+                                                      $result['interfaces']);
         }
     }
 
@@ -251,8 +229,8 @@ class iscCodeAnalyzer {
     /**
      * Collect summary for given file
      *
-     * @param unknown_type $filename
-     * @return unknown
+     * @param string $filename
+     * @return array(string => array)
      */
     public static function summarizeFile($filename) {
         ob_start();
