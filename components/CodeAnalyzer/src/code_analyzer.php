@@ -2,27 +2,20 @@
 //***************************************************************************
 //***************************************************************************
 //**                                                                       **
-//** CodeAnalyzer - searchs through source tree and collects infos about   **
-//**                found classes and files                                **
+//** iscCodeAnalyzer - searchs through source tree and collects infos      **
+//**                   about found classes and files                       **
 //**                                                                       **
 //** Project: Web Services Description Generator                           **
 //**                                                                       **
-//** @package    libs.misc                                                 **
+//** @package    CodeAnalyzer                                              **
 //** @author     Stefan Marr <mail@stefan-marr.de>                         **
-//** @copyright  2006 ....                                                 **
+//** @copyright  2006 InstantSVC Team                                      **
 //** @license    www.apache.org/licenses/LICENSE-2.0   Apache License 2.0  **
 //**                                                                       **
 //***************************************************************************
 //***************************************************************************
 
-//***** imports *************************************************************
-require_once(dirname(__FILE__).'/class.fileDetails.php');
-require_once(dirname(__FILE__).'/../config/config.php');
-require_once(dirname(__FILE__).'/../reflection/class.ExtReflectionClass.php');
-require_once(dirname(__FILE__).'/../reflection/class.ExtReflectionFunction.php');
-require_once(dirname(__FILE__).'/../genesis-core/class.renderEngine.php');
-
-//***** CodeAnalyzer ********************************************************
+//***** iscCodeAnalyzer *****************************************************
 /**
 * searchs through source tree and collects infos about found classes
 * and files
@@ -33,12 +26,12 @@ require_once(dirname(__FILE__).'/../genesis-core/class.renderEngine.php');
 *   - Missing DocTags per element
 *   - used DocTags
 *
-* @package    libs.misc
+* @package    CodeAnalyzer
 * @author     Stefan Marr <mail@stefan-marr.de>
-* @copyright  2006 ....
+* @copyright  2006 InstantSVC Team
 * @license    http://www.apache.org/licenses/LICENSE-2.0   Apache License 2.0
 */
-class CodeAnalyzer {
+class iscCodeAnalyzer {
 
 	/**
 	 * @var string
@@ -64,11 +57,6 @@ class CodeAnalyzer {
 	 * @var array<string,mixed>
 	 */
 	protected $docuFlaws;
-
-	/**
-	 * @var string
-	 */
-	protected $phpBin;
 
     //=======================================================================
     /**
@@ -140,7 +128,7 @@ class CodeAnalyzer {
      * @param string $file
      * @return StatisticDetails
      */
-    public function getStatsForFile($file) {
+    protected function getStatsForFile($file) {
         return new FileDetails($file);
     }
 
@@ -180,22 +168,6 @@ class CodeAnalyzer {
 
     //=======================================================================
     /**
-     * Tries to guess the right Php Bin Path, if not set properbly
-     */
-    public function ensurePhpBin() {
-        if (isset($_ENV['PHPBIN']) and !empty($_ENV['PHPBIN'])) {
-            $this->phpBin = $_ENV['PHPBIN'];
-        }
-        elseif (isset($_ENV['PHPEXE']) and !empty($_ENV['PHPEXE'])) {
-            $this->phpBin = $_ENV['PHPEXE'];
-        }
-        else {
-            $this->phpBin = 'C:\Programme\php5\php.exe -c C:\Programme\php5';
-        }
-    }
-
-    //=======================================================================
-    /**
      * Collects informations about classes, functions by spawning a new
      * php process for each file
      *
@@ -205,48 +177,23 @@ class CodeAnalyzer {
      * @param FileDetails[] $files
      */
     public function inspectFiles($files = null) {
-
-        //commandline interface or apache?
-        $cli = true; (strpos(php_sapi_name(), 'cli') !== false);
-
-        if ($cli and empty($this->phpBin)) {
-            $this->ensurePhpBin();
-        }
-
-
         $this->docuFlaws = array();
         $this->docuFlaws['classes'] = array();
         $this->docuFlaws['functions'] = array();
+
         if ($files == null) {
             $files = $this->flatStatsArray;
         }
+
         foreach ($files as $detail) {
-            //var_dump($detail);
             if ($detail->mimeType == 'application/x-httpd-php') {
                 $detail->fileName = strtr($detail->fileName, DIRECTORY_SEPARATOR, '/');
 
-                $cmd = $this->phpBin.' "'.dirname(__FILE__).'/inc.codeAnalyzer.php" exec "'.$detail->fileName.'"';
 
-                if ($cli) {
-                    $out = shell_exec($cmd);
-                }
-                else {
-                    ob_start();
-                    virtual('inc.docuFlaws.php?exec=true&filename='.urlencode($detail->fileName));
-                    $out = ob_get_clean();
-                }
-                $arr = split('#-#-#-#-#', $out);
-
-
-                if (isset($arr[1])) {
-                    //var_dump($arr[1]);
-                    $result = unserialize($arr[1]);
-                    $this->docuFlaws['classes'] = array_merge($this->docuFlaws['classes'], $result['classes']);
-                    $this->docuFlaws['functions'] = array_merge($this->docuFlaws['functions'], $result['functions']);
-                }
-                else {
-                    //var_dump( $out);die();
-                }
+                //TODO: which classes to inspect?
+                $result = self::summarizeInSandbox($detail->fileName);
+                $this->docuFlaws['classes'] = array_merge($this->docuFlaws['classes'], $result['classes']);
+                $this->docuFlaws['functions'] = array_merge($this->docuFlaws['functions'], $result['functions']);
 
                 if (strlen(trim($arr[0])) > 1) {
                     $this->docuFlaws['messages'][$detail->fileName] = trim($arr[0]);
@@ -255,17 +202,108 @@ class CodeAnalyzer {
         }
     }
 
+    /**
+     * Calls summarizeFile in a new php process.
+     * @param string[] $classes array with classnames
+     * @return array(string => array)
+     */
+    public static function summarizeInSandbox($filename) {
+        $return = null;
+        $pipeDesc = array(
+           0 => array('pipe', 'r'),  //in, child reads from
+           1 => array('pipe', 'w'),  //out, child writes to
+           2 => array('pipe', 'w')   //err, child writes to
+        );
+
+        $process = proc_open('php', $pipeDesc, $pipes);
+
+        if (is_resource($process)) {
+            $phpCommands = '<?php
+                require_once "'.__FILE__.'";
+                echo \'#-#-#-#-#\';
+                ob_start();
+                $out = serialize(iscCodeAnalyzer::summarizeFile('.addslashes($filename).'));
+                ob_end_clean();
+                echo $out;
+                echo \'#-#-#-#-#\';
+            ?>';
+
+            //pipe commands to new process and close pipe to start processing by php
+            fwrite($pipes[0], $phpCommands);
+            fclose($pipes[0]);
+
+            //get result and close return and error pipe
+            $result = stream_get_contents($pipes[1]);
+            fclose($pipes[1]);
+            fclose($pipes[2]);
+
+            // pipes are closed to avoid a deadlock
+            proc_close($process);
+
+            $arr = split('#-#-#-#-#', $result);
+            if (isset($arr[1])) {
+                $return = unserialize($arr[1]);
+            }
+        }
+        return $return;
+    }
+
+    /**
+     * Collect summary for given file
+     *
+     * @param unknown_type $filename
+     * @return unknown
+     */
+    public static function summarizeFile($filename) {
+        ob_start();
+        require_once $filename;
+        ob_end_clean();
+
+        $classes = array();
+        $decClasses = get_declared_classes();
+        foreach ($decClasses as $class) {
+            $class = new ReflectionClass($class);
+            if ($class->getFileName() == realpath($filename)) {
+                $classes[] = $class->getName();
+            }
+        }
+        $classes = self::summarizeClasses($classes);
+
+        $inters = array();
+        $interfaces = get_declared_interfaces();
+        foreach ($interfaces as $inter) {
+            $inter = new ReflectionClass($inter);
+            if ($inter->getFileName() == realpath($filename)) {
+                $inters[] = $inter->getName();
+            }
+        }
+        $inters = self::summarizeInterfaces($inters);
+
+        $functs = array();
+        $functions = get_defined_functions();
+        foreach ($functions as $func) {
+            $func = new ReflectionFunction($func);
+            if ($func->getFileName() == realpath($filename)) {
+        	   $functs[] = $func->getName();
+            }
+        }
+        $functs = self::summarizeFunctions($functs);
+
+        return array('classes' => $classes, 'interfaces' => $inters,
+                     'functions' => $functs);
+    }
+
     //=======================================================================
     /**
      * Will build summary of all code constructs and their meta data
      *
-     * Is called by inc.codeAnalyzer.php and returns an array structur
+     * Is called by inc.iscCodeAnalyzer.php and returns an array structur
      * serialized by serialize() as string
      *
      * @param $classes
      * @return string
      */
-    public static function collectCodeSummary($classes) {
+    public static function summarizeClasses($classes) {
         $result = array();
         foreach ($classes as $className) {
             $class = new ExtReflectionClass($className);
@@ -384,11 +422,17 @@ class CodeAnalyzer {
             $result[$className]['missingMethodComments'] = $missingMethodComments;
             $result[$className]['missingParamTypes'] = $missingParamTypes;
         }
+        return $result;
+    }
 
-        //Collect function infos
-        $functions = get_defined_functions();
+    public static function summarizeInterfaces($interfaces) {
+        throw new Exception('Not Implemented, but shouzld be similar to summarizeClasses');
+    }
+
+
+    public static function summarizeFunctions($functions) {
         $functs = array();
-        foreach ($functions['user'] as $funcName) {
+        foreach ($functions as $funcName) {
         	$func = new ExtReflectionFunction($funcName);
         	$functs[$funcName]['comment'] = (strlen($func->getDocComment()) > 10);
             $functs[$funcName]['file'] = $func->getFileName();
@@ -427,38 +471,8 @@ class CodeAnalyzer {
         	$functs[$funcName]['paramflaws'] = $paramFlaws;
         }
 
-
-        return array('classes' => $result, 'functions' => $functs);
+        return $functs;
     }
-
-    //=======================================================================
-    /**
-     * @param string $file
-     */
-    public function save($file) {
-        $data['stats'] = $this->flatStatsArray;
-        $data['docu'] = $this->docuFlaws;
-        $render = new RenderEngine($data);
-        $render->setTemplate('stats.html');
-        $result = $render->fetch();
-
-        $cli = (strpos(php_sapi_name(), 'cli') !== false);
-        if ($cli) {
-            file_put_contents($file, $result);
-        } else {
-            echo $result;
-        }
-    }
-
-    //=======================================================================
-    /**
-     * @param string $path
-     */
-
-    public function setPhpBinPath($path) {
-        $this->phpBin = $path;
-    }
-
 }
 
 ?>

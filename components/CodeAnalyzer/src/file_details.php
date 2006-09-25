@@ -1,13 +1,12 @@
 <?php
-
 //***************************************************************************
 //***************************************************************************
 //**                                                                       **
-//** fileDetails									         **
+//** fileDetails				                                           **
 //**                                                                       **
 //** Project: Web Services Description Generator                           **
 //**                                                                       **
-//** @package    libs.misc                                                 **
+//** @package    CodeAnalyzer                                              **
 //** @author     Stefan Marr <mail@stefan-marr.de>                         **
 //** @copyright  2006 ....                                                 **
 //** @license    www.apache.org/licenses/LICENSE-2.0   Apache License 2.0  **
@@ -18,12 +17,12 @@
 //***** FileDetails *********************************************************
 /**
  *
- * @package    libs.misc
+ * @package    CodeAnalyzer
  * @author     Stefan Marr <mail@stefan-marr.de>
- * @copyright  2006 ....
+ * @copyright  2006 InstantSVC Team
  * @license    http://www.apache.org/licenses/LICENSE-2.0   Apache License 2.0
  */
-class FileDetails {
+class FileDetails extends ezcBaseStruct {
 
     /**
      * @var string
