@@ -165,6 +165,7 @@ class iscCodeAnalyzer {
             if (is_string($file)) {
                 $filename = $file;
             }
+            //TODO: may be it's better to use a php -l check here like in the class loader
             elseif ($detail->mimeType == 'application/x-httpd-php') {
                 $filename = $file->fileName;
             }
