@@ -77,6 +77,7 @@ class iscCodeAnalyzerFileDetails extends ezcBaseStruct {
             self::$mimeHandler = 2;
         }
         else {
+            //map file extensions to mime type
             $php = array('php', 'php3', 'php4', 'php5', 'inc');
             foreach ($php as $key) {
                 self::$mimes[$key] = 'application/x-httpd-php';
@@ -87,6 +88,9 @@ class iscCodeAnalyzerFileDetails extends ezcBaseStruct {
                 self::$mimes[$key] = 'image';
             }
 
+            self::$mimes['txt'] = 'text/plain';
+
+            //list file types for count lines of count
             self::$locMimes[] = 'application/x-httpd-php';
             self::$locMimes[] = 'application/x-php';
             self::$locMimes[] = 'application/x-javascript';
