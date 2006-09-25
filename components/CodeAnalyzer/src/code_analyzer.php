@@ -161,23 +161,29 @@ class iscCodeAnalyzer {
         }
 
         foreach ($files as $file) {
-            $filename = '';
+            $filename = null;
             if (is_string($file)) {
                 $filename = $file;
             }
             //TODO: may be it's better to use a php -l check here like in the class loader
-            elseif ($detail->mimeType == 'application/x-httpd-php') {
+            elseif ($file->mimeType == 'application/x-httpd-php') {
                 $filename = $file->fileName;
             }
 
-            $filename = strtr($filename, DIRECTORY_SEPARATOR, '/');
-            $result = self::summarizeInSandbox($filename);
-            $this->docuFlaws['classes'] = array_merge($this->docuFlaws['classes'],
-                                                      $result['classes']);
-            $this->docuFlaws['functions'] = array_merge($this->docuFlaws['functions'],
-                                                      $result['functions']);
-            $this->docuFlaws['functions'] = array_merge($this->docuFlaws['interfaces'],
-                                                      $result['interfaces']);
+            if (!empty($filename)) {
+
+                $filename = strtr($filename, DIRECTORY_SEPARATOR, '/');
+                $result = self::summarizeInSandbox($filename);
+
+                if (is_array($result)) {
+                    $this->docuFlaws['classes'] = array_merge_recursive($this->docuFlaws['classes'],
+                                                          $result['classes']);
+                    $this->docuFlaws['functions'] = array_merge_recursive($this->docuFlaws['functions'],
+                                                          $result['functions']);
+                    $this->docuFlaws['interfaces'] = array_merge_recursive($this->docuFlaws['interfaces'],
+                                                          $result['interfaces']);
+                }
+            }
         }
     }
 
@@ -198,11 +204,15 @@ class iscCodeAnalyzer {
 
         if (is_resource($process)) {
             $phpCommands = '<?php
+                @include_once \'ezc/Base/base.php\';
+                @include_once \'Base/base.php\';
+                function __autoload( $className ) { ezcBase::autoload( $className ); }
                 require_once "'.__FILE__.'";
-                echo \'#-#-#-#-#\';
+
                 ob_start();
-                $out = serialize(iscCodeAnalyzer::summarizeFile('.addslashes($filename).'));
+                $out = serialize(iscCodeAnalyzer::summarizeFile(\''.addslashes($filename).'\'));
                 ob_end_clean();
+                echo \'#-#-#-#-#\';
                 echo $out;
                 echo \'#-#-#-#-#\';
             ?>';
@@ -221,9 +231,12 @@ class iscCodeAnalyzer {
 
             $arr = split('#-#-#-#-#', $result);
             if (isset($arr[1])) {
+                $old = error_reporting(0);
                 $return = unserialize($arr[1]);
+                error_reporting($old);
             }
         }
+
         return $return;
     }
 
@@ -260,7 +273,7 @@ class iscCodeAnalyzer {
 
         $functs = array();
         $functions = get_defined_functions();
-        foreach ($functions as $func) {
+        foreach ($functions['user'] as $func) {
             $func = new ReflectionFunction($func);
             if ($func->getFileName() == realpath($filename)) {
         	   $functs[] = $func->getName();
@@ -285,7 +298,7 @@ class iscCodeAnalyzer {
     public static function summarizeClasses($classes) {
         $result = array();
         foreach ($classes as $className) {
-            $class = new ExtReflectionClass($className);
+            $class = new iscReflectionClass($className);
 
             //Collect Class-Tags
             $tags = $class->getTags();
@@ -405,14 +418,15 @@ class iscCodeAnalyzer {
     }
 
     public static function summarizeInterfaces($interfaces) {
-        throw new Exception('Not Implemented, but shouzld be similar to summarizeClasses');
+        //throw new Exception('Not Implemented, but should be similar to summarizeClasses');
+        return array();
     }
 
 
     public static function summarizeFunctions($functions) {
         $functs = array();
         foreach ($functions as $funcName) {
-        	$func = new ExtReflectionFunction($funcName);
+        	$func = new iscReflectionFunction($funcName);
         	$functs[$funcName]['comment'] = (strlen($func->getDocComment()) > 10);
             $functs[$funcName]['file'] = $func->getFileName();
 

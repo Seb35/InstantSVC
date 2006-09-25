@@ -12,7 +12,7 @@
  * Require the test cases
  */
 require_once 'file_details_test.php';
-//require_once 'code_analyzer_test.php';
+require_once 'code_analyzer_test.php';
 require_once 'class_loader_test.php';
 
 /**
@@ -28,7 +28,7 @@ class ezcCodeAnalyzerSuite extends ezcTestSuite
 
         $this->addTest( ezcCodeAnalyzerFileDetailsTest::suite() );
         $this->addTest( ezcCodeAnalyzerClassLoaderTest::suite() );
-        //$this->addTest( ezcCodeAnalyzerTest::suite() );
+        $this->addTest( ezcCodeAnalyzerTest::suite() );
     }
 
     public static function suite()

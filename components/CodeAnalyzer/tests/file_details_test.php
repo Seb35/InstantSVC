@@ -32,7 +32,7 @@ class ezcCodeAnalyzerFileDetailsTest extends ezcTestCase
 
     public static function suite()
     {
-         return new ezcTestSuite( "ezcCodeAnalyzerFileDetailsTest" );
+         return new ezcTestSuite( __CLASS__ );
     }
 }
 ?>

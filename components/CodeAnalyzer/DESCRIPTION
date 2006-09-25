@@ -11,3 +11,6 @@ space to be able to reflect on them.
 
 Important: The PHP5 interpreter has to be available via a 'php' call on the command line.
            On windows it has to be configured properly and added to the PATH var.
+
+           The ezcBase Class MUST be available via
+           include_once 'ezc/Base/base.php'; or include_once 'Base/base.php';
