@@ -1,6 +1,6 @@
 #!/usr/bin/php5.1
 <?php
-require_once(dirname(__FILE__).'/../../../libs/misc/class.codeAnalyzer.php');
+//require_once(dirname(__FILE__).'/../../../libs/misc/class.codeAnalyzer.php');
 
 /*** EZC ***/
 require_once('ezc/Base/base.php');

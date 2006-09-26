@@ -2,22 +2,14 @@ DONE -> Erledigt
 REM  -> Remember/Merke
 Vn	 -> Bsp. V2 geplant für Version 2.0
 
-KORREKTUREN FÜR ENDBENOTUNG
-
-	DONE	- rest.dd.generator setDeploymentPath Parameter prüfen
-	DONE	- datei operationen nicht gesichert (exception handling)
-(Christoph)	- mehrere klassen in einer datei? in eigene dateien verteilen
-(Christoph) - Extended Soap Server -> auslagern von XML Code
-(Gregor&Falko) - Text
-
-
-
-
-
 allgemein
 (alle)	- Konzept für eine Seite
 		- Integration von Stats/Docu-Flaws ins Admin-Tool
 		- Tutorial zu Axis und .Net-WSDL.exe
+
+ExtReflection
+		- ArrayAccess and Array Stuff from http://www.php.net/~helly/php/ext/spl/
+		  should be supported
 
 phpSec
 		- type Attribut auswerten zur unterscheidung von text oder digest
@@ -65,7 +57,7 @@ V3   - redesign (driver architecture)
 V3   - WSDL 2.0 support
 V3   - Adapters or Extended SOAPClient for doument wrapped clients
 V3   - SOAPServer wich generates WSDL if(!file_exists($wsdl_file)) [may be started with new ExtSOAPServer($wsdl_file,  array('soap_binding_style' => WSDLGenerator::DOCUMENT_WRAPPED);]
-
+	 - proper support for ArrayAccess stuff from ExtReflectionApi
 
 
 webservices identifizieren

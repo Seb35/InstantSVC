@@ -157,7 +157,7 @@ class WSDLGenerator
         }
         // signals the generator, that finishTree() still has to be called
         $this->treeFinished = false;
-        
+
         // initialize the list of XML namespaces
         $this->xmlns['wsdl'] = 'http://schemas.xmlsoap.org/wsdl/';
         $this->xmlns['soap'] = 'http://schemas.xmlsoap.org/wsdl/soap/';
@@ -169,7 +169,7 @@ class WSDLGenerator
     /**
      * This function is used to set up the DOM-Tree and to make the important
      * nodes accessible by assigning global variables to them. Furthermore,
-     * depending on the used "USE", diferent namespaces are added to the
+     * depending on the used "USE", different namespaces are added to the
      * definition element.
      * Important: the nodes are not appended now, because the messages are not
      * created yet. That's why they are appended after the messages are created.
@@ -698,7 +698,7 @@ class WSDLGenerator
         if (substr($prefix, -1) == ':') {
             $prefix = substr($prefix, 0, -1);
         }
-        
+
         $name = $type->getXmlName(false); // name without namespace prefix
         $qname = $type->getXmlName(true); // name qualified with namesspace prefix
         $returnValue = '';
@@ -795,10 +795,10 @@ class WSDLGenerator
             // and an array of that item min=0 max=unbounded type= (item)
             $indexType = $type->getMapIndexType();
             $valueType = $type->getMapValueType();
-            
+
             // Name of Map: e.g. integerstringmap
             $mapComplexTypeName = $indexType->toString() . $valueType->toString() . 'Map';
-            
+
             // checks, if the generated WSDL already contains a schema for
             // that map
             if (!in_array($mapComplexTypeName, $this->myComplexTypes))
@@ -834,7 +834,7 @@ class WSDLGenerator
                     $valueElement = $sequence->appendChild($valueElement);
                     $this->myComplexTypes[] = $itemComplexTypeName;
                 }
-                
+
                 // generate schema for the map type
                 $complexType = $this->dom->createElement('complexType', '');
                 $complexType->setAttribute('name', $mapComplexTypeName);
