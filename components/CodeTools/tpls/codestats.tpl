@@ -71,6 +71,7 @@
 	</tr>
 	<?php endforeach; ?>
 </table>
+
 <h1>Class Details</h1>
 <table>
 <tr>
@@ -84,9 +85,16 @@
 	<th>ParamName</th>
 	<th>Type</th>
 </tr>
-{{foreach item=item key=classname from=$docu.classes}}
-<tr {{if $item.missingParamTypes > 0 or $item.missingMethodComments > 0}}{{if $item.webservice}}class="err"{{else}}class="warn"{{/if}}{{/if}}>
-	<td>{{if $item.webservice}}<img src="network.png" alt="Web Service" /> {{/if}}{{$classname}}</td>
+<?php foreach ($sum['classes'] as $classname => $item): ?>
+<tr <?php if ($item['missingParamTypes'] > 0 or $item['missingMethodComments'] > 0): 
+              if ($item['webservice']): ?>
+	class="err"
+	<?php else: ?>class="warn"<?php 
+	          endif; 
+		  endif;
+	?>
+>
+	<td><?php if ($item['webservice']): ?><img src="network.png" alt="Web Service" /> <?php endif; echo $classname; ?></td>
 	<td class="{{if $item.classComment}}warn{{/if}}">{{if $item.classComment}}ok{{else}}missing{{/if}}</td>
 	<td colspan="7"></td>
 </tr>
@@ -114,7 +122,7 @@
 		</tr>
 		{{/foreach}}
 	{{/foreach}}
-{{/foreach}}
+<?php endforeach; ?>
 </table>
 
 <h1>Web Service Documentation Flaws</h1>
