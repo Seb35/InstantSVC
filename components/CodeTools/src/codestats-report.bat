@@ -1,1 +1,1 @@
-@php generate-codestats-report.php %*
+@php codestats-report.php %*

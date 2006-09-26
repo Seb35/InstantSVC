@@ -20,6 +20,7 @@
 
  td {
  	padding:2px 4px;
+	vertical-align:top;
  }
 
  .folder {
@@ -72,18 +73,19 @@
 	<?php endforeach; ?>
 </table>
 
-<h1>Class Details</h1>
+<h1>Class Metrics</h1>
 <table>
 <tr>
-	<th>ClassName</th>
-	<th>Class Docu</th>
-	<th>PropName</th>
-	<th>Type</th>
-	<th>MethodName</th>
-	<th>Comment</th>
-	<th>Return</th>
-	<th>ParamName</th>
-	<th>Type</th>
+	<th>Class Name</th>
+	<th>Lines of Docu</th>
+	<th>#Properties</th>
+	<th><span title="WMC - Weighted Methods Per Class">#Methods</span></th>
+	<th><span title="WMCnp - Non-private methods defined by class">#none-private</span></th>
+	<th><span title="WMCi - Methods defined and inherited by class">#inherited</span></th>
+	<th><span title="DIT - Depth of Inheritance Tree">#Superclasses</span></th>
+	<th><span title="NOC - Number of Children">#Children</span></th>
+	<th><span title="IMPL - Number of interfaces implemented by class">#Interfaces</span></th>
+	<th></th>
 </tr>
 <?php foreach ($sum['classes'] as $classname => $item): ?>
 <tr <?php if ($item['missingParamTypes'] > 0 or $item['missingMethodComments'] > 0): 
@@ -94,10 +96,22 @@
 		  endif;
 	?>
 >
-	<td><?php if ($item['webservice']): ?><img src="network.png" alt="Web Service" /> <?php endif; echo $classname; ?></td>
-	<td class="{{if $item.classComment}}warn{{/if}}">{{if $item.classComment}}ok{{else}}missing{{/if}}</td>
-	<td colspan="7"></td>
+	<td><?php echo $classname; ?></td>
+	<td class="<?php if ($item['classComment'] < 1): ?>warn<?php endif; ?>"><?php if ($item['classComment'] < 1): ?>missing<?php else: echo $item['classComment']; endif; ?></td>
+	
+	<td><?php echo $item['propertyCount']; ?></td>
+	<th><?php echo $item['methodCount']; ?></th>
+	<th><?php echo $item['nonePrivateMethodCount']; ?></th>
+	<th><?php echo $item['inheritedMethodCount']; ?></th>
+	<th><?php echo $item['superclassCount']; ?></th>
+	<th><?php echo $item['childrenCount']; ?></th>
+	<th><?php echo $item['interfaceCount']; ?></th>
+	
+	<td><?php if ($item['webservice']): ?> is Web Service <?php endif; ?></td>
 </tr>
+<?php endforeach; ?>
+</table>
+
 	{{foreach item=type key=propname from=$item.properties}}
 	<tr>
 		<td></td><td></td>
@@ -122,9 +136,20 @@
 		</tr>
 		{{/foreach}}
 	{{/foreach}}
-<?php endforeach; ?>
-</table>
 
+<table>
+<tr>
+	<th>Class Name</th>
+	<th>Lines of Docu</th>
+	<th>PropName</th>
+	<th>Type</th>
+	<th>MethodName</th>
+	<th>Comment</th>
+	<th>Return</th>
+	<th>ParamName</th>
+	<th>Type</th>
+</tr>
+</table>
 <h1>Web Service Documentation Flaws</h1>
 
 <!--<table>
@@ -187,5 +212,15 @@
 <h3>{{$file}}</h3>
 <pre>{{$msg}}</pre>
 {{/foreach}}
+
+<h4>TODO:</h4>
+<ul>
+<li>add project metrics http://www.aivosto.com/project/help/pm-oo-mood.html
+  <ul>
+    <li>http://www.aivosto.com/project/help/pm-proj-misc.html</li>
+  </ul>
+</li>
+<li>add class hierachie metrics http://www.aivosto.com/project/help/pm-oo-misc.html</li>
+</ul>
 </body>
 </html>
