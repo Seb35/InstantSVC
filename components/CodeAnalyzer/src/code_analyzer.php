@@ -71,6 +71,14 @@ class iscCodeAnalyzer {
 
     //=======================================================================
     /**
+    * @return array<string,mixed>
+    */
+    public function getStats() {
+        return $this->flatStatsArray;
+    }
+
+    //=======================================================================
+    /**
     * Starts collection of stats
     * Traverses the directory tree and collects statistical data
     * Doesn't include any file in current php process

@@ -1,0 +1,1 @@
+@php generate-codestats-report.php %*
