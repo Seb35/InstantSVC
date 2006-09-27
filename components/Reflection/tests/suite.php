@@ -26,6 +26,7 @@ require_once 'tag_factory_test.php';
 /** Test Subjects */
 require_once 'test_classes/webservice.php';
 require_once 'test_classes/methods.php';
+require_once 'test_classes/methods2.php';
 require_once 'test_classes/functions.php';
 
 /** Helper Lib */

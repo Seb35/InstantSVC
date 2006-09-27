@@ -153,6 +153,49 @@ class iscReflectionMethod extends ReflectionMethod {
 
     //=======================================================================
     /**
+     * Checks if this is already available in the parent class
+     *
+     * @param ReflectionClass
+     * @return boolean
+     */
+    function isInherited($class) {
+        $decClass = $this->getDeclaringClass();
+        //var_dump($decClass);
+        //var_dump($class);
+        if ($class != null and $class instanceof ReflectionClass) {
+            if ($decClass->getName() == $class->getName()) {
+                $parent = $class->getParentClass();
+                if (!empty($parent)) {
+                    return $parent->hasMethod($this->getName());
+                }
+            }
+            else {
+                //if class is set right, this has to be a inherited method
+                //not overriden in this class
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    //=======================================================================
+    /**
+     * Checks if this method is redefined in this class
+     *
+     * @param ReflectionClass
+     * @return boolean
+     */
+    function isOverriden($class) {
+        $decClass = $this->getDeclaringClass();
+        if ($class != null and $class instanceof ReflectionClass) {
+            return ($class->getName() == $decClass->getName());
+        }
+        return false;
+    }
+
+    //=======================================================================
+    /**
      * @return iscReflectionClassType
      */
     function getDeclaringClass() {
