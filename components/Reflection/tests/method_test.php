@@ -119,16 +119,16 @@ class ezcReflectionMethodTest extends ezcTestCase
 
     public function testIsOverriden() {
         $method = new iscReflectionMethod('TestMethods2', 'm2');
-        self::assertTrue($method->isOverriden(new ReflectionClass('TestMethods2')));
+        self::assertTrue($method->isOverridden(new ReflectionClass('TestMethods2')));
 
         $method = new iscReflectionMethod('TestMethods2', 'newMethod');
-        self::assertTrue($method->isOverriden(new ReflectionClass('TestMethods2')));
+        self::assertFalse($method->isOverridden(new ReflectionClass('TestMethods2')));
 
         $method = new iscReflectionMethod('TestMethods2', 'm4');
-        self::assertFalse($method->isOverriden(new ReflectionClass('TestMethods2')));
+        self::assertFalse($method->isOverridden(new ReflectionClass('TestMethods2')));
 
         $method = new iscReflectionMethod('iscReflectionMethod', 'isInternal');
-        self::assertFalse($method->isOverriden(new ReflectionClass('iscReflectionMethod')));
+        self::assertFalse($method->isOverridden(new ReflectionClass('iscReflectionMethod')));
     }
 
     public static function suite()

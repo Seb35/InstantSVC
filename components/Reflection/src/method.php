@@ -160,8 +160,6 @@ class iscReflectionMethod extends ReflectionMethod {
      */
     function isInherited($class) {
         $decClass = $this->getDeclaringClass();
-        //var_dump($decClass);
-        //var_dump($class);
         if ($class != null and $class instanceof ReflectionClass) {
             if ($decClass->getName() == $class->getName()) {
                 $parent = $class->getParentClass();
@@ -186,10 +184,11 @@ class iscReflectionMethod extends ReflectionMethod {
      * @param ReflectionClass
      * @return boolean
      */
-    function isOverriden($class) {
+    function isOverridden($class) {
         $decClass = $this->getDeclaringClass();
         if ($class != null and $class instanceof ReflectionClass) {
-            return ($class->getName() == $decClass->getName());
+            return ($this->isInherited($class) and
+                    $class->getName() == $decClass->getName());
         }
         return false;
     }
