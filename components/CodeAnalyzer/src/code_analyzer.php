@@ -207,11 +207,14 @@ class iscCodeAnalyzer {
            1 => array('pipe', 'w'),  //out, child writes to
            2 => array('pipe', 'w')   //err, child writes to
         );
-
-        $process = proc_open('php', $pipeDesc, $pipes);
+        $process = proc_open('php -c '.escapeshellarg(dirname(__FILE__)
+                            .DIRECTORY_SEPARATOR.'php.ini'), $pipeDesc, $pipes);
 
         if (is_resource($process)) {
+            $includes = get_include_path();
+
             $phpCommands = '<?php
+                set_include_path("'.addslashes($includes).'");
                 @include_once \'ezc/Base/base.php\';
                 @include_once \'Base/base.php\';
                 function __autoload( $className ) { ezcBase::autoload( $className ); }
