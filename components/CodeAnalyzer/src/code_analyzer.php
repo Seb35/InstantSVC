@@ -218,11 +218,11 @@ class iscCodeAnalyzer {
                 @include_once \'ezc/Base/base.php\';
                 @include_once \'Base/base.php\';
                 function __autoload( $className ) { ezcBase::autoload( $className ); }
-                require_once "'.__FILE__.'";
+                require_once "'.addslashes(__FILE__).'";
 
-                ob_start();
+                //ob_start();
                 $out = serialize(iscCodeAnalyzer::summarizeFile(\''.addslashes($filename).'\'));
-                ob_end_clean();
+                //ob_end_clean();
                 echo \'#-#-#-#-#\';
                 echo $out;
                 echo \'#-#-#-#-#\';
@@ -234,6 +234,7 @@ class iscCodeAnalyzer {
 
             //get result and close return and error pipe
             $result = stream_get_contents($pipes[1]);
+            $error = stream_get_contents($pipes[2]);
             fclose($pipes[1]);
             fclose($pipes[2]);
 
@@ -258,10 +259,10 @@ class iscCodeAnalyzer {
      * @return array(string => array)
      */
     public static function summarizeFile($filename) {
-        ob_start();
+        //ob_start();
         require_once $filename;
-        ob_end_clean();
-
+        //ob_end_clean();
+echo 'test';
         $classes = array();
         $decClasses = get_declared_classes();
         foreach ($decClasses as $class) {
@@ -298,6 +299,204 @@ class iscCodeAnalyzer {
 
     //=======================================================================
     /**
+     * Retrieves all information from the class signature
+     *
+     * @param iscReflectionClassType $class
+     * @return array(string => mixed)
+     */
+    public static function summarizeClassSignature($class) {
+        //Collect Class-Tags
+        $tags = $class->getTags();
+        foreach ($tags as $tag) {
+        	$result['tags'][] = $tag->getName();
+        }
+
+        //Collect special class info
+        $result['file'] = $class->getFileName();
+        $result['LoDB'] = substr_count($class->getDocComment(), "\n");
+        $result['isWebService'] = $class->isWebService();
+        $result['isInternal'] = $class->isInternal();
+        $result['isAbstract'] = $class->isAbstract();
+        $result['isFinal'] = $class->isFinal();
+        $result['isInterface'] = $class->isInterface();
+        $result['LoC'] = $class->getEndLine() - $class->getStartLine();
+
+        $result['interfaces'] = array();
+        $interfaces = $class->getInterfaces();
+        foreach ($interfaces as $inter) {
+        	$result['interfaces'][] = $inter->getName();
+        }
+
+        $result['DIT'] = 1;
+        if ($class->getParentClass() != null) {
+            $result['parentClass'] = $class->getParentClass()->getName();
+
+            $parent = $class->getParentClass();
+            while ($parent != null) {
+            	++$result['DIT'];
+            	$parent = $parent->getParentClass();
+            }
+        }
+        else {
+            $result['parentClass'] = null;
+        }
+        $result['modifiers'] = $class->getModifiers();
+        return $result;
+    }
+
+    //=======================================================================
+    /**
+     * Retrieve all Information about defined properties of a class
+     *
+     * @param iscReflectionClassType $class
+     * @return array(string => mixed)
+     */
+    public static function summarizeClassProperties($class) {
+        $props = $class->getProperties();
+        $result = array();
+        foreach ($props as $property) {
+            if (is_object($property->getType())) {
+        	   $result[$property->getName()]['type'] =
+        	                                   $property->getType()->toString();
+        	   $result[$property->getName()]['docuMissing'] = false;
+            }
+            else {
+               $result[$property->getName()] = null;
+               $result[$property->getName()]['docuMissing'] = true;
+            }
+
+           $result[$property->getName()]['LoDB'] =
+    	                         substr_count($property->getDocComment(), "\n");
+
+    	   $result[$property->getName()]['modifiers'] =
+    	                                              $property->getModifiers();
+    	   $result[$property->getName()]['isDefault'] = $property->isDefault();
+
+    	   if ($property->isPrivate())
+    	   { $result[$property->getName()]['visibility'] = 'private'; }
+    	   elseif ($property->isPublic())
+    	   { $result[$property->getName()]['visibility'] = 'public'; }
+    	   elseif ($property->isProtected())
+    	   { $result[$property->getName()]['visibility'] = 'protected'; }
+
+    	   $result[$property->getName()]['isStatic'] = $property->isStatic();
+        }
+        return $result;
+    }
+
+    //=======================================================================
+    /**
+     * Retrieve all information about parameters of a method or a function
+     *
+     * @param iscReflectionFunction $method
+     * @param integer $paramFlaws
+     * @return array(string => mixed)
+     */
+    public static function summarizeFunctionParameters($method, &$paramFlaws) {
+    	$params = $method->getParameters();
+    	$paramFlaws = 0;
+    	$result = array();
+    	foreach ($params as $param) {
+    	    if (is_object($param->getType())) {
+                $result[$param->getName()]['type'] = $param->getType()->toString();
+    	    }
+    	    else {
+    	        $result[$param->getName()]['type'] = null;
+    	    }
+
+    	    if ($param->getType() == null) {
+    	        $paramFlaws++;
+    	    }
+
+    	    $result[$param->getName()]['isOptional'] = $param->isOptional();
+    	    $result[$param->getName()]['byReference'] = $param->isPassedByReference();
+    	    if ($param->isOptional()) {
+        	    $result[$param->getName()]['hasDefault'] = $param->isDefaultValueAvailable();
+        	    $result[$param->getName()]['defaultValue'] = $param->getDefaultValue();
+    	    }
+    	}
+    	return $result;
+    }
+
+
+    //=======================================================================
+    /**
+     * Retrieve all information of all methods of a class
+     *
+     * @param iscReflectionClassType $class
+     * @param integer $missingMethodComments
+     * @param integer $missingParamTypes
+     * @return array(string => mixed)
+     */
+    public static function summarizeClassMethods($class,
+                                                 &$missingMethodComments,
+                                                 &$missingParamTypes) {
+        $methods = $class->getMethods();
+        $missingMethodComments = 0;
+        $missingParamTypes = 0;
+        $result = array();
+        foreach ($methods as $method) {
+            //Collect method tags
+            $tags = $method->getTags();
+            foreach ($tags as $tag) {
+            	$result[$method->getName()]['tags'][] = $tag->getName();
+            }
+
+            //Collect more infos about this method
+            $result[$method->getName()]['isInternal'] = $method->isInternal();
+            $result[$method->getName()]['isAbstract'] = $method->isAbstract();
+            $result[$method->getName()]['isFinal'] = $method->isFinal();
+            $result[$method->getName()]['isPublic'] = $method->isPublic();
+            $result[$method->getName()]['isPrivate'] = $method->isPrivate();
+            $result[$method->getName()]['isProtected'] = $method->isProtected();
+            $result[$method->getName()]['isStatic'] = $method->isStatic();
+            $result[$method->getName()]['modifiers'] = $method->getModifiers();
+            $result[$method->getName()]['isConstructor'] = $method->isConstructor();
+        	$result[$method->getName()]['isDestructor'] = $method->isDestructor();
+        	$result[$method->getName()]['isOverridden'] = $method->isOverridden($class);
+        	$result[$method->getName()]['isInherited'] = $method->isInherited($class);
+
+        	if ($method->isPublic())
+        	{ $result[$method->getName()]['visibility'] = 'public'; }
+        	elseif ($method->isProtected())
+        	{ $result[$method->getName()]['visibility'] = 'protected'; }
+        	elseif ($method->isPrivate())
+        	{ $result[$method->getName()]['visibility'] = 'private'; }
+
+
+            $result[$method->getName()]['LoDB'] =
+                                   substr_count($method->getDocComment(), "\n");
+        	if ($result[$method->getName()]['LoDB'] < 1) {
+        	   $missingMethodComments++;
+        	}
+
+        	if (is_object($method->getReturnType())) {
+        	   $result[$method->getName()]['return'] = $method->getReturnType()->toString();
+        	}
+        	else {
+        	   $result[$method->getName()]['return'] = null;
+        	}
+        	$result[$method->getName()]['isWebMethod'] = $method->isWebmethod();
+        	$result[$method->getName()]['isRestMethod']
+        	                                  = $method->isTagged('restmethod');
+
+        	$result[$method->getName()]['LoC'] = $method->getEndLine() - $method->getStartLine();
+
+        	$result[$method->getName()]['paramCount'] = $method->getNumberOfParameters();
+        	$result[$method->getName()]['reqParamCount'] = $method->getNumberOfRequiredParameters();
+
+            $paramFlaws = 0;
+            $result[$method->getName()]['params'] =
+                     self::summarizeFunctionParameters($method, $paramFlaws);
+
+        	$missingParamTypes += $paramFlaws;
+        	$result[$method->getName()]['paramflaws'] = $paramFlaws;
+        }
+        return $result;
+    }
+
+    //=======================================================================
+    /**
      * Will build summary of all code constructs and their meta data
      *
      * Is called by inc.iscCodeAnalyzer.php and returns an array structur
@@ -309,121 +508,46 @@ class iscCodeAnalyzer {
     public static function summarizeClasses($classes) {
         $result = array();
         foreach ($classes as $className) {
-            $class = new iscReflectionClass($className);
+            $class = new iscReflectionClassType($className);
 
-            //Collect Class-Tags
-            $tags = $class->getTags();
-            foreach ($tags as $tag) {
-            	$result[$className]['tags'][] = $tag->getName();
-            }
+            $result[$className] = self::summarizeClassSignature($class);
+            $result[$className]['interfaceCount'] = count($result[$className]['interfaces']);
 
-            //Collect special class info
-            $result[$className]['file'] = $class->getFileName();
-            $result[$className]['classComment'] =
-                                        (strlen($class->getDocComment()) > 10);
-            $result[$className]['webservice'] = $class->isWebService();
+            $result[$className]['properties'] = self::summarizeClassProperties($class);
+            $result[$className]['propertyCount'] = count($result[$className]['properties']);
 
-            $result[$className]['isInternal'] = $class->isInternal();
-            $result[$className]['isAbstract'] = $class->isAbstract();
-            $result[$className]['isFinal'] = $class->isFinal();
-            $result[$className]['isInterface'] = $class->isInterface();
-            if ($class->getParentClass() != null) {
-                $result[$className]['parentClass'] =
-                                          $class->getParentClass()->getName();
-            }
-            else {
-                $result[$className]['parentClass'] = null;
-            }
-            $result[$className]['modifiers'] = $class->getModifiers();
-
-            //Collect Class properties
-            $props = $class->getProperties();
-            $result[$className]['properties'] = array();
-            foreach ($props as $property) {
-                if (is_object($property->getType())) {
-            	   $result[$className]['properties'][$property->getName()]
-            	            = $property->getType()->toString();
-                }
-                else {
-                    $result[$className]['properties'][$property->getName()]
-            	            = null;
-                }
-            }
-
-            //Collect class methods
-            $methods = $class->getMethods();
             $missingMethodComments = 0;
             $missingParamTypes = 0;
-            $result[$className]['methods'] = array();
-            foreach ($methods as $method) {
-                //Collect method tags
-                $tags = $method->getTags();
-                foreach ($tags as $tag) {
-                	$result[$className]['methods'][$method->getName()]['tags'][]
-                	                        = $tag->getName();
-                }
-
-                //Collect more infos about this method
-                $result[$className]['methods'][$method->getName()]['isInternal']
-                            = $method->isInternal();
-                $result[$className]['methods'][$method->getName()]['isAbstract']
-                            = $method->isAbstract();
-                $result[$className]['methods'][$method->getName()]['isFinal']
-                            = $method->isFinal();
-                $result[$className]['methods'][$method->getName()]['isPublic']
-                            = $method->isPublic();
-                $result[$className]['methods'][$method->getName()]['isPrivate']
-                            = $method->isPrivate();
-                $result[$className]['methods'][$method->getName()]['isProtected']
-                            = $method->isProtected();
-                $result[$className]['methods'][$method->getName()]['isStatic']
-                            = $method->isStatic();
-                $result[$className]['methods'][$method->getName()]['modifiers']
-                            = $method->getModifiers();
-
-            	$result[$className]['methods'][$method->getName()]['comment']
-            	            = (strlen($method->getDocComment()) > 10);
-            	if (strlen($method->getDocComment()) > 10) {
-            	   $missingMethodComments++;
+            $result[$className]['methods'] = self::summarizeClassMethods($class,
+                                                         $missingMethodComments,
+                                                         $missingParamTypes);
+            $result[$className]['methodCount'] = count($result[$className]['methods']);
+            $result[$className]['nonePrivateMethods'] = 0;
+            $result[$className]['inheritedMethods'] = 0;
+            $result[$className]['overriddenMethods'] = 0;
+            foreach ($result[$className]['methods'] as $method) {
+            	if (!$method['isPrivate']) {
+            	    ++$result[$className]['nonePrivateMethods'];
             	}
-            	if (is_object($method->getReturnType())) {
-            	   $result[$className]['methods'][$method->getName()]['return']
-            	            = $method->getReturnType()->toString();
+            	if ($method['isOverridden']) {
+            	    ++$result[$className]['overriddenMethods'];
             	}
-            	else {
-            	    $result[$className]['methods'][$method->getName()]['return']
-            	            = null;
+            	if ($method['isInherited']) {
+            	    ++$result[$className]['inheritedMethods'];
             	}
-            	$result[$className]['methods'][$method->getName()]['webmethod']
-            	            = $method->isWebmethod();
-            	$result[$className]['methods'][$method->getName()]['restmethod']
-            	            = $method->isTagged('restmethod');
-
-            	//Collect paramter infos
-            	$params = $method->getParameters();
-            	$paramFlaws = 0;
-            	$result[$className]['methods'][$method->getName()]['params'] = array();
-            	foreach ($params as $param) {
-            	    if (is_object($param->getType())) {
-                        $result[$className]['methods'][$method->getName()]
-                                                ['params'][$param->getName()]
-            	                                   = $param->getType()->toString();
-            	    }
-            	    else {
-            	        $result[$className]['methods'][$method->getName()]
-                                           ['params'][$param->getName()] = null;
-            	    }
-
-            	    if ($param->getType() == null) {
-            	        $paramFlaws++;
-            	        $missingParamTypes++;
-            	    }
-            	}
-            	$result[$className]['methods'][$method->getName()]['paramflaws']
-            	            = $paramFlaws;
             }
+
             $result[$className]['missingMethodComments'] = $missingMethodComments;
             $result[$className]['missingParamTypes'] = $missingParamTypes;
+            $result[$className]['children'] = 0;
+        }
+
+        foreach ($classes as $className) {
+            if ($result[$className]['parentClass'] != null) {
+                if (isset($result[$result[$className]['parentClass']])) {
+                    ++$result[$result[$className]['parentClass']]['children'];
+                }
+            }
         }
         return $result;
     }
