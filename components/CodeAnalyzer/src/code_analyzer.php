@@ -159,6 +159,7 @@ class iscCodeAnalyzer {
      * @param string[] $files array of filenames
      */
     public function inspectFiles($files) {
+
         $this->docuFlaws = array();
         $this->docuFlaws['classes'] = array();
         $this->docuFlaws['functions'] = array();
@@ -179,7 +180,6 @@ class iscCodeAnalyzer {
             }
 
             if (!empty($filename)) {
-
                 $filename = strtr($filename, DIRECTORY_SEPARATOR, '/');
                 $result = self::summarizeInSandbox($filename);
 
@@ -314,7 +314,7 @@ class iscCodeAnalyzer {
             //Collect Class-Tags
             $tags = $class->getTags();
             foreach ($tags as $tag) {
-            	$result[$className]['tags'][] = $tag->getTagName();
+            	$result[$className]['tags'][] = $tag->getName();
             }
 
             //Collect special class info
@@ -360,7 +360,7 @@ class iscCodeAnalyzer {
                 $tags = $method->getTags();
                 foreach ($tags as $tag) {
                 	$result[$className]['methods'][$method->getName()]['tags'][]
-                	                        = $tag->getTagName();
+                	                        = $tag->getName();
                 }
 
                 //Collect more infos about this method
@@ -451,7 +451,7 @@ class iscCodeAnalyzer {
         	$tags = $func->getTags();
         	foreach ($tags as $tag) {
         	    if (is_object($tag)) {
-            	   $functs[$funcName]['tags'][] = $tag->getTagName();
+            	   $functs[$funcName]['tags'][] = $tag->getName();
         	    }
             }
 

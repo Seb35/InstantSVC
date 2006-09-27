@@ -4,6 +4,9 @@ This information are available for further processing as array structure.
 Analyzed files aren't included in current process space. Instead they are
 processed in a distinct process space.
 
+To prevent execution of unsave code a custom php.ini is provided to the
+sandboxed process disabling all unnecessary functions.
+
 Furthermore, it provides a class loader which checks files for syntax errors and
 includes all valid files.
 This is used to get all necessary class/function definitions into a process
