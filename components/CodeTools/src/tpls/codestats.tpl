@@ -13,7 +13,7 @@
  	border:1px solid #ccc;
 	border-collapse:collapse;
  }
- table { width:100% }
+ 
  th {
  	background-color:#C0D7E4;
  }
@@ -30,7 +30,12 @@
  .r {
  	text-align:right;
  }
-
+ .l {
+ 	text-align:left;
+ }
+ .c {
+ 	text-align:center;
+ }
  .warn {
  	background-color:#FCE39A;
  }
@@ -39,7 +44,11 @@
  }
  img {border:0; vertical-align:middle;}
  .block {padding-left:30px;}
- 
+ .small, .small th, small td {font-size:8px;}
+ .small th {background-color:#F0F0FF; }
+
+ .class tr {border:0;}
+ .class tbody {border:1px solid #ccc;}
 </style>
 </head>
 
@@ -71,6 +80,74 @@
 		<td class="r"><?php //echo $file->countFunctions; ?></td>
 	</tr>
 	<?php endforeach; ?>
+</table>
+
+<h1>Project Metrics</h1>
+<table>
+	<tr>
+		<th>&nbsp;</th>
+		<th class="c">min</th>
+		<th class="c">avg</th>
+		<th class="c">max</th>
+	</tr>
+	<tr>
+		<td>Classes per File</td>
+		<td class="c"></td>
+		<td class="c"></td>
+		<td class="c"></td>
+	</tr>
+	<tr>
+		<td>Methods per Class</td>
+		<td class="c"></td>
+		<td class="c"></td>
+		<td class="c"></td>
+	</tr>
+	<tr>
+		<td>Depth of Inheritance Tree</td>
+		<td class="c"> - </td>
+		<td class="c"></td>
+		<td class="c"></td>
+	</tr>
+	<tr>
+		<td>Functions per File</td>
+		<td class="c"></td>
+		<td class="c"></td>
+		<td class="c"></td>
+	</tr>
+	<tr>
+		<td>Params per Function/Method</td>
+		<td class="c"></td>
+		<td class="c"></td>
+		<td class="c"></td>
+	</tr>
+	<tr>
+		<td><span title="Lines of Code incl. inline comments">LoC</span> per Function/Method</td>
+		<td class="c"></td>
+		<td class="c"></td>
+		<td class="c"></td>
+	</tr>
+	<tr>
+		<td><span title="Lines of DocBlock comments">LoDB</span> per Function/Method</td>
+		<td class="c"></td>
+		<td class="c"></td>
+		<td class="c"></td>
+	</tr>
+	<tr>
+		<td>Global DocBlock/Code Ratio</td>
+		<td class="c" colspan="3"></td>
+	</tr>
+	<tr>
+		<td>estimated flaws in documentation (faults)</td>
+		<td class="c" colspan="3"></td>
+	</tr>
+	<tr>
+		<td>estimated flaws in documentation (warnings)</td>
+		<td class="c" colspan="3"></td>
+	</tr>
+	<tr>
+		<td>overall used DocTags</td>
+		<td class="c" colspan="3"></td>
+	</tr>
 </table>
 
 <h1>Class Metrics</h1>
@@ -112,44 +189,126 @@
 <?php endforeach; ?>
 </table>
 
-	{{foreach item=type key=propname from=$item.properties}}
+
+<h1>Class Details</h1>
+
+<table class="class">
 	<tr>
-		<td></td><td></td>
-		<td>{{$propname}}</td><td {{if $type=='unknown'}}class="warn"{{/if}}>{{$type}}</td>
-		<td colspan="5"></td>
+		<th colspan="7">MyClass</th>
+		<td></td>
 	</tr>
-	{{/foreach}}
-	{{foreach item=method key=mname from=$item.methods}}
-	<tr {{if $method.webmethod and (!$method.comment or $method.paramflaws > 0)}}class="err"{{/if}}>
-		<td></td><td></td><td></td><td></td>
-		<td>{{$mname}}</td>
-		<td {{if !$method.comment}}class="warn"{{/if}}>{{if $method.comment}}ok{{else}}missing{{/if}}</td>
-		<td {{if $method.return=='unknown'}}class="warn"{{/if}}>{{$method.return}}</td>
-		<td colspan="2"></td>
+	<tbody style="border:1px solid #ccc;">
+	<tr>
+		<td>+</td>
+		<td>property</td>
+		<td>:</td>
+		<td>myType</td>
+		<td colspan="3"></td>
+		<td>0</td>
 	</tr>
-
-		{{foreach item=type key=pname from=$method.params}}
-		<tr>
-			<td></td><td></td><td></td><td></td><td></td><td></td><td></td>
-			<td>{{$pname}}</td>
-			<td class="{{if $type=='unknown'}}{{if $method.webmethod}}err{{else}}warn{{/if}}{{/if}}">{{$type}}</td>
-		</tr>
-		{{/foreach}}
-	{{/foreach}}
-
+	<tr>
+		<td>+</td>
+		<td>property</td>
+		<td>:</td>
+		<td>myType</td>
+		<td colspan="3"></td>
+		<td>0</td>
+	</tr>
+	</tbody>
+	<tbody style="border:1px solid #ccc;">
+	<tr>
+		<td>+</td>
+		<td>doSomething</td>
+		<td>(</td>
+		<td> param:Type, param:Type, param:Type</td>
+		<td>)</td>
+		<td>:</td>
+		<td>myType</td>
+		<td>0</td>
+	</tr>
+	<tr>
+		<td>+</td>
+		<td>doSomething</td>
+		<td>(</td>
+		<td> a:Type, b:Type</td>
+		<td>)</td>
+		<td>:</td>
+		<td>myType</td>
+		<td>0</td>
+	</tr>
+	<tr>
+		<td>+</td>
+		<td>doSomething</td>
+		<td>(</td>
+		<td></td>
+		<td>)</td>
+		<td>:</td>
+		<td>myType</td>
+		<td>0</td>
+	</tr>
+	</tbody>
+</table>
 <table>
 <tr>
 	<th>Class Name</th>
-	<th>Lines of Docu</th>
-	<th>PropName</th>
-	<th>Type</th>
-	<th>MethodName</th>
-	<th>Comment</th>
-	<th>Return</th>
-	<th>ParamName</th>
-	<th>Type</th>
+	<th>&nbsp;</th><th>&nbsp;</th><th>&nbsp;</th><th>&nbsp;</th>
 </tr>
+<?php foreach ($sum['classes'] as $classname => $item): ?>
+<tr>
+	<td colspan="5"><?php echo $classname; ?></td>
+</tr>
+<tr class="small">
+	<th></th>
+	<th class="l">Property Name</th>
+	<th class="l">Type</th>
+	<th>LoDB</th>
+	<th></th>
+</tr>
+	<?php foreach ($item['properties'] as $propname => $prop): ?>
+	<tr>
+		<td></td>
+		<td><?php echo $propname; ?></td>
+		<td><?php echo $prop['type']; ?></td>
+		<td class="c"><?php echo $prop['LoDB']; ?></td>
+		<td></td>
+	</tr>
+	<?php endforeach; ?>
+<tr class="small">
+	<th></th>
+	<th class="l">Method Name</th>
+	<th class="l">Return Type</th>
+	<th>LoDB</th>
+	<th>&nbsp;</th>
+</tr>
+	<?php foreach($item['methods'] as $mname => $method): ?>
+	<tr>
+		<td>&nbsp;</td>
+		<td><?php echo $mname; ?></td>
+		<td><?php echo $method['return']; ?></td>
+		<td class="c"><?php echo $method['comment']; ?></td>
+		<td><?php if ($method['webmethod']): ?>is Web Method<?php endif; ?></td>
+	</tr>
+
+	<tr class="small">
+		<th>&nbsp;</th>
+		<th>&nbsp;</th>
+		<th class="l">Parameter Name</th>
+		<th class="l">Type</th>
+		<td>Flaws: <?php echo $method['paramflaws']; ?></td>
+		
+	</tr>
+		<?php foreach($method['params'] as $pname => $type): ?>
+		<tr>
+			<td></td><td></td>
+			<td><?php echo $pname; ?></td>
+			<td><?php echo $type; ?></td>
+			<td></td>
+		</tr>
+		<?php endforeach; ?>
+	<?php endforeach; ?>
+<?php endforeach; ?>
 </table>
+
 <h1>Web Service Documentation Flaws</h1>
 
 <!--<table>
