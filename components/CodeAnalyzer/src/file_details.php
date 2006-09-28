@@ -45,6 +45,21 @@ class iscCodeAnalyzerFileDetails extends ezcBaseStruct {
     public $fileName = '';
 
     /**
+     * @var int
+     */
+    public $countClasses = 0;
+
+    /**
+     * @var int
+     */
+    public $countFunctions = 0;
+
+    /**
+     * @var int
+     */
+    public $countInterfaces = 0;
+
+    /**
      * @var MimeHandler
      */
     private static $mimeHandler = null;

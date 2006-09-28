@@ -169,7 +169,7 @@ class iscCodeAnalyzer {
             $files = $this->flatStatsArray;
         }
 
-        foreach ($files as $file) {
+        foreach ($files as $key => $file) {
             $filename = null;
             if (is_string($file)) {
                 $filename = $file;
@@ -191,8 +191,17 @@ class iscCodeAnalyzer {
                     $this->docuFlaws['interfaces'] = array_merge_recursive($this->docuFlaws['interfaces'],
                                                           $result['interfaces']);
                 }
+
+                if (is_object($file)) {
+                    $file->countClasses = count($result['classes']);
+                    $file->countInterfaces = count($result['interfaces']);
+                    $file->countFunctions = count($result['functions']);
+                    $this->flatStatsArray[$key] = $file;
+                }
+
             }
         }
+        $this->summarizeProject();
     }
 
     /**
@@ -259,10 +268,10 @@ class iscCodeAnalyzer {
      * @return array(string => array)
      */
     public static function summarizeFile($filename) {
-        //ob_start();
+        ob_start();
         require_once $filename;
-        //ob_end_clean();
-echo 'test';
+        ob_end_clean();
+
         $classes = array();
         $decClasses = get_declared_classes();
         foreach ($decClasses as $class) {
@@ -295,6 +304,347 @@ echo 'test';
 
         return array('classes' => $classes, 'interfaces' => $inters,
                      'functions' => $functs);
+    }
+
+    /**
+     * Counts the classes which are able to access a method.
+     *
+     * A private method is seen by no other class.
+     * A protected method is seen by all subclasses.
+     * A public method is seen by all other classes.
+     *
+     * @param array(string => mixed) $classes
+     * @param int $methodCount
+     * @return int
+     */
+    protected static function countClassesSeeingMethods($classes, &$methodCount) {
+        $methodsVisibleToOthers = 0;
+        $methodCount = 0;
+        $classCount = count($classes);
+        foreach ($classes as $className => $class) {
+        	foreach ($class['methods'] as $method) {
+        		++$methodCount;
+
+        		//simple
+        		if ($method['isPublic']) {
+                    $methodsVisibleToOthers += $classCount - 1;
+                }
+
+        		//nothing
+        		if ($method['isPrivate']) { }
+
+        		//complicated
+                if ($method['isProtected']) {
+                    $methodsVisibleToOthers += self::countSubclasses($classes,
+                                                                    $className);
+                }
+        	}
+        }
+        return $methodsVisibleToOthers;
+    }
+
+    /**
+     * Counts the classes which are able to access a property.
+     *
+     * A private property is seen by no other class.
+     * A protected property is seen by all subclasses.
+     * A public property is seen by all other classes.
+     *
+     * @param array(string => mixed) $classes
+     * @param int $propCount
+     * @return int
+     */
+    protected static function countClassesSeeingProperties($classes, &$propCount) {
+        $propsVisibleToOthers = 0;
+        $propCount = 0;
+        $classCount = count($classes);
+        foreach ($classes as $className => $class) {
+        	foreach ($class['properties'] as $prop) {
+        		++$propCount;
+        		//simple
+        		if ($prop['isPublic']) {
+                    $propsVisibleToOthers += $classCount - 1;
+                }
+
+        		//nothing
+        		if ($prop['isPrivate']) { }
+
+        		//complicated
+                if ($prop['isProtected']) {
+                    $propsVisibleToOthers += self::countSubclasses($classes,
+                                                                    $className);
+                }
+        	}
+        }
+        return $propsVisibleToOthers;
+    }
+
+    /**
+     * Counts all inherited methods
+     *
+     * @param array(string => mixed) $classes
+     * @return int
+     */
+    protected  static function countInheritedMethods($classes) {
+        $i = 0;
+        foreach ($classes as $class) {
+        	foreach ($class['methods'] as $method) {
+        		if ($method['isInherited']) {
+        		    ++$i;
+        		}
+        	}
+        }
+        return $i;
+    }
+
+    /**
+     * Counts all overridden methods
+     *
+     * @param array(string => mixed) $classes
+     * @return int
+     */
+    protected  static function countOverriddenMethods($classes) {
+        $overridden = 0;
+        foreach ($classes as $class) {
+        	foreach ($class['methods'] as $method) {
+        		if ($method['isOverridden']) {
+        		    ++$overridden;
+        		}
+        	}
+        }
+        return $overridden;
+    }
+
+
+    /**
+     * Counts all possible overriddes
+     *
+     * Sum of ($newMethods * $subClasses) for all methods
+     *
+     * @param array(string => mixed) $classes
+     * @return int
+     */
+    public static function countPossibleOverriddes($classes) {
+        $pos = 0;
+        foreach ($classes as $className => $class) {
+            $new = 0;
+        	foreach ($class['methods'] as $method) {
+        		if ($method['isIntroduced']) {
+        		    ++$new;
+        		}
+        	}
+        	$pos += $new * self::countSubclasses($classes, $className);
+        }
+        return $pos;
+    }
+
+    /**
+     * Counts all classes which are inherited from the given class
+     *
+     * @param array(string => mixed) $classes
+     * @param string $class
+     * @return int
+     */
+    public static function countSubclasses($classes, $class) {
+        $subclasses = $classes[$class]['childrenCount'];
+        foreach ($classes[$class]['children'] as $childClass) {
+            $subclasses += self::countSubclasses($classes, $childClass);
+        }
+        return $subclasses;
+    }
+
+    public static function collectMethodsStats($classes) {
+        $min = 0;
+        $max = 0;
+        $avg = 0;
+        $mCount = 0;
+
+        foreach ($classes as $class) {
+            $mCount += count($class['methods']);
+            if ($min == 0) {
+                $min = count($class['methods']);
+            }
+            else {
+                $min = min($min, count($class['methods']));
+            }
+            $max = max(count($class['methods']), $max);
+        }
+        $avg = $mCount / count($classes);
+        return array('min'=>$min, 'avg'=>$avg, 'max'=>$max);
+    }
+
+    public function summarizeProject() {
+        $project = array();
+
+        $classes = &$this->docuFlaws['classes'];
+
+        $methodCount = 0;
+        $mv = self::countClassesSeeingMethods($classes, $methodCount);
+        $project['MHF'] = 1 - ($mv / (count($classes) - 1) / $methodCount);
+
+        $attrCount = 0;
+        $av = self::countClassesSeeingProperties($classes, $attrCount);
+        $project['AHF'] = 1 - ($av / (count($classes) - 1) / $attrCount);
+
+        $inM = self::countInheritedMethods($classes);
+        $project['MIF'] = $inM / $methodCount;
+
+        $over = self::countOverriddenMethods($classes);
+        $posOver = self::countPossibleOverriddes($classes);
+        $project['PF'] = ($posOver == 0) ? 0 : $over / $posOver;
+
+        $project['methods'] = self::collectMethodsStats($classes);
+        $project['functions'] = $this->collectFunctionStats();
+        $project['classes'] = $this->collectClassStats();
+
+        var_dump($project['classes']['lodbSum']);
+        var_dump($project['functions']['lodbSum']);
+        var_dump($project['functions']['locSum']);
+        //$project['classes']['locSum']
+        $project['dbcRatio'] = ($project['classes']['lodbSum'] +
+                                $project['functions']['lodbSum']) /
+                                $project['functions']['locSum'];
+
+
+        $this->docuFlaws['project'] = $project;
+    }
+
+    protected function collectClassStats() {
+        $min = 0;
+        $max = 0;
+        $avg = 0;
+        $cCount = 0;
+        $fileC = 0;
+        foreach ($this->flatStatsArray as $file) {
+            $cCount += $file->countClasses;
+        	if ($min == 0) {
+        	    $min = $file->countClasses;
+        	}
+        	else {
+        	    $min = min($min, $file->countClasses);
+        	}
+            $max = max($max, $file->countClasses);
+            if ($file->countClasses > 0) {
+                ++$fileC;
+            }
+        }
+
+        if ($fileC > 0)
+            $avg = $cCount / $fileC;
+
+        $abstractClasses = 0;
+        $rootClasses = 0;
+        $leafClasses = 0;
+        $ditMax = 0;
+        $ditSum = 0;
+        $lodbSum = 0;
+        $locSum = 0;
+        foreach ($this->docuFlaws['classes'] as $class) {
+        	$ditMax = max($class['DIT'], $ditMax);
+        	$ditSum += $class['DIT'];
+        	if ($class['isAbstract']) { ++$abstractClasses; }
+        	if (empty($class['parentClass'])) { ++$rootClasses; }
+        	if ($class['childrenCount'] < 1) { ++$leafClasses; }
+        	$locSum += $class['LoC'];
+        	$lodbSum += $class['LoDB'];
+        }
+        $ditAvg = $ditSum / $cCount;
+        return array('min' => $min, 'max' => $max, 'avg' => $avg,
+                     'DITmax' => $ditMax, 'DITavg' => $ditAvg,
+                     'leaf' => $leafClasses, 'root' => $rootClasses,
+                     'abstract' => $abstractClasses, 'locSum' => $locSum,
+                     'lodbSum' => $lodbSum);
+    }
+
+    protected function collectFunctionStats() {
+        $min = 0;
+        $max = 0;
+        $avg = 0;
+        $fCount = 0;
+        $fileC = 0;
+        foreach ($this->flatStatsArray as $file) {
+            $fCount += $file->countFunctions;
+        	if ($min == 0) {
+        	    $min = $file->countFunctions;
+        	}
+        	else {
+        	    $min = min($min, $file->countFunctions);
+        	}
+            $max = max($max, $file->countFunctions);
+            if ($file->countFunctions > 0) {
+                ++$fileC;
+            }
+        }
+        if ($fileC > 0)
+            $avg = $fCount / $fileC;
+
+        $paramMin = -1;
+        $paramMax = 0;
+        $paramAvg = 0;
+        $fCount = 0;
+        $pCount = 0;
+
+        $locMin = -1;
+        $locMax = 0;
+        $locAvg = 0;
+        $locSum = 0;
+
+        $lodbMin = -1;
+        $lodbMax = 0;
+        $lodbAvg = 0;
+        $lodbSum = 0;
+        foreach ($this->docuFlaws['functions'] as $func) {
+            if ($paramMin == -1) { $paramMin = $func['paramCount']; }
+        	else { $paramMin = min($paramMin, $func['paramCount']); }
+
+        	$paramMax = max($paramMax, $func['paramCount']);
+        	$pCount += $func['paramCount'];
+        	++$fCount;
+
+        	if ($locMin == -1) { $locMin = $func['LoC']; }
+        	else { $locMin = min($locMin, $func['LoC']); }
+
+        	$locMax = max($locMax, $func['LoC']);
+        	$locSum += $func['LoC'];
+
+        	if ($lodbMin == -1) { $lodbMin = $func['LoDB']; }
+        	else { $lodbMin = min($lodbMin, $func['LoDB']); }
+
+        	$lodbMax = max($lodbMax, $func['LoDB']);
+        	$lodbSum += $func['LoDB'];
+        }
+        foreach ($this->docuFlaws['classes'] as $class) {
+        	foreach ($class['methods'] as $func) {
+        		if ($paramMin == -1) { $paramMin = $func['paramCount']; }
+            	else { $paramMin = min($paramMin, $func['paramCount']); }
+
+            	$paramMax = max($paramMax, $func['paramCount']);
+            	$pCount += $func['paramCount'];
+            	++$fCount;
+
+            	if ($locMin == -1) { $locMin = $func['LoC']; }
+            	else { $locMin = min($locMin, $func['LoC']); }
+
+            	$locMax = max($locMax, $func['LoC']);
+            	$locSum += $func['LoC'];
+
+            	if ($lodbMin == -1) { $lodbMin = $func['LoDB']; }
+            	else { $lodbMin = min($lodbMin, $func['LoDB']); }
+
+            	$lodbMax = max($lodbMax, $func['LoDB']);
+            	$lodbSum += $func['LoDB'];
+        	}
+        }
+        $locAvg = $locSum / $fCount;
+        $lodbAvg = $lodbSum / $fCount;
+        $paramAvg = $pCount / $fCount;
+        return array('min' => $min, 'max' => $max, 'avg' => $avg,
+                     'paramMin' => $paramMin, 'paramMax' => $paramMax,
+                     'paramAvg' => $paramAvg, 'locMin' => $locMin,
+                     'locMax' => $locMax, 'locAvg' => $locAvg,
+                     'lodbMin' => $lodbMin, 'lodbMax' => $lodbMax,
+                     'lodbAvg' => $lodbAvg, 'locSum' => $locSum,
+                     'lodbSum' => $lodbSum);
     }
 
     //=======================================================================
@@ -371,6 +721,10 @@ echo 'test';
     	   $result[$property->getName()]['modifiers'] =
     	                                              $property->getModifiers();
     	   $result[$property->getName()]['isDefault'] = $property->isDefault();
+
+    	   $result[$property->getName()]['isPrivate'] = $property->isPrivate();
+    	   $result[$property->getName()]['isPublic'] = $property->isPublic();
+    	   $result[$property->getName()]['isProtected'] = $property->isProtected();
 
     	   if ($property->isPrivate())
     	   { $result[$property->getName()]['visibility'] = 'private'; }
@@ -453,8 +807,9 @@ echo 'test';
             $result[$method->getName()]['modifiers'] = $method->getModifiers();
             $result[$method->getName()]['isConstructor'] = $method->isConstructor();
         	$result[$method->getName()]['isDestructor'] = $method->isDestructor();
-        	$result[$method->getName()]['isOverridden'] = $method->isOverridden($class);
-        	$result[$method->getName()]['isInherited'] = $method->isInherited($class);
+        	$result[$method->getName()]['isOverridden'] = $method->isOverridden();
+        	$result[$method->getName()]['isInherited'] = $method->isInherited();
+        	$result[$method->getName()]['isIntroduced'] = $method->isIntroduced();
 
         	if ($method->isPublic())
         	{ $result[$method->getName()]['visibility'] = 'public'; }
@@ -539,31 +894,50 @@ echo 'test';
 
             $result[$className]['missingMethodComments'] = $missingMethodComments;
             $result[$className]['missingParamTypes'] = $missingParamTypes;
-            $result[$className]['children'] = 0;
+            $result[$className]['children'] = array();
+            $result[$className]['childrenCount'] = 0;
         }
 
         foreach ($classes as $className) {
             if ($result[$className]['parentClass'] != null) {
                 if (isset($result[$result[$className]['parentClass']])) {
-                    ++$result[$result[$className]['parentClass']]['children'];
+                    $result[$result[$className]['parentClass']]['children'][] = $className;
+                    ++$result[$result[$className]['parentClass']]['childrenCount'];
                 }
             }
         }
         return $result;
     }
 
+    /**
+     * Enter description here...
+     * @todo: implement
+     * @param unknown_type $interfaces
+     * @return unknown
+     */
     public static function summarizeInterfaces($interfaces) {
         //throw new Exception('Not Implemented, but should be similar to summarizeClasses');
         return array();
     }
 
 
+    /**
+     * Enter description here...
+     * @todo: rework
+     * @param unknown_type $functions
+     * @return unknown
+     */
     public static function summarizeFunctions($functions) {
         $functs = array();
         foreach ($functions as $funcName) {
         	$func = new iscReflectionFunction($funcName);
         	$functs[$funcName]['comment'] = (strlen($func->getDocComment()) > 10);
             $functs[$funcName]['file'] = $func->getFileName();
+            $functs[$funcName]['LoDB'] = substr_count($func->getDocComment(), "\n");
+            $functs[$funcName]['LoC'] = $func->getEndLine() - $func->getStartLine();
+
+            $functs[$funcName]['paramCount'] = $func->getNumberOfParameters();
+            $functs[$funcName]['reqParamCount'] = $func->getNumberOfRequiredParameters();
 
         	if (is_object($func->getReturnType())) {
         	    $functs[$funcName]['return'] = $func->getReturnType()->toString();
@@ -580,22 +954,10 @@ echo 'test';
             }
 
         	//Collect paramter infos
-        	$params = $func->getParameters();
         	$paramFlaws = 0;
-        	$functs[$funcName]['params'] = array();
-        	foreach ($params as $param) {
-        	    if (is_object($param->getType())) {
-                    $functs[$funcName]['params'][$param->getName()]
-        	                                   = $param->getType()->toString();
-        	    }
-        	    else {
-        	        $functs[$funcName]['params'][$param->getName()] = null;
-        	    }
+            $functs[$funcName]['params'] =
+                          self::summarizeFunctionParameters($func, $paramFlaws);
 
-        	    if ($param->getType() == null) {
-        	        $paramFlaws++;
-        	    }
-        	}
         	$functs[$funcName]['paramflaws'] = $paramFlaws;
         }
 
