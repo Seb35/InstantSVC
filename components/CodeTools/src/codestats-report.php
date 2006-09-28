@@ -35,6 +35,19 @@ else {
         $analyzer->collect();
         $sum = $analyzer->getCodeSummary();
         $stats = $analyzer->getStats();
+        $overall['linesOfCode'] = 0;
+    	$overall['fileSize'] = 0;
+    	$overall['countClasses'] = 0;
+    	$overall['countInterfaces'] = 0;
+    	$overall['countFunctions'] = 0;
+
+        foreach ($stats as $file) {
+        	$overall['linesOfCode']     += $file->linesOfCode;
+        	$overall['fileSize']        += $file->fileSize;
+        	$overall['countClasses']    += $file->countClasses;
+        	$overall['countInterfaces'] += $file->countInterfaces;
+        	$overall['countFunctions']  += $file->countFunctions;
+        }
     }
     elseif (is_file($files) && is_readable($files)) {
         $sum = iscCodeAnalyzer::summarizeFile($files);
@@ -42,6 +55,7 @@ else {
 
     $sourcePath = realpath($files);
     $files = $sum;
+
     ob_start();
     include(dirname(__FILE__).'/tpls/codestats.tpl');
     $result = ob_get_clean();

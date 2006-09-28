@@ -79,19 +79,19 @@
 		<td><?php echo $file->mimeType; ?></td>
 		<td class="r"><?php echo $file->linesOfCode; ?></td>
 		<td class="r"><?php echo $file->fileSize; ?></td>
-		<td class="r"><?php //echo $file->countClasses; ?></td>
-		<td class="r"><?php //echo $file->countInterfaces; ?></td>
-		<td class="r"><?php //echo $file->countFunctions; ?></td>
+		<td class="r"><?php echo $file->countClasses; ?></td>
+		<td class="r"><?php echo $file->countInterfaces; ?></td>
+		<td class="r"><?php echo $file->countFunctions; ?></td>
 	</tr>
 	<?php endforeach; ?>
 	<tr style="border-top:2px solid #000;">
 	<td>Overall #: <?php ?></td>
 	<td></td>
-	<td><?php ?></td>
-	<td></td>
-	<td><?php ?></td>
-	<td><?php ?></td>
-	<td><?php ?></td>
+	<td class="r"><?php echo $overall['linesOfCode']; ?></td>
+	<td class="r"><?php echo $overall['fileSize']; ?></td>
+	<td class="r"><?php echo $overall['countClasses']; ?></td>
+	<td class="r"><?php echo $overall['countInterfaces']; ?></td>
+	<td class="r"><?php echo $overall['countFunctions']; ?></td>
 	</tr>
 </table>
 
@@ -105,49 +105,49 @@
 	</tr>
 	<tr>
 		<td>Classes per File</td>
-		<td class="c"></td>
-		<td class="c"></td>
-		<td class="c"></td>
+		<td class="c"><?php echo $sum['project']['classes']['min']; ?></td>
+		<td class="c"><?php echo (round($sum['project']['classes']['avg'], 2)); ?></td>
+		<td class="c"><?php echo $sum['project']['classes']['max']; ?></td>
 	</tr>
 	<tr>
 		<td>Methods per Class</td>
-		<td class="c"></td>
-		<td class="c"></td>
-		<td class="c"></td>
+		<td class="c"><?php echo $sum['project']['methods']['min']; ?></td>
+		<td class="c"><?php echo (round($sum['project']['methods']['avg'], 2)); ?></td>
+		<td class="c"><?php echo $sum['project']['methods']['max']; ?></td>
 	</tr>
 	<tr>
 		<td>Depth of Inheritance Tree</td>
 		<td class="c"> - </td>
-		<td class="c"></td>
-		<td class="c"></td>
+		<td class="c"><?php echo (round($sum['project']['classes']['DITavg'], 2)); ?></td>
+		<td class="c"><?php echo $sum['project']['classes']['DITmax']; ?></td>
 	</tr>
 	<tr>
 		<td>Functions per File</td>
-		<td class="c"></td>
-		<td class="c"></td>
-		<td class="c"></td>
+		<td class="c"><?php echo $sum['project']['functions']['min']; ?></td>
+		<td class="c"><?php echo (round($sum['project']['functions']['avg'], 2)); ?></td>
+		<td class="c"><?php echo $sum['project']['functions']['max']; ?></td>
 	</tr>
 	<tr>
 		<td>Params per Function/Method</td>
-		<td class="c"></td>
-		<td class="c"></td>
-		<td class="c"></td>
+		<td class="c"><?php echo $sum['project']['functions']['paramMin']; ?></td>
+		<td class="c"><?php echo (round($sum['project']['functions']['paramAvg'], 2)); ?></td>
+		<td class="c"><?php echo $sum['project']['functions']['paramMax']; ?></td>
 	</tr>
 	<tr>
 		<td><span title="Lines of Code incl. inline comments">LoC</span> per Function/Method</td>
-		<td class="c"></td>
-		<td class="c"></td>
-		<td class="c"></td>
+		<td class="c"><?php echo $sum['project']['functions']['locMin']; ?></td>
+		<td class="c"><?php echo (round($sum['project']['functions']['locAvg'], 2)); ?></td>
+		<td class="c"><?php echo $sum['project']['functions']['locMax']; ?></td>
 	</tr>
 	<tr>
 		<td><span title="Lines of DocBlock comments">LoDB</span> per Function/Method</td>
-		<td class="c"></td>
-		<td class="c"></td>
-		<td class="c"></td>
+		<td class="c"><?php echo $sum['project']['functions']['lodbMin']; ?></td>
+		<td class="c"><?php echo (round($sum['project']['functions']['lodbAvg'], 2)); ?></td>
+		<td class="c"><?php echo $sum['project']['functions']['lodbMax']; ?></td>
 	</tr>
 	<tr>
 		<td>Global DocBlock/Code Ratio</td>
-		<td class="c" colspan="3"></td>
+		<td class="c" colspan="3"><?php echo (round($sum['project']['dbcRatio'], 2)); ?></td>
 	</tr>
 	<tr>
 		<td>estimated flaws in documentation (faults)</td>
@@ -163,15 +163,15 @@
 	</tr>
 	<tr>
 		<td>Abstract Classes</td>
-		<td class="c" colspan="3"></td>
+		<td class="c" colspan="3"><?php echo $sum['project']['classes']['abstract']; ?></td>
 	</tr>
 	<tr>
 		<td>Root Classes</td>
-		<td class="c" colspan="3"></td>
+		<td class="c" colspan="3"><?php echo $sum['project']['classes']['root']; ?></td>
 	</tr>
 	<tr>
 		<td>Leaf Classes</td>
-		<td class="c" colspan="3"></td>
+		<td class="c" colspan="3"><?php echo $sum['project']['classes']['leaf']; ?></td>
 	</tr>
 </table>
 
@@ -180,26 +180,31 @@
 <tr>
 	<th>&nbsp;</th>
 	<th>Value</th>
+	<th>Suggestion</th>
 </tr>
 <tr>
 	<td>MHF - Method Hiding Factor</td>
-	<td class="c"></td>
+	<td class="c"><?php echo (round($sum['project']['MHF'] * 100, 2)).'%'; ?></td>
+	<td> 8% - 25% </td>
 </tr>
 <tr>
 	<td>AHF - Attribute Hiding Factor</td>
-	<td class="c"></td>
+	<td class="c"><?php echo (round($sum['project']['AHF'] * 100, 2)).'%'; ?></td>
+	<td> ~ 100% </td>
 </tr>
 <tr>
 	<td>MIF - Method Inheritance Factor</td>
-	<td class="c"></td>
+	<td class="c"><?php echo (round($sum['project']['MIF'] * 100, 2)).'%'; ?></td>
+	<td>20% - 80%</td>
 </tr>
-<tr>
+<!--<tr>
 	<td>AIF - Attribute Inheritance Factor</td>
-	<td class="c"></td>
-</tr>
+	<td class="c"><?php echo $sum['project']['AIF']; ?></td>
+</tr>-->
 <tr>
 	<td>PF - Polymorphism Factor</td>
-	<td class="c"></td>
+	<td class="c"><?php echo (round($sum['project']['PF'] * 100, 2)).'%'; ?></td>
+	<td title="a high PF indicates a rather complex system which is hard to manage.">&gt;= 10% but be aware of complexity</td>
 </tr>
 </table>
 
@@ -230,7 +235,7 @@
 	<td class="c"><?php echo $item['inheritedMethods']; ?></td>
 	<td class="c"><?php echo $item['overriddenMethods']; ?></td>
 	<td class="c"><?php echo $item['DIT']; ?></td>
-	<td class="c"><?php echo $item['children']; ?></td>
+	<td class="c"><?php echo $item['childrenCount']; ?></td>
 	<td class="c"><?php echo $item['interfaceCount']; ?></td>
 
 	<td><?php if ($item['isWebService']): ?> is Web Service <?php endif; ?></td>
@@ -244,7 +249,16 @@
 <?php foreach ($sum['classes'] as $classname => $item): ?>
 <table class="class">
 	<tr>
-		<th colspan="7"><?php echo $classname; ?></th>
+		<th colspan="7">
+			<?php if($item['isAbstract']) { echo '<em>'; } 
+					echo $classname; 
+				  if($item['isAbstract']) { echo '</em>';}
+			?>
+			<?php 
+				if(!empty($item['parentClass'])) {echo "<br/>\n extends ".$item['parentClass'];}
+				if(count($item['interfaces']) > 0) {echo "<br/>\n implements ".implode(', ', $item['interfaces']);}
+			?>
+		</th>
 		<th title="Lines of Code">LoC</th>
 		<th title="Lines of DocBlock Comments">LoDB</th>
 		<th title="Flaws in Param Documentation">Flaws</th>
@@ -265,7 +279,7 @@
 	</tbody>
 	<tbody>
 	<?php foreach($item['methods'] as $mname => $method): ?>
-	<tr>
+	<tr <?php if($method['isInherited']) { echo 'style="display:none;"';} ?>>
 		<td><?php echo $umlVisibility[$method['visibility']]; ?></td>
 		<td style="<?php
 			if($method['isStatic']) { echo 'text-decoration:underline;'; }
@@ -276,8 +290,8 @@
 		<td>
 		<?php
 			$params = array();
-			foreach($method['params'] as $pname => $type) {
-				$params[] = $pname.':'.type;
+			foreach($method['params'] as $pname => $param) {
+				$params[] = $pname.':'.$param['type'];
 			}
 			echo implode(',<br/>', $params);
 		?>
