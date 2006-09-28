@@ -192,8 +192,13 @@ class iscReflectionMethod extends ReflectionMethod {
         $decClass = $this->getDeclaringClass();
         if (!empty($this->curClass) and !empty($decClass)) {
             $parent = $this->curClass->getParentClass();
-            return ($parent->hasMethod($this->getName()) and
-                    $this->curClass->getName() == $decClass->getName());
+            if (!is_object($parent)) {
+                return false;
+            }
+            else {
+                return ($parent->hasMethod($this->getName()) and
+                        $this->curClass->getName() == $decClass->getName());
+            }
         }
         return false;
     }
