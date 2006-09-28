@@ -31,6 +31,15 @@ class iscReflectionMethod extends ReflectionMethod {
     */
     protected $docParser;
 
+    /**
+     * This is the class for which this method object has been instantiated.
+     * It is necessary to decide if a method is definied, inherited, overridden
+     * in a class.
+     *
+     * @var ReflectionClass
+     */
+    protected $curClass;
+
     //=======================================================================
     /**
     * @param mixed $class
@@ -40,6 +49,15 @@ class iscReflectionMethod extends ReflectionMethod {
         parent::__construct($class, $name);
         $this->docParser = new iscReflectionDocParser($this->getDocComment());
         $this->docParser->parse();
+        if ($class instanceof ReflectionClass) {
+            $this->curClass = $class;
+        }
+        elseif (is_string($class)) {
+            $this->curClass = new ReflectionClass($class);
+        }
+        else {
+            $this->curClass = null;
+        }
     }
 
     //=======================================================================
@@ -154,24 +172,12 @@ class iscReflectionMethod extends ReflectionMethod {
     //=======================================================================
     /**
      * Checks if this is already available in the parent class
-     *
-     * @param ReflectionClass
      * @return boolean
      */
-    function isInherited($class) {
+    function isInherited() {
         $decClass = $this->getDeclaringClass();
-        if ($class != null and $class instanceof ReflectionClass) {
-            if ($decClass->getName() == $class->getName()) {
-                $parent = $class->getParentClass();
-                if (!empty($parent)) {
-                    return $parent->hasMethod($this->getName());
-                }
-            }
-            else {
-                //if class is set right, this has to be a inherited method
-                //not overriden in this class
-                return true;
-            }
+        if (!empty($this->curClass) and !empty($decClass)) {
+            return ($decClass->getName() != $this->curClass->getName());
         }
 
         return false;
@@ -180,17 +186,25 @@ class iscReflectionMethod extends ReflectionMethod {
     //=======================================================================
     /**
      * Checks if this method is redefined in this class
-     *
-     * @param ReflectionClass
      * @return boolean
      */
-    function isOverridden($class) {
+    function isOverridden() {
         $decClass = $this->getDeclaringClass();
-        if ($class != null and $class instanceof ReflectionClass) {
-            return ($this->isInherited($class) and
-                    $class->getName() == $decClass->getName());
+        if (!empty($this->curClass) and !empty($decClass)) {
+            $parent = $this->curClass->getParentClass();
+            return ($parent->hasMethod($this->getName()) and
+                    $this->curClass->getName() == $decClass->getName());
         }
         return false;
+    }
+
+    //=======================================================================
+    /**
+     * Checks if this method is appeared first in the current class
+     * @return boolean
+     */
+    function isIntroduced() {
+        return !$this->isInherited() and !$this->isOverridden();
     }
 
     //=======================================================================

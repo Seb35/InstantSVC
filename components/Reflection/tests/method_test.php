@@ -105,30 +105,45 @@ class ezcReflectionMethodTest extends ezcTestCase
 
     public function testIsInherited() {
         $method = new iscReflectionMethod('TestMethods2', 'm2');
-        self::assertTrue($method->isInherited(new ReflectionClass('TestMethods2')));
+        self::assertFalse($method->isInherited());
 
+        //is internal has been inherited an not redefined from ReflectionFunction
         $method = new iscReflectionMethod('ReflectionMethod', 'isInternal');
-        self::assertTrue($method->isInherited(new ReflectionClass('ReflectionMethod')));
+        self::assertTrue($method->isInherited());
+
+        $method = new iscReflectionMethod('TestMethods2', 'm3');
+        self::assertTrue($method->isInherited());
 
         $method = new iscReflectionMethod('TestMethods2', 'newMethod');
-        self::assertFalse($method->isInherited(new ReflectionClass('TestMethods2')));
+        self::assertFalse($method->isInherited());
 
         $method = new iscReflectionMethod('iscReflectionMethod', 'isInherited');
-        self::assertFalse($method->isInherited(new ReflectionClass('iscReflectionMethod')));
+        self::assertFalse($method->isInherited());
     }
 
     public function testIsOverriden() {
         $method = new iscReflectionMethod('TestMethods2', 'm2');
-        self::assertTrue($method->isOverridden(new ReflectionClass('TestMethods2')));
+        self::assertTrue($method->isOverridden());
 
         $method = new iscReflectionMethod('TestMethods2', 'newMethod');
-        self::assertFalse($method->isOverridden(new ReflectionClass('TestMethods2')));
+        self::assertFalse($method->isOverridden());
 
         $method = new iscReflectionMethod('TestMethods2', 'm4');
-        self::assertFalse($method->isOverridden(new ReflectionClass('TestMethods2')));
+        self::assertFalse($method->isOverridden());
 
         $method = new iscReflectionMethod('iscReflectionMethod', 'isInternal');
-        self::assertFalse($method->isOverridden(new ReflectionClass('iscReflectionMethod')));
+        self::assertFalse($method->isOverridden());
+    }
+
+    public function testIsIntroduced() {
+        $method = new iscReflectionMethod('TestMethods2', 'm2');
+        self::assertFalse($method->isIntroduced());
+
+        $method = new iscReflectionMethod('TestMethods2', 'newMethod');
+        self::assertTrue($method->isIntroduced());
+
+        $method = new iscReflectionMethod('TestMethods2', 'm4');
+        self::assertFalse($method->isIntroduced());
     }
 
     public static function suite()
