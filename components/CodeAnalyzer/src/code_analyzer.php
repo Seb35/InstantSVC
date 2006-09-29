@@ -181,27 +181,42 @@ class iscCodeAnalyzer {
 
             if (!empty($filename)) {
                 $filename = strtr($filename, DIRECTORY_SEPARATOR, '/');
+
                 $result = self::summarizeInSandbox($filename);
 
                 if (is_array($result)) {
-                    $this->docuFlaws['classes'] = array_merge_recursive($this->docuFlaws['classes'],
+                    //$this->docuFlaws['classes'] = array_merge_recursive($this->docuFlaws['classes'],
+                    $this->docuFlaws['classes'] = array_merge($this->docuFlaws['classes'],
                                                           $result['classes']);
-                    $this->docuFlaws['functions'] = array_merge_recursive($this->docuFlaws['functions'],
+                    //$this->docuFlaws['functions'] = array_merge_recursive($this->docuFlaws['functions'],
+                    $this->docuFlaws['functions'] = array_merge($this->docuFlaws['functions'],
                                                           $result['functions']);
-                    $this->docuFlaws['interfaces'] = array_merge_recursive($this->docuFlaws['interfaces'],
+                    //$this->docuFlaws['interfaces'] = array_merge_recursive($this->docuFlaws['interfaces'],
+                    $this->docuFlaws['interfaces'] = array_merge($this->docuFlaws['interfaces'],
                                                           $result['interfaces']);
+                    if (is_object($file)) {
+                        $file->countClasses = count($result['classes']);
+                        $file->countInterfaces = count($result['interfaces']);
+                        $file->countFunctions = count($result['functions']);
+                        $this->flatStatsArray[$key] = $file;
+                    }
                 }
-
-                if (is_object($file)) {
-                    $file->countClasses = count($result['classes']);
-                    $file->countInterfaces = count($result['interfaces']);
-                    $file->countFunctions = count($result['functions']);
-                    $this->flatStatsArray[$key] = $file;
-                }
-
             }
         }
+        $this->buildInheritanceTree();
         $this->summarizeProject();
+    }
+
+    protected function buildInheritanceTree() {
+        $classes = &$this->docuFlaws['classes'];
+        foreach ($classes as $className => $class) {
+            if ($class['parentClass'] != null) {
+                if (isset($classes[$class['parentClass']])) {
+                    $classes[$class['parentClass']]['children'][] = $className;
+                    ++$classes[$class['parentClass']]['childrenCount'];
+                }
+            }
+        }
     }
 
     /**
@@ -216,8 +231,9 @@ class iscCodeAnalyzer {
            1 => array('pipe', 'w'),  //out, child writes to
            2 => array('pipe', 'w')   //err, child writes to
         );
-        $process = proc_open('php -c '.escapeshellarg(dirname(__FILE__)
-                            .DIRECTORY_SEPARATOR.'php.ini'), $pipeDesc, $pipes);
+
+        $cmd = 'php -c '.escapeshellarg(dirname(__FILE__).DIRECTORY_SEPARATOR.'php.ini');
+        $process = proc_open($cmd, $pipeDesc, $pipes);
 
         if (is_resource($process)) {
             $includes = get_include_path();
@@ -229,12 +245,15 @@ class iscCodeAnalyzer {
                 function __autoload( $className ) { ezcBase::autoload( $className ); }
                 require_once "'.addslashes(__FILE__).'";
 
-                //ob_start();
+                ob_start();
                 $out = serialize(iscCodeAnalyzer::summarizeFile(\''.addslashes($filename).'\'));
-                //ob_end_clean();
+                ob_end_clean();
                 echo \'#-#-#-#-#\';
                 echo $out;
                 echo \'#-#-#-#-#\';
+                echo chr(4); //necessary to avoid deadlook
+                flush();
+                exit();
             ?>';
 
             //pipe commands to new process and close pipe to start processing by php
@@ -242,8 +261,30 @@ class iscCodeAnalyzer {
             fclose($pipes[0]);
 
             //get result and close return and error pipe
-            $result = stream_get_contents($pipes[1]);
-            $error = stream_get_contents($pipes[2]);
+            $result = '';
+            //sometimes pipe doesnt get eof on win32, so we have to work around
+            //$result = stream_get_contents($pipes[1]);
+
+            while(!feof($pipes[1])) {
+                $read = fread($pipes[1], 4096);
+
+                //break on error
+                if ($read === false) break;
+                $result .= $read;
+
+                //sometimes we dont get a EOF so lets test for self send EOT
+                if (strlen($read) > 0 and $read{strlen($read)-1} == chr(4)) {
+                    break;
+                }
+
+                //another time fatal errors will bring us to hang
+                if (strpos($read, "##ERR##\nFatal error: ") !== false) {
+                    break;
+                }
+            }
+
+            //$error = stream_get_contents($pipes[2]);
+
             fclose($pipes[1]);
             fclose($pipes[2]);
 
@@ -251,6 +292,7 @@ class iscCodeAnalyzer {
             proc_close($process);
 
             $arr = split('#-#-#-#-#', $result);
+
             if (isset($arr[1])) {
                 $old = error_reporting(0);
                 $return = unserialize($arr[1]);
@@ -403,7 +445,7 @@ class iscCodeAnalyzer {
      * @param array(string => mixed) $classes
      * @return int
      */
-    protected  static function countOverriddenMethods($classes) {
+    protected static function countOverriddenMethods($classes) {
         $overridden = 0;
         foreach ($classes as $class) {
         	foreach ($class['methods'] as $method) {
@@ -428,8 +470,8 @@ class iscCodeAnalyzer {
         $pos = 0;
         foreach ($classes as $className => $class) {
             $new = 0;
-        	foreach ($class['methods'] as $method) {
-        		if ($method['isIntroduced']) {
+        	foreach ($class['methods'] as $mName => $method) {
+        		if ($method['isIntroduced'] and !$method['isFinal']) {
         		    ++$new;
         		}
         	}
@@ -446,7 +488,7 @@ class iscCodeAnalyzer {
      * @return int
      */
     public static function countSubclasses($classes, $class) {
-        $subclasses = $classes[$class]['childrenCount'];
+        $subclasses = count($classes[$class]['children']);
         foreach ($classes[$class]['children'] as $childClass) {
             $subclasses += self::countSubclasses($classes, $childClass);
         }
@@ -497,10 +539,6 @@ class iscCodeAnalyzer {
         $project['functions'] = $this->collectFunctionStats();
         $project['classes'] = $this->collectClassStats();
 
-        var_dump($project['classes']['lodbSum']);
-        var_dump($project['functions']['lodbSum']);
-        var_dump($project['functions']['locSum']);
-        //$project['classes']['locSum']
         $project['dbcRatio'] = ($project['classes']['lodbSum'] +
                                 $project['functions']['lodbSum']) /
                                 $project['functions']['locSum'];
@@ -896,15 +934,6 @@ class iscCodeAnalyzer {
             $result[$className]['missingParamTypes'] = $missingParamTypes;
             $result[$className]['children'] = array();
             $result[$className]['childrenCount'] = 0;
-        }
-
-        foreach ($classes as $className) {
-            if ($result[$className]['parentClass'] != null) {
-                if (isset($result[$result[$className]['parentClass']])) {
-                    $result[$result[$className]['parentClass']]['children'][] = $className;
-                    ++$result[$result[$className]['parentClass']]['childrenCount'];
-                }
-            }
         }
         return $result;
     }
