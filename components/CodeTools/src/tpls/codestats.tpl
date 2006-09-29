@@ -7,6 +7,8 @@
  html, body {
  	font-family:Verdana, Arial, Helvetica, sans-serif;
 	font-size:9pt;
+	width:80%;
+	margin:auto; 
  }
 
  table, tr {
@@ -52,51 +54,78 @@
  .class tbody {border:2px solid #ccc;}
  .class tbody tr {border-bottom:1px solid #eee;}
 
-
+ .stretch {width:100%;}
+ h1 {font-size:1.4em; font-weight:bold; font-variant:small-caps;}
+ h2 {font-size:1.2em; font-weight:bold; font-variant:small-caps;}
+ h3 {font-size:1.1em; font-variant:small-caps;}
+ h4 {font-size:1.0em; font-variant:small-caps;}
+ th {font-variant:small-caps;}
 </style>
 </head>
 
 <body>
-<h1>Overview for <?php echo $sourcePath; ?></h1>
-<table>
+<h1>Project Summary</h1>
+<h2>Obverview</h2>
+<table class="stretch">
 	<tr>
-		<th>File</th>
-		<th>MIME</th>
-		<th>Lines of Code</th>
-		<th>File Size</th>
-		<th>#Classes</th>
-		<th>#Interfaces</th>
-		<th>#Functions</th>
+		<th>&nbsp;</th>
+		<th class="c">sum</th>
 	</tr>
-	<?php foreach ($stats as $name => $file):
+	<tr>
+		<td>Classes</td>
+		<td class="c"><?php echo $overall['countClasses']; ?></td>
+	</tr>
+	<tr>
+		<td>Abstract Classes</td>
+		<td class="c"><?php echo $sum['project']['classes']['abstract']; ?></td>
+	</tr>
+	<tr>
+		<td>Root Classes</td>
+		<td class="c"><?php echo $sum['project']['classes']['root']; ?></td>
+	</tr>
+	<tr>
+		<td>Leaf Classes</td>
+		<td class="c"><?php echo $sum['project']['classes']['leaf']; ?></td>
+	</tr>
+	<tr>
+		<td>Interfaces</td>
+		<td class="c"><?php echo $overall['countInterfaces']; ?></td>
+	</tr>
+	<tr>
+		<td>Functions</td>
+		<td class="c"><?php echo $overall['countFunctions']; ?></td>
+	</tr>
+	
+	<tr>
+		<td>Lines of Code</td>
+		<td class="c"><?php echo $overall['linesOfCode']; ?></td>
+	</tr>
+	
+	<tr>
+		<td>File Size in Byte</td>
+		<td class="c"><?php echo $overall['fileSize']; ?></td>
+	</tr>
 
-	if ($file->mimeType == 'folder'): ?>
-	<tr class="folder">
-	<?php else: ?>
 	<tr>
-	<?php endif; ?>
-		<td><?php echo $name; ?></td>
-		<td><?php echo $file->mimeType; ?></td>
-		<td class="r"><?php echo $file->linesOfCode; ?></td>
-		<td class="r"><?php echo $file->fileSize; ?></td>
-		<td class="r"><?php echo $file->countClasses; ?></td>
-		<td class="r"><?php echo $file->countInterfaces; ?></td>
-		<td class="r"><?php echo $file->countFunctions; ?></td>
+		<td>Global DocBlock/Code Ratio</td>
+		<td class="c"><?php echo (round($sum['project']['dbcRatio'], 2)); ?></td>
 	</tr>
-	<?php endforeach; ?>
-	<tr style="border-top:2px solid #000;">
-	<td>Overall #: <?php ?></td>
-	<td></td>
-	<td class="r"><?php echo $overall['linesOfCode']; ?></td>
-	<td class="r"><?php echo $overall['fileSize']; ?></td>
-	<td class="r"><?php echo $overall['countClasses']; ?></td>
-	<td class="r"><?php echo $overall['countInterfaces']; ?></td>
-	<td class="r"><?php echo $overall['countFunctions']; ?></td>
+<!--	<tr>
+		<td>estimated flaws in documentation (faults)</td>
+		<td class="c"></td>
 	</tr>
+	<tr>
+		<td>estimated flaws in documentation (warnings)</td>
+		<td class="c"></td>
+	</tr>
+	<tr>
+		<td>overall used DocTags</td>
+		<td class="c"></td>
+	</tr>-->
 </table>
 
-<h1>Project Metrics</h1>
-<table>
+<h2>Project Metrics</h2>
+<table class="stretch">
 	<tr>
 		<th>&nbsp;</th>
 		<th class="c">min</th>
@@ -145,38 +174,12 @@
 		<td class="c"><?php echo (round($sum['project']['functions']['lodbAvg'], 2)); ?></td>
 		<td class="c"><?php echo $sum['project']['functions']['lodbMax']; ?></td>
 	</tr>
-	<tr>
-		<td>Global DocBlock/Code Ratio</td>
-		<td class="c" colspan="3"><?php echo (round($sum['project']['dbcRatio'], 2)); ?></td>
-	</tr>
-	<tr>
-		<td>estimated flaws in documentation (faults)</td>
-		<td class="c" colspan="3"></td>
-	</tr>
-	<tr>
-		<td>estimated flaws in documentation (warnings)</td>
-		<td class="c" colspan="3"></td>
-	</tr>
-	<tr>
-		<td>overall used DocTags</td>
-		<td class="c" colspan="3"></td>
-	</tr>
-	<tr>
-		<td>Abstract Classes</td>
-		<td class="c" colspan="3"><?php echo $sum['project']['classes']['abstract']; ?></td>
-	</tr>
-	<tr>
-		<td>Root Classes</td>
-		<td class="c" colspan="3"><?php echo $sum['project']['classes']['root']; ?></td>
-	</tr>
-	<tr>
-		<td>Leaf Classes</td>
-		<td class="c" colspan="3"><?php echo $sum['project']['classes']['leaf']; ?></td>
-	</tr>
 </table>
 
-<h2>MOOD Metrics - Project Metrics</h2>
-<table>
+
+
+<h2>MOOD Metrics</h2>
+<table class="stretch">
 <tr>
 	<th>&nbsp;</th>
 	<th>Value</th>
@@ -208,6 +211,39 @@
 </tr>
 </table>
 
+<?php if($summaryOnly): ?>
+<h1>Overview for <?php echo $sourcePath; ?></h1>
+<table class="stretch">
+	<tr>
+		<th>File</th>
+		<th>MIME</th>
+		<th>Lines of Code</th>
+		<th>File Size</th>
+		<th>#Classes</th>
+		<th>#Interfaces</th>
+		<th>#Functions</th>
+	</tr>
+<tbody style="height:200px; overflow:scroll;">
+	<?php foreach ($stats as $name => $file):
+
+	if ($file->mimeType == 'folder'): ?>
+	<tr class="folder">
+	<?php else: ?>
+	<tr>
+	<?php endif; ?>
+		<td><?php echo $name; ?></td>
+		<td><?php echo $file->mimeType; ?></td>
+		<td class="r"><?php echo $file->linesOfCode; ?></td>
+		<td class="r"><?php echo $file->fileSize; ?></td>
+		<td class="r"><?php echo $file->countClasses; ?></td>
+		<td class="r"><?php echo $file->countInterfaces; ?></td>
+		<td class="r"><?php echo $file->countFunctions; ?></td>
+	</tr>
+	<?php endforeach; ?>
+</tbody>
+</table>
+
+
 <h1>Class Metrics</h1>
 <table>
 <tr>
@@ -224,6 +260,7 @@
 	<th><span title="IMPL - Number of interfaces implemented by class">#Interfaces</span></th>
 	<th></th>
 </tr>
+<tbody  style="height:200px; overflow:scroll;">
 <?php foreach ($sum['classes'] as $classname => $item): ?>
 <tr>
 	<td><?php echo $classname; ?></td>
@@ -241,6 +278,7 @@
 	<td><?php if ($item['isWebService']): ?> is Web Service <?php endif; ?></td>
 </tr>
 <?php endforeach; ?>
+</tbody>
 </table>
 
 
@@ -308,7 +346,7 @@
 	</tbody>
 </table>
 <?php endforeach; ?>
-
+<?php endif; ?>
 <!-- Definitons and Source at
 
 

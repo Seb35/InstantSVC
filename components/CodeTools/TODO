@@ -1,2 +1,3 @@
-- build a web service on top of this tools
+   -   build a web service on top of this tools
 [DONE] CodeAnalyzer has to be enhanced by a php.ini to prevent execution of any code
+   -   find a way to show feedback information on current progress on cmd-line

@@ -5,6 +5,15 @@ require_once('ezc/Base/base.php');
 function __autoload( $className ) { ezcBase::autoload( $className ); }
 
 $input = new ezcConsoleInput();
+$helpOption = $input->registerOption( new ezcConsoleOption( 'h', 'help' ) );
+$helpOption->shorthelp = 'Show this help.';
+$helpOption->longhelp = 'Show this help.';
+
+$summaryOption = $input->registerOption( new ezcConsoleOption('s', 'summary') );
+$summaryOption->shorthelp = 'Only Summary';
+$summaryOption->longhelp = 'Only the summary part is generated. Class and file details are left out.';
+
+$input->registerAlias('?', '?', $helpOption);
 
 $out = new ezcConsoleOutput();
 $out->formats->keyword->style = array('bold');
@@ -21,6 +30,13 @@ catch ( ezcConsoleOptionException $e )
 {
     die( $e->getMessage() );
 }
+
+if ($helpOption->value !== false) {
+    echo $input->getHelpText('Collect metrics and statistical information'.
+                ' from a source tree and present it in HTML');
+    exit();
+}
+
 
 $args = $input->getArguments();
 if (count($args) < 1) {
@@ -42,11 +58,13 @@ else {
     	$overall['countFunctions'] = 0;
 
         foreach ($stats as $file) {
-        	$overall['linesOfCode']     += $file->linesOfCode;
-        	$overall['fileSize']        += $file->fileSize;
-        	$overall['countClasses']    += $file->countClasses;
-        	$overall['countInterfaces'] += $file->countInterfaces;
-        	$overall['countFunctions']  += $file->countFunctions;
+            if ($file->mimeType != 'folder') {
+            	$overall['linesOfCode']     += $file->linesOfCode;
+            	$overall['fileSize']        += $file->fileSize;
+            	$overall['countClasses']    += $file->countClasses;
+            	$overall['countInterfaces'] += $file->countInterfaces;
+            	$overall['countFunctions']  += $file->countFunctions;
+            }
         }
     }
     elseif (is_file($files) && is_readable($files)) {
@@ -55,6 +73,8 @@ else {
 
     $sourcePath = realpath($files);
     $files = $sum;
+
+    $summaryOnly = $summaryOption->value === false;
 
     ob_start();
     include(dirname(__FILE__).'/tpls/codestats.tpl');
