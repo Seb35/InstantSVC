@@ -939,22 +939,19 @@ class iscCodeAnalyzer {
     }
 
     /**
-     * Enter description here...
-     * @todo: implement
-     * @param unknown_type $interfaces
-     * @return unknown
+     * Collects all information about the interfaces given
+     * @param string[] $interfaces
+     * @return array(string=>mixed)
      */
     public static function summarizeInterfaces($interfaces) {
-        //throw new Exception('Not Implemented, but should be similar to summarizeClasses');
-        return array();
+        return self::summarizeClasses($interfaces);
     }
 
 
     /**
-     * Enter description here...
-     * @todo: rework
-     * @param unknown_type $functions
-     * @return unknown
+     * Collects all information about the functions given
+     * @param string[] $functions
+     * @return array(string=>mixed)
      */
     public static function summarizeFunctions($functions) {
         $functs = array();
