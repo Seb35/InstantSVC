@@ -1,6 +1,8 @@
 #!/usr/bin/php5.1
 <?php
-
+/**
+ * @todo use ezcConsoleInput
+ */
 //***************************************************************************
 //***************************************************************************
 //**                                                                       **
@@ -14,12 +16,9 @@
 //***************************************************************************
 //***************************************************************************
 
-//***** imports *************************************************************
-require_once(dirname(__FILE__).'/../../libs/misc/class.codeAnalyzer.php');
-
-
-//at this point only buildin classes should be listed
-$declaredClasses = get_declared_classes();
+//init ezComponents autoload
+require_once('ezc/Base/base.php');
+function __autoload( $className ) { ezcBase::autoload( $className ); }
 
 if (!isset($_SERVER['argv'][1])) {
     echo 'Usage: checkDocuFlaws <SOURCE_FOLDER> [-w] [-wm]'."\n";
@@ -35,24 +34,8 @@ else {
                     or (isset($_SERVER['argv'][3]) and $_SERVER['argv'][3]=='-wm'));
 }
 
-
-if (isset($_ENV['OS']) and stripos($_ENV['OS'], 'windows') !== false) {
-    if (isset($_SERVER['PHP_PEAR_PHP_BIN'])) {
-        $phpbin = $_SERVER['PHP_PEAR_PHP_BIN'].' -c '.$_SERVER['PHP_PEAR_PHP_BIN'];
-    }
-    else {
-        $phpbin = 'c:\Programme\php5\php.exe -c c:\Programme\php5';
-    }
-}
-else {
-    $phpbin = '/usr/bin/php5.1';
-}
-
-$stats = new CodeAnalyzer($path);
-$stats->setPhpBinPath($phpbin);
-$stats->setDeclaredClasses($declaredClasses);
+$stats = new iscCodeAnalyzer($path);
 $stats->collect();
-$stats->inspectFiles();
 $flaws = $stats->getCodeSummary();
 $flaws = $flaws['classes'];
 
@@ -65,10 +48,13 @@ foreach ($flaws as $classname => $class) {
         echo "\n  Methods\n";
         $i = 0;
         foreach ($class['methods'] as $methodName => $method) {
+            if ($method['isInherited']) {
+                continue;
+            }
             if ($method['webmethod'] or $method['restmethod'] or !$webmethods) {
-                if (!$method['comment'] or $method['paramflaws']>0) {
+                if ($method['LoDB'] < 1 or $method['paramflaws'] > 0) {
                     echo "  $classname"."->$methodName()\n";
-                    if (!$method['comment']) {echo "      - comment missing\n";}
+                    if ($method['LoDB'] < 1) {echo "      - comment missing\n";}
                     if ($method['paramflaws']>0) {echo "      - params not documented\n";}
                     $i++;
                 }

@@ -1,14 +1,10 @@
 #!/usr/bin/php5.1
 <?php
-//require_once(dirname(__FILE__).'/../../../libs/misc/class.codeAnalyzer.php');
-
-/*** EZC ***/
+//init ezComponents autoload
 require_once('ezc/Base/base.php');
 function __autoload( $className ) { ezcBase::autoload( $className ); }
-/***********/
 
 $input = new ezcConsoleInput();
-//$input->registerOption(new ezcConsoleOption('f', 'file', ezcConsoleInput::TYPE_STRING, null, false, 'Source file to be analysed', 'The sourcefile to be analysed and to create the output'));
 
 $out = new ezcConsoleOutput();
 $out->formats->keyword->style = array('bold');
@@ -31,24 +27,38 @@ if (count($args) < 1) {
                      'documentation.'));
 }
 else {
-    $analyzer = new CodeAnalyzer();
-    $files = array(new FileDetails($args[0]));
+    $path = $args[0];
+    if (is_file($path)) {
+        $analyzer = new iscCodeAnalyzer();
+        $analyzer->inspectFiles(array($path));
+    }
+    elseif (is_dir($path)) {
+        $analyzer = new iscCodeAnalyzer($path);
+        $analyzer->collect();
+    }
 
-    $analyzer->inspectFiles($files);
     $summary = $analyzer->getCodeSummary();
-	//var_dump($files);
-	//var_dump($summary);
+
+    $output = '';
+    if (isset($args[1])) {
+        ob_start();
+    }
 
     foreach ($summary['classes'] as $name => $class) {
-        if (realpath($class['file']) == realpath($args[0])) {
-            outputClass($name, $class);
-        }
+        outputClass($name, $class);
+    }
+
+    foreach ($summary['interfaces'] as $name => $inter) {
+        outputClass($name, $inter);
     }
 
     foreach ($summary['functions'] as $name => $function) {
-        if ($function['file'] == $args[0]) {
-            outputFunction($name, $function);
-        }
+        outputFunction($name, $function);
+    }
+
+    if (isset($args[1])) {
+        $output = ob_get_clean();
+        file_put_contents($args[1], $output);
     }
 }
 
@@ -57,31 +67,52 @@ else {
  * @param array $class
  */
 function outputClass($name, $class) {
-    $mods = implode(' ', Reflection::getModifierNames($class['modifiers']));
-    if (strlen($mods) > 0) {echo $mods.' ';}
-
+    //$mods = implode(' ', Reflection::getModifierNames($class['modifiers']));
+    //if (strlen($mods) > 0) {echo $mods.' ';}
+    $inter = $class['isInterface'];
     echo ($class['isFinal']) ? 'final ' : '';
-    echo ($class['isInterface']) ? 'interface ' : 'class ';
+
+    if ($inter) {
+        echo 'interface ';
+    }
+    else {
+        echo ($class['isAbstract']) ? 'abstract ' : '';
+        echo 'class ';
+    }
+
     echo $name;
     if ($class['parentClass'] != null) {
         echo ' extends '.$class['parentClass'];
     }
+
+    if (count($class['interfaces']) > 0) {
+        echo ' implements '.implode(', ', $class['interfaces']);
+    }
+
     echo ' {'."\n";
     foreach ($class['methods'] as $mName => $method) {
+        if ($method['isInherited']) {
+            continue;
+        }
+
         echo "\t";
 
-        echo ($method['isAbstract']) ? 'abstract ' : '';
-        echo ($method['isFinal']) ? 'final ' : '';
-        echo ($method['isPublic']) ? 'public ' : '';
-        echo ($method['isPrivate']) ? 'private ' : '';
-        echo ($method['isProtected']) ? 'protected ' : '';
+        echo ($method['isAbstract'] and !$inter) ? 'abstract ' : '';
+        echo ($method['isFinal'] and !$inter) ? 'final ' : '';
+        echo ($method['isPublic'] and !$inter) ? 'public ' : '';
+        echo ($method['isPrivate'] and !$inter) ? 'private ' : '';
+        echo ($method['isProtected'] and !$inter) ? 'protected ' : '';
         echo ($method['isStatic']) ? 'static ' : '';
         echo ($method['return'] == null) ? 'void' : $method['return'];
         echo ' '.$mName.'(';
         $params = '';
-        foreach ($method['params'] as $pName => $type) {
+        foreach ($method['params'] as $pName => $param) {
         	if ($params != '') { $params .= ', '; }
-        	$params .= $type.' $'.$pName;
+        	$params .= $param['type'].' $'.$pName;
+        	if ($param['isOptional']) {
+        	    $params .= ' = '.str_replace("\n", '', var_export($param['defaultValue'], true));
+        	}
+
         }
         echo $params;
         echo ')'."\n";
@@ -92,8 +123,10 @@ function outputClass($name, $class) {
 /**
  * @param string $name
  * @param array $class
+ * @todo implement
  */
 function outputFunction($function) {
     var_dump($function);
 }
+
 ?>
