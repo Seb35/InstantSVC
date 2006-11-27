@@ -26,16 +26,17 @@ require_once(dirname(__FILE__).'/../../libs/Generators/class.WSDLGenerator.php')
 require_once(dirname(__FILE__).'/../../libs/Generators/class.soapDdGenerator.php');
 require_once(dirname(__FILE__).'/../../libs/Generators/class.DocumentWrappedAdapterGenerator.php');
 
-//***** AdminToolLibrary ****************************************************
+//***** isvcWebServiceToolLibrary ****************************************************
 /**
  * Diese Klasse grundlegende Funktionen zur Verfügung
  *
- * @package    admintool
+ * @package    WebServiceTools
  * @author     Martin Sprengel <martin.sprengel@hpi.uni-potsdam.de>
- * @copyright  2006 ...
+ * @author     Falko Menge <mail@falko-menge.de>
+ * @copyright  Copyright (C) InstantSVC Team
  * @license    http://www.apache.org/licenses/LICENSE-2.0  Apache License 2.0
  */
-class AdminToolLibrary {
+class isvcWebServiceToolLibrary {
 
 
 /** Variable für Datenbankzugriff */
