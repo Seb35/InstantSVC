@@ -2,7 +2,7 @@
 //***************************************************************************
 //***************************************************************************
 //**                                                                       **
-//** AdminToolDB - Kapselt die Datenbankanfragen                           **
+//** isvcWebServiceToolDatabase - Kapselt die Datenbankanfragen                           **
 //**                                                                       **
 //** Project: Web Services Description Generator                           **
 //**                                                                       **
@@ -19,10 +19,10 @@
 //***************************************************************************
 
 //***** imports *************************************************************
-require_once(dirname(__FILE__).'/admin-tool-config.php');
-require_once(ADODB_DIR.'/adodb.inc.php');
+// TODO: remove hard coded adodb path
+require_once dirname(__FILE__) . '/../../../adodb/adodb.inc.php');
 
-//***** AdminToolDB *********************************************************
+//***** isvcWebServiceToolDatabase *********************************************************
 /**
  * Diese Klasse stellt die Verbindung zur Datenbank her und stellt anderen
  * Klassen bestimmte Funktionen zur Verfügung.
@@ -32,7 +32,7 @@ require_once(ADODB_DIR.'/adodb.inc.php');
  * @copyright  2006 ...
  * @license    http://www.apache.org/licenses/LICENSE-2.0  Apache License 2.0
  */
-class AdminToolDB {
+class isvcWebServiceToolDatabase {
 
 /**
  * Serverip oder -name für die Datenbank
@@ -56,8 +56,8 @@ private $password = '';
  * Name der Datenbank
  * @var string
  */
-private $database = 'wsdl-db';
-//private $database = 'teletask';
+private $database = 'instantsvc';
+
 /**
  * Instanzvariable für den Zugriff auf die Datenbank
  * @var ADOConnection
