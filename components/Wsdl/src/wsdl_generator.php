@@ -63,7 +63,7 @@ class isvcWsdlGenerator
     /**
      * @var isvcWsdlGeneratorPlugin
      */
-    private $plugin
+    private $plugin;
     /**
      * @var array<string,string>
      */

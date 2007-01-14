@@ -1,9 +1,27 @@
 <?php
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4 filetype=php: */
 
-ini_set('include_path', ini_get('include_path') . PATH_SEPARATOR . '../../');
 
-require_once(dirname(__FILE__).'/../class.WSDLGenerator.php');
+// All errors must be reported
+error_reporting( E_ALL | E_STRICT );
+
+ini_set( 'include_path', getcwd(). PATH_SEPARATOR . dirname( __FILE__ ) . '/../..' . PATH_SEPARATOR . ini_get( 'include_path' ) );
+
+// configuring the ezc autoloading
+require_once("Base/src/base.php");
+function __autoload( $className )
+{
+    if ( strpos( $className, "_" ) !== false )
+    {
+        $file = str_replace( "_", "/", $className ) . ".php";
+        $val = require_once( $file );
+        if ( $val == 0 )
+            return true;
+        return false;
+    }
+    ezcBase::autoload( $className );
+}
+
 
 if (substr($_SERVER['SCRIPT_NAME'], -5) == '.phpt') {
     $testCase = basename($_SERVER['SCRIPT_NAME'], '.phpt');
@@ -16,7 +34,7 @@ $service_access_point = 'test://';
 $namespace = 'http://www.example.org/webservices/' . $testCase;
 $typeNamespace = 'http://www.example.org/webservices/' . $testCase . '/types';
 
-$myWSDLGenerator = new WSDLGenerator(
+$myWSDLGenerator = new isvcWsdlGenerator(
     $classname,
     $service_access_point,
     $namespace,
