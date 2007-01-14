@@ -16,8 +16,7 @@
 //***************************************************************************
 
 //***** imports *************************************************************
-require_once(dirname(__FILE__).'/../../../libs/reflection/class.ClassType.php');
-require_once(dirname(__FILE__).'/../../../libs/misc/class.file.php');
+require_once(dirname(__FILE__).'/../../../trunk/libs/misc/class.file.php');
 
 //***** SoapDeploymentDescriptorGenerator ***********************************
 /**

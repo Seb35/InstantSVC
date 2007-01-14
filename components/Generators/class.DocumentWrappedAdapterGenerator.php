@@ -13,10 +13,7 @@
 //***************************************************************************
 //***************************************************************************
 
-//***** imports *************************************************************
-require_once dirname(__FILE__).'/../../../libs/reflection/class.ExtReflectionClass.php';
-require_once dirname(__FILE__).'/../../../libs/reflection/class.ExtReflectionMethod.php';
-require_once dirname(__FILE__).'/../../../libs/misc/class.file.php';
+require_once dirname(__FILE__).'/../../../trunk/libs/misc/class.file.php';
 
 //***** DocumentWrappedAdapterGenerator *************************************
 /**
@@ -96,7 +93,7 @@ class DocumentWrappedAdapterGenerator {
             throw new Exception('Class not found '.$className);
         }
 
-        $myExtReflectionClass = new ExtReflectionClass($this->className);
+        $myExtReflectionClass = new iscReflectionClass($this->className);
 
         $this->classFile = $myExtReflectionClass->getFileName();
 

@@ -16,9 +16,6 @@
 //***************************************************************************
 //***************************************************************************
 
-//***** imports *************************************************************
-require_once dirname(__FILE__).'/../../../libs/reflection/class.ExtReflectionClass.php';
-
 //***** WSDLGenerator *******************************************************
 /**
  * @package    libs.generator
@@ -289,7 +286,7 @@ class WSDLGenerator
             $this->myComplexTypes[] = null;
 
             // retrieving information about the methods of the class
-            $myExtReflectionClass = new ExtReflectionClass($classname);
+            $myExtReflectionClass = new iscReflectionClass($classname);
             $myMethods = $myExtReflectionClass->getMethods();
 
             if ($usePolicyPlugIn and class_exists('PolicyPlugIn')) {
