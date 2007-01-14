@@ -9,6 +9,7 @@
  */
 
 return array(
-	'isvcWsdlGenerator' => 'Wsdl/wsdl_generator.php',
+	'isvcWsdlGenerator'       => 'Wsdl/wsdl_generator.php',
+    'isvcWsdlGeneratorPlugin' => 'Wsdl/interfaces/wsdl_generator_plugin.php',
 );
 ?>

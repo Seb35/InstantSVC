@@ -2,11 +2,11 @@
 //***************************************************************************
 //***************************************************************************
 //**                                                                       **
-//** WSDLGenerator                                                         **
+//** isvcWsdlGenerator                                                     **
 //**                                                                       **
 //** Project: Web Services Description Generator                           **
 //**                                                                       **
-//** @package    WSDLGenerator                                             **
+//** @package    Wsdl                                                      **
 //** @author     Gregor Gabrysiak <gregor_abrak at web dot de>             **
 //** @author     Falko Menge <mail@falko-menge.de>                         **
 //** @author     Stefan Marr <mail@stefan-marr.de>                         **
@@ -16,16 +16,16 @@
 //***************************************************************************
 //***************************************************************************
 
-//***** WSDLGenerator *******************************************************
+//***** isvcWsdlGenerator *******************************************************
 /**
- * @package    libs.generator
+ * @package    Wsdl
  * @author     Gregor Gabrysiak <gregor_abrak at web dot de>
  * @author     Falko Menge <mail@falko-menge.de>
  * @author     Stefan Marr <mail@stefan-marr.de>
  * @copyright  2006 ...
  * @license    http://www.apache.org/licenses/LICENSE-2.0  Apache License 2.0
  */
-class WSDLGenerator
+class isvcWsdlGenerator
 {
 	const DOCUMENT_WRAPPED = 0;
     const RPC_LITERAL = 1;
@@ -60,6 +60,10 @@ class WSDLGenerator
      * @var string[]
      */
     private $myFunctionNames;
+    /**
+     * @var isvcWsdlGeneratorPlugin
+     */
+    private $plugin
     /**
      * @var array<string,string>
      */
@@ -123,7 +127,7 @@ class WSDLGenerator
         $serviceName,
         $serviceAccessPointURL,
         $namespace,
-        $soapBinding = WSDLGenerator::DOCUMENT_WRAPPED)
+        $soapBinding = isvcWsdlGenerator::DOCUMENT_WRAPPED)
     {
         // to avoid invalid arguments
         if (empty($serviceName))
@@ -142,12 +146,12 @@ class WSDLGenerator
         $this->bindingStyle = 'document';
         $this->bindingUse = 'literal';
 
-        if (($soapBinding == 1) or ($soapBinding == WSDLGenerator::RPC_LITERAL))
+        if (($soapBinding == 1) or ($soapBinding == isvcWsdlGenerator::RPC_LITERAL))
         {
             $this->bindingStyle = 'rpc';
             $this->bindingUse = 'literal';
         }
-        elseif (($soapBinding == 2) or ($soapBinding == WSDLGenerator::RPC_ENCODED))
+        elseif (($soapBinding == 2) or ($soapBinding == isvcWsdlGenerator::RPC_ENCODED))
         {
             $this->bindingStyle = 'rpc';
             $this->bindingUse = 'encoded';
@@ -251,6 +255,18 @@ class WSDLGenerator
             $this->treeFinished = true;
         }
     }
+    //==========================================================================
+    /**
+     * This method enables the usage of a plugin. An instance of the plugin has
+     * to be set. These plugins may implement different ideas how to sort out 
+     * all methods which are not to be published in the wsdl.
+     *
+     * @return void
+     */    
+    public function setPlugin(isvcWsdlGeneratorPlugin $pluginInstance)
+    {
+        $this->plugin = $pluginInstance;
+    }
 
     //==========================================================================
     /**
@@ -260,19 +276,15 @@ class WSDLGenerator
      * It is not intended to use a class as well as
      * a set of functions for the WSDL-file. Therefore, as soon as at least one
      * function was added by addFunction(), this method will throw an exception.
-     * addFunction and setClass exclude eachother!
-     *
-     * If it is used with $usePolicyPlugIn = true, the class PolicyPlugIn has to
-     * be loaded, it's not included by this generator.
+     * AddFunction() and setClass() exclude eachother!
      *
      * If the user added comments to the methods, these are retrieved and added
      * later in the portType element.
      *
      * @param string $classname
-     * @param boolean $usePolicyPlugIn enables the plug in which filters the methods
      * @return boolean
      */
-    public function setClass($classname, $usePolicyPlugIn = false)
+    public function setClass($classname)
     {
         // check if addFunction was used before
         if (empty($this->myFunctionNames))
@@ -289,10 +301,10 @@ class WSDLGenerator
             $myExtReflectionClass = new iscReflectionClass($classname);
             $myMethods = $myExtReflectionClass->getMethods();
 
-            if ($usePolicyPlugIn and class_exists('PolicyPlugIn')) {
-                $plugin = new PolicyPlugIn();
-                $myMethods = $plugin->getPublishedMethods($myMethods);
-                $this->documentationForMethods = $plugin->getUserComments($myMethods);
+            if ($this->plugin)
+            {
+                $myMethods = $this->plugin->getPublishedMethods($myMethods);
+                $this->documentationForMethods = $this->plugin->getUserComments($myMethods);
             }
 
             foreach($myMethods as $method)
