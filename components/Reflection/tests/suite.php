@@ -36,7 +36,7 @@ require_once 'test_helper.php';
  * @package Reflection
  * @subpackage Tests
  */
-class ezcReflectionSuite extends ezcTestSuite
+class ezcReflectionSuite extends PHPUnit_Framework_TestSuite
 {
     public function __construct()
     {

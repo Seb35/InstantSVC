@@ -1,1 +1,1 @@
-@c:\programme\php5\phpunit ezcReflectionSuite dev-suite.php
+@phpunit ezcReflectionSuite dev-suite.php
