@@ -159,8 +159,9 @@ class ExtReflectionMethod extends ReflectionMethod {
      * @return ClassType
      */
     function getDeclaringClass() {
-		if (!empty(parent::getDeclaringClass())) {
-		    return new ClassType(parent::getDeclaringClass()->getName());
+        $declaringClass = parent::getDeclaringClass();
+		if (!empty($declaringClass)) {
+		    return new ClassType($declaringClass->getName());
 		}
 		else {
 		    return null;
