@@ -84,7 +84,7 @@ class DocumentWrappedAdapterGenerator {
      */
     public function __construct($className, $methods = NULL, $adapterClassName = '') {
         if (empty($className)) {
-            throw new Exeption('Argument className was empty.');
+            throw new Exception('Argument className was empty.');
         } else {
             $this->className = $className;
         }
