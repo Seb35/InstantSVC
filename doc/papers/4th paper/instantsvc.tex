@@ -1,11 +1,7 @@
-%% instantsvc.tex
-%% V0.1
-%% 2006/12/20
-%% by Falko Menge
-%% mail@falko-menge.de
-%%
+%TODO: Web Services => web services
 
-\documentclass[10pt,journal,final,a4paper,twoside]{IEEEtran}
+\documentclass[10pt,final,a4paper,oneside]{article}
+%\documentclass[10pt,journal,final,a4paper,twoside]{IEEEtran}
 %\documentclass[10pt,journal,draftclsnofoot,a4paper]{IEEEtran}
 %\documentclass[10pt,journal,draftclsnofoot,onecolumn,a4paper]{IEEEtran}
 %\documentclass[10pt,journal,final,onecolumn,a4paper]{IEEEtran}
@@ -22,32 +18,24 @@
 
 
 \begin{abstract}
-This Paper describes 
-
+This Paper describes the current state of design for the InstantSVC core components.
 It serves as basis for discussing the contribution of the core components of InstantSVC to eZ components.
 \end{abstract}
 
-\begin{keywords}
-Web Services, PHP.
-\end{keywords}
-
-\IEEEpeerreviewmaketitle
-
-
-\section{Introduction}\label{sec:Introduction}
-\PARstart{W}{Web services} are one of the most important technologies of the
+\section{Web Services and PHP5}\label{sec:Introduction}
+Web services are one of the most interesting technologies to evolve in the
 last years. They facilitate interoperable communication across the borders of 
 platforms and programming languages and are therefore a very 
-interesting concept for enterprises. They can be used to integrate 
-internal and cross-company applications. The main idea is that 
+promising concept for enterprise software. They can be used to integrate 
+internal software systems as well as cross-company applications. The main idea is that 
 applications provide their functionality in form of services that can be 
 used by other applications via network or even internet. 
 
-The standards that form the foundation for Web Services are the SOP
-protocol, the Web Service Description Language (WSDL), UDDI and the
-Hypertext Transfer Protocol (HTTP).
-
-SOAP is the messaging protocol used to access the services. WSDL is he
+The standards that form the foundation for Web Services are the SOAP
+protocol \cite{SOAP}, the Web Services Description Language (WSDL) \cite{WSDL},
+Universal Description, Discovery and Integration (UDDI) \cite{UDDI} and the
+Hypertext Transfer Protocol (HTTP) \cite{HTTP}.
+SOAP is the messaging protocol used to access the services. WSDL is an
 open standard for XML-based service interface descriptions which serve as
 contracts between service provider and consumer. Name services for
 publishing and searching Web Services are specified by UDDI. HTTP is
@@ -57,13 +45,46 @@ services.
 
 For efficient utilization of SOAP and in most cases also of WSDL
 sophisticated tools have been developed for all major programming
-languages and platforms. For UDDI mostly commercial product are in use.
+languages and platforms. For UDDI mostly commercial products are used.
+PHP5 also incorporates a SOAP implementation with support for WSDL
+in form of an extension module.
 
-PHP also incorporates a SOAP implementation which has read-only support
-for WSDL.
+In order to expose a PHP class as Web Service using this SOAP extension
+several steps have to be performed.
+At first an interface description has to be created using WSDL. This includes
+defining XML Schema expressions \cite{XMLSchema} which specify for all data types
+used by methods of the class how they should be represented inside SOAP messages.
+The methods themselves become WSDL operations which use the XML Schema types.
+If documentation should be provided together with the WSDL description,
+the developer may copy the source code documentation into the
+documentation element of WSDL.
+The last step would be to program a PHP application which start a SOAP server
+using the WSDL file, passes the class name to this server and tells it to
+handle SOAP request arriving via HTTP POST.
 
+Of course, performing this procedure by hand is not what was meant by
+convenient tool support.
+The SOAP extension is easy to use. However especially writing WSDL manually is not
+acceptable for professional developers who want to build service-oriented
+architectures with maybe hundreds of services. Other platforms like e.g.
+Java EE or .NET typically use annotation mechanisms to tag classes and methods
+for publication as web services. The tagged source code is then processed by a
+sophisticated tool chain which generates WSDL descriptions, additional source code
+for stubs and skeletons and if needed deployment descriptors for the desired
+runtime environment.
+After that, the services are ready for instant deployment.
+Of course PHP needs no stubs because the SOAP client can use the dynamic
+features of the language to create response objects at runtime.
+However the same dynamic features make it difficult to generate WSDL from PHP
+code because there is no type information in it.
+The aim of our work was to eliminate the lack of tool support PHP.
 
-Following the development process of eZ components each section is divided in two parts. The first part describes the requirements for a component and the other one specifies a design
+The next sections will present each of the components of the tool chain.
+The descriptions will focus especially on architecture and design decisions.
+Following the development process of eZ components each section is divided in
+two parts.
+The first part describes the requirements for a component and the other one
+specifies a design.
 
 
 
@@ -284,38 +305,58 @@ class ExtReflectionProperty extends ReflectionProperty {
 
 
 \section{CodeAnalyzer}\label{sec:CodeAnalyzer}
-\subsection{Requirements}\label{subsec:CodeAnalyzerRequirements}
 %eZ component: CodeAnalyzer, Requirements
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 %
-%Introduction
+\subsection{Introduction}
 %============
+The Refletion component provides structural details about
+language elements like classes and functions at runtime.
+But to be able to use it, those language elements have to be loaded.
+Due to the fact that most applications tend to put each class
+and function definition in a separate file, it is required to load those files.
 
-%Description
+\subsubsection{Description}
 %-----------
+The CodeAnalyzer component is able to load entire class trees
+or function libraries into a sandbox environment and to
+examine the language elements in them.
+In addition to that it is a high level interface to
+perform statistical analyses and software metrics with
+the Reflection package.
 
-%Current implementation
+\subsubsection{Current implementation}
 %----------------------
+The current implementation can be considered as stable
+and it meets all requirements which arrised during
+development of several tools using it.
 
-%Requirements
+\subsection{Requirements}\label{subsec:CodeAnalyzerRequirements}
 %============
-searchs through source tree and collects infos about found classes and files
+The component should be able to search through a source tree
+and collect information about files respectively classes found.
+Some basic software metrics should be implemented.
+The required metrics include
+counting the lines of code (loc) and the number of
+classes, methods, attributes, subclasses and functions.
+Furthermore it should collect statistics
+about the usage of documentation tags
+and warn if important tags are missing.
+A possible extension point would be to include abilities
+to scan for coding standard violations.
 
-Some basic statistics are collected:
-
-    * LoC
-    * count of elements (classes, methods, ...)
-    * Missing DocTags per element
-    * used DocTags
-
-%Design goals
+\subsubsection{Design goals}
 %============
+The component should be easy to use through a convenient high level API
+and it should be aware of possible errors in the source code files, i.e.
+the CodeAnalyzer should not crash because of syntax errors in a file parsed.
 
 %Special considerations
 %======================
 
-%Format
+\subsubsection{Format}
 %======
+The package should at least work with PHP5 source code.
 
 %Diagrams
 %========
@@ -330,8 +371,23 @@ Some basic statistics are collected:
 %Description
 %-----------
 
-%Design description
+\subsubsection{Design description}
 %------------------
+\paragraph{iscCodeAnalyzerClassLoader}
+
+\begin{figure}[htbp]
+	\centering
+		\includegraphics[width=1.00\textwidth]{figures/callgraph-code_analyzer.ps}
+	\caption{Static call graph for class ezcCodeAnalyzer}
+	\label{fig:callgraph-code_analyzer}
+\end{figure}
+
+\paragraph{ezcCodeAnalyzer}
+ezcCodeAnalyzer is the main class of the component.
+It implements the different analyses which can be started either
+seperately using one of the summarization methods
+or all together by calling a central collector method.
+
 Method Summary 
 
 \begin{verbatim}
@@ -373,11 +429,11 @@ static array<string, mixed> +summarizeInSandbox ( $filename, string[] $classes)
 ~void parseDir (string $path,  &$statsArray, array $statsArray) 
 +void summarizeProject ()
 \end{verbatim}
- 
-Class iscCodeAnalyzerClassLoader
 
-Load php-files in the given directory recursivly 
- 
+\paragraph{ezcCodeAnalyzerClassLoader}
+This class provides methods to recursivly load 
+php files from a given directory.
+
 \verb|public static void loadDir (string $path)| 
 
  
@@ -389,11 +445,23 @@ All files without parsing errors are included.
 %Guidelines
 %----------
 
-%Algorithms
+\subsubsection{Algorithms}
 %----------
 
-%Data structures
+The static call graph in figure \ref{fig:callgraph-code_analyzer}
+gives an impression of the collaboration between the methods
+
+\subsubsection{Data structures}
 %---------------
+
+%TODO: maybe leave it out
+%\begin{figure}[htbp]
+%	\centering
+%		\includegraphics[width=1.00\textwidth]{figures/callgraph-file_details-with-external-calls.ps}
+%	\caption{Static call graph for class ezcCodeAnalyzerFileDetails}
+%	\label{fig:callgraph-file_details-with-external-calls}
+%\end{figure}
+
 
 Class \verb|iscCodeAnalyzerFileDetails| 
 
@@ -439,9 +507,16 @@ Use mime type to decide wheter the lines of code are counable
 
 
 \section{WSDL}\label{sec:WSDL}
+\subsection{Introduction}
 The Web Services Description Language (WSDL) \cite{WSDL} is one of the most important standards for professional web service applications because it allows for automated creation of SOAP servers and clients. The SOAP extension of PHP5 supports this if a WSDL file is provided. A WSDL file is an XML document describing the interface of a Web Service. A service provider can offer this description to its clients which are then able to determine the operations provided by the service and the messages they have to sent. In this scenario the WSDL document serves as a contract between server and client and both parties have to abide by it in order to communicate successfully.
 
 Although it is possible to write WSDL documents by hand the additional time and effort do not result in a major advantage. Due to the fact that nearly all information needed for a WSDL description already exists in the source code of the class or the functions implementing the Web Service the complete service description can be generated automatically. The only new information in a WSDL file is the binding and the service access point URL.
+
+\subsubsection{Description}
+The WSDL component generates a WSDL document from a given service implementation.
+
+\subsubsection{Current implementation}
+The WSDL component should be able to generate a WSDL document from a given service implementation. Just like the SOAP server of PHP5 it should accept a class or a set of functions as a service implementation.
 
 \subsection{Requirements}\label{subsec:WSDLRequirements}
 %eZ component: WSDL, Requirements
@@ -507,6 +582,13 @@ Web Services Interoperability Tests of the SOAP Builders community
 
 %Algorithms
 %----------
+\begin{figure}[htbp]
+	\centering
+		\includegraphics[width=1.00\textwidth]{figures/callgraph-Generators-class.WSDLGenerator.ps}
+	\caption{Static call graph of class ezcWSDL}
+	\label{fig:callgraph-Generators-class.WSDLGenerator}
+\end{figure}
+
 
 %Data structures
 %---------------
@@ -561,8 +643,15 @@ Web Services Interoperability Tests of the SOAP Builders community
 %Guidelines
 %----------
 
-%Algorithms
+\subsubsection{Algorithms}
 %----------
+\begin{figure}[htbp]
+	\centering
+		\includegraphics[width=1.00\textwidth]{figures/callgraph-SoapClient-class.SecureClient-with-external-calls.ps}
+	\caption{Static call graph for class ezcSecureSoapClient}
+	\label{fig:callgraph-SoapClient-class.SecureClient-with-external-calls}
+\end{figure}
+
 
 %Data structures
 %---------------
@@ -757,12 +846,18 @@ it should definitely/undoubtedly incorporate professional Web Service components
 \emph{Web Services Description Language (WSDL) 2.0}, W3C Candidate Recommendation \hskip 1em plus
   0.5em minus 0.4em\relax World Wide Web Consortium (W3C), March 26, 2006.
   \newline http://www.w3.org/TR/wsdl20
+
+\bibitem{UDDI}
   
 \bibitem{BasicProfile}
 \emph{Basic Profile Version 1.2} \hskip 1em plus
   0.5em minus 0.4em\relax Web Services-Interoperability Organization (WS-I), Oktober 03, 2006.
   \newline http://www.ws-i.org/Profiles/BasicProfile-1.2.html
   
+\bibitem{XMLSchema}
+
+\bibitem{HTTP}
+
 \end{thebibliography}
 
 \end{document}
