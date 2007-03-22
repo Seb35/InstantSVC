@@ -19,7 +19,7 @@ require_once 'class_loader_test.php';
  * @package Reflection
  * @subpackage Tests
  */
-class ezcCodeAnalyzerSuite extends ezcTestSuite
+class ezcCodeAnalyzerSuite extends PHPUnit_Framework_TestSuite
 {
     public function __construct()
     {

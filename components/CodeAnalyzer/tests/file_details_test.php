@@ -32,7 +32,7 @@ class ezcCodeAnalyzerFileDetailsTest extends ezcTestCase
 
     public static function suite()
     {
-         return new ezcTestSuite( __CLASS__ );
+         return new PHPUnit_Framework_TestSuite( __CLASS__ );
     }
 }
 ?>
