@@ -1,4 +1,4 @@
-%TODO: Web Services => web services
+%TODO: Web Services => web services, php => PHP
 
 \documentclass[10pt,final,a4paper,oneside]{article}
 %\documentclass[10pt,journal,final,a4paper,twoside]{IEEEtran}
@@ -350,6 +350,12 @@ to scan for coding standard violations.
 The component should be easy to use through a convenient high level API
 and it should be aware of possible errors in the source code files, i.e.
 the CodeAnalyzer should not crash because of syntax errors in a file parsed.
+This is very important because if the Code Analyzer would be that instable,
+it would only be usefull as a standalone tool for analyzing
+smaller applications. It order to become a software metrics library
+which can be included in other applications -- such as web service tools --
+it has to be reliable.
+
 
 %Special considerations
 %======================
@@ -373,7 +379,32 @@ The package should at least work with PHP5 source code.
 
 \subsubsection{Design description}
 %------------------
-\paragraph{iscCodeAnalyzerClassLoader}
+The Code Analyzer should should be based on the reflection component
+as a high level API for language elements.
+This way it leverages the internal parser of the PHP interpreter
+which can be assumed to be one of the best parsers for the language.
+
+The requirement of being fault tolerant has a major influence
+on the design of the component.
+Since the source files have to be loaded
+to employ the reflection component, some kind
+of a sandbox environment is needed to ensure the errors
+in the input files which stop the script execution
+do not affect the Code Analyzer in its execution.
+
+A simple way to achieve this is to start the analysis of the files
+in a separate PHP interpreter.
+Then in case of errors only this child process stops,
+but the Code Analyzer is able to report the error
+and to continue with the next file.
+
+The component consists of three classes.
+
+\paragraph{ezcCodeAnalyzer}
+ezcCodeAnalyzer is the main class of the component.
+It implements the different analyses which can be started either
+separately using one of the summarization methods
+or all together by calling a central collector method.
 
 \begin{figure}[htbp]
 	\centering
@@ -382,77 +413,65 @@ The package should at least work with PHP5 source code.
 	\label{fig:callgraph-code_analyzer}
 \end{figure}
 
-\paragraph{ezcCodeAnalyzer}
-ezcCodeAnalyzer is the main class of the component.
-It implements the different analyses which can be started either
-seperately using one of the summarization methods
-or all together by calling a central collector method.
 
-Method Summary 
-
-\begin{verbatim}
-+static void collectMethodsStats ($classes) 
-~static int countClassesSeeingMethods 
-(array<string, mixed> $classes,  &$methodCount, int $methodCount) 
-~static int countClassesSeeingProperties
-(array<string, mixed> $classes,  &$propCount, int $propCount) 
-~static int countInheritedMethods
-(array<string, mixed> $classes) 
-~static int countOverriddenMethods
-(array<string, mixed> $classes) 
-+static int countPossibleOverriddes
-(array<string, mixed> $classes) 
-+static int countSubclasses (array<string, mixed> $classes, 
-string $class) 
-+static array<string, mixed> summarizeClasses (array<string, mixed> $classes) 
-+static array<string, mixed> summarizeClassMethods (iscReflectionClassType $class, 
- &$missingMethodComments,  &$missingParamTypes, 
-integer $missingMethodComments, integer $missingParamTypes) 
-+static array<string, mixed> summarizeClassProperties
-(iscReflectionClassType $class) 
-+static array<string, mixed> summarizeClassSignature
-(iscReflectionClassType $class) 
-+static array<string, mixed> summarizeFile (string $filename) 
-+static array<string, mixed> summarizeFunctionParameters  (iscReflectionFunction $method,  &$paramFlaws, integer $paramFlaws) 
-+static array(string=>mixed) summarizeFunctions (string[] $functions) 
-static array<string, mixed> +summarizeInSandbox ( $filename, string[] $classes) 
-+static array(string=>mixed) summarizeInterfaces (string[] $interfaces) 
-+iscCodeAnalyzer __construct ([string $path = '.']) 
-~void buildInheritanceTree () 
-+void collect () 
-~void collectClassStats () 
-~void collectFunctionStats () 
-~array flatoutStatsArray (array $array, string $basekey) 
-+array getCodeSummary () 
-+array getStats () 
-~void inspectFiles (string[] $files) 
-~void parseDir (string $path,  &$statsArray, array $statsArray) 
-+void summarizeProject ()
-\end{verbatim}
+%Method Summary 
+%\begin{verbatim}
+%+static void collectMethodsStats ($classes) 
+%~static int countClassesSeeingMethods 
+%(array<string, mixed> $classes,  &$methodCount, int $methodCount) 
+%~static int countClassesSeeingProperties
+%(array<string, mixed> $classes,  &$propCount, int $propCount) 
+%~static int countInheritedMethods
+%(array<string, mixed> $classes) 
+%~static int countOverriddenMethods
+%(array<string, mixed> $classes) 
+%+static int countPossibleOverriddes
+%(array<string, mixed> $classes) 
+%+static int countSubclasses (array<string, mixed> $classes, 
+%string $class) 
+%+static array<string, mixed> summarizeClasses (array<string, mixed> $classes) 
+%+static array<string, mixed> summarizeClassMethods (iscReflectionClassType $class, 
+% &$missingMethodComments,  &$missingParamTypes, 
+%integer $missingMethodComments, integer $missingParamTypes) 
+%+static array<string, mixed> summarizeClassProperties
+%(iscReflectionClassType $class) 
+%+static array<string, mixed> summarizeClassSignature
+%(iscReflectionClassType $class) 
+%+static array<string, mixed> summarizeFile (string $filename) 
+%+static array<string, mixed> summarizeFunctionParameters  (iscReflectionFunction $method,  &$paramFlaws, integer $paramFlaws) 
+%+static array(string=>mixed) summarizeFunctions (string[] $functions) 
+%static array<string, mixed> +summarizeInSandbox ( $filename, string[] $classes) 
+%+static array(string=>mixed) summarizeInterfaces (string[] $interfaces) 
+%+iscCodeAnalyzer __construct ([string $path = '.']) 
+%~void buildInheritanceTree () 
+%+void collect () 
+%~void collectClassStats () 
+%~void collectFunctionStats () 
+%~array flatoutStatsArray (array $array, string $basekey) 
+%+array getCodeSummary () 
+%+array getStats () 
+%~void inspectFiles (string[] $files) 
+%~void parseDir (string $path,  &$statsArray, array $statsArray) 
+%+void summarizeProject ()
+%\end{verbatim}
 
 \paragraph{ezcCodeAnalyzerClassLoader}
-This class provides methods to recursivly load 
-php files from a given directory.
+This class provides methods to recursively include
+all files that contain PHP code from a given directory.
+Any output of the included code will be suppressed
+and files are only loaded if they do not contain
+any syntax errors.
+This fault tolerance is achieved by creating a new PHP process
+and performing a syntax check.
 
-\verb|public static void loadDir (string $path)| 
+%\verb|public static void loadDir (string $path)| 
+%\verb|public static void loadFile (string $file)|
 
- 
-Includes a file if it seams to be a php file.
-All files without parsing errors are included.
 
-\verb|public static void loadFile (string $file)|
-
-%Guidelines
-%----------
-
-\subsubsection{Algorithms}
-%----------
-
-The static call graph in figure \ref{fig:callgraph-code_analyzer}
-gives an impression of the collaboration between the methods
-
-\subsubsection{Data structures}
-%---------------
+\paragraph{ezcCodeAnalyzerFileDetails}
+The class ezcCodeAnalyzer uses this struct as data structure for some details of a file.
+The constructor of collects ::: Guessing MimeType, counting lines of code, and retrieving file size are 
+done. 
 
 %TODO: maybe leave it out
 %\begin{figure}[htbp]
@@ -462,44 +481,52 @@ gives an impression of the collaboration between the methods
 %	\label{fig:callgraph-file_details-with-external-calls}
 %\end{figure}
 
+%\verb|iscCodeAnalyzerFileDetails| extends \verb|ezcBaseStruct|
+%
+%
+%Variable Summary (all protected)
+%
+%\begin{verbatim}
+%int $countClasses <#$countClasses> 
+%int $countFunctions <#$countFunctions> 
+%int $countInterfaces <#$countInterfaces> 
+%string $fileName <#$fileName> 
+%int $fileSize <#$fileSize> 
+%int $linesOfCode <#$linesOfCode> 
+%string $mimeType <#$mimeType>
+%\end{verbatim}
+%
+%
+%Method Summary 
+%
+%\verb|public iscCodeAnalyzerFileDetails __construct ([string $file = ''])|
+%
+%
+%Guess the mime type using the file extension 
+% 
+%\verb|protected boolean guessMimeType (string $file)|
+% 
+% 
+%Use mime type to decide wheter the lines of code are counable 
+% 
+%\verb|protected boolean shouldCountLines (string $mime)|
 
-Class \verb|iscCodeAnalyzerFileDetails| 
 
-Struct containing details about a file. 
- 
-Guessing MimeType, counting lines of code, and retrieving file size are 
-done. 
+%Guidelines
+%----------
 
+\subsubsection{Algorithms}
+%----------
 
-\verb|iscCodeAnalyzerFileDetails| extends \verb|ezcBaseStruct|
+The static call graph in figure \ref{fig:callgraph-code_analyzer}
+gives an impression of the collaboration between the methods.
+In some methods recursion is used for traversing hierarchical 
+directory and class structures but most of the algorithms
+are not very complex. They simply collect statistics while
+leveraging the Reflection component.
 
-
-Variable Summary (all protected)
-
-\begin{verbatim}
-int $countClasses <#$countClasses> 
-int $countFunctions <#$countFunctions> 
-int $countInterfaces <#$countInterfaces> 
-string $fileName <#$fileName> 
-int $fileSize <#$fileSize> 
-int $linesOfCode <#$linesOfCode> 
-string $mimeType <#$mimeType>
-\end{verbatim}
-
-
-Method Summary 
-
-\verb|public iscCodeAnalyzerFileDetails __construct ([string $file = ''])|
-
-
-Guess the mime type using the file extension 
- 
-\verb|protected boolean guessMimeType (string $file)|
- 
- 
-Use mime type to decide wheter the lines of code are counable 
- 
-\verb|protected boolean shouldCountLines (string $mime)|
+\subsubsection{Data structures}
+%---------------
 
 %Diagrams
 %========
