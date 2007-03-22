@@ -24,7 +24,7 @@ class ezcReflectioniscReflectionDocTagFactoryTest extends ezcTestCase
 
     public static function suite()
     {
-         return new ezcTestSuite( "ezcReflectioniscReflectionDocTagFactoryTest" );
+         return new PHPUnit_Framework_TestSuite( "ezcReflectioniscReflectionDocTagFactoryTest" );
     }
 }
 ?>

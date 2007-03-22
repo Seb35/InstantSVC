@@ -127,7 +127,7 @@ class ezcReflectionFunctionTest extends ezcTestCase
 
     public static function suite()
     {
-         return new ezcTestSuite( "ezcReflectionFunctionTest" );
+         return new PHPUnit_Framework_TestSuite( "ezcReflectionFunctionTest" );
     }
 }
 ?>

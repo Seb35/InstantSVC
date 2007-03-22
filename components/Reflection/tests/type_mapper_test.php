@@ -59,7 +59,7 @@ class ezcReflectioniscReflectionTypeMapperTest extends ezcTestCase
 
     public static function suite()
     {
-         return new ezcTestSuite( "ezcReflectioniscReflectionTypeMapperTest" );
+         return new PHPUnit_Framework_TestSuite( "ezcReflectioniscReflectionTypeMapperTest" );
     }
 }
 ?>

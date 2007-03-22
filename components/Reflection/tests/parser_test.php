@@ -169,7 +169,7 @@ EOF;
             self::$docs[] = $method->getDocComment();
         }
 
-        return new ezcTestSuite( "ezcReflectioniscReflectionDocParserTest" );
+        return new PHPUnit_Framework_TestSuite( "ezcReflectioniscReflectionDocParserTest" );
     }
 }
 ?>
