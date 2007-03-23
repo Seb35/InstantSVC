@@ -534,53 +534,50 @@ leveraging the Reflection component.
 
 
 \section{WSDL}\label{sec:WSDL}
+%eZ component: WSDL, Requirements
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 \subsection{Introduction}
+%============
 The Web Services Description Language (WSDL) \cite{WSDL} is one of the most important standards for professional web service applications because it allows for automated creation of SOAP servers and clients. The SOAP extension of PHP5 supports this if a WSDL file is provided. A WSDL file is an XML document describing the interface of a Web Service. A service provider can offer this description to its clients which are then able to determine the operations provided by the service and the messages they have to sent. In this scenario the WSDL document serves as a contract between server and client and both parties have to abide by it in order to communicate successfully.
 
 Although it is possible to write WSDL documents by hand the additional time and effort do not result in a major advantage. Due to the fact that nearly all information needed for a WSDL description already exists in the source code of the class or the functions implementing the Web Service the complete service description can be generated automatically. The only new information in a WSDL file is the binding and the service access point URL.
 
 \subsubsection{Description}
+%-----------
 The WSDL component generates a WSDL document from a given service implementation.
 
 \subsubsection{Current implementation}
-The WSDL component should be able to generate a WSDL document from a given service implementation. Just like the SOAP server of PHP5 it should accept a class or a set of functions as a service implementation.
+%----------------------
+The generator is currently in a beta stage.
+The code is stable but there are some details to be improved
+and some of the features have not been tested enough.
 
 \subsection{Requirements}\label{subsec:WSDLRequirements}
-%eZ component: WSDL, Requirements
-%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-%
-%Introduction
 %============
-%
-%Description
-%-----------
-%The WSDL component generates a WSDL document from a given service implementation.
-%
-%Current implementation
-%----------------------
-The WSDL component should be able to generate a WSDL document from a given service implementation. Just like the SOAP server of PHP5 it should accept a class or a set of functions as a service implementation.
+The WSDL component should be able to generate a WSDL document
+from a given service implementation.
+Just like the SOAP server of PHP5 it should accept
+a class or a set of functions as a service implementation.
+The generator should be capable of building compex type definitions
+for arrays or classes and source code documentation should be added
+automatically.
 
-%Requirements
-%============
-
-
-To be interoperable with other platforms the WSDL component should conform to the Basic Profile of the Web Services-Interoperability Organization (WS-I) \cite{BasicProfile}.
-
-Documentation
-
-%Design goals
+\subsubsection{Design goals}
 %============
 
 Since the generator knows all details about a service it could provide convenience methods for creating a SOAP server.
 
-%Special considerations
+\subsubsection{Special considerations}
 %======================
-WSDL 1.1
+To be interoperable with other platforms the WSDL component should conform to the Basic Profile of the Web Services-Interoperability Organization (WS-I) \cite{BasicProfile}.
+But users should also be able to create service descriptions
+which are not conform to the Basic Profil,
+e.g. for integrating legacy applications with an rpc/encoded binding.
 
-When the WSDL 2.0 specification \cite{WSDL20} is finished the WSDL component could be enhanced to support this as well.
-
-%Format
+\subsubsection{Format}
 %======
+Of course requiring the WS-I Basic Profile implies that the complete WSDL 1.1 standard is to be implemented.
+When the WSDL 2.0 specification \cite{WSDL20} is finished the WSDL component could be enhanced to support this as well.
 
 %Diagrams
 %========
@@ -595,7 +592,7 @@ When the WSDL 2.0 specification \cite{WSDL20} is finished the WSDL component cou
 %Description
 %-----------
 %The WSDL component generates a WSDL document from a given service implementation.
-The WSDL generator leverages the Reflection component. It uses the Document Object Model to create WSDL in a very structured way.
+The WSDL generator utilizes the Reflection component and the Document Object Model to create service descriptions in a very structured way.
 
 
 Web Services Interoperability Tests of the SOAP Builders community 
