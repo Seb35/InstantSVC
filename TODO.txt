@@ -51,14 +51,14 @@ V2   - cleaner use of XML Namespaces [always use DOMDocument->createElementNS()]
 V2   - XML Schema in external .xsd-file
 V2   - XML Schema validation against http://schemas.xmlsoap.org/wsdl/soap/2003-02-11.xsd
 REM    (a better validation engine is needed. The DOM extension has problems with the xsd)
-V2   - generator tool eventuell auch als cmd-line tool anbieten?!
+V2   - generator as comand line tool
 V2   - XML Beautifier
 V3   - redesign (driver architecture)
 V3   - WSDL 2.0 support
 V3   - Adapters or Extended SOAPClient for doument wrapped clients
 V3   - SOAPServer wich generates WSDL if(!file_exists($wsdl_file)) [may be started with new ExtSOAPServer($wsdl_file,  array('soap_binding_style' => WSDLGenerator::DOCUMENT_WRAPPED);]
 	 - proper support for ArrayAccess stuff from ExtReflectionApi
-
+     - perhaps a generic doc/lit adapter can be implemented
 
 webservices identifizieren
 (martin?)	  - sowohl scan anbieten als auch explizites auswählen von dateien auf dem server
