@@ -1,5 +1,3 @@
-%TODO: Web Services => web services, php => PHP
-
 \documentclass[10pt,final,a4paper,oneside]{article}
 %\documentclass[10pt,journal,final,a4paper,twoside]{IEEEtran}
 %\documentclass[10pt,journal,draftclsnofoot,a4paper]{IEEEtran}
@@ -18,8 +16,13 @@
 
 
 \begin{abstract}
-This Paper describes the current state of design for the InstantSVC core components.
-It serves as basis for discussing the contribution of the core components of InstantSVC to eZ components.
+This paper describes the current design state
+of the InstantSVC core libraries.
+It serves as foundation for discussing the contribution
+of these core libraries to the eZ Components project.
+Therefore it proposes the new components
+ezcReflection, ezcCodeAnalyzer, ezcWsdl, ezcSoap, ezcRest and ezcWebService.
+For each component requirements and design are specified.
 \end{abstract}
 
 \section{Web Services and PHP5}\label{sec:Introduction}
@@ -39,8 +42,8 @@ SOAP is the messaging protocol used to access the services. WSDL is an
 open standard for XML-based service interface descriptions which serve as
 contracts between service provider and consumer. Name services for
 publishing and searching Web Services are specified by UDDI. HTTP is
-leveraged as transport protocol for SOAP messages and in case of RESTful
-Web Services it serves as a universal and minimal interface to all
+leveraged as transport protocol for SOAP messages and in case of ReSTful
+Web Services it even serves as a universal and minimal interface to all
 services.
 
 For efficient utilization of SOAP and in most cases also of WSDL
@@ -68,7 +71,7 @@ The SOAP extension is easy to use. However especially writing WSDL manually is n
 acceptable for professional developers who want to build service-oriented
 architectures with maybe hundreds of services. Other platforms like e.g.
 Java EE or .NET typically use annotation mechanisms to tag classes and methods
-for publication as web services. The tagged source code is then processed by a
+for publication as Web Services. The tagged source code is then processed by a
 sophisticated tool chain which generates WSDL descriptions, additional source code
 for stubs and skeletons and if needed deployment descriptors for the desired
 runtime environment.
@@ -79,69 +82,219 @@ However the same dynamic features make it difficult to generate WSDL from PHP
 code because there is no type information in it.
 The aim of our work was to eliminate the lack of tool support PHP.
 
-The next sections will present each of the components of the tool chain.
+The following sections will present each component of the tool chain.
 The descriptions will focus especially on architecture and design decisions.
 Following the development process of eZ components each section is divided in
 two parts.
-The first part describes the requirements for a component and the other one
+A first part describes the requirements for a component and the other one
 specifies a design.
 
 
 
 \section{Reflection}\label{sec:Reflection}
-
-The main objective of the Extended Reflection API is to enhance PHP by type information and annotations. Source code documentations often provide information which fulfills very similar purposes. But most times these documentations are informal and only understandable by human beings. phpDocumentor the standard documentation tool for PHP provides a common way to document source code and uses a formal schema which can be processed by a computer.
-
-The Extended Reflection API uses the source code documentation to determine type information and any other information provided via so called doc-tags. Those tags can be used to realize systems which depend on strong type information or additional information to the source code itself. Application scenarios are WSDL generation for Web Services or Aspect-Oriented Programming. Processable additions to the source code in general enable a wide range of new applications. 
-
-\subsection{Requirements}\label{subsec:ReflectionRequirements}
 %eZ component: Reflection, Requirements
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 %
-%Introduction
+\subsection{Introduction}
 %============
-Source code documentations often provide information which fulfills very similar purposes. But most times these documentations are not formal and only understandable by human beings. In the PHP world there is a tool called phpDocumentor/PHPDoc which provides a common way to document source code and uses a formal schema which can be processed by a computer.
+Since Web Services have been invented
+to enable interoperable communication between
+various platforms they have to be statically typed.
+Hence type information will be required when
+developing tools for automated generation of Web Services.
+In modern programming languages
+a typical way to obtain structural information
+is to leverage the runtime environment of the language
+and access language elements through a high level reflection API.
 
-Application scenarios are WSDL generation for Web Services or Aspect-Oriented Programming. Processable additions to the source code in general enable a wide range of new applications.
+As of PHP5 a Reflection API has been included
+in the standard PHP distribution.
+It provides an API to get information about classes
+and all their methods and properties,
+without the need to parse any source code.
+Simple functions, runtime objects and PHP extensions
+can be inspected, as well.
+But information gathering is not the
+only feature of the Reflection API.
+It is also possible to modify properties of objects,
+invoke arbitrary methods or functions and
+instantiate objects.
 
-Since PHP5 a Reflection API has been included in the standard PHP distribution. It provides an API to get information about classes and all there methods and properties, without the need to parse any source code. Simple functions, runtime objects and PHP Extensions can be inspected, too. But information gathering is not the only feature. It is also possible to modify properties of objects, invoke arbitrary methods/functions and instantiate objects with this Reflection API. With PHP5.1 its capabilities had been enhanced to fulfill all requirements of the Extended Reflection API and it is possible to extract all comments associated to a language construct with API methods at runtime.
+\begin{figure}[htbp]
+	\centering
+		\includegraphics[width=1.00\textwidth]{figures/php5-reflection-api.eps}
+	\caption{Class diagramm of the  PHP5 Reflection API}
+	\label{fig:php5-reflection-api}
+\end{figure}
+
+As shown in Figure \ref{fig:php5-reflection-api}
+the Reflection API conforms to a meta model
+of an object-oriented programming language.
+That way it is possible to reflect
+nearly all aspects of a given class or object.
+
+However PHP's Reflection API does not provide any type information
+due to PHP being a dynamically typed language.
+That means only types of concrete variables or objects
+at runtime can be determined.
+But it is not possible to obtain this information statically from
+class or function declarations without having an instance.
+This is indeed not a problem for implementing SOAP
+since it only deals with concrete instances at runtime.
+But e.g. when describing service interfaces
+the knowledge of structural details is essentially required.
+
+When looking at professional PHP applications
+it stands out that they only use the dynamic
+typing features where they really make sense.
+Large parts of the code will work with strict
+types and even enforce them e.g. by throwing
+an exception when receiving input of a wrong data type.
+This behavior is also documented in the source code
+documentation stored in comments of those language elements.
+Thus it appears that in many cases type information
+already exists statically in the source code.
+
+With version 5.1 of PHP the capabilities of the Reflection API
+have been enhanced and now it is possible to extract all comments
+associated to a language construct with API methods.
+So it is a logical next step to leverage the information
+given in the source code documentation directly at runtime.
+
+phpDocumentor \cite{phpDocumentor} the standard documentation tool for PHP
+provides a common way to document source code and
+uses a formal syntax which can be processed by a computer.
+Unfortunately just the syntax for data type descriptions
+is somewhat underspecified since it was only meant
+to be understandable by human beings.
+In order to parse these data type descriptions
+the syntax has to be specified more precisely
+as defined in section \ref{subsubsec:ReflectionFormat}.
+
+Given a technology to access documentation tags
+at runtime it would be a perfect foundation
+to build an annotation mechanism for PHP
+since is also feasible to introduce and work with new tags.
+Interestingly there have been comparable developments in other
+programming languages e.g. in Java with XDoclet.
 
 
-Fig. 1.   PHP5 Reflection API
-
-As shown in Fig. 1 the Reflection API conforms to the meta model of an object-oriented programming language. So it is possible to reflect all aspects of a given class or object.
-
-%Description
+\subsubsection{Description}
 %-----------
-The main objective of the Extended Reflection API is to enhance PHP by type information and annotations.
+The main objective of the Reflection component is
+to enhance PHP by type information and annotations.
+It uses the source code documentation to determine
+type information and any other information provided
+via annotations. 
+Those annotations can be used to realize systems
+which depend on strong type information or
+additional details about the source code itself.
 
-The Extended Reflection API uses the source code documentation to determine type information and any other information provided via so called doc-tags. 
-Those tags can be used to realize systems which depend on strong type information or additional information to the source code itself.
 
-%Current implementation
+\subsubsection{Current implementation}
 %----------------------
+The current implementation is highly evolved and well tested.
+The component is already used by several tools
+and can be considered stable.
 
+
+\subsection{Requirements}\label{subsec:ReflectionRequirements}
 %Requirements
 %============
-Therefore, it has the same features, power and performance as the original Reflection API only enhanced by the ability to obtain annotations for classes, functions/methods or properties. This new feature is also used to implement a type system which enables a script to obtain information about the types of parameters, return values and properties.
+The Reflection component should have
+the same features, power and performance
+as the original Reflection API
+but enhanced by the ability to obtain annotations
+for classes, methods, properties or functions.
+This new feature should also be used
+to implement a type system
+which enables a PHP application to obtain information
+about the data types of parameters, return values and properties.
 
-not enforce any constraints at runtime.
+The type system should distinguish between three main types.
+Primitive Types are the build in types boolean, integer, double, string and resource.
+Array Types are all kinds of arrays and
+Class Types are used to represent user defined classes.
+This differentiation is made
+in consideration of the language behavior
+and the capabilities of WSDL for defining types
+in a language independent way.
+As arrays are treated in a special way
+they are additionally classified as simple arrays or maps.
+An array is represented as a map if it is an associative array
+and it is used more like key value pairs.
 
-type names as strings
-
-The type system is designed to distinguish between three main types. PrimitiveTypes are all build in types like Integer, Float, String and so on. ArrayTypes are all kinds of arrays and ClassTypes are used to reflect user defined classes. This differentiation has been made in consideration of the language behavior and the capabilities of WSDL for defining types in a language independent way. As arrays are treated in a special way they are additionally classified in simple arrays and maps. Maps are used if the array is an associative array and it is used much like key, value pairs.
+Usage scenarios of the Reflection component are
+e.g. WSDL generation for Web Services
+or Aspect-Oriented Programming.
+Processable additions to the source code in general
+enable a wide range of new applications.
 
 %Design goals
 %============
 
-%Special considerations
+\subsubsection{Special considerations}
 %======================
-But this requires a correct source code documentation 
-The PHP language runtime is not modified at all. So it is possible that runtime behavior does not correspond with expected behavior caused by improper documentation.
+In order to maintain the dynamic nature of the language
+it is explicitly not required
+to enforce any constraints at runtime.
+The PHP language runtime should not be modified at all.
+Therefore the component expects a correct source code documentation.
+So it is possible that runtime behavior does not correspond
+with the behavior expected due to improper documentation.
 
-%Format
+\subsubsection{Format}\label{subsubsec:ReflectionFormat}
 %======
-PHPDoc
+The Reflection component should reuse the syntax
+of phpDocumentor \cite{phpDocumentor}
+and also some of its annotation tags.
+To retrieve the data types of properties,
+parameters and return values the annotations
+\verb|@var|,
+\verb|@param| and
+\verb|@return| should be analyzed.
+They have the following syntax:
+
+\begin{verbatim}
+/**
+ * @var datatype description
+ */
+
+/**
+ * @param datatype $paramname description
+ * @return datatype description
+ */
+\end{verbatim}
+
+\verb|datatype| can be the name of a class
+or any of the built-in PHP data types:
+
+\begin{itemize}
+	\item \verb|boolean|
+	\item \verb|integer|
+	\item \verb|double|
+	\item \verb|string|
+	\item \verb|resource|
+\end{itemize}
+
+Additionally it is possible to specify arrays of those
+data types.
+For this purpose three extended notations should be supported.
+Simple arrays which use keys of type integer and
+where all values are of the same data type
+can be described by naming the value type followed by square brackets,
+e.g. \verb|integer[]| or also \verb|string[][]|
+in case of multidimensional arrays.
+Associative arrays can be notated as
+\verb|array(datatype=>datatype)| or \verb|array<datatype,datatype>|.
+But these notations should only be used
+if the key type differs from \verb|integer|
+or if it is of major importance
+and should therefore be emphasized
+for human readers of the documentation. 
+%TODO: |, mixed, number
+%If a multiple types are possible for a language element
+%they should be listed separated by a \|.
 
 %Diagrams
 %========
@@ -156,147 +309,268 @@ PHPDoc
 %Description
 %-----------
 
-%Design description
+The Reflection API of PHP \cite{PHP5Reflection}
+is itself implemented as an extension written in C
+for maximum performance and conceptual reasons.
+The Reflection component is based on this PHP extension
+and all elements are derived from the given base classes.
+
+\subsubsection{Design description}
 %------------------
-The Reflection API itself is implemented as a extension written in C for maximum performance and conceptual reasons. The Extended Reflection API is based on this extension and all elements are derived from the given base classes.
 
-Fig. 2.   Extended Reflection API and Type System
-
-In Fig. 2 the Extended Reflection API is shown. For all classes in the Reflection API new subclasses are introduced, which provide new implementations of the inherited methods and additional methods to access type information and annotations.
-In addition a new class called ExtendedReflectionAPI is defined, which provides methods necessary to generate Reflection Objects e.g. like getTypeByName. This method will return the appropriate type object for a given type name. For extensibility it is possible to set a different Factory for Type Objects, too. This may be used to extend the provided type system with additional features. Currently it is used for proper type mapping using type names as strings.
-
-
-API Definitions
-
-\begin{verbatim}
-class ExtendedReflectionApi {
-    public static ExtendedReflectionApi getInstance()
-    public void setTypeFactory(TypeFactory $factory)
-    public Type getTypeByName(string $typeName)
-}
-\end{verbatim}
+\begin{figure}[htbp]
+	\centering
+		\includegraphics[width=1.00\textwidth]{figures/ezcReflection.eps}
+	\caption{Class diagram of the Reflection component and its type system}
+	\label{fig:ezcReflection}
+\end{figure}
 
 
-This global singleton acts as central entry point and factory for reflection by type name. Therefore, it is possible to set a new type factory which could provide enhanced features. If none is provided the standard TypeFactoryImpl is used.
+In Figure \ref{fig:ezcReflection} the Reflection component is shown.
+For all classes of the Reflection API
+new subclasses are introduced,
+which provide new implementations
+of the inherited methods and
+additional methods to access
+annotations and type information.
 
-\begin{verbatim}
-interface Type {
-    function Type getArrayType();
-    function Type getMapIndexType();
-    function Type getMapValueType();
-    function boolean isArray();
-    function boolean isClass();
-    function boolean isPrimitive();
-    function boolean isMap();
-    function string toString();
-    function boolean isStandardType();
-    function string getXmlName();
-    function DOMElement getXmlSchema(DOMDocument $dom);
-}
-\end{verbatim}
+\paragraph{ezcReflectionClass}
+ezcReflectionClass inherits from ReflectionClass
+and redefines all methods which return a PHP reflection object
+to return objects from the Reflection component.
+In addition to that
+methods for annotation handling
+are introduced e.g. 
+%getTags
+getAnnotations,
+%isTagged
+hasAnnotation etc.
+The generic getDocComment method is superseded
+by getShortDescription and getLongDescription.
+These methods return only the relevant parts
+of interest from a PHPDoc comment.
+
+%\begin{verbatim}
+%class ExtReflectionClass extends ReflectionClass {
+%    public void __construct(string $name)
+%    public ExtReflectionMethod getMethod(string $name)
+%    public ExtReflectionMethod getConstructor()
+%    public ExtReflectionMethod[] getMethods()
+%    public ClassType getParentClass()
+%    public ExtReflectionProperty getProperty(string $name)
+%    public ExtReflectionProperty[] getProperties()
+%    public boolean isWebService()
+%    public string getShortDescription()
+%    public string getLongDescription()
+%    public boolean isTagged(string $with)
+%    public PHPDocTag[] getTags(string $name)
+%    public ExtReflectionExtension getExtension()
+%}
+%\end{verbatim}
+
+The enhancements to the Reflection API
+in the classes
+\textbf{ezcReflectionFunction},
+\textbf{ezcReflectionMethod},
+\textbf{ezcReflectionParameter},
+\textbf{ezcReflectionProperty} and
+\textbf{ezcReflectionExtension}
+are analogue to those made in
+ezcReflectionClass
+and have a similar behavior.
+
+%\begin{verbatim}
+%class ExtReflectionExtension extends ReflectionExtension {
+%    public void __construct(string $name)
+%    public ExtReflectionFunction[] getFunctions()
+%    public ExtReflectionClass[] getClasses()
+%}
+%
+%class ExtReflectionFunction extends ReflectionFunction {
+%    public void __construct(string $name)
+%    public ExtReflectionParameter[] getParameters()
+%    public Type getReturnType()
+%    public string getReturnDescription()
+%    public boolean isWebmethod()
+%    public string getShortDescription()
+%    public string getLongDescription()
+%    public boolean isTagged(string $with)
+%    public PHPDocTag[] getTags(string $name)
+%}
+%
+%class ExtReflectionMethod extends ReflectionMethod {
+%    public void __construct(mixed $class, string $name)
+%    public ExtReflectionParameter[] getParameters()
+%    public Type getReturnType()
+%    public string getReturnDescription()
+%    public boolean isWebmethod()
+%    public string getShortDescription()
+%    public string getLongDescription()
+%    public boolean isTagged(string $with)
+%    public PHPDocTag[] getTags(string $name)
+%    public boolean isMagic()
+%    public ClassType getDeclaringClass()
+%}
+%
+%class ExtReflectionParameter extends ReflectionParameter {
+%    public void __construct(mixed $mixed, mixed $parameter)
+%    public Type getType()
+%    public ClassType getClass()
+%    public ExtReflectionFunction getDeclaringFunction()
+%    public ClassType getDeclaringClass()
+%}
+%
+%class ExtReflectionProperty extends ReflectionProperty {
+%    public void __construct(mixed $class, string $name)
+%    public Type getType()
+%    public ClassType getDeclaringClass()
+%}
+%\end{verbatim}
 
 
-The Type interface acts as a central interface for the type system. It is equipped with several methods to reflect attributes about a type. For convenience and usability also methods for an XML Schema mapping are incorporated at this point.
+\paragraph{ezcReflection}
+In addition to that a singleton class
+called ezcReflection is defined,
+which  acts as a central entry point
+and factory for reflection by type name.
+Therefore, it provides methods necessary
+to generate Reflection Objects,
+e.g. the method getTypeByName
+will return the appropriate type object
+for a given data type name specified in an annotation.
+For extensibility it is also possible
+to set a different factory for type objects
 
-\begin{verbatim}
-class ClassType extends ExtReflectionClass implements Type {
-    public Type getArrayType()
-    public Type getMapIndexType()
-    public Type getMapValueType()
-    public boolean isArray()
-    public boolean isClass()
-    public boolean isPrimitive()
-    public boolean isMap()
-    public string toString()
-    public boolean isStandardType()
-    public string getXmlName(boolean $usePrefix)
-    public DOMElement getXmlSchema(DOMDocument $dom, $namespaceXSD)
-    public void __construct(string $name)
-}
-\end{verbatim}
+\paragraph{ezcReflectionTypeFactory}
+A type factory has to implement the interface
+ezcReflectionTypeFactory
+and can be used to extend the provided type system
+with additional features.
+
+\paragraph{ezcReflectionTypeFactoryImpl}
+If no type factory is provided
+the default implementation ezcReflectionTypeFactoryImpl is chosen
+which performs proper data type mapping
+for type names provided as strings.
+
+%\begin{verbatim}
+%class ezcReflection {
+%    public static ezcReflection getInstance()
+%    public void setTypeFactory(ezcReflectionTypeFactory $factory)
+%    public Type getTypeByName(string $typeName)
+%}
+%\end{verbatim}
+
+\paragraph{ezcReflectionTypeMapper}
+ezcReflectionTypeMapper is a helper class
+used by the default type factory,
+the primitive type class
+and some of the annotation classes.
+It provides mappings from various type names
+which may occur in documentation
+to standardized type names
+or XML Schema data types.
+
+\paragraph{ezcReflectionType}
+The type interface acts as a
+central interface for the type system.
+It is equipped with several methods
+to reflect characteristics of a data type.
+For convenience and usability
+also methods for an XML Schema mapping
+are incorporated at this point.
+
+%\begin{verbatim}
+%interface ezcReflectionType {
+%    function ezcReflectionType getArrayType();
+%    function ezcReflectionType getMapIndexType();
+%    function ezcReflectionType getMapValueType();
+%    function boolean isArray();
+%    function boolean isClass();
+%    function boolean isPrimitive();
+%    function boolean isMap();
+%    function string toString();
+%    function boolean isStandardType();
+%    function string getXmlName();
+%    function DOMElement getXmlSchema(DOMDocument $dom);
+%}
+%\end{verbatim}
+
+\paragraph{ezcReflectionAbstractType}
+The abstract type is one implementation of the type interface
+and serves as an abstract base class
+for ezcReflectionPrimitiveType and
+ezcReflectionArrayType.
+
+\paragraph{ezcReflectionPrimitiveType}
+The primitve type is a specialization 
+of ezcReflectionAbstractType
+and represents the primitive types
+bolean, integer, float, string and resource.
+
+\paragraph{ezcReflectionArrayType}
+The array type is the second class
+to extend ezcReflectionAbstractType
+and it distinguishes
+between simple arrays and maps.
+
+\paragraph{ezcReflectionClassType}
+This implementation of the type interface
+represents a class as a type.
+For this purpose it is a specialization of ezcReflectionClass
+to inherit all its capabilities,
+i.e. unlike ezcReflectionPrimitiveType and ezcReflectionArrayType
+the ezcReflectionClassType is tightly integrated with the Reflection API.
+
+%\begin{verbatim}
+%class ClassType extends ExtReflectionClass implements Type {
+%    public Type getArrayType()
+%    public Type getMapIndexType()
+%    public Type getMapValueType()
+%    public boolean isArray()
+%    public boolean isClass()
+%    public boolean isPrimitive()
+%    public boolean isMap()
+%    public string toString()
+%    public boolean isStandardType()
+%    public string getXmlName(boolean $usePrefix)
+%    public DOMElement getXmlSchema(DOMDocument $dom, $namespaceXSD)
+%    public void __construct(string $name)
+%}
+%\end{verbatim}
+
+\paragraph{ezcReflectionDocParser}
+This class parses PHPDoc comments
+and provides retrieved data
+in form of annotation objects.
+
+\paragraph{ezcReflectionAnnotationFactory}
+This factory creates an ezcReflectionAnnotation
+object for a given annotation.
+
+\paragraph{ezcReflectionAnnotation}
+This is a generic class to represent an annotation
+and it also serves as a base class for several
+specialized annotation classes, e.g.
+\textbf{ezcReflectionAnnotationParam},
+\textbf{ezcReflectionAnnotationReturn} and
+\textbf{ezcReflectionAnnotationVar}.
+
+%\textbf{ezcReflectionAnnotationRestIn}
+%\textbf{ezcReflectionAnnotationRestMethod}
+%\textbf{ezcReflectionAnnotationRestOut}
+%\textbf{ezcReflectionAnnotationWebMethod}
+%\textbf{ezcReflectionAnnotationWebService}
 
 
-ClassType is one incarnation of the Type interface. ArrayType and PrimitiveType behave 	similar and are not discussed at this point. Unlike ArrayType and PrimitiveType, the ClassType is tightly integrated with the Extended Reflection API and extends ExtRefelectionClass to inherit all its capabilities.
 
-\begin{verbatim}
-class ExtReflectionClass extends ReflectionClass {
-    public void __construct(string $name)
-    public ExtReflectionMethod getMethod(string $name)
-    public ExtReflectionMethod getConstructor()
-    public ExtReflectionMethod[] getMethods()
-    public ClassType getParentClass()
-    public ExtReflectionProperty getProperty(string $name)
-    public ExtReflectionProperty[] getProperties()
-    public boolean isWebService()
-    public string getShortDescription()
-    public string getLongDescription()
-    public boolean isTagged(string $with)
-    public PHPDocTag[] getTags(string $name)
-    public ExtReflectionExtension getExtension()
-}
-\end{verbatim}
-
-
-ExtReflectionClass inherits from the ReflectionClass and redefines all methods which return a reflection object to return objects from the Extended Reflection API. In addition methods for annotation handling are introduced e.g. getTags, isTagged etc. The general getDocComment method had been superseded by getShortDescription and getLongDescription. This methods return only the part of interest in a PHPDoc comment.
-
-
-The following classes are analogue to ExtReflectionClass enhancements to the Reflection API and behave very similar.
-
-\begin{verbatim}
-class ExtReflectionExtension extends ReflectionExtension {
-    public void __construct(string $name)
-    public ExtReflectionFunction[] getFunctions()
-    public ExtReflectionClass[] getClasses()
-}
-
-class ExtReflectionFunction extends ReflectionFunction {
-    public void __construct(string $name)
-    public ExtReflectionParameter[] getParameters()
-    public Type getReturnType()
-    public string getReturnDescription()
-    public boolean isWebmethod()
-    public string getShortDescription()
-    public string getLongDescription()
-    public boolean isTagged(string $with)
-    public PHPDocTag[] getTags(string $name)
-}
-
-class ExtReflectionMethod extends ReflectionMethod {
-    public void __construct(mixed $class, string $name)
-    public ExtReflectionParameter[] getParameters()
-    public Type getReturnType()
-    public string getReturnDescription()
-    public boolean isWebmethod()
-    public string getShortDescription()
-    public string getLongDescription()
-    public boolean isTagged(string $with)
-    public PHPDocTag[] getTags(string $name)
-    public boolean isMagic()
-    public ClassType getDeclaringClass()
-}
-
-class ExtReflectionParameter extends ReflectionParameter {
-    public void __construct(mixed $mixed, mixed $parameter)
-    public Type getType()
-    public ClassType getClass()
-    public ExtReflectionFunction getDeclaringFunction()
-    public ClassType getDeclaringClass()
-}
-
-class ExtReflectionProperty extends ReflectionProperty {
-    public void __construct(mixed $class, string $name)
-    public Type getType()
-    public ClassType getDeclaringClass()
-}
-\end{verbatim}
-
-%Guidelines
+%\subsubsection{Guidelines}
 %----------
 
-%Algorithms
+%\subsubsection{Algorithms}
 %----------
 
-%Data structures
+%\subsubsection{Data structures}
 %---------------
 
 %Diagrams
@@ -319,8 +593,9 @@ and function definition in a separate file, it is required to load those files.
 \subsubsection{Description}
 %-----------
 The CodeAnalyzer component is able to load entire class trees
-or function libraries into a sandbox environment and to
-examine the language elements in them.
+or function libraries
+%into a sandbox environment
+and to examine the language elements in them.
 In addition to that it is a high level interface to
 perform statistical analyses and software metrics with
 the Reflection package.
@@ -333,7 +608,7 @@ development of several tools using it.
 
 \subsection{Requirements}\label{subsec:CodeAnalyzerRequirements}
 %============
-The component should be able to search through a source tree
+The component should be able to load entire source trees
 and collect information about files respectively classes found.
 Some basic software metrics should be implemented.
 The required metrics include
@@ -353,7 +628,7 @@ the CodeAnalyzer should not crash because of syntax errors in a file parsed.
 This is very important because if the Code Analyzer would be that instable,
 it would only be usefull as a standalone tool for analyzing
 smaller applications. It order to become a software metrics library
-which can be included in other applications -- such as web service tools --
+which can be included in other applications -- such as Web Service tools --
 it has to be reliable.
 
 
@@ -377,32 +652,45 @@ The package should at least work with PHP5 source code.
 %Description
 %-----------
 
-\subsubsection{Design description}
-%------------------
-The Code Analyzer should should be based on the reflection component
-as a high level API for language elements.
+The Code Analyzer package should be based on the reflection component
+as a high level API for handling language elements.
 This way it leverages the internal parser of the PHP interpreter
 which can be assumed to be one of the best parsers for the language.
 
+\subsubsection{Design description}
+%------------------
 The requirement of being fault tolerant has a major influence
-on the design of the component.
+on the design of the classes.
 Since the source files have to be loaded
 to employ the reflection component, some kind
-of a sandbox environment is needed to ensure the errors
+of a sandbox environment is needed to ensure that errors
 in the input files which stop the script execution
-do not affect the Code Analyzer in its execution.
+do not affect the Code Analyzer classes in their execution.
 
 A simple way to achieve this is to start the analysis of the files
-in a separate PHP interpreter.
+in a separate PHP interpreter process.
 Then in case of errors only this child process stops,
-but the Code Analyzer is able to report the error
+but the Code Analyzer is able to report or simply ignore the error
 and to continue with the next file.
 
 The component consists of three classes.
 
+\paragraph{ezcCodeAnalyzerClassLoader}
+This class provides methods to recursively include
+all files that contain PHP code from a given directory and all its subdirectories.
+Any output of the included code will be suppressed
+and files are only loaded if they do not contain
+any syntax errors.
+This fault tolerance is achieved by creating a new child PHP process
+and performing a syntax check before loading the file into the parent PHP process.
+
+%\verb|public static void loadDir (string $path)| 
+%\verb|public static void loadFile (string $file)|
+
+
 \paragraph{ezcCodeAnalyzer}
-ezcCodeAnalyzer is the main class of the component.
-It implements the different analyses which can be started either
+Class ezcCodeAnalyzer
+implements different analyses which can be started either
 separately using one of the summarization methods
 or all together by calling a central collector method.
 
@@ -455,23 +743,15 @@ or all together by calling a central collector method.
 %+void summarizeProject ()
 %\end{verbatim}
 
-\paragraph{ezcCodeAnalyzerClassLoader}
-This class provides methods to recursively include
-all files that contain PHP code from a given directory.
-Any output of the included code will be suppressed
-and files are only loaded if they do not contain
-any syntax errors.
-This fault tolerance is achieved by creating a new PHP process
-and performing a syntax check.
-
-%\verb|public static void loadDir (string $path)| 
-%\verb|public static void loadFile (string $file)|
-
 
 \paragraph{ezcCodeAnalyzerFileDetails}
-The class ezcCodeAnalyzer uses this struct as data structure for some details of a file.
-The constructor of collects ::: Guessing MimeType, counting lines of code, and retrieving file size are 
-done. 
+The class ezcCodeAnalyzer uses this class
+which is actually an ezcBaseStruct
+as data structure for some of the details of a given file.
+All dta retrieval operations which include
+guessing the MIME type, counting the lines of code,
+and retrieving the file size
+are performed during object creation.
 
 %TODO: maybe leave it out
 %\begin{figure}[htbp]
@@ -521,12 +801,18 @@ done.
 The static call graph in figure \ref{fig:callgraph-code_analyzer}
 gives an impression of the collaboration between the methods.
 In some methods recursion is used for traversing hierarchical 
-directory and class structures but most of the algorithms
+directory and class structures but most of the methods
 are not very complex. They simply collect statistics while
 leveraging the Reflection component.
 
 \subsubsection{Data structures}
 %---------------
+The Class Loader needs no properties
+because the code loaded is stored
+in PHP's internal data structures.
+The Code Analyzer uses associative arrays, Reflection objects, 
+and instances of ezcCodeAnalyzerFileDetails
+to store the statistical data.
 
 %Diagrams
 %========
@@ -538,13 +824,42 @@ leveraging the Reflection component.
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 \subsection{Introduction}
 %============
-The Web Services Description Language (WSDL) \cite{WSDL} is one of the most important standards for professional web service applications because it allows for automated creation of SOAP servers and clients. The SOAP extension of PHP5 supports this if a WSDL file is provided. A WSDL file is an XML document describing the interface of a Web Service. A service provider can offer this description to its clients which are then able to determine the operations provided by the service and the messages they have to sent. In this scenario the WSDL document serves as a contract between server and client and both parties have to abide by it in order to communicate successfully.
+The Web Services Description Language (WSDL) \cite{WSDL}
+is one of the most important standards
+for professional Web Service applications
+because it allows for automated creation
+of SOAP servers and clients.
+The SOAP extension of PHP5 supports this
+if a WSDL file is provided.
+A WSDL file is an XML document
+describing the interface of a Web Service.
+A service provider can offer this description
+to its clients which are then able
+to determine the operations provided by the service
+and the messages they have to sent.
+In this scenario the WSDL document
+serves as a contract between server and client
+and both parties have to abide by it
+in order to communicate successfully.
 
-Although it is possible to write WSDL documents by hand the additional time and effort do not result in a major advantage. Due to the fact that nearly all information needed for a WSDL description already exists in the source code of the class or the functions implementing the Web Service the complete service description can be generated automatically. The only new information in a WSDL file is the binding and the service access point URL.
+Although it is possible
+to write WSDL documents by hand
+the additional time and effort
+do not result in a major advantage.
+Due to the fact that nearly all information
+needed for a WSDL description already exists
+in the source code of the class or the functions
+implementing the Web Service
+the complete service description
+can be generated automatically.
+
+The only new information in a WSDL file
+are the binding and the service access point URL.
 
 \subsubsection{Description}
 %-----------
-The WSDL component generates a WSDL document from a given service implementation.
+The WSDL component generates a WSDL document
+from a given service implementation.
 
 \subsubsection{Current implementation}
 %----------------------
@@ -558,26 +873,35 @@ The WSDL component should be able to generate a WSDL document
 from a given service implementation.
 Just like the SOAP server of PHP5 it should accept
 a class or a set of functions as a service implementation.
-The generator should be capable of building compex type definitions
+The generator should be capable of building complex type definitions
 for arrays or classes and source code documentation should be added
 automatically.
 
 \subsubsection{Design goals}
 %============
 
-Since the generator knows all details about a service it could provide convenience methods for creating a SOAP server.
+Since the generator knows all details about a service
+it could provide convenience methods for creating a SOAP server.
+This is particularly interesting for debugging purposes
+since it speeds up the testing process for service implementations.
 
 \subsubsection{Special considerations}
 %======================
-To be interoperable with other platforms the WSDL component should conform to the Basic Profile of the Web Services-Interoperability Organization (WS-I) \cite{BasicProfile}.
+To be interoperable with other platforms
+the WSDL component should conform
+to the Basic Profile of the
+Web Services-Interoperability Organization (WS-I) \cite{BasicProfile}.
 But users should also be able to create service descriptions
-which are not conform to the Basic Profil,
-e.g. for integrating legacy applications with an rpc/encoded binding.
+which are not conform to the Basic Profile,
+e.g. to integrate legacy applications
+with an rpc/encoded binding.
 
 \subsubsection{Format}
 %======
-Of course requiring the WS-I Basic Profile implies that the complete WSDL 1.1 standard is to be implemented.
-When the WSDL 2.0 specification \cite{WSDL20} is finished the WSDL component could be enhanced to support this as well.
+Of course requiring the WS-I Basic Profile implies
+that the complete WSDL 1.1 standard is to be implemented.
+When the WSDL 2.0 specification \cite{WSDL20} is finished
+the WSDL component could be enhanced to support this as well.
 
 %Diagrams
 %========
@@ -592,30 +916,120 @@ When the WSDL 2.0 specification \cite{WSDL20} is finished the WSDL component cou
 %Description
 %-----------
 %The WSDL component generates a WSDL document from a given service implementation.
-The WSDL generator utilizes the Reflection component and the Document Object Model to create service descriptions in a very structured way.
+The WSDL generator utilizes the Reflection component
+and the Document Object Model (DOM)
+to create service descriptions in a very structured way.
 
 
-Web Services Interoperability Tests of the SOAP Builders community 
 
-
-%Design description
+\subsubsection{Design description}
 %------------------
 
-%Guidelines
-%----------
+\paragraph{ezcWsdlGenerator}
+This class implements the algorithms for WSDL generation.
+The class diagram in figure \ref{fig:ezcWsdlGenerator.class-diagram}
+shows all public methods which can be used 
+to configure the generation process and
+obtain the resulting WSDL document in various formats.
 
-%Algorithms
+\begin{figure}[htbp]
+	\centering
+		\includegraphics[width=0.70\textwidth]{figures/ezcWsdlGenerator.class-diagram.eps}
+	\caption{Class diagram of ezcWsdlGenerator}
+	\label{fig:ezcWsdlGenerator.class-diagram}
+\end{figure}
+
+\paragraph{ezcWsdlGeneratorPolicy}
+As stated in \ref{subsec:WSDLRequirements}
+the WSDL generator should
+use Web Service annotations
+to determine which functions to publish
+in the service description.
+Furthermore it be capable to
+copy the documentation for operations
+from the source code to the WSDL document.
+But the software projects using the generator
+may have different opinions about
+which methods should be selected for publication
+and how much documentation should be incorporated.
+Hence the generator is extensible in a way
+that users can provide own implementations of the
+interface ezcWsdlGeneratorPolicy.
+
+\paragraph{ezcWsdlGeneratorDefaultPolicy}
+The default implementation of the policy interface
+is used if no user defined implementation is provided.
+It uses the annotation \verb|@WebMethod|
+to identify methods for publication and
+provides the short description from the PHPDoc comment
+of each method as documentation for
+the corresponding WSDL operation.
+
+
+%\subsubsection{Guidelines}
 %----------
+%It must not be possible to combine
+%the methods setClass and addFunction
+%of ezcWsdlGenerator because
+%this 
+
+
+\subsubsection{Algorithms}
+%----------
+Through the utilization of the Reflection component
+and the DOM API the methods of the WSDL generator
+only have to perform the mapping between
+language constructs and XML elements.
+
 \begin{figure}[htbp]
 	\centering
 		\includegraphics[width=1.00\textwidth]{figures/callgraph-Generators-class.WSDLGenerator.ps}
-	\caption{Static call graph of class ezcWSDL}
+	\caption{Static call graph of class ezcWsdlGenerator}
 	\label{fig:callgraph-Generators-class.WSDLGenerator}
 \end{figure}
 
+As shown in the method call graph
+in figure \ref{fig:callgraph-Generators-class.WSDLGenerator}
+each WSDL element type, e.g. Operation, PortType or Binding,
+is generated by a separate method in order to reduce complexity.
+At some points recursion is applied
+for traversing class and array structures.
 
-%Data structures
+
+\subsubsection{Data structures}
 %---------------
+In order to avoid redundancy in the types section of a WSDL document
+the generator uses arrays for memorizing types already found.
+Besides that it handles
+PHP language elements with the help of reflection objects
+and XML elements as DOM nodes and DOM attributes.
+
+
+\subsubsection{Testing}
+Since input and output may have a complex structure
+testing a WSDL generator can be a challenging task.
+WSDL is an interface description language
+and thus a feasible method to test the generated descriptions
+is to start a SOAP server with them
+and verify if it behaves in the same manner as the input class.
+This implies that the SOAP server has to work correctly
+and that is ensured through the test cases of the SOAP extension.
+These test cases probe the entire Web Service functionality
+based on manually written WSDL files and also implement the
+Web Services interoperability tests of the SOAP Builders community.
+Therefore they can be leveraged to test the WSDL generator
+through replacing the WSDL documents of the test cases
+with generated versions
+and comparing if the results are the same.
+
+The test cases of the SOAP extension use PHP's test framework
+which unfortunately is a conflict with the guidelines of eZ Components
+stipulating PHPUnit test cases.
+Thus it has to be discussed
+if this exception can be tolerated for the WSDL component
+or if it is technically feasible to generate unit tests
+from those phpt files.
+
 
 %Diagrams
 %========
@@ -623,30 +1037,127 @@ Web Services Interoperability Tests of the SOAP Builders community
 
 
 \section{SOAP}\label{sec:SOAP}
-\subsection{Requirements}\label{subsec:SOAPRequirements}
 %eZ component: SOAP, Requirements
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 %
-%Introduction
+\subsection{Introduction}
 %============
+With PHP5's SOAP extension and the WSDL component
+the core standards for creating Web Services
+are available to PHP developers.
+But real world SOA applications need much more than that.
+They have to deal with aspects
+like e.g. security, synchronization or sessioning.
+Therefore over 20 additional Web Service standards
+-- also called WS-* standards --
+have evolved which commonly add new elements
+to the headers of SOAP messages.
+In order to be able to work with those header elements
+the SOAP standard describes intermediary nodes,
+which can be introduced to communication channel
+betwenn sender and receiver.
+Those SOAP Intermediaries
+can add new header elements, work with them,
+and also remove them at a later time.
+This way additional communication features
+new communication features can be applied
+transparently for sender and receiver.
 
-%Description
+
+\subsubsection{Description}
 %-----------
+The SOAP component provides enhanced versions of
+the classes SoapServer and SoapClient
+which are easier to use and have additional
+communication features.
+Furthermore it serves as a platform for implementing
+WS-* standards in order to use them with PHP.
+As a first standard based on that platform
+this component provides a WS-Security implementation
+using the Username Token Profile.
 
-%Current implementation
+
+\subsubsection{Current implementation}
 %----------------------
+Recently the SoapServer has been redesigned
+and not yet reimplemented.
+But the changes are merely refactoring
+in order to make the API more comprehensible.
+WS-Security and the Username Token Profile
+are implemented conform to the specifications.
+When developing the WS-Security client a
+problem occurred with PHP's SOAP extension
+lacking some features.
+However the current version of the SoapClient only supports the
+Username Token Profile and is not as extensible
+as requested in the requirements. 
 
-%Requirements
+
+\subsection{Requirements}\label{subsec:SOAPRequirements}
 %============
+The SOAP component should be
+a platform to implement WS-* standards
+as SOAP Intermediaries in client and server.
+As a first standard WS-Security should be implemented
+with the Username Token Profile as a first token profile.
 
-%Design goals
+Another problem the component should solve
+is that the SOAP extension of PHP is very generic.
+That is of course an advantage because it allows
+to use all kinds of SOAP bindings namely
+rpc/encoded, rpc/literal and document/literal.
+However especially a document/literal style
+is somewhat difficult to use, because most
+Web Service platforms prefer the special
+document/wrapped flavor, and in that case
+the PHP application has to do wrapping and
+unwrapping of return values and arguments.
+But if an existing class should additionally
+become accessible as a Web Service
+it not acceptable to change the signatures
+of the methods and the wrapping and unwrapping
+should be encapsulated inside the SOAP component.
+
+In order to facilitate the creation
+of large numbers of Web Services
+the SOAP component should provide
+a more generic server
+which can be configured with simple
+deployment descriptors to handle
+SOAP requests for multiple services.
+
+Interesting features for future versions would be
+to implement SOAP with Attachments \cite{SwA},
+other token profiles for WS-Security and of course
+other WS-* standards.
+
+
+\subsubsection{Design goals}
 %============
+A common pattern for the realization of
+SOAP Intermediaries is a handler chain.
+The SOAP component should therefore
+enhance client and server
+with a handler chain mechanism.
 
-%Special considerations
+
+\subsubsection{Special considerations}
 %======================
+In order to be interoperable with other platforms
+the SOAP component should also conform
+to the Basic Profile of the
+Web Services Interoperability Organization (WS-I) \cite{BasicProfile}.
 
-%Format
+
+\subsubsection{Format}
 %======
+The security mechanisms must adhere
+to the Web Services Security 1.1 \cite{WSS}
+and Username Token Profile 1.1 \cite{UTP}
+specifications.
+Besides all enhancements the component
+still has to be compliant with
+the SOAP specification version 1.2 \cite{SOAP}.
 
 %Diagrams
 %========
@@ -660,24 +1171,124 @@ Web Services Interoperability Tests of the SOAP Builders community
 %
 %Description
 %-----------
+The SOAP component is based on PHP5's SOAP extension
+and enhances its features by extending the classes
+SoapServer and SoapClient.
 
-%Design description
+\subsubsection{Design description}
 %------------------
 
-%Guidelines
-%----------
+\paragraph{ezcSoapServer}
+The ezcSoapServer extends the SoapServer class
+with a handler chain mechanism.
+Additional handlers are implemented
+by extending the abstract class \textbf{ezcSoapIntermediary}
+and can be added to the server
+by passing an instance to the method addSoapIntermediary.
+As depicted in figure \ref{fig:ezcSoapServer.class-diagram}
+an ezcSoapIntermediary is actually
+an extended XML parser based on the SAX API.
 
-\subsubsection{Algorithms}
-%----------
+\begin{figure}[htbp]
+	\centering
+		\includegraphics[width=0.60\textwidth]{figures/ezcSoapServer.class-diagram.eps}
+	\caption{Class diagram of the handler chain mechanism in the SOAP server.}
+	\label{fig:ezcSoapServer.class-diagram}
+\end{figure}
+
+\paragraph{ezcSoapSecurityIntermediary}
+In order to implement WS-Security
+this class provides a generic handler
+for security headers.
+The actual authentication is done
+by an implementation of the interface
+\textbf{ezcSoapTokenProfile}
+which can be specified 
+through the method setTokenProfile.
+
+\begin{figure}[htbp]
+	\centering
+		\includegraphics[width=1.00\textwidth]{figures/ezcSoapServer-with-WS-Security.class-diagram.eps}
+	\caption{Class diagram of the WS-Security implementation.}
+	\label{fig:ezcSoapServer-with-WS-Security.class-diagram}
+\end{figure}
+
+\paragraph{ezcSoapUsernameTokenProfile}
+This class implements the authentication mechanism
+specified by the Username Token Profile
+of the WS-Security standard.
+
+\paragraph{ezcSoapServerDispatcher}
+To avoid writing several very similar server scripts
+when providing multiple Web Services
+this class provides a generic SOAP server which
+can be configured via simple deployment descriptors.
+It works somewhat like a front controller for SOAP
+since it forwards incoming SOAP Requests
+a correspondent SOAP server instance.
+
+\paragraph{ezcSoapDdGenerator}
+This generator class provides an API
+to create deployment descriptors for
+ezcSoapServerDispatcher which are
+aktually include files returning
+a PHP array with configuration settings.
+
+\paragraph{ezcSoapAdapterGenerator}
+An importand requirement is
+to avoid changes to the method signatures
+of existing application classes
+when generating document/wrapped Web Services.
+This code generator builds adapter classes
+which perform the unwrapping of arguments
+wrapping of return values.
+
+\paragraph{ezcSoapClient}
+Class ezcSoapClient inherits from SoapClient
+and extends it with WS-Security support.
+In particular the constructor method
+has two new parameters for providing username and password
+to the Username Token Profile authentication.
+Plans for future versions are to
+also apply a handler chain on the client side.
+But it has not yet been examined
+if that is technically feasible.
+%TODO:diagram
 \begin{figure}[htbp]
 	\centering
 		\includegraphics[width=1.00\textwidth]{figures/callgraph-SoapClient-class.SecureClient-with-external-calls.ps}
-	\caption{Static call graph for class ezcSecureSoapClient}
+	\caption{Static call graph with external calls for class ezcSoapClient}
 	\label{fig:callgraph-SoapClient-class.SecureClient-with-external-calls}
 \end{figure}
 
 
-%Data structures
+\paragraph{ezcSoapClientSecurityStruct}
+This data structure
+contains an ezcSoapUsernameToken
+and is used by ezcSoapClient
+to create the SOAP headers for WS-Security.
+
+\paragraph{ezcSoapUsernameToken}
+A Username Token is a data structure
+consisting of a user name,
+a nonce\footnote{In cryptography this is an abbreviation for a number used once.},
+a time stamp
+and the encrypted password of the user.
+It is sent as a WS-Security header
+from a SOAP client to a SOAP server
+in order to perform authentication.
+
+%\subsubsection{Guidelines}
+%----------
+
+\subsubsection{Algorithms}
+%----------
+As described in the specification
+the Username Token Profile related
+classes uses the MD5, SHA1 and base64 algorithms.
+
+
+%\subsubsection{Data structures}
 %---------------
 
 %Diagrams
@@ -685,37 +1296,81 @@ Web Services Interoperability Tests of the SOAP Builders community
 
 
 
-\section{REST}\label{sec:REST}
-\subsection{Requirements}\label{subsec:RESTRequirements}
-%eZ component: REST, Requirements
+\section{ReST}\label{sec:ReST}
+%eZ component: ReST, Requirements
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 %
-%Introduction
+\subsection{Introduction}
 %============
+Representational State Transfer (ReST) is an architectural style
+which can be applied to the HTTP protocol \cite{HTTP}
+in order to form an alternative technology
+for interoperable Web Services.
+The major advantage of this concept is
+that all so called ReSTful Web Services have
+the same uniform and minimal interface
+consisting of the HTTP methods
+GET, POST, PUT and DELETE.
+This improves interoperability
+and interchangeability of services and 
+is in contrast to SOAP where generally every service
+has its own interface.
+A second advantage is that all the well known standards, concepts and tools
+which exist for HTTP can be reused for ReSTful Web Services
+This greatly reduces the complexity of the tool chain
+and makes the services usable from virtually
+every platform capable of accessing the internet.
 
-%Description
+
+\subsubsection{Description}
 %-----------
+The ReST component provides a server for
+ReSTful Web Services which maps URLs
+to methods of a class and handles
+deserialization of incoming arguments
+as well as serialization of return values.
 
-%Current implementation
+
+\subsubsection{Current implementation}
 %----------------------
+The current implementation of the component
+can be considered as stable and is
+well documented by an additional paper \cite{ReSTpaper}.
 
-%Requirements
+\subsection{Requirements}\label{subsec:ReSTRequirements}
 %============
+The server of the ReST component 
+should be easily configurable to serve multiple services.
+It should support authentication through
+the Basic or Digest authentication mechanisms of HTTP
+and encapsulate XML serialization and deserialization
+for PHP datatypes.
 
-%Design goals
+\subsubsection{Design goals}
 %============
+The ReST server should be generic server for all services
+which is cofigurable through deployment descriptors
+in order to minimize the effort needed to add
+new services in an evolving application.
 
-%Special considerations
+\subsubsection{Special considerations}
 %======================
+The component should try to ensure that the
+semantics of the HTTP methods
+are not violated.
 
-%Format
+\subsubsection{Format}
 %======
+The provided services should be conform to the
+HTTP 1.1 specification and the ReST concept
+as described by  Fielding %TODO: cite and correct name + cite XML
+The payloads should always be valid XML documents.
 
 %Diagrams
 %========
 
-\subsection{Design}\label{subsec:RESTDesign}
-%eZ component: REST, Design
+\subsection{Design}\label{subsec:ReSTDesign}
+%eZ component: ReST, Design
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 %
 %Introduction
@@ -724,16 +1379,52 @@ Web Services Interoperability Tests of the SOAP Builders community
 %Description
 %-----------
 
-%Design description
+\subsubsection{Design description}
 %------------------
+\paragraph{ezcRestServer}
+This class provides a server for ReSTful Web Services.
+It deserializes incoming requests into PHP data types
+and calls the corespondent method of an application class.
+The output of the serialization of the output
+Additionally it is able to authenticate users
+via HTTP Digest authentication.
 
-%Guidelines
+%TODO: \paragraph{ezcRestDigestAuth}
+
+\paragraph{ezcRestSerializer}
+This interface has to implemented by serializers
+and deserializers in order to be used with the
+ReST server.
+
+\paragraph{ezcRestXmlSerializer}
+This class implements a serializer
+to produce XML output for a ReST service.
+
+\paragraph{ezcRestXmlDeserializer}
+The counterpart of the XML serializer is this
+deserializer which is able to parse XML input.
+
+%TODO: other resp. correct serializer classes
+%TODO: \paragraph{ezcRestPearSerializer}
+%TODO: \paragraph{ezcRestXbelParser}
+%TODO: \paragraph{ezcRestXbelSerializer}
+%TODO: \paragraph{ezcRestMapping}
+%TODO: \paragraph{ezcRestMappingTable}
+
+\paragraph{ezcRestDdGenerator}
+This generator class provides an API
+to create deployment descriptors for
+ezcSoapServerDispatcher which are
+actually include files returning
+a PHP array with configuration settings.
+
+%\subsubsection{Guidelines}
 %----------
 
-%Algorithms
+%\subsubsection{Algorithms}
 %----------
 
-%Data structures
+%\subsubsection{Data structures}
 %---------------
 
 %Diagrams
@@ -742,30 +1433,61 @@ Web Services Interoperability Tests of the SOAP Builders community
 
 
 \section{WebService}\label{sec:WebService}
-\subsection{Requirements}\label{subsec:WebServiceRequirements}
 %eZ component: WebService, Requirements
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 %
-%Introduction
+\subsection{Introduction}
 %============
 
-%Description
+The Web Service space is nowadays split
+into SOAP-based and ReSTful Web Services.
+Since eZ Components incorporated solutions
+for both approaches
+there is a unique chance to provide a new layer of abstraction
+on top of them.
+
+\subsubsection{Description}
 %-----------
+The ezcWebService integrates all Web Service related
+components ezcRest, ezcSoap and ezcWsdl and some helpers
+like ezcReflection and ezcCodeAnalyzer into one powerful component.
 
-%Current implementation
+\subsubsection{Current implementation}
 %----------------------
+The component is currently in a beta stage
+and is used as a central tool library
+of the web front-end provided by the InstantSVC project.
 
-%Requirements
+\subsection{Requirements}\label{subsec:WebServiceRequirements}
 %============
+The component should be able to
+inspect an applications class tree
+and generate a complete SOAP and/or ReST Web Services environment
+including all classes annotated with special Web Service annotations
+and/or classes specified explicitly via API calls.
 
-%Design goals
+\subsubsection{Design goals}
 %============
+The generator has to be usable by
+command line interfaces as well as web front-ends
+and it should be ready to be integrated
+in larger SOA applications or frameworks.
 
-%Special considerations
+
+\subsubsection{Special considerations}
 %======================
+If SOAP services are set up,
+WSDL files and required adapter classes are to be generated.
 
-%Format
+\subsubsection{Format}
 %======
+To annotate classes for publication as Web Services
+the \verb|@webservice| annotation can be set.
+Methods are annotated in the style of Java
+with \verb|@webmethod| for SOAP services
+and using \verb|@restmethod| for ReSTful Web Services.
+Classes whose instances are to be transfered
+through Web Services can be annotated as \verb|@webserializable|.
 
 %Diagrams
 %========
@@ -780,16 +1502,33 @@ Web Services Interoperability Tests of the SOAP Builders community
 %Description
 %-----------
 
-%Design description
+\begin{figure}[htbp]
+	\centering
+		\includegraphics[width=1.00\textwidth]{figures/ezcWebService.block-diagram.eps}
+	\caption{FMC block diagram of the Web Service component}
+	\label{fig:ezcWebService.block-diagram}
+\end{figure}
+
+\subsubsection{Design description}
 %------------------
 
-%Guidelines
+\paragraph{ezcWebServiceGenerator}
+The Web Service component consists of a single generator class
+which leverages several tools of the other components namely
+ezcCodeAnalyzer, ezcReflectionClass, ezcWsdlGenerator, ezcSoapDdGenerator,
+ezcSoapAdapterGenerator and ezcRestDdGenerator.
+
+
+%\subsubsection{Guidelines}
 %----------
 
-%Algorithms
+\subsubsection{Algorithms}
 %----------
+The generator contains no complex algorithms.
+It just provides a unified API
+for all Web Service related components.
 
-%Data structures
+%\subsubsection{Data structures}
 %---------------
 
 %Diagrams
@@ -799,11 +1538,11 @@ Web Services Interoperability Tests of the SOAP Builders community
 
 \section{Conclusion}
 The extension of PHP's reflection API allowed a very elegant 
-implementation of a proffessional WSDL generator. The major advantage of 
+implementation of a professional WSDL generator. The major advantage of 
 this approach is that the algorithms for retrieving type information are 
 not tied into the WSDL generator. Instead the new reflection API is a 
 reusable building block which already became a foundation for a whole 
-family of Web Service helpers. But its fearures are of interest for 
+family of Web Service helpers. But its features are of interest for 
 other PHP projects as well. The annotation mechanism could be a basis 
 for using new dynamic programming techniques like e.g. aspect-oriented 
 programming with PHP. 
@@ -821,7 +1560,7 @@ For document/wrapped Web Services adapter classes which handle the
 wrapping and unwrapping can be generated. 
 
 Besides WSDL there are over 20 other Web Service standards concerning 
-different anspects like e.g. security, synchronization and sessioning. 
+different aspects like e.g. security, synchronization and session management. 
 Those standards have in common that they add elements to the SOAP 
 header. Therefore, the SOAP component introduces a handler chain 
 mechanism allowing for injection of SOAP intermediaries to the 
@@ -831,27 +1570,25 @@ the Username Token Profile as a first profile providing secure
 authentication for Web Services. 
 
 As an alternative to Web Services with complex SOAP stacks and the 
-resulting time and effort RESTful Web Services are gaining popularity 
+resulting time and effort ReSTful Web Services are gaining popularity 
 especially among developers. On the one hand, they are easy to learn and 
 do not require large tool chains. On the other hand, the architectural 
 concept provides enhanced interoperability. As a reaction to those 
-technological developents a REST server has been designed which is able 
-to host multiple services and to perform authentication using HTTP 
-Digest. 
+technological developments a ReST server has been designed which is able 
+to host multiple services and perform authentication using HTTP 
+Digest.
 
 The Web Service component all proposed components into one convenience 
-library which allows automatic generation of SOAP and REST servers from 
+library which allows automatic generation of SOAP and ReST servers from 
 existing PHP applications. On top of that professional SOA developers 
 can dynamically adapt their service landscapes to the constantly 
 changing requirements. 
 
-The InstantSVC project will continue to maintain a web frontend for the 
-Web Service component and some commandline tools for the Code Analyzer. 
-
-
 Since eZ Components is designed for enterprise PHP application development
-it should definitely/undoubtedly incorporate professional Web Service components.
+it should undoubtedly incorporate professional Web Service components.
 
+The InstantSVC project will continue to maintain a web front-end for the 
+Web Service component and some command line tools for the Code Analyzer. 
 
 
 \begin{thebibliography}{1}
@@ -872,15 +1609,52 @@ it should definitely/undoubtedly incorporate professional Web Service components
   \newline http://www.w3.org/TR/wsdl20
 
 \bibitem{UDDI}
+\emph{UDDI Version 3.0.2}, W3C Note \hskip 1em plus
+  0.5em minus 0.4em\relax UDDI Spec Technical Committee Draft, OASIS, October 19, 2004.
+  \newline http://uddi.org/pubs/uddi\_v3.htm
   
 \bibitem{BasicProfile}
 \emph{Basic Profile Version 1.2} \hskip 1em plus
-  0.5em minus 0.4em\relax Web Services-Interoperability Organization (WS-I), Oktober 03, 2006.
+  0.5em minus 0.4em\relax Web Services-Interoperability Organization (WS-I), Oktober 3, 2006.
   \newline http://www.ws-i.org/Profiles/BasicProfile-1.2.html
   
 \bibitem{XMLSchema}
+\emph{XML Schema 1.1} \hskip 1em plus
+  0.5em minus 0.4em\relax World Wide Web Consortium (W3C).
+  \newline http://www.w3.org/XML/Schema
 
 \bibitem{HTTP}
+\emph{HTTP/1.1 specification} \hskip 1em plus
+  0.5em minus 0.4em\relax RFC 2616, June 1999.
+  \newline http://tools.ietf.org/html/rfc2616
+
+\bibitem{phpDocumentor}
+\emph{phpDocumentor: The complete documentation solution for PHP}
+  \newline http://phpdoc.org
+
+\bibitem{PHP5Reflection}
+\emph{PHP Manual: Reflection}
+  \newline http://www.php.net/manual/en/language.oop5.reflection.php
+
+\bibitem{SwA}
+\emph{SOAP Messages with Attachments} \hskip 1em plus
+  0.5em minus 0.4em\relax World Wide Web Consortium (W3C), December 11, 2000.
+  \newline http://www.w3.org/TR/SOAP-attachments
+
+\bibitem{WSS}
+\emph{Web Services Security: 4 SOAP Message Security 1.1} \hskip 1em plus
+  0.5em minus 0.4em\relax OASIS Standard Specification, February 1, 2006.
+  \newline http://www.oasis-open.org/committees/download.php/16790/wss-v1.1-spec-os-SOAPMessageSecurity.pdf
+  
+\bibitem{UTP}
+\emph{Web Services Security UsernameToken Profile 1.1} \hskip 1em plus
+  0.5em minus 0.4em\relax OASIS Standard Specification, February 1, 2006.
+  \newline http://www.oasis-open.org/committees/download.php/16782/wss-v1.1-spec-os-UsernameTokenProfile.pdf
+
+\bibitem{ReSTpaper}
+Fielding, Roy Thomas. \emph{Architectural Styles and the Design of Network-based Software Architectures.} \hskip 1em plus
+  0.5em minus 0.4em\relax Doctoral dissertation, University of California, Irvine, 2000.
+  \newline http://www.ics.uci.edu/~fielding/pubs/dissertation/top.htm
 
 \end{thebibliography}
 
