@@ -18,9 +18,9 @@
 \begin{abstract}
 This paper describes the current design state
 of the InstantSVC core libraries.
-It serves as foundation for discussing the contribution
+It serves as a foundation for discussing the contribution
 of these core libraries to the eZ Components project.
-Therefore it proposes the new components
+Therefore it proposes six new components:
 ezcReflection, ezcCodeAnalyzer, ezcWsdl, ezcSoap, ezcRest and ezcWebService.
 For each component requirements and design are specified.
 \end{abstract}
@@ -40,34 +40,37 @@ Universal Description, Discovery and Integration (UDDI) \cite{UDDI} and the
 Hypertext Transfer Protocol (HTTP) \cite{HTTP}.
 SOAP is the messaging protocol used to access the services. WSDL is an
 open standard for XML-based service interface descriptions which serve as
-contracts between service provider and consumer. Name services for
+contracts between service providers and consumers. Name services for
 publishing and searching Web Services are specified by UDDI. HTTP is
 leveraged as transport protocol for SOAP messages and in case of ReSTful
 Web Services it even serves as a universal and minimal interface to all
 services.
 
-For efficient utilization of SOAP and in most cases also of WSDL
+For efficient utilization of SOAP and in most cases also WSDL
 sophisticated tools have been developed for all major programming
-languages and platforms. For UDDI mostly commercial products are used.
+languages and platforms.
+Since UDDI is itself a Web Service there is no need
+to reimplement it for every platform or language.
+Instead several Open Source or commercial products are available.
 PHP5 also incorporates a SOAP implementation with support for WSDL
 in form of an extension module.
 
-In order to expose a PHP class as Web Service using this SOAP extension
+In order to expose a PHP class as a Web Service using this SOAP extension
 several steps have to be performed.
 At first an interface description has to be created using WSDL. This includes
 defining XML Schema expressions \cite{XMLSchema} which specify for all data types
 used by methods of the class how they should be represented inside SOAP messages.
 The methods themselves become WSDL operations which use the XML Schema types.
 If documentation should be provided together with the WSDL description,
-the developer may copy the source code documentation into the
-documentation element of WSDL.
-The last step would be to program a PHP application which start a SOAP server
-using the WSDL file, passes the class name to this server and tells it to
-handle SOAP request arriving via HTTP POST.
+the developer may copy the source code documentation into
+WSDL documentation elements.
+The last step would be to program a PHP application which starts a SOAP server
+using the WSDL file, then passes the class name to this server and tells it to
+handle SOAP requests arriving via HTTP POST.
 
-Of course, performing this procedure by hand is not what was meant by
+Of course performing this procedure manually is not what was meant by
 convenient tool support.
-The SOAP extension is easy to use. However especially writing WSDL manually is not
+The SOAP extension is easy to use. However especially writing WSDL by hand is not
 acceptable for professional developers who want to build service-oriented
 architectures with maybe hundreds of services. Other platforms like e.g.
 Java EE or .NET typically use annotation mechanisms to tag classes and methods
@@ -80,13 +83,14 @@ Of course PHP needs no stubs because the SOAP client can use the dynamic
 features of the language to create response objects at runtime.
 However the same dynamic features make it difficult to generate WSDL from PHP
 code because there is no type information in it.
-The aim of our work was to eliminate the lack of tool support PHP.
+The aim of our work was to eliminate the lack of tool support for PHP.
 
-The following sections will present each component of the tool chain.
+The paper is divided into six main sections
+with each of them describing one proposal
+for a new component of the tool chain.
 The descriptions will focus especially on architecture and design decisions.
-Following the development process of eZ components each section is divided in
-two parts.
-A first part describes the requirements for a component and the other one
+Following the development process of eZ Components each section consists of two parts.
+A first part describes the requirements for a component and while the other one
 specifies a design.
 
 
@@ -109,7 +113,7 @@ and access language elements through a high level reflection API.
 
 As of PHP5 a Reflection API has been included
 in the standard PHP distribution.
-It provides an API to get information about classes
+It provides an API to obtain information about classes
 and all their methods and properties,
 without the need to parse any source code.
 Simple functions, runtime objects and PHP extensions
@@ -174,7 +178,7 @@ as defined in section \ref{subsubsec:ReflectionFormat}.
 Given a technology to access documentation tags
 at runtime it would be a perfect foundation
 to build an annotation mechanism for PHP
-since is also feasible to introduce and work with new tags.
+since it would be also feasible to introduce and work with new tags.
 Interestingly there have been comparable developments in other
 programming languages e.g. in Java with XDoclet.
 
@@ -183,9 +187,9 @@ programming languages e.g. in Java with XDoclet.
 %-----------
 The main objective of the Reflection component is
 to enhance PHP by type information and annotations.
-It uses the source code documentation to determine
-type information and any other information provided
-via annotations. 
+It uses source code documentation to determine
+data types and other pieces of information provided
+via annotations.
 Those annotations can be used to realize systems
 which depend on strong type information or
 additional details about the source code itself.
@@ -208,30 +212,32 @@ but enhanced by the ability to obtain annotations
 for classes, methods, properties or functions.
 This new feature should also be used
 to implement a type system
-which enables a PHP application to obtain information
-about the data types of parameters, return values and properties.
+which enables PHP applications to retrieve
+data types of parameters, return values and properties.
 
-The type system should distinguish between three main types.
+The type system should distinguish between three main categories of types.
 Primitive Types are the build in types boolean, integer, double, string and resource.
 Array Types are all kinds of arrays and
-Class Types are used to represent user defined classes.
+Class Types are used to represent user defined or internal classes.
 This differentiation is made
 in consideration of the language behavior
 and the capabilities of WSDL for defining types
 in a language independent way.
-As arrays are treated in a special way
+Since arrays are treated in a special way
 they are additionally classified as simple arrays or maps.
 An array is represented as a map if it is an associative array
-and it is used more like key value pairs.
+i.e. is used like key value pairs.
 
 Usage scenarios of the Reflection component are
 e.g. WSDL generation for Web Services
-or Aspect-Oriented Programming.
+or Aspect-Oriented Programming (AOP).
 Processable additions to the source code in general
 enable a wide range of new applications.
 
-%Design goals
+\subsubsection{Design goals}
 %============
+The Reflection API of PHP should be extended
+as much as possible through class inheritance.
 
 \subsubsection{Special considerations}
 %======================
@@ -239,9 +245,9 @@ In order to maintain the dynamic nature of the language
 it is explicitly not required
 to enforce any constraints at runtime.
 The PHP language runtime should not be modified at all.
-Therefore the component expects a correct source code documentation.
-So it is possible that runtime behavior does not correspond
-with the behavior expected due to improper documentation.
+As a consequence the component expects a correct source code documentation
+and it is possible that runtime behavior does not correspond
+to the behavior expected due to improper documentation.
 
 \subsubsection{Format}\label{subsubsec:ReflectionFormat}
 %======
@@ -1603,31 +1609,31 @@ Web Service component and some command line tools for the Code Analyzer.
   0.5em minus 0.4em\relax World Wide Web Consortium (W3C), March 15, 2001.
   \newline http://www.w3.org/TR/wsdl
 
-\bibitem{WSDL20}
-\emph{Web Services Description Language (WSDL) 2.0}, W3C Candidate Recommendation \hskip 1em plus
-  0.5em minus 0.4em\relax World Wide Web Consortium (W3C), March 26, 2006.
-  \newline http://www.w3.org/TR/wsdl20
-
 \bibitem{UDDI}
 \emph{UDDI Version 3.0.2}, W3C Note \hskip 1em plus
   0.5em minus 0.4em\relax UDDI Spec Technical Committee Draft, OASIS, October 19, 2004.
   \newline http://uddi.org/pubs/uddi\_v3.htm
   
-\bibitem{BasicProfile}
-\emph{Basic Profile Version 1.2} \hskip 1em plus
-  0.5em minus 0.4em\relax Web Services-Interoperability Organization (WS-I), Oktober 3, 2006.
-  \newline http://www.ws-i.org/Profiles/BasicProfile-1.2.html
-  
-\bibitem{XMLSchema}
-\emph{XML Schema 1.1} \hskip 1em plus
-  0.5em minus 0.4em\relax World Wide Web Consortium (W3C).
-  \newline http://www.w3.org/XML/Schema
-
 \bibitem{HTTP}
 \emph{HTTP/1.1 specification} \hskip 1em plus
   0.5em minus 0.4em\relax RFC 2616, June 1999.
   \newline http://tools.ietf.org/html/rfc2616
 
+\bibitem{XMLSchema}
+\emph{XML Schema 1.1} \hskip 1em plus
+  0.5em minus 0.4em\relax World Wide Web Consortium (W3C).
+  \newline http://www.w3.org/XML/Schema
+
+\bibitem{WSDL20}
+\emph{Web Services Description Language (WSDL) 2.0}, W3C Candidate Recommendation \hskip 1em plus
+  0.5em minus 0.4em\relax World Wide Web Consortium (W3C), March 26, 2006.
+  \newline http://www.w3.org/TR/wsdl20
+
+\bibitem{BasicProfile}
+\emph{Basic Profile Version 1.2} \hskip 1em plus
+  0.5em minus 0.4em\relax Web Services-Interoperability Organization (WS-I), Oktober 3, 2006.
+  \newline http://www.ws-i.org/Profiles/BasicProfile-1.2.html
+  
 \bibitem{phpDocumentor}
 \emph{phpDocumentor: The complete documentation solution for PHP}
   \newline http://phpdoc.org
