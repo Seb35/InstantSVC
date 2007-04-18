@@ -320,7 +320,7 @@ The Reflection API of PHP \cite{PHP5Reflection}
 is itself implemented as an extension written in C
 for maximum performance and conceptual reasons.
 The Reflection component is based on this PHP extension
-and all elements are derived from the given base classes.
+and several elements are derived from the given base classes.
 
 \subsubsection{Design description}
 %------------------
@@ -339,7 +339,7 @@ new subclasses are introduced,
 which provide new implementations
 of the inherited methods and
 additional methods to access
-annotations and type information.
+annotations and data types.
 
 \paragraph{ezcReflectionClass}
 ezcReflectionClass inherits from ReflectionClass
@@ -436,12 +436,12 @@ and have a similar behavior.
 
 
 \paragraph{ezcReflection}
-In addition to that a singleton class
+A singleton class
 called ezcReflection is defined,
 which  acts as a central entry point
 and factory for reflection by type name.
-Therefore, it provides methods necessary
-to generate Reflection Objects,
+Therefore it provides methods necessary
+to generate Reflection Objects
 e.g. the method getTypeByName
 will return the appropriate type object
 for a given data type name specified in an annotation.
@@ -610,7 +610,7 @@ the Reflection package.
 \subsubsection{Current implementation}
 %----------------------
 The current implementation can be considered as stable
-and it meets all requirements which arrised during
+and it meets all requirements which arised during
 development of several tools using it.
 
 \subsection{Requirements}\label{subsec:CodeAnalyzerRequirements}
@@ -619,7 +619,7 @@ The component should be able to load entire source trees
 and collect information about files respectively classes found.
 Some basic software metrics should be implemented.
 The required metrics include
-counting the lines of code (loc) and the number of
+counting the lines of code (LoC) and the number of
 classes, methods, attributes, subclasses and functions.
 Furthermore it should collect statistics
 about the usage of documentation tags
@@ -633,7 +633,7 @@ The component should be easy to use through a convenient high level API
 and it should be aware of possible errors in the source code files, i.e.
 the CodeAnalyzer should not crash because of syntax errors in a file parsed.
 This is very important because if the Code Analyzer would be that instable,
-it would only be usefull as a standalone tool for analyzing
+it would only be useful as a standalone tool for analyzing
 smaller applications. It order to become a software metrics library
 which can be included in other applications -- such as Web Service tools --
 it has to be reliable.
@@ -680,7 +680,6 @@ Then in case of errors only this child process stops,
 but the Code Analyzer is able to report or simply ignore the error
 and to continue with the next file.
 
-The component consists of three classes.
 
 \paragraph{ezcCodeAnalyzerClassLoader}
 This class provides methods to recursively include
@@ -755,7 +754,7 @@ or all together by calling a central collector method.
 The class ezcCodeAnalyzer uses this class
 which is actually an ezcBaseStruct
 as data structure for some of the details of a given file.
-All dta retrieval operations which include
+All data retrieval operations which include
 guessing the MIME type, counting the lines of code,
 and retrieving the file size
 are performed during object creation.
@@ -872,7 +871,7 @@ from a given service implementation.
 %----------------------
 The generator is currently in a beta stage.
 The code is stable but there are some details to be improved
-and some of the features have not been tested enough.
+and some of the features have not been tested thoroughly enough.
 
 \subsection{Requirements}\label{subsec:WSDLRequirements}
 %============
@@ -881,12 +880,14 @@ from a given service implementation.
 Just like the SOAP server of PHP5 it should accept
 a class or a set of functions as a service implementation.
 The generator should be capable of building complex type definitions
-for arrays or classes and source code documentation should be added
+for multidimensional arrays or class structures and source code documentation should be added
 automatically.
 
 \subsubsection{Design goals}
 %============
 
+The signature of the methods for adding a class or a function should
+be similar to those known from PHP's SoapServer class.
 Since the generator knows all details about a service
 it could provide convenience methods for creating a SOAP server.
 This is particularly interesting for debugging purposes
@@ -899,7 +900,7 @@ the WSDL component should conform
 to the Basic Profile of the
 Web Services-Interoperability Organization (WS-I) \cite{BasicProfile}.
 But users should also be able to create service descriptions
-which are not conform to the Basic Profile,
+which do not conform to the Basic Profile,
 e.g. to integrate legacy applications
 with an rpc/encoded binding.
 
@@ -952,8 +953,8 @@ the WSDL generator should
 use Web Service annotations
 to determine which functions to publish
 in the service description.
-Furthermore it be capable to
-copy the documentation for operations
+Furthermore it should be capable of
+copying the documentation for operations
 from the source code to the WSDL document.
 But the software projects using the generator
 may have different opinions about
