@@ -78,7 +78,7 @@ for publication as Web Services. The tagged source code is then processed by a
 sophisticated tool chain which generates WSDL descriptions, additional source code
 for stubs and skeletons and if needed deployment descriptors for the desired
 runtime environment.
-After that, the services are ready for instant deployment.
+After that the services are ready for instant deployment.
 Of course PHP needs no stubs because the SOAP client can use the dynamic
 features of the language to create response objects at runtime.
 However the same dynamic features make it difficult to generate WSDL from PHP
@@ -127,7 +127,7 @@ instantiate objects.
 \begin{figure}[htbp]
 	\centering
 		\includegraphics[width=1.00\textwidth]{figures/php5-reflection-api.eps}
-	\caption{Class diagramm of the  PHP5 Reflection API}
+	\caption{Class diagram of the  PHP5 Reflection API}
 	\label{fig:php5-reflection-api}
 \end{figure}
 
@@ -510,10 +510,10 @@ for ezcReflectionPrimitiveType and
 ezcReflectionArrayType.
 
 \paragraph{ezcReflectionPrimitiveType}
-The primitve type is a specialization 
+The primitive type is a specialization 
 of ezcReflectionAbstractType
 and represents the primitive types
-bolean, integer, float, string and resource.
+boolean, integer, float, string and resource.
 
 \paragraph{ezcReflectionArrayType}
 The array type is the second class
@@ -591,7 +591,7 @@ specialized annotation classes, e.g.
 %
 \subsection{Introduction}
 %============
-The Refletion component provides structural details about
+The Reflection component provides structural details about
 language elements like classes and functions at runtime.
 But to be able to use it, those language elements have to be loaded.
 Due to the fact that most applications tend to put each class
@@ -967,7 +967,7 @@ interface ezcWsdlGeneratorPolicy.
 \paragraph{ezcWsdlGeneratorDefaultPolicy}
 The default implementation of the policy interface
 is used if no user defined implementation is provided.
-It uses the annotation \verb|@WebMethod|
+It uses the annotation \verb|@webmethod|
 to identify methods for publication and
 provides the short description from the PHPDoc comment
 of each method as documentation for
@@ -1056,19 +1056,18 @@ are available to PHP developers.
 But real world SOA applications need much more than that.
 They have to deal with aspects
 like e.g. security, synchronization or sessioning.
-Therefore over 20 additional Web Service standards
+Therefore a large number additional Web Service standards
 -- also called WS-* standards --
 have evolved which commonly add new elements
 to the headers of SOAP messages.
 In order to be able to work with those header elements
 the SOAP standard describes intermediary nodes,
-which can be introduced to communication channel
-betwenn sender and receiver.
+which can be introduced to a communication channel
+between sender and receiver.
 Those SOAP Intermediaries
-can add new header elements, work with them,
+can add new header elements, work with them
 and also remove them at a later time.
-This way additional communication features
-new communication features can be applied
+This way new communication features can be applied
 transparently for sender and receiver.
 
 
@@ -1115,9 +1114,9 @@ That is of course an advantage because it allows
 to use all kinds of SOAP bindings namely
 rpc/encoded, rpc/literal and document/literal.
 However especially a document/literal style
-is somewhat difficult to use, because most
+is somewhat difficult to use because most
 Web Service platforms prefer the special
-document/wrapped flavor, and in that case
+document/wrapped flavor and in that case
 the PHP application has to do wrapping and
 unwrapping of return values and arguments.
 But if an existing class should additionally
@@ -1188,7 +1187,7 @@ SoapServer and SoapClient.
 
 \paragraph{ezcSoapServer}
 The ezcSoapServer extends the SoapServer class
-with a handler chain mechanism.
+with a handler chain mechanism implemented using the strategy design pattern.
 Additional handlers are implemented
 by extending the abstract class \textbf{ezcSoapIntermediary}
 and can be added to the server
@@ -1233,23 +1232,23 @@ this class provides a generic SOAP server which
 can be configured via simple deployment descriptors.
 It works somewhat like a front controller for SOAP
 since it forwards incoming SOAP Requests
-a correspondent SOAP server instance.
+to a correspondent SOAP server instance.
 
 \paragraph{ezcSoapDdGenerator}
 This generator class provides an API
 to create deployment descriptors for
 ezcSoapServerDispatcher which are
-aktually include files returning
+actually include files returning
 a PHP array with configuration settings.
 
 \paragraph{ezcSoapAdapterGenerator}
-An importand requirement is
+An important requirement is
 to avoid changes to the method signatures
 of existing application classes
 when generating document/wrapped Web Services.
 This code generator builds adapter classes
 which perform the unwrapping of arguments
-wrapping of return values.
+and wrapping of return values.
 
 \paragraph{ezcSoapClient}
 Class ezcSoapClient inherits from SoapClient
@@ -1282,7 +1281,7 @@ consisting of a user name,
 a nonce\footnote{In cryptography this is an abbreviation for a number used once.},
 a time stamp
 and the encrypted password of the user.
-It is sent as a WS-Security header
+The token is sent as a WS-Security header
 from a SOAP client to a SOAP server
 in order to perform authentication.
 
@@ -1293,7 +1292,7 @@ in order to perform authentication.
 %----------
 As described in the specification
 the Username Token Profile related
-classes uses the MD5, SHA1 and base64 algorithms.
+classes use the MD5, SHA1 and base64 algorithms.
 
 
 %\subsubsection{Data structures}
@@ -1324,7 +1323,7 @@ and interchangeability of services and
 is in contrast to SOAP where generally every service
 has its own interface.
 A second advantage is that all the well known standards, concepts and tools
-which exist for HTTP can be reused for ReSTful Web Services
+which exist for HTTP can be reused for ReSTful Web Services.
 This greatly reduces the complexity of the tool chain
 and makes the services usable from virtually
 every platform capable of accessing the internet.
@@ -1357,7 +1356,7 @@ for PHP datatypes.
 \subsubsection{Design goals}
 %============
 The ReST server should be generic server for all services
-which is cofigurable through deployment descriptors
+which is configurable through deployment descriptors
 in order to minimize the effort needed to add
 new services in an evolving application.
 
@@ -1369,10 +1368,10 @@ are not violated.
 
 \subsubsection{Format}
 %======
-The provided services should be conform to the
+The provided services must conform to the
 HTTP 1.1 specification and the ReST concept
-as described by  Fielding %TODO: cite and correct name + cite XML
-The payloads should always be valid XML documents.
+as described by Roy Thomas Fielding \cite{ReSTpaper},
+The payloads should always be valid XML documents \cite{XML}.
 
 %Diagrams
 %========
@@ -1393,14 +1392,15 @@ The payloads should always be valid XML documents.
 This class provides a server for ReSTful Web Services.
 It deserializes incoming requests into PHP data types
 and calls the corespondent method of an application class.
-The output of the serialization of the output
+The output of the method is serialized
+and returned to the client with the HTTP response.
 Additionally it is able to authenticate users
 via HTTP Digest authentication.
 
 %TODO: \paragraph{ezcRestDigestAuth}
 
 \paragraph{ezcRestSerializer}
-This interface has to implemented by serializers
+This interface has to be implemented by serializers
 and deserializers in order to be used with the
 ReST server.
 
@@ -1457,19 +1457,19 @@ on top of them.
 \subsubsection{Description}
 %-----------
 The ezcWebService integrates all Web Service related
-components ezcRest, ezcSoap and ezcWsdl and some helpers
+components namely ezcRest, ezcSoap and ezcWsdl and some helpers
 like ezcReflection and ezcCodeAnalyzer into one powerful component.
 
 \subsubsection{Current implementation}
 %----------------------
 The component is currently in a beta stage
 and is used as a central tool library
-of the web front-end provided by the InstantSVC project.
+for the web front-end provided by the InstantSVC project.
 
 \subsection{Requirements}\label{subsec:WebServiceRequirements}
 %============
 The component should be able to
-inspect an applications class tree
+inspect an application's class tree
 and generate a complete SOAP and/or ReST Web Services environment
 including all classes annotated with special Web Service annotations
 and/or classes specified explicitly via API calls.
@@ -1516,6 +1516,7 @@ through Web Services can be annotated as \verb|@webserializable|.
 	\caption{FMC block diagram of the Web Service component}
 	\label{fig:ezcWebService.block-diagram}
 \end{figure}
+%TODO: describe model
 
 \subsubsection{Design description}
 %------------------
@@ -1548,9 +1549,9 @@ for all Web Service related components.
 The extension of PHP's reflection API allowed a very elegant 
 implementation of a professional WSDL generator. The major advantage of 
 this approach is that the algorithms for retrieving type information are 
-not tied into the WSDL generator. Instead the new reflection API is a 
+not tied into the WSDL generator. Instead the new Reflection component is a 
 reusable building block which already became a foundation for a whole 
-family of Web Service helpers. But its features are of interest for 
+family of Web Service helpers. But its features may be of interest for many
 other PHP projects as well. The annotation mechanism could be a basis 
 for using new dynamic programming techniques like e.g. aspect-oriented 
 programming with PHP. 
@@ -1562,12 +1563,13 @@ platforms.
 
 In order to select classes and methods for publication as Web Services 
 annotations can be used similar to Java EE or .NET. Semantical details 
-taken from the source code documentation can be introduced to generated 
+taken from the source code documentation can be introduced to generated
+WSDL files.
 
 For document/wrapped Web Services adapter classes which handle the 
 wrapping and unwrapping can be generated. 
 
-Besides WSDL there are over 20 other Web Service standards concerning 
+Besides WSDL there is a large number of other Web Service standards concerning 
 different aspects like e.g. security, synchronization and session management. 
 Those standards have in common that they add elements to the SOAP 
 header. Therefore, the SOAP component introduces a handler chain 
@@ -1579,14 +1581,13 @@ authentication for Web Services.
 
 As an alternative to Web Services with complex SOAP stacks and the 
 resulting time and effort ReSTful Web Services are gaining popularity 
-especially among developers. On the one hand, they are easy to learn and 
-do not require large tool chains. On the other hand, the architectural 
+especially among developers. On the one hand they are easy to learn and 
+do not require large tool chains. On the other hand the architectural 
 concept provides enhanced interoperability. As a reaction to those 
 technological developments a ReST server has been designed which is able 
-to host multiple services and perform authentication using HTTP 
-Digest.
+to host multiple services and perform authentication.
 
-The Web Service component all proposed components into one convenience 
+The Web Service component integrates all proposed components into one convenience 
 library which allows automatic generation of SOAP and ReST servers from 
 existing PHP applications. On top of that professional SOA developers 
 can dynamically adapt their service landscapes to the constantly 
@@ -1664,6 +1665,11 @@ Fielding, Roy Thomas. \emph{Architectural Styles and the Design of Network-based
   0.5em minus 0.4em\relax Doctoral dissertation, University of California, Irvine, 2000.
   \newline http://www.ics.uci.edu/~fielding/pubs/dissertation/top.htm
 
+\bibitem{XML}
+\emph{Extensible Markup Language (XML) 1.1 (Second Edition)}, W3C Recommendation \hskip 1em plus
+  0.5em minus 0.4em\relax World Wide Web Consortium (W3C), September 29, 2006.
+  \newline http://www.w3.org/TR/xml11/
+  
 \end{thebibliography}
 
 \end{document}
