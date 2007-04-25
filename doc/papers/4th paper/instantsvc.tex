@@ -72,7 +72,7 @@ Of course performing this procedure manually is not what was meant by
 convenient tool support.
 The SOAP extension is easy to use. However especially writing WSDL by hand is not
 acceptable for professional developers who want to build service-oriented
-architectures with maybe hundreds of services. Other platforms like e.g.
+architectures \cite{SOA} with maybe hundreds of services. Other platforms like e.g.
 Java EE or .NET typically use annotation mechanisms to tag classes and methods
 for publication as Web Services. The tagged source code is then processed by a
 sophisticated tool chain which generates WSDL descriptions, additional source code
@@ -224,7 +224,7 @@ in consideration of the language behavior
 and the capabilities of WSDL for defining types
 in a language independent way.
 Since arrays are treated in a special way
-they are additionally classified as simple arrays or maps.
+they are additionally classified as simple arrays or maps (dictionaries).
 An array is represented as a map if it is an associative array
 i.e. is used like key value pairs.
 
@@ -351,7 +351,7 @@ are introduced e.g.
 %getTags
 getAnnotations,
 %isTagged
-hasAnnotation etc.
+hasAnnotation.
 The generic getDocComment method is superseded
 by getShortDescription and getLongDescription.
 These methods return only the relevant parts
@@ -634,7 +634,7 @@ and it should be aware of possible errors in the source code files, i.e.
 the CodeAnalyzer should not crash because of syntax errors in a file parsed.
 This is very important because if the Code Analyzer would be that instable,
 it would only be useful as a standalone tool for analyzing
-smaller applications. It order to become a software metrics library
+applications. It order to become a software metrics library
 which can be included in other applications -- such as Web Service tools --
 it has to be reliable.
 
@@ -855,8 +855,8 @@ do not result in a major advantage.
 Due to the fact that nearly all information
 needed for a WSDL description already exists
 in the source code of the class or the functions
-implementing the Web Service
-the complete service description
+implementing the Web Service.
+The complete service description
 can be generated automatically.
 
 The only new information in a WSDL file
@@ -1626,6 +1626,12 @@ Web Service component and some command line tools for the Code Analyzer.
 \emph{XML Schema 1.1} \hskip 1em plus
   0.5em minus 0.4em\relax World Wide Web Consortium (W3C).
   \newline http://www.w3.org/XML/Schema
+
+\bibitem{SOA}
+\emph{Reference Model for Service Oriented
+Architecture 1.0} \hskip 1em plus
+  0.5em minus 0.4em\relax OASIS Committee Specification 1, 2 August 2006
+  \newline http://www.oasis-open.org/committees/download.php/19679/soa-rm-cs.pdf
 
 \bibitem{WSDL20}
 \emph{Web Services Description Language (WSDL) 2.0}, W3C Candidate Recommendation \hskip 1em plus
