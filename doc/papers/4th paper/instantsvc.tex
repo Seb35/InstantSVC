@@ -1341,8 +1341,10 @@ as well as serialization of return values.
 \subsubsection{Current implementation}
 %----------------------
 The current implementation of the component
-can be considered as stable and is
-well documented by an additional paper \cite{ReSTpaper}.
+can be considered as stable.
+% STEFAN: aber die implementierung unser komponente ist doch dort nicht dokumentiert??
+% and is
+% well documented by an additional paper \cite{ReSTpaper}.
 
 \subsection{Requirements}\label{subsec:ReSTRequirements}
 %============
@@ -1350,8 +1352,9 @@ The server of the ReST component
 should be easily configurable to serve multiple services.
 It should support authentication through
 the Basic or Digest authentication mechanisms of HTTP
-and encapsulate XML serialization and deserialization
-for PHP datatypes.
+and encapsulate the process of serialization and deserialization
+for PHP datatypes. The used type of data serialization should be configurable
+and at least a XML serialization should be implemented.
 
 \subsubsection{Design goals}
 %============
@@ -1370,8 +1373,13 @@ are not violated.
 %======
 The provided services must conform to the
 HTTP 1.1 specification and the ReST concept
-as described by Roy Thomas Fielding \cite{ReSTpaper},
-The payloads should always be valid XML documents \cite{XML}.
+as described by Roy Thomas Fielding \cite{ReSTpaper}.
+The payloads are supposed to be valid according to 
+internet standard formats like XML \cite{XML} for instance, 
+but could be encoded in other formats like JSON for AJAX requests, too.
+% STEFAN: das ist nicht unbedingt wünschenswert
+% ,
+% The payloads should always be valid XML documents \cite{XML}.
 
 %Diagrams
 %========
