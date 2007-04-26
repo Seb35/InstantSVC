@@ -36,7 +36,7 @@ used by other applications via network or even internet.
 
 The standards that form the foundation for Web Services are the SOAP
 protocol \cite{SOAP}, the Web Services Description Language (WSDL) \cite{WSDL},
-Universal Description, Discovery and Integration (UDDI) \cite{UDDI} and the
+the Universal Description, Discovery and Integration (UDDI) \cite{UDDI} and the
 Hypertext Transfer Protocol (HTTP) \cite{HTTP}.
 SOAP is the messaging protocol used to access the services. WSDL is an
 open standard for XML-based service interface descriptions which serve as
@@ -81,10 +81,10 @@ for publication as Web Services. The tagged source code is then processed by a
 sophisticated tool chain which generates WSDL descriptions, additional source code
 for stubs and skeletons and if needed deployment descriptors for the desired
 runtime environment.
-After that the services are ready for instant deployment.
+Afterwards the services are ready for instant deployment.
 Of course PHP needs no stubs because the SOAP client can use the dynamic
 features of the language to create response objects at runtime.
-However the same dynamic features make it difficult to generate WSDL from PHP
+However the same dynamic features make it difficult to generate WSDL files from PHP
 code because there is no type information in it.
 The aim of our work was to eliminate the lack of tool support for PHP.
 
@@ -93,8 +93,8 @@ with each of them describing one proposal
 for a new component of the tool chain.
 The descriptions will focus especially on architecture and design decisions.
 Following the development process of eZ Components each section consists of two parts.
-A first part describes the requirements for a component and while the other one
-specifies a design.
+The first part describes the requirements for a component while the other one
+specifies its design.
 
 
 
@@ -106,7 +106,7 @@ specifies a design.
 %============
 Since Web Services have been invented
 to enable interoperable communication between
-various platforms they have to be statically typed.
+various platforms they have to be typed statically.
 Hence type information will be required when
 developing tools for automated generation of Web Services.
 In modern programming languages
@@ -121,7 +121,7 @@ and all their methods and properties,
 without the need to parse any source code.
 Simple functions, runtime objects and PHP extensions
 can be inspected, as well.
-But information gathering is not the
+But the gathering of information is not the
 only feature of the Reflection API.
 It is also possible to modify properties of objects,
 invoke arbitrary methods or functions and
@@ -142,8 +142,8 @@ nearly all aspects of a given class or object.
 
 However PHP's Reflection API does not provide any type information
 due to PHP being a dynamically typed language.
-That means only types of concrete variables or objects
-at runtime can be determined.
+That means only at runtime types of concrete variables or objects
+can be determined.
 But it is not possible to obtain this information statically from
 class or function declarations without having an instance.
 This is indeed not a problem for implementing SOAP
@@ -153,7 +153,10 @@ the knowledge of structural details is essentially required.
 
 When looking at professional PHP applications
 it stands out that they only use the dynamic
-typing features where they really make sense.
+typing features 
+% besser?:
+% where it is vital for the object to be of the right type.
+where they really make sense.
 Large parts of the code will work with strict
 types and even enforce them e.g. by throwing
 an exception when receiving input of a wrong data type.
@@ -169,8 +172,8 @@ So it is a logical next step to leverage the information
 given in the source code documentation directly at runtime.
 
 phpDocumentor \cite{phpDocumentor} the standard documentation tool for PHP
-provides a common way to document source code and
-uses a formal syntax which can be processed by a computer.
+provides a common way to document source code by
+using a formal syntax which can be processed by a computer.
 Unfortunately just the syntax for data type descriptions
 is somewhat underspecified since it was only meant
 to be understandable by human beings.
@@ -220,7 +223,8 @@ data types of parameters, return values and properties.
 
 % STEFAN: Die schreibweise von Primitive Types, Array Types und Class Types ist komisch, warum groß?
 The type system should distinguish between three main categories of types.
-Primitive Types are the build in types boolean, integer, double, string and resource.
+Primitive Types are the build in types boolean, integer, float, string and resource.
+%float vs. double
 Array Types are all kinds of arrays and
 Class Types are used to represent user defined or internal classes.
 This differentiation is made
@@ -297,7 +301,7 @@ can be described by naming the value type followed by square brackets,
 e.g. \verb|integer[]| or also \verb|string[][]|
 in case of multidimensional arrays.
 Associative arrays can be notated as
-\verb|array(datatype=>datatype)|.
+\verb|array(datatype1=>datatype2)|.
 % STEFAN: wollten wir aus konsitenzgründen doch rauslassen or \verb|array<datatype,datatype>|.
 But these notations should only be used
 if the key type differs from \verb|integer|
@@ -322,7 +326,7 @@ for human readers of the documentation.
 %-----------
 
 The Reflection API of PHP \cite{PHP5Reflection}
-is itself implemented as an extension written in C
+itself is implemented as an extension written in C
 for maximum performance and conceptual reasons.
 The Reflection component is based on this PHP extension
 and several elements are derived from the given base classes.
@@ -675,11 +679,11 @@ Since the source files have to be loaded
 to employ the reflection component, some kind
 of a sandbox environment is needed to ensure that errors
 in the input files which stop the script execution
-do not affect the Code Analyzer classes in their execution.
+do not affect the Code Analyzer classes during execution.
 
 A simple way to achieve this is to start the analysis of the files
 in a separate PHP interpreter process.
-Then in case of errors only this child process stops,
+If an error occurs only this child process stops,
 but the Code Analyzer is able to report or simply ignore the error
 and to continue with the next file.
 
@@ -836,13 +840,13 @@ to store the statistical data.
 The Web Services Description Language (WSDL) \cite{WSDL}
 is one of the most important standards
 for professional Web Service applications
-because it allows for automated creation
+because it allows the automated creation
 of SOAP servers and clients.
 The SOAP extension of PHP5 supports this
 if a WSDL file is provided.
 A WSDL file is an XML document
 describing the interface of a Web Service.
-A service provider can offer this description
+A service provider should offer this description
 to its clients which are then able
 to determine the operations provided by the service
 and the messages they have to sent.
@@ -856,14 +860,14 @@ to write WSDL documents by hand
 the additional time and effort
 do not result in a major advantage.
 Due to the fact that nearly all information
-needed for a WSDL description already exists
+needed for a WSDL description already exist
 in the source code of the class or the functions
 implementing the Web Service.
 The complete service description
 can be generated automatically.
 
 The only new information in a WSDL file
-are the binding and the service access point URL.
+are the service's binding and its access point URL.
 
 \subsubsection{Description}
 %-----------
@@ -1010,7 +1014,7 @@ for traversing class and array structures.
 \subsubsection{Data structures}
 %---------------
 In order to avoid redundancy in the types section of a WSDL document
-the generator uses arrays for memorizing types already found.
+the generator uses arrays for memorizing complex types already found.
 Besides that it handles
 PHP language elements with the help of reflection objects
 and XML elements as DOM nodes and DOM attributes.
