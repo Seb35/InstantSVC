@@ -43,7 +43,10 @@ open standard for XML-based service interface descriptions which serve as
 contracts between service providers and consumers. Name services for
 publishing and searching Web Services are specified by UDDI. HTTP is
 leveraged as transport protocol for SOAP messages and in case of ReSTful
-Web Services it even serves as a universal and minimal interface to all
+% STEFAN: das ReST kommt in der einführung zu kurz, bzw. entsteht ein falscher eindruck
+%         in bezug auf SOAP, aus meiner sicht vielleicht so besser?
+Web Services, which are Web Services without using SOAP but pure HTTP instead,
+it even serves as a universal and minimal interface to all
 services.
 
 For efficient utilization of SOAP and in most cases also WSDL
@@ -215,6 +218,7 @@ to implement a type system
 which enables PHP applications to retrieve
 data types of parameters, return values and properties.
 
+% STEFAN: Die schreibweise von Primitive Types, Array Types und Class Types ist komisch, warum groß?
 The type system should distinguish between three main categories of types.
 Primitive Types are the build in types boolean, integer, double, string and resource.
 Array Types are all kinds of arrays and
@@ -293,7 +297,8 @@ can be described by naming the value type followed by square brackets,
 e.g. \verb|integer[]| or also \verb|string[][]|
 in case of multidimensional arrays.
 Associative arrays can be notated as
-\verb|array(datatype=>datatype)| or \verb|array<datatype,datatype>|.
+\verb|array(datatype=>datatype)|.
+% STEFAN: wollten wir aus konsitenzgründen doch rauslassen or \verb|array<datatype,datatype>|.
 But these notations should only be used
 if the key type differs from \verb|integer|
 or if it is of major importance
@@ -334,11 +339,9 @@ and several elements are derived from the given base classes.
 
 
 In Figure \ref{fig:ezcReflection} the Reflection component is shown.
-For all classes of the Reflection API
+For all classes of the Reflection API 
 new subclasses are introduced,
-which provide new implementations
-of the inherited methods and
-additional methods to access
+which provide additional functionality and methods to access
 annotations and data types.
 
 \paragraph{ezcReflectionClass}
@@ -634,7 +637,7 @@ and it should be aware of possible errors in the source code files, i.e.
 the CodeAnalyzer should not crash because of syntax errors in a file parsed.
 This is very important because if the Code Analyzer would be that instable,
 it would only be useful as a standalone tool for analyzing
-applications. It order to become a software metrics library
+applications. In order to become a software metrics library
 which can be included in other applications -- such as Web Service tools --
 it has to be reliable.
 
