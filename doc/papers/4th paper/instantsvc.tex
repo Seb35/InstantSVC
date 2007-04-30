@@ -86,6 +86,11 @@ However the same dynamic features make it difficult to generate WSDL files from 
 code because there is no type information in it.
 The aim of our work was to eliminate the lack of tool support for PHP.
 
+Our project called InstantSVC \cite{InstantSVC}
+was founded by six students of the Hasso Plattner Institute in Potsdam.
+The developed tool suite has been first presented to the public
+at the Free and Open Source Software Conference 2006 in Bonn.
+
 The paper is divided into six main sections
 with each of them describing one proposal
 for a new component of the tool chain.
@@ -1285,6 +1290,8 @@ and the encrypted password of the user.
 The token is sent as a WS-Security header
 from a SOAP client to a SOAP server
 in order to perform authentication.
+The class uses a database table to store
+nonces and timestamps.
 
 %\subsubsection{Guidelines}
 %----------
@@ -1635,6 +1642,10 @@ Web Service component and some command line tools for the Code Analyzer.
 Architecture 1.0} \hskip 1em plus
   0.5em minus 0.4em\relax OASIS Committee Specification 1, 2 August 2006
   \newline http://www.oasis-open.org/committees/download.php/19679/soa-rm-cs.pdf
+
+\bibitem{InstantSVC}
+\emph{InstantSVC - The PHP Web Services Builder}
+  \newline http://instantsvc.sourceforge.net
 
 \bibitem{phpDocumentor}
 \emph{phpDocumentor: The complete documentation solution for PHP}
