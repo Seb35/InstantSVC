@@ -36,16 +36,14 @@ used by other applications via network or even internet.
 
 The standards that form the foundation for Web Services are the SOAP
 protocol \cite{SOAP}, the Web Services Description Language (WSDL) \cite{WSDL},
-the Universal Description, Discovery and Integration (UDDI) \cite{UDDI} and the
+the Universal Description, Discovery and Integration standard (UDDI) \cite{UDDI} and the
 Hypertext Transfer Protocol (HTTP) \cite{HTTP}.
 SOAP is the messaging protocol used to access the services. WSDL is an
 open standard for XML-based service interface descriptions which serve as
 contracts between service providers and consumers. Name services for
 publishing and searching Web Services are specified by UDDI. HTTP is
 leveraged as transport protocol for SOAP messages and in case of ReSTful
-% STEFAN: das ReST kommt in der einführung zu kurz, bzw. entsteht ein falscher eindruck
-%         in bezug auf SOAP, aus meiner sicht vielleicht so besser?
-Web Services, which are Web Services without using SOAP but pure HTTP instead,
+Web Services -- which are Web Services without using SOAP but instead pure HTTP --
 it even serves as a universal and minimal interface to all
 services.
 
@@ -154,10 +152,9 @@ the knowledge of structural details is essentially required.
 When looking at professional PHP applications
 it stands out that they only use the dynamic
 typing features 
-% besser?:
-% where it is vital for the object to be of the right type.
-where they really make sense.
-Large parts of the code will work with strict
+where it is really useful to deal with various inputs
+or produce different outputs.
+However large parts of the code will work with strict
 types and even enforce them e.g. by throwing
 an exception when receiving input of a wrong data type.
 This behavior is also documented in the source code
@@ -221,12 +218,10 @@ to implement a type system
 which enables PHP applications to retrieve
 data types of parameters, return values and properties.
 
-% STEFAN: Die schreibweise von Primitive Types, Array Types und Class Types ist komisch, warum groß?
 The type system should distinguish between three main categories of types.
-Primitive Types are the build in types boolean, integer, float, string and resource.
-%float vs. double
-Array Types are all kinds of arrays and
-Class Types are used to represent user defined or internal classes.
+Primitive types are the build in types boolean, integer, float, string and resource.
+Array types are all kinds of arrays and
+class types are used to represent user defined or internal classes.
 This differentiation is made
 in consideration of the language behavior
 and the capabilities of WSDL for defining types
@@ -294,7 +289,7 @@ or any of the built-in PHP data types:
 
 Additionally it is possible to specify arrays of those
 data types.
-For this purpose three extended notations should be supported.
+For this purpose two extended notations should be supported.
 Simple arrays which use keys of type integer and
 where all values are of the same data type
 can be described by naming the value type followed by square brackets,
@@ -302,15 +297,14 @@ e.g. \verb|integer[]| or also \verb|string[][]|
 in case of multidimensional arrays.
 Associative arrays can be notated as
 \verb|array(datatype1=>datatype2)|.
-% STEFAN: wollten wir aus konsitenzgründen doch rauslassen or \verb|array<datatype,datatype>|.
-But these notations should only be used
+But this should only be used
 if the key type differs from \verb|integer|
 or if it is of major importance
 and should therefore be emphasized
 for human readers of the documentation. 
-%TODO: |, mixed, number
-%If a multiple types are possible for a language element
-%they should be listed separated by a \|.
+If a multiple types are possible for a language element
+they should be listed separated by a \|.
+%TODO: mixed, number
 
 %Diagrams
 %========
@@ -639,9 +633,9 @@ to scan for coding standard violations.
 The component should be easy to use through a convenient high level API
 and it should be aware of possible errors in the source code files, i.e.
 the CodeAnalyzer should not crash because of syntax errors in a file parsed.
-This is very important because if the Code Analyzer would be that instable,
+This is very important because if the Code Analyzer would be this instable,
 it would only be useful as a standalone tool for analyzing
-applications. In order to become a software metrics library
+smaller applications. But in order to become a software metrics library
 which can be included in other applications -- such as Web Service tools --
 it has to be reliable.
 
@@ -840,13 +834,13 @@ to store the statistical data.
 The Web Services Description Language (WSDL) \cite{WSDL}
 is one of the most important standards
 for professional Web Service applications
-because it allows the automated creation
+because it allows for automated creation
 of SOAP servers and clients.
 The SOAP extension of PHP5 supports this
 if a WSDL file is provided.
 A WSDL file is an XML document
 describing the interface of a Web Service.
-A service provider should offer this description
+A service provider can offer this description
 to its clients which are then able
 to determine the operations provided by the service
 and the messages they have to sent.
@@ -867,7 +861,7 @@ The complete service description
 can be generated automatically.
 
 The only new information in a WSDL file
-are the service's binding and its access point URL.
+are the binding and the service access point URL.
 
 \subsubsection{Description}
 %-----------
@@ -1349,9 +1343,6 @@ as well as serialization of return values.
 %----------------------
 The current implementation of the component
 can be considered as stable.
-% STEFAN: aber die implementierung unser komponente ist doch dort nicht dokumentiert??
-% and is
-% well documented by an additional paper \cite{ReSTpaper}.
 
 \subsection{Requirements}\label{subsec:ReSTRequirements}
 %============
@@ -1384,9 +1375,6 @@ as described by Roy Thomas Fielding \cite{ReSTpaper}.
 The payloads are supposed to be valid according to 
 internet standard formats like XML \cite{XML} for instance, 
 but could be encoded in other formats like JSON for AJAX requests, too.
-% STEFAN: das ist nicht unbedingt wünschenswert
-% ,
-% The payloads should always be valid XML documents \cite{XML}.
 
 %Diagrams
 %========
