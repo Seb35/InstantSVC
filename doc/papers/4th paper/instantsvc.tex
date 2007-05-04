@@ -6,6 +6,21 @@
 
 \usepackage{cite}
 \usepackage{graphicx}
+\usepackage[
+	pdftitle={Web Services with eZ Components: A Design Proposal},
+	pdfauthor={Falko Menge, Stefan Marr},
+	pdfsubject={Web Services},
+	pdfkeywords={Web Services,PHP5,eZ Components, SOAP, WSDL, ReST, WS-Security, Username Token Profile},
+	pdfdisplaydoctitle=true,
+	colorlinks=false,
+	bookmarksnumbered=true,
+	breaklinks = true,
+%	dvips = true,
+%	ps2pdf = true
+%    pdftex = true
+]{hyperref}
+
+\hyphenation{ezc-Re-flec-tion-Pro-per-ty}
 
 \begin{document}
 \title{Web Services with eZ Components:\\ A Design Proposal}
@@ -22,13 +37,13 @@ It serves as a foundation for discussing the contribution
 of these core libraries to the eZ Components project.
 Therefore it proposes six new components:
 ezcReflection, ezcCodeAnalyzer, ezcWsdl, ezcSoap, ezcRest and ezcWebService.
-For each component requirements and design are specified.
+Requirements and design are specified for each component.
 \end{abstract}
 
 \section{Web Services and PHP5}\label{sec:Introduction}
 Web services are one of the most interesting technologies that have evolved in
 recent years. They facilitate interoperable communication across the borders of 
-platforms and programming languages and are therefore a
+platforms and programming languages and they are therefore a
 promising concept for enterprise software. They can be used to integrate 
 internal software systems as well as cross-company applications. The main idea is that 
 applications provide their functionality in form of services that can be 
@@ -308,7 +323,7 @@ or if it is of major importance
 and should therefore be emphasized
 for human readers of the documentation. 
 If a multiple types are possible for a language element
-they should be listed separated by a \|.
+they should be listed separated by a $|$.
 %TODO: mixed, number
 
 %Diagrams
@@ -565,9 +580,9 @@ object for a given annotation.
 This is a generic class to represent an annotation
 and it also serves as a base class for several
 specialized annotation classes, e.g.
-\textbf{ezcReflectionAnnotationParam},
-\textbf{ezcReflectionAnnotationReturn} and
-\textbf{ezcReflectionAnnotationVar}.
+ezcReflectionAnnotationParam,
+ezcReflectionAnnotationReturn and
+ezcReflectionAnnotationVar.
 
 %\textbf{ezcReflectionAnnotationRestIn}
 %\textbf{ezcReflectionAnnotationRestMethod}
@@ -627,7 +642,7 @@ Some basic software metrics should be implemented.
 The required metrics include
 counting the lines of code (LoC) and the number of
 classes, methods, attributes, subclasses and functions.
-Furthermore it should collect statistics
+Furthermore the CodeAnalyzer should collect statistics
 about the usage of documentation tags
 and warn if important tags are missing.
 A possible extension point is to include abilities
@@ -865,8 +880,8 @@ implementing the Web Service.
 The complete service description
 can be generated automatically.
 
-The only new information in a WSDL file
-is the binding and the service access point URL.
+The only pieces of information in a WSDL file that are new
+are the binding and the service access point URL.
 
 \subsubsection{Description}
 %-----------
@@ -1069,7 +1084,15 @@ to the headers of SOAP messages.
 In order to be able to work with those header elements
 the SOAP standard describes intermediary nodes,
 which can be introduced to a communication channel
-between sender and receiver.
+between sender and receiver as shown in figure \ref{fig:SOAP-Intermediaries}.
+
+\begin{figure}[htbp]
+	\centering
+		\includegraphics[width=1.00\textwidth]{figures/SOAP-Intermediaries.eps}
+	\caption{SOAP Intermediaries}
+	\label{fig:SOAP-Intermediaries}
+\end{figure}
+
 Those SOAP Intermediaries
 can add new header elements, work with them
 and also remove them at a later time.
@@ -1236,7 +1259,7 @@ To avoid writing several very similar server scripts
 when providing multiple Web Services
 this class provides a generic SOAP server which
 can be configured via simple deployment descriptors.
-It works somewhat like a front controller for SOAP
+Basically it works like a front controller for SOAP
 since it forwards incoming SOAP Requests
 to a correspondent SOAP server instance.
 
@@ -1378,7 +1401,7 @@ are not violated.
 %======
 The provided services must conform to the
 HTTP 1.1 specification and the ReST concept
-as described by Roy Thomas Fielding \cite{ReSTpaper}.
+as described by Roy Thomas Fielding \cite{ReST}.
 The payloads are supposed to be valid according to 
 internet standard formats like XML \cite{XML} for instance, 
 but could be encoded in other formats like JSON for AJAX requests, too.
@@ -1523,7 +1546,7 @@ through Web Services can be annotated as \verb|@webserializable|.
 \begin{figure}[htbp]
 	\centering
 		\includegraphics[width=1.00\textwidth]{figures/ezcWebService.block-diagram.eps}
-	\caption{FMC block diagram of the Web Service component}
+	\caption{FMC block diagram \cite{FMC} of the Web Service component}
 	\label{fig:ezcWebService.block-diagram}
 \end{figure}
 %TODO: describe model
@@ -1563,19 +1586,17 @@ not tied into the WSDL generator. Instead the new Reflection component is a
 reusable building block which already became a foundation for a whole 
 family of Web Service helpers. But its features may be of interest for many
 other PHP projects as well. The annotation mechanism could be a basis 
-for using new dynamic programming techniques like e.g. aspect-oriented 
+for using new dynamic programming techniques like aspect-oriented 
 programming with PHP. 
 
 The WSDL generator implements the complete WSDL 1.1 standard and 
 supports all types of bindings. It conforms to the WS-I Basic Profile 
 which guarantees interoperability with Web Service tools of other 
 platforms. 
-
 In order to select classes and methods for publication as Web Services 
 annotations can be used similar to Java EE or .NET. Semantical details 
 taken from the source code documentation can be introduced to generated
-WSDL files.
-
+WSDL files. 
 For document/wrapped Web Services adapter classes which handle the 
 wrapping and unwrapping can be generated. 
 
@@ -1605,7 +1626,6 @@ changing requirements.
 
 Since eZ Components is designed for enterprise PHP application development
 it should undoubtedly incorporate professional Web Service components.
-
 The InstantSVC project will continue to maintain a web front-end for the 
 Web Service component and some command line tools for the Code Analyzer. 
 
@@ -1615,90 +1635,97 @@ Web Service component and some command line tools for the Code Analyzer.
 \bibitem{SOAP}
 \emph{SOAP Version 1.2 specification}, W3C Recommendation \hskip 1em plus
   0.5em minus 0.4em\relax World Wide Web Consortium (W3C), June 24, 2003.
-  \newline http://www.w3.org/TR/soap/
+  \newline \url{http://www.w3.org/TR/soap/}
   
 \bibitem{WSDL}
 \emph{Web Services Description Language (WSDL) 1.1}, W3C Note \hskip 1em plus
   0.5em minus 0.4em\relax World Wide Web Consortium (W3C), March 15, 2001.
-  \newline http://www.w3.org/TR/wsdl
+  \newline \url{http://www.w3.org/TR/wsdl}
 
 \bibitem{UDDI}
 \emph{UDDI Version 3.0.2}, W3C Note \hskip 1em plus
   0.5em minus 0.4em\relax UDDI Spec Technical Committee Draft, OASIS, October 19, 2004.
-  \newline http://uddi.org/pubs/uddi\_v3.htm
+  \newline \url{http://uddi.org/pubs/uddi\_v3.htm}
   
 \bibitem{HTTP}
 \emph{HTTP/1.1 specification} \hskip 1em plus
   0.5em minus 0.4em\relax RFC 2616, June 1999.
-  \newline http://tools.ietf.org/html/rfc2616
+  \newline \url{http://tools.ietf.org/html/rfc2616}
 
 \bibitem{XMLSchema}
 \emph{XML Schema 1.1} \hskip 1em plus
   0.5em minus 0.4em\relax World Wide Web Consortium (W3C).
-  \newline http://www.w3.org/XML/Schema
+  \newline \url{http://www.w3.org/XML/Schema}
 
 \bibitem{SOA}
 \emph{Reference Model for Service Oriented
 Architecture 1.0} \hskip 1em plus
   0.5em minus 0.4em\relax OASIS Committee Specification 1, 2 August 2006
-  \newline http://www.oasis-open.org/committees/download.php/19679/soa-rm-cs.pdf
+  \newline \href{http://www.oasis-open.org/committees/download.php/19679/soa-rm-cs.pdf}{\texttt{http://www.oasis-open.org/committees/download.php/19679/soa-rm-}}
+  \newline \href{http://www.oasis-open.org/committees/download.php/19679/soa-rm-cs.pdf}{\texttt{cs.pdf}}
 
 \bibitem{InstantSVC}
 \emph{InstantSVC - The PHP Web Services Builder}
-  \newline http://instantsvc.sourceforge.net
+  \newline \url{http://instantsvc.sourceforge.net}
 
 \bibitem{phpDocumentor}
 \emph{phpDocumentor: The complete documentation solution for PHP}
-  \newline http://phpdoc.org
+  \newline \url{http://phpdoc.org}
 
 \bibitem{XDoclet}
 \emph{XDoclet: Attribute-Oriented Programming for Java}
-  \newline http://xdoclet.sourceforge.net/
+  \newline \url{http://xdoclet.sourceforge.net/}
 
 \bibitem{WSDL20}
 \emph{Web Services Description Language (WSDL) 2.0}, W3C Candidate Recommendation \hskip 1em plus
   0.5em minus 0.4em\relax World Wide Web Consortium (W3C), March 26, 2006.
-  \newline http://www.w3.org/TR/wsdl20
+  \newline \url{http://www.w3.org/TR/wsdl20}
 
 \bibitem{BasicProfile}
 \emph{Basic Profile Version 1.2} \hskip 1em plus
   0.5em minus 0.4em\relax Web Services-Interoperability Organization (WS-I), Oktober 3, 2006.
-  \newline http://www.ws-i.org/Profiles/BasicProfile-1.2.html
+  \newline \url{http://www.ws-i.org/Profiles/BasicProfile-1.2.html}
   
 \bibitem{PHP5Reflection}
 \emph{PHP Manual: Reflection}
-  \newline http://www.php.net/manual/en/language.oop5.reflection.php
+  \newline \url{http://www.php.net/manual/en/language.oop5.reflection.php}
 
 \bibitem{SwA}
 \emph{SOAP Messages with Attachments} \hskip 1em plus
   0.5em minus 0.4em\relax World Wide Web Consortium (W3C), December 11, 2000.
-  \newline http://www.w3.org/TR/SOAP-attachments
+  \newline \url{http://www.w3.org/TR/SOAP-attachments}
 
 \bibitem{WSS}
-\emph{Web Services Security: 4 SOAP Message Security 1.1} \hskip 1em plus
+\emph{Web Services Security: SOAP Message Security 1.1} \hskip 1em plus
   0.5em minus 0.4em\relax OASIS Standard Specification, February 1, 2006.
-  \newline http://www.oasis-open.org/committees/download.php/16790/wss-v1.1-spec-os-SOAPMessageSecurity.pdf
+  \newline \href{http://www.oasis-open.org/committees/download.php/16790/wss-v1.1-spec-os-SOAPMessageSecurity.pdf}{\texttt{http://www.oasis-open.org/committees/download.php/16790/wss-v1.}}
+  \newline \href{http://www.oasis-open.org/committees/download.php/16790/wss-v1.1-spec-os-SOAPMessageSecurity.pdf}{\texttt{1-spec-os-SOAPMessageSecurity.pdf}}
   
 \bibitem{UTP}
 \emph{Web Services Security UsernameToken Profile 1.1} \hskip 1em plus
   0.5em minus 0.4em\relax OASIS Standard Specification, February 1, 2006.
-  \newline http://www.oasis-open.org/committees/download.php/16782/wss-v1.1-spec-os-UsernameTokenProfile.pdf
+  \newline \href{http://www.oasis-open.org/committees/download.php/16782/wss-v1.1-spec-os-UsernameTokenProfile.pdf}{\texttt{http://www.oasis-open.org/committees/download.php/16782/wss-v1.}}
+  \newline \href{http://www.oasis-open.org/committees/download.php/16782/wss-v1.1-spec-os-UsernameTokenProfile.pdf}{\texttt{1-spec-os-UsernameTokenProfile.pdf}}
 
-\bibitem{ReSTpaper}
+\bibitem{ReST}
 Fielding, Roy Thomas. \emph{Architectural Styles and the Design of Network-based Software Architectures.} \hskip 1em plus
   0.5em minus 0.4em\relax Doctoral dissertation, University of California, Irvine, 2000.
-  \newline http://www.ics.uci.edu/~fielding/pubs/dissertation/top.htm
+  \newline \url{http://www.ics.uci.edu/~fielding/pubs/dissertation/top.htm}
 
 \bibitem{RFC2617}
 \emph{RFC 2617: HTTP Authentication: Basic and Digest Access Authentication} \hskip 1em plus
   0.5em minus 0.4em\relax Network Working Group, June 1999.
-  \newline http://tools.ietf.org/html/rfc2617
+  \newline \url{http://tools.ietf.org/html/rfc2617}
 
 \bibitem{XML}
 \emph{Extensible Markup Language (XML) 1.1 (Second Edition)}, W3C Recommendation \hskip 1em plus
   0.5em minus 0.4em\relax World Wide Web Consortium (W3C), September 29, 2006.
-  \newline http://www.w3.org/TR/xml11/
+  \newline \url{http://www.w3.org/TR/xml11/}
   
+\bibitem{FMC}
+\emph{Fundamental Modeling Concepts}
+  \newline \url{http://www.fmc-modeling.org/}
+
 \end{thebibliography}
 
 \end{document}
