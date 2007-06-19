@@ -1,9 +1,9 @@
 DONE -> Erledigt
 REM  -> Remember/Merke
-Vn	 -> Bsp. V2 geplant für Version 2.0
+Vn	 -> Bsp. V2 geplant fï¿½r Version 2.0
 
 allgemein
-(alle)	- Konzept für eine Seite
+(alle)	- Konzept fï¿½r eine Seite
 		- Integration von Stats/Docu-Flaws ins Admin-Tool
 		- Tutorial zu Axis und .Net-WSDL.exe
 
@@ -16,14 +16,14 @@ phpSec
 
 
 Admin-Tool (TODOs aus Martins Email)
-		- Menüpunkt „Web Service erstellen“ ist noch nicht implementiert.
+		- Menï¿½punkt ï¿½Web Service erstellenï¿½ ist noch nicht implementiert.
 		  evtl. die Standard-Einstellungen aus Settings beachten
 		- es sollte so sein, dass die Quelltext-Doku und die UserDoku in der DB sind. 
 		  Wenn eine Methode neu aufgenommen wird soll die Doku aus dem Source in beide Felder. 
 		  Dann kann der Admin die UserDoku so lassen oder bearbeiten (z.B. auch komplett leer machen). 
-		  Die Quelltext Doku sollte in die DB damit der Admin informiert wird, dass die Doku im Source geändert wurde.  
-	DONE    - Menüpunkt „Web Service registrieren“. Hier muss nur noch das letztendliche registrieren gemacht werden.
-		- beim Wizard muss wie erstens noch generiert werden, evtl. bei Settings noch den Pfad für das generierte Zeug abfragen.
+		  Die Quelltext Doku sollte in die DB damit der Admin informiert wird, dass die Doku im Source geï¿½ndert wurde.  
+	DONE    - Menï¿½punkt ï¿½Web Service registrierenï¿½. Hier muss nur noch das letztendliche registrieren gemacht werden.
+		- beim Wizard muss wie erstens noch generiert werden, evtl. bei Settings noch den Pfad fï¿½r das generierte Zeug abfragen.
 		- DOKUMENTIEREN:
 			Funktionsweise, Config-File, PHPBINDir
     DONE- access new WSDL Generator class constants from smarty templates
@@ -32,6 +32,28 @@ Admin-Tool (TODOs aus Martins Email)
         
         - WARNUNG ausgeben, dass scannen des quellcodes mit gefahren verbunden ist?
     V2  - Ausgabe der Doku Fehler, in optisch ansprechnder Art und Weise
+
+Feedback von Ruedi:
+     - Das Tool verÃ¶ffentlicht mir auch als 'privat' gekennzeichnete
+       Funktionen. Auch ein Underline Name (_) hilft nicht das publizieren zu
+       unterbinden.
+       Beispiel:
+       <operation name="_connectDb">
+         <input message="tns:_connectDbIn" /> 
+         <output message="tns:_connectDbOut" />
+       </operation>
+     - Nach einer Mutation der Klasse ist das Neupublizieren mÃ¼hsam
+     - Alte, nicht mehr existierende Funktionen bleiben in der db
+
+     - Keine SpeichermÃ¶glichkeit fÃ¼r die Erstellungs-Parameter (jedes Mal
+       neu erfassen)- Re-Registrierung einer bestehenden Klasse 'Klasse registrieren': alles
+       betreffende aus der DB lÃ¶schen, damit alte HÃ¼te verschwinden.
+     - FÃ¼r 'Web Service erstellen', den Parameter der Service Konfiguration
+       etwas Persistenz fÃ¼r die Einstellungen geben.
+     - Ein Filter fÃ¼r Operationen die mit _ im Namen beginnen (private
+       Klassen). Das wÃ¼rde ich relativ rasch finden und dies hÃ¤tte keine
+       Nebenwirkungen (denke ich).
+
 
 WSDL Generator
 DONE - test cases for the generator (http://qa.php.net/write-test.php)
@@ -61,19 +83,19 @@ V3   - SOAPServer wich generates WSDL if(!file_exists($wsdl_file)) [may be start
      - perhaps a generic doc/lit adapter can be implemented
 
 webservices identifizieren
-(martin?)	  - sowohl scan anbieten als auch explizites auswählen von dateien auf dem server
-				welche webservices funktionalität bereit stellen
-				explizites auswählen von den entsprechenden php dateien und ihren abhängigkeiten wird
+(martin?)	  - sowohl scan anbieten als auch explizites auswï¿½hlen von dateien auf dem server
+				welche webservices funktionalitï¿½t bereit stellen
+				explizites auswï¿½hlen von den entsprechenden php dateien und ihren abhï¿½ngigkeiten wird
 				eventuell notwendig, da es keinen standard gibt, wie die scripte zu gestallten sind
-				manche führen beim includen schon funktionalität aus, was gefährlich sein könnte
+				manche fï¿½hren beim includen schon funktionalitï¿½t aus, was gefï¿½hrlich sein kï¿½nnte
 				(z.B. deleteDatabase.php als admin script)
 
 
 libs/reflection
-(stefan)	      - weitere tags hinzufügen
-		 DONE - tool zum prüfen der doku auf bestimmte aspekte
+(stefan)	      - weitere tags hinzufï¿½gen
+		 DONE - tool zum prï¿½fen der doku auf bestimmte aspekte
 (Falko)               - improve and fix XML Schema output
-		 REM  - unterstützt werden nur einfache arrays, bei den der index nicht relevant ist,
+		 REM  - unterstï¿½tzt werden nur einfache arrays, bei den der index nicht relevant ist,
 		        Klassen und einfach datentypen, KEINE Maps (Key=>Value) Typen
                       - rename DocTag classes into Annotiation
                       - introduce a type mixed to represent mixed types or type expressions using the | to list multiple types
@@ -84,34 +106,34 @@ REST
 		DONE  - ser/deserialisieren der eingabedaten?
 		      - objekt collections handhabung?
 		DONE  - angabe von url schemata zur identifizierung von steuerparametern
-		V2    - wie könnte man wsdl dazu gestallten? -> WSDL2.0
-			für Toolkit Version 2.0 vielleicht ein Generator denkbar
+		V2    - wie kï¿½nnte man wsdl dazu gestallten? -> WSDL2.0
+			fï¿½r Toolkit Version 2.0 vielleicht ein Generator denkbar
 			  
-		nice to have für REST Server:
-		DONE  - beim erstellen wählbar, ob mit oder ohne authentfizierung
-		DONE  - wahl des providers, angabe der Klasse, da eh alle Klassen geladen wurden, können wir die passende Datei
-		DONE    über die reflection api ermitteln
-		DONE  - XSLT transformation angebbar über f=<zielformat> z.B. f=xbel für die bookmarks
-		DONE  - @restin und @restout für spezielle serializer
+		nice to have fï¿½r REST Server:
+		DONE  - beim erstellen wï¿½hlbar, ob mit oder ohne authentfizierung
+		DONE  - wahl des providers, angabe der Klasse, da eh alle Klassen geladen wurden, kï¿½nnen wir die passende Datei
+		DONE    ï¿½ber die reflection api ermitteln
+		DONE  - XSLT transformation angebbar ï¿½ber f=<zielformat> z.B. f=xbel fï¿½r die bookmarks
+		DONE  - @restin und @restout fï¿½r spezielle serializer
 		DONE  - standardserializer im generator angebbar
-		DONE  - weitere serializer für den standardparameter ?&f=<serializerkürzel>
+		DONE  - weitere serializer fï¿½r den standardparameter ?&f=<serializerkï¿½rzel>
 		DONE  - im generator als allgemeines und im @restin/@restout
-		DONE  - reihenfolge: angabe über &f -> @restin Angabe -> globale angabe, default im dd
+		DONE  - reihenfolge: angabe ï¿½ber &f -> @restin Angabe -> globale angabe, default im dd
 		DONE  - wobei angabe &f sich nur auf ausgabe bezieht
 		
 			  - ez Style Array-Angabe array(string=>ezcFile)
-		V2	  - angabe des status-codes über @ muss möglich sein, um hier sinnvolle rückgaben ermöglichen zu können
+		V2	  - angabe des status-codes ï¿½ber @ muss mï¿½glich sein, um hier sinnvolle rï¿½ckgaben ermï¿½glichen zu kï¿½nnen
 		V2	  - weitere sinnvolle header senden?
-			  - known issues auflisten (erkennen der pattern abhängig von reihenfolge im quelltext)
-			  - abhängigkeiten von pear packages auflisten
-		V2	  - unterstützen  der HEAD operation und der OPTIONS operation um fähigkeiten/möglichkeiten der ressourcen auslesen zu können
-			  - html oberfläche für REST Generator
+			  - known issues auflisten (erkennen der pattern abhï¿½ngig von reihenfolge im quelltext)
+			  - abhï¿½ngigkeiten von pear packages auflisten
+		V2	  - unterstï¿½tzen  der HEAD operation und der OPTIONS operation um fï¿½higkeiten/mï¿½glichkeiten der ressourcen auslesen zu kï¿½nnen
+			  - html oberflï¿½che fï¿½r REST Generator
 			  - stats.php robuster gestallten
-			  - PHPDoc Tag Parser überarbeiten, mehrzeilige kommentare an @tags ermöglichen
-		V2	  - REFLECTION API: mechanismus hinzufügen, der bei fehlenden kommentaren, die elternklassen absucht um eventuell 
-			    vorhandene kommentare zu übernehemen
+			  - PHPDoc Tag Parser ï¿½berarbeiten, mehrzeilige kommentare an @tags ermï¿½glichen
+		V2	  - REFLECTION API: mechanismus hinzufï¿½gen, der bei fehlenden kommentaren, die elternklassen absucht um eventuell 
+			    vorhandene kommentare zu ï¿½bernehemen
 			  - mit obrigem feature auch noch einen globalen klassenobjekte cache einrichten, um die performance zu steigern.
-		V2	  - anhand der position des @param tags auf den dazugehörenigen parameternamen schließen, wenn nicht angegeben
+		V2	  - anhand der position des @param tags auf den dazugehï¿½renigen parameternamen schlieï¿½en, wenn nicht angegeben
 		
 		
 !!!!!!!!	  - Anpassen der Pfade beim Generieren und kopieren der Server
