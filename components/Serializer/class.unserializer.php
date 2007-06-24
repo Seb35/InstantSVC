@@ -716,7 +716,7 @@ class XML_Unserializer extends PEAR
                         $value['value']->$prop = $propVal;
                     }
                 }
-                //  check for magic function
+                //  check for magic functions
                 if (method_exists($value['value'], '__wakeup')) {
                     $value['value']->__wakeup();
                 }

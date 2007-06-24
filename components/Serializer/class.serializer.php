@@ -909,7 +909,7 @@ class XML_Serializer extends PEAR
     */
     function _serializeObject(&$object, $tagName = null, $attributes = array())
     {
-        // check for magic function
+        // check for magic functions
         if (method_exists($object, '__sleep')) {
             $propNames = $object->__sleep();
             if (is_array($propNames)) {
