@@ -1,1 +1,1 @@
-@c:\programme\php5\phpunit ezcCodeAnalyzerSuite dev-suite.php
+@phpunit ezcCodeAnalyzerSuite dev-suite.php
