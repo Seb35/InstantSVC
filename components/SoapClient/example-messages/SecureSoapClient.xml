@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<SOAP-ENV:Envelope
+	xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/"
+	xmlns:ns1="urn:/Process01.wsdl"
+	xmlns:ns2="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd">
+	<SOAP-ENV:Header>
+		<ns2:Security>
+			<UsernameToken>
+				<Username>smx</Username>
+				<Password>XCoS6fLTj9OnapqLGS+Sh/6sD14=</Password>
+				<Nonce>ODI2NDA4NTc3</Nonce>
+				<Created>2007-08-10T10:56:25+02:00</Created>
+			</UsernameToken>
+		</ns2:Security>
+	</SOAP-ENV:Header>
+	<SOAP-ENV:Body>
+		<ns1:Process01Request>
+			<ns1:route>
+				<ns1:start>Berlin</ns1:start>
+				<ns1:destination>Bristol</ns1:destination>
+				<ns1:departure>2007-08-10T09:13:00</ns1:departure>
+			</ns1:route>
+			<ns1:Subject>falko</ns1:Subject>
+		</ns1:Process01Request>
+	</SOAP-ENV:Body>
+</SOAP-ENV:Envelope>
