@@ -2,7 +2,7 @@
 //***************************************************************************
 //***************************************************************************
 //**                                                                       **
-//** iscReflectionPrimitiveType - representation for all primitive types like string,   **
+//** ezcReflectionPrimitiveType - representation for all primitive types like string,   **
 //**                 integer, float aso.                                   **
 //**                                                                       **
 //** Project: Web Services Description Generator                           **
@@ -16,14 +16,14 @@
 //***************************************************************************
 //***************************************************************************
 
-//***** iscReflectionPrimitiveType *******************************************************
+//***** ezcReflectionPrimitiveType *******************************************************
 /**
  * @package    Reflection
  * @author     Stefan Marr <mail@stefan-marr.de>
  * @copyright  2006 Stefan Marr
  * @license    http://www.apache.org/licenses/LICENSE-2.0  Apache License 2.0
  */
-class iscReflectionPrimitiveType extends iscReflectionAbstractType {
+class ezcReflectionPrimitiveType extends ezcReflectionAbstractType {
 
     /**
      * @var string
@@ -81,7 +81,7 @@ class iscReflectionPrimitiveType extends iscReflectionAbstractType {
         } else {
             $prefix = '';
         }
-        return $prefix . iscReflectionTypeMapper::getInstance()->getXmlType($this->typeName);
+        return $prefix . ezcReflectionTypeMapper::getInstance()->getXmlType($this->typeName);
     }
 
     //=======================================================================

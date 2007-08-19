@@ -2,7 +2,7 @@
 //***************************************************************************
 //***************************************************************************
 //**                                                                       **
-//** iscReflectionDocTagReturn                                                       **
+//** ezcReflectionDocTagReturn                                                       **
 //**                                                                       **
 //** Project: Web Services Description Generator                           **
 //**                                                                       **
@@ -14,14 +14,14 @@
 //***************************************************************************
 //***************************************************************************
 
-//***** iscReflectionDocTagReturn *****************************************************
+//***** ezcReflectionDocTagReturn *****************************************************
 /**
 * @package    reflection.tags
 * @author     Stefan Marr <mail@stefan-marr.de>
 * @copyright  2005 ....
 * @license    http://www.apache.org/licenses/LICENSE-2.0   Apache License 2.0
 */
-class iscReflectionDocTagReturn extends iscReflectionDocTag {
+class ezcReflectionDocTagReturn extends ezcReflectionDocTag {
     //=======================================================================
     /**
     * @param string[] $line Array of words
@@ -30,7 +30,7 @@ class iscReflectionDocTagReturn extends iscReflectionDocTag {
         $this->tagName = $line[0];
 
         if (isset($line[1])) {
-            $this->params[0] = iscReflectionTypeMapper::getInstance()->getType($line[1]);
+            $this->params[0] = ezcReflectionTypeMapper::getInstance()->getType($line[1]);
         }
         if (isset($line[2])) {
             $this->desc = $line[2];

@@ -2,7 +2,7 @@
 //***************************************************************************
 //***************************************************************************
 //**                                                                       **
-//** iscReflectionMethod - Reflection API extended with PHPDoc Infos       **
+//** ezcReflectionMethod - Reflection API extended with PHPDoc Infos       **
 //**                                                                       **
 //** Project: Web Services Description Generator                           **
 //**                                                                       **
@@ -15,7 +15,7 @@
 //***************************************************************************
 //***************************************************************************
 
-//***** iscReflectionMethod *************************************************
+//***** ezcReflectionMethod *************************************************
 /**
 * Extends the reflection API using PHPDoc comments to provied
 * type information
@@ -25,9 +25,9 @@
 * @copyright  2005-2006 ...
 * @license    http://www.apache.org/licenses/LICENSE-2.0   Apache License 2.0
 */
-class iscReflectionMethod extends ReflectionMethod {
+class ezcReflectionMethod extends ReflectionMethod {
     /**
-    * @var iscReflectionDocParser
+    * @var ezcReflectionDocParser
     */
     protected $docParser;
 
@@ -47,7 +47,7 @@ class iscReflectionMethod extends ReflectionMethod {
     */
     public function __construct($class, $name) {
         parent::__construct($class, $name);
-        $this->docParser = new iscReflectionDocParser($this->getDocComment());
+        $this->docParser = new ezcReflectionDocParser($this->getDocComment());
         $this->docParser->parse();
         if ($class instanceof ReflectionClass) {
             $this->curClass = $class;
@@ -62,7 +62,7 @@ class iscReflectionMethod extends ReflectionMethod {
 
     //=======================================================================
     /**
-    * @return iscReflectionParameter[]
+    * @return ezcReflectionParameter[]
     */
     function getParameters() {
         $params = $this->docParser->getParamTags();
@@ -72,14 +72,14 @@ class iscReflectionMethod extends ReflectionMethod {
             $found = false;
             foreach ($params as $tag) {
             	if ($tag->getParamName() == $param->getName()) {
-            	   $extParams[] = new iscReflectionParameter($tag->getType(),
+            	   $extParams[] = new ezcReflectionParameter($tag->getType(),
             	                                             $param);
             	   $found = true;
             	   break;
             	}
             }
             if (!$found) {
-                $extParams[] = new iscReflectionParameter(null, $param);
+                $extParams[] = new ezcReflectionParameter(null, $param);
             }
         }
         return $extParams;
@@ -88,12 +88,12 @@ class iscReflectionMethod extends ReflectionMethod {
     //=======================================================================
     /**
     * Returns the type definied in PHPDoc tags
-    * @return iscReflectionType
+    * @return ezcReflectionType
     */
     function getReturnType() {
         $re = $this->docParser->getReturnTags();
         if (count($re) == 1 and isset($re[0])) {
-            return iscReflectionApi::getInstance()->getTypeByName($re[0]->getType());
+            return ezcReflectionApi::getInstance()->getTypeByName($re[0]->getType());
         }
         return null;
     }
@@ -148,7 +148,7 @@ class iscReflectionMethod extends ReflectionMethod {
     //=======================================================================
     /**
     * @param string $name
-    * @return iscReflectionDocTag[]
+    * @return ezcReflectionDocTag[]
     */
     public function getTags($name = '') {
         if ($name == '') {
@@ -214,12 +214,12 @@ class iscReflectionMethod extends ReflectionMethod {
 
     //=======================================================================
     /**
-     * @return iscReflectionClassType
+     * @return ezcReflectionClassType
      */
     function getDeclaringClass() {
         $class = parent::getDeclaringClass();
 		if (!empty($class)) {
-		    return new iscReflectionClassType($class->getName());
+		    return new ezcReflectionClassType($class->getName());
 		}
 		else {
 		    return null;

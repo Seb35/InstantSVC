@@ -2,7 +2,7 @@
 //***************************************************************************
 //***************************************************************************
 //**                                                                       **
-//** iscReflectionDocTagWebService                                                   **
+//** ezcReflectionDocTagWebService                                                   **
 //**                                                                       **
 //** Project: Web Services Description Generator                           **
 //**                                                                       **
@@ -14,14 +14,14 @@
 //***************************************************************************
 //***************************************************************************
 
-//***** iscReflectionDocTagWebService *************************************************
+//***** ezcReflectionDocTagWebService *************************************************
 /**
 * @package    reflection.tags
 * @author     Stefan Marr <mail@stefan-marr.de>
 * @copyright  2005 ....
 * @license    http://www.apache.org/licenses/LICENSE-2.0   Apache License 2.0
 */
-class iscReflectionDocTagWebService extends iscReflectionDocTag {
+class ezcReflectionDocTagWebService extends ezcReflectionDocTag {
 
     //=======================================================================
     /**

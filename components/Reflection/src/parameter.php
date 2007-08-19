@@ -2,7 +2,7 @@
 //***************************************************************************
 //***************************************************************************
 //**                                                                       **
-//** iscReflectionParameter - Reflection API extended with PHPDoc Infos    **
+//** ezcReflectionParameter - Reflection API extended with PHPDoc Infos    **
 //**                                                                       **
 //** Project: Web Services Description Generator                           **
 //**                                                                       **
@@ -14,7 +14,7 @@
 //***************************************************************************
 //***************************************************************************
 
-//***** iscReflectionParameter **********************************************
+//***** ezcReflectionParameter **********************************************
 /**
 * Extends the reflection API using PHPDoc comments to provied
 * type information
@@ -24,9 +24,9 @@
 * @copyright  2005 ....
 * @license    http://www.apache.org/licenses/LICENSE-2.0   Apache License 2.0
 */
-class iscReflectionParameter extends ReflectionParameter {
+class ezcReflectionParameter extends ReflectionParameter {
     /**
-    * @var iscReflectionType
+    * @var ezcReflectionType
     */
     protected $type;
 
@@ -44,7 +44,7 @@ class iscReflectionParameter extends ReflectionParameter {
     public function __construct($mixed, $parameter) {
         if ($parameter instanceof ReflectionParameter) {
             $this->parameter = $parameter;
-            $this->type = iscReflectionApi::getInstance()->getTypeByName($mixed);
+            $this->type = ezcReflectionApi::getInstance()->getTypeByName($mixed);
         }
         else {
             parent::__construct($mixed, $parameter);
@@ -54,7 +54,7 @@ class iscReflectionParameter extends ReflectionParameter {
 
     //=======================================================================
     /**
-    * @return iscReflectionType
+    * @return ezcReflectionType
     */
     public function getType() {
         return $this->type;
@@ -143,7 +143,7 @@ class iscReflectionParameter extends ReflectionParameter {
     //=======================================================================
     /**
     * Returns reflection object identified by php type hinting
-    * @return iscReflectionClassType
+    * @return ezcReflectionClassType
     */
     public function getClass() {
         if ($this->type && $this->type->isClass()) {
@@ -154,7 +154,7 @@ class iscReflectionParameter extends ReflectionParameter {
 
     //=======================================================================
     /**
-    * @return iscReflectionFunction
+    * @return ezcReflectionFunction
     */
     public function getDeclaringFunction() {
         if ($this->parameter != null) {
@@ -164,7 +164,7 @@ class iscReflectionParameter extends ReflectionParameter {
             $func = parent::getDeclaringFunction();
         }
         if (!empty($func)) {
-            return new iscReflectionFunction($func->getName());
+            return new ezcReflectionFunction($func->getName());
         }
         else {
             return null;
@@ -173,7 +173,7 @@ class iscReflectionParameter extends ReflectionParameter {
 
     //=======================================================================
     /**
-    * @return iscReflectionClassType
+    * @return ezcReflectionClassType
     */
     function getDeclaringClass() {
         if ($this->parameter != null) {
@@ -184,7 +184,7 @@ class iscReflectionParameter extends ReflectionParameter {
         }
 
 		if (!empty($class)) {
-		    return new iscReflectionClassType($class->getName());
+		    return new ezcReflectionClassType($class->getName());
 		}
 		else {
 		    return null;

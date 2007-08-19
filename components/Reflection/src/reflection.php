@@ -2,7 +2,7 @@
 //***************************************************************************
 //***************************************************************************
 //**                                                                       **
-//** iscReflectionApi - Main Class, holds type factory                **
+//** ezcReflectionApi - Main Class, holds type factory                **
 //**                                                                       **
 //** Project: Web Services Description Generator                           **
 //**                                                                       **
@@ -14,7 +14,7 @@
 //***************************************************************************
 //***************************************************************************
 
-//***** iscReflectionApi ***********************************************
+//***** ezcReflectionApi ***********************************************
 /**
 * Holds type factory for generating type objects by given name
 *
@@ -23,17 +23,17 @@
 * @copyright  2006 ....
 * @license    http://www.apache.org/licenses/LICENSE-2.0   Apache License 2.0
 */
-class iscReflectionApi {
+class ezcReflectionApi {
 
 	/**
-	* @var iscReflectionApi
+	* @var ezcReflectionApi
 	*/
 	private static $instance = null;
 
 	/**
-	 * @var iscReflectionTypeFactory
+	 * @var ezcReflectionTypeFactory
 	 */
-	private $iscReflectionTypeFactory = null;
+	private $ezcReflectionTypeFactory = null;
 
 
     //=======================================================================
@@ -43,11 +43,11 @@ class iscReflectionApi {
 
     //=======================================================================
     /**
-    * @return iscReflectionApi
+    * @return ezcReflectionApi
     */
     public static function getInstance() {
     	if (self::$instance == null) {
-    		self::$instance = new iscReflectionApi();
+    		self::$instance = new ezcReflectionApi();
     	}
         return self::$instance;
     }
@@ -55,25 +55,25 @@ class iscReflectionApi {
     //=======================================================================
     /**
      * Factory to create type objects
-     * @param iscReflectionTypeFactory $factory
+     * @param ezcReflectionTypeFactory $factory
      * @return void
      */
-    public function setiscReflectionTypeFactory($factory) {
-        $this->iscReflectionTypeFactory = $factory;
+    public function setezcReflectionTypeFactory($factory) {
+        $this->ezcReflectionTypeFactory = $factory;
     }
 
     //=======================================================================
     /**
-     * Returns a iscReflectionType object for the given typename
+     * Returns a ezcReflectionType object for the given typename
      *
      * @param string $typeName
-     * @return iscReflectionType
+     * @return ezcReflectionType
      */
     public function getTypeByName($typeName) {
-        if ($this->iscReflectionTypeFactory == null) {
-            $this->iscReflectionTypeFactory = new iscReflectionTypeFactoryImpl();
+        if ($this->ezcReflectionTypeFactory == null) {
+            $this->ezcReflectionTypeFactory = new ezcReflectionTypeFactoryImpl();
         }
-        return $this->iscReflectionTypeFactory->getType($typeName);
+        return $this->ezcReflectionTypeFactory->getType($typeName);
     }
 }
 

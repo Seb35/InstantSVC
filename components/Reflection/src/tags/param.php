@@ -2,7 +2,7 @@
 //***************************************************************************
 //***************************************************************************
 //**                                                                       **
-//** iscReflectionDocTagParam                                                        **
+//** ezcReflectionDocTagParam                                                        **
 //**                                                                       **
 //** Project: Web Services Description Generator                           **
 //**                                                                       **
@@ -14,14 +14,14 @@
 //***************************************************************************
 //***************************************************************************
 
-//***** iscReflectionDocTagParam ******************************************************
+//***** ezcReflectionDocTagParam ******************************************************
 /**
 * @package    reflection.tags
 * @author     Stefan Marr <mail@stefan-marr.de>
 * @copyright  2005 ....
 * @license    http://www.apache.org/licenses/LICENSE-2.0   Apache License 2.0
 */
-class iscReflectionDocTagParam extends iscReflectionDocTag {
+class ezcReflectionDocTagParam extends ezcReflectionDocTag {
 
     //=======================================================================
     /**
@@ -31,7 +31,7 @@ class iscReflectionDocTagParam extends iscReflectionDocTag {
         $this->tagName = $line[0];
 
         if (isset($line[1])) {
-            $this->params[0] = iscReflectionTypeMapper::getInstance()->getType($line[1]);
+            $this->params[0] = ezcReflectionTypeMapper::getInstance()->getType($line[1]);
         }
         if (isset($line[2]) and strlen($line[2])>0) {
             if ($line[2]{0} == '$') {

@@ -2,7 +2,7 @@
 //***************************************************************************
 //***************************************************************************
 //**                                                                       **
-//** iscReflectionDocTagFactory - Creates a iscReflectionDocTag object be the given doctag     **
+//** ezcReflectionDocTagFactory - Creates a ezcReflectionDocTag object be the given doctag     **
 //**                                                                       **
 //** Project: Web Services Description Generator                           **
 //**                                                                       **
@@ -14,31 +14,31 @@
 //***************************************************************************
 //***************************************************************************
 
-//***** iscReflectionDocTagFactory ****************************************************
+//***** ezcReflectionDocTagFactory ****************************************************
 /**
-* Creates a iscReflectionDocTag object be the given doctag
+* Creates a ezcReflectionDocTag object be the given doctag
 *
 * @package    Reflection
 * @author     Stefan Marr <mail@stefan-marr.de>
 * @copyright  2006 Stefan Marr
 * @license    http://www.apache.org/licenses/LICENSE-2.0   Apache License 2.0
 */
-class iscReflectionDocTagFactory {
+class ezcReflectionDocTagFactory {
 
     //=======================================================================
     /**
     * @param string $type
     * @param string[] $line Array of words
-    * @return iscReflectionDocTag
+    * @return ezcReflectionDocTag
     */
     static public function createTag($type, $line) {
-        $tagClassName = 'iscReflectionDocTag'.$type;
+        $tagClassName = 'ezcReflectionDocTag'.$type;
         $tag = null;
         if (class_exists($tagClassName)) {
             $tag = new $tagClassName($line);
         }
         else {
-            $tag = new iscReflectionDocTag($line);
+            $tag = new ezcReflectionDocTag($line);
         }
         return $tag;
     }

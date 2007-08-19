@@ -2,7 +2,7 @@
 //***************************************************************************
 //***************************************************************************
 //**                                                                       **
-//** iscReflectionTypeMapper - Provides mapping between different type names used in    **
+//** ezcReflectionTypeMapper - Provides mapping between different type names used in    **
 //**              documentation                                            **
 //**                                                                       **
 //** Project: Web Services Description Generator                           **
@@ -16,7 +16,7 @@
 //***************************************************************************
 //***************************************************************************
 
-//***** iscReflectionTypeMapper **********************************************************
+//***** ezcReflectionTypeMapper **********************************************************
 /**
  * Provides mapping from type names used in documentation to standardized
  * type names
@@ -27,10 +27,10 @@
  * @copyright  2006 ....
  * @license    http://www.apache.org/licenses/LICENSE-2.0   Apache License 2.0
  */
-class iscReflectionTypeMapper {
+class ezcReflectionTypeMapper {
 
     /**
-     * @var iscReflectionTypeMapper
+     * @var ezcReflectionTypeMapper
      */
     private static $instance = null;
 
@@ -51,11 +51,11 @@ class iscReflectionTypeMapper {
 
     //=======================================================================
     /**
-     * @return iscReflectionTypeMapper
+     * @return ezcReflectionTypeMapper
      */
     public static function getInstance() {
         if (self::$instance == null) {
-            self::$instance = new iscReflectionTypeMapper();
+            self::$instance = new ezcReflectionTypeMapper();
         }
         return self::$instance;
     }

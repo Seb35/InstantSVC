@@ -20,7 +20,7 @@
 
 //***** imports *************************************************************
 // TODO: remove hard coded adodb path
-require_once dirname(__FILE__) . '/../../../adodb/adodb.inc.php');
+//require_once dirname(__FILE__) . '/../../../adodb/adodb.inc.php';
 
 //***** isvcWebServiceToolDatabase *********************************************************
 /**

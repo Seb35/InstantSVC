@@ -2,7 +2,7 @@
 //***************************************************************************
 //***************************************************************************
 //**                                                                       **
-//** iscReflectionDocTag - Provides structured data from PHP Documentation comments  **
+//** ezcReflectionDocTag - Provides structured data from PHP Documentation comments  **
 //**                                                                       **
 //** Project: Web Services Description Generator                           **
 //**                                                                       **
@@ -17,7 +17,7 @@
 //***** imports *************************************************************
 //require_once(dirname(__FILE__).'/tags/require.tags.php');
 
-//***** iscReflectionDocTag ***********************************************************
+//***** ezcReflectionDocTag ***********************************************************
 /**
 * Provides structured data from PHP Documentation comments
 *
@@ -26,7 +26,7 @@
 * @copyright  2006 Stefan Marr
 * @license    http://www.apache.org/licenses/LICENSE-2.0   Apache License 2.0
 */
-class iscReflectionDocTag {
+class ezcReflectionDocTag {
     /**
     * @var string
     */

@@ -2,7 +2,7 @@
 //***************************************************************************
 //***************************************************************************
 //**                                                                       **
-//** iscReflectionFunction - Reflection API extended with PHPDoc Infos     **
+//** ezcReflectionFunction - Reflection API extended with PHPDoc Infos     **
 //**                                                                       **
 //** Project: Web Services Description Generator                           **
 //**                                                                       **
@@ -14,7 +14,7 @@
 //***************************************************************************
 //***************************************************************************
 
-//***** iscReflectionFunction ***********************************************
+//***** ezcReflectionFunction ***********************************************
 /**
 * Extends the reflection API using PHPDoc comments to provied
 * type information
@@ -24,9 +24,9 @@
 * @copyright  2005-2006 ...
 * @license    http://www.apache.org/licenses/LICENSE-2.0   Apache License 2.0
 */
-class iscReflectionFunction extends ReflectionFunction {
+class ezcReflectionFunction extends ReflectionFunction {
     /**
-    * @var iscReflectionDocParser
+    * @var ezcReflectionDocParser
     */
     protected $docParser;
 
@@ -36,13 +36,13 @@ class iscReflectionFunction extends ReflectionFunction {
     */
     public function __construct($name) {
         parent::__construct($name);
-        $this->docParser = new iscReflectionDocParser($this->getDocComment());
+        $this->docParser = new ezcReflectionDocParser($this->getDocComment());
         $this->docParser->parse();
     }
 
     //=======================================================================
     /**
-    * @return iscReflectionParameter[]
+    * @return ezcReflectionParameter[]
     */
     function getParameters() {
         $params = $this->docParser->getParamTags();
@@ -52,14 +52,14 @@ class iscReflectionFunction extends ReflectionFunction {
             $found = false;
             foreach ($params as $tag) {
             	if ($tag->getParamName() == $param->getName()) {
-            	   $extParams[] = new iscReflectionParameter($tag->getType(),
+            	   $extParams[] = new ezcReflectionParameter($tag->getType(),
             	                                             $param);
             	   $found = true;
             	   break;
             	}
             }
             if (!$found) {
-                $extParams[] = new iscReflectionParameter(null, $param);
+                $extParams[] = new ezcReflectionParameter(null, $param);
             }
         }
         return $extParams;
@@ -68,12 +68,12 @@ class iscReflectionFunction extends ReflectionFunction {
     //=======================================================================
     /**
     * Returns the type definied in PHPDoc tags
-    * @return iscReflectionType
+    * @return ezcReflectionType
     */
     function getReturnType() {
         $re = $this->docParser->getReturnTags();
         if (count($re) == 1 and isset($re[0])) {
-            return iscReflectionApi::getInstance()->getTypeByName($re[0]->getType());
+            return ezcReflectionApi::getInstance()->getTypeByName($re[0]->getType());
         }
         return null;
     }
@@ -128,7 +128,7 @@ class iscReflectionFunction extends ReflectionFunction {
     //=======================================================================
     /**
     * @param string $name
-    * @return iscReflectionDocTag[]
+    * @return ezcReflectionDocTag[]
     */
     public function getTags($name = '') {
         if ($name == '') {

@@ -2,7 +2,7 @@
 //***************************************************************************
 //***************************************************************************
 //**                                                                       **
-//** iscReflectionClassType - representation for all class types                        **
+//** ezcReflectionClassType - representation for all class types                        **
 //**                                                                       **
 //** Project: Web Services Description Generator                           **
 //**                                                                       **
@@ -16,10 +16,10 @@
 //***************************************************************************
 
 //***** imports *************************************************************
-//require_once(dirname(__FILE__).'/class.iscReflectionClass.php');
+//require_once(dirname(__FILE__).'/class.ezcReflectionClass.php');
 //require_once(dirname(__FILE__).'/interface.Type.php');
 
-//***** iscReflectionClassType ***********************************************************
+//***** ezcReflectionClassType ***********************************************************
 /**
  * @package    Reflection
  * @author     Stefan Marr <mail@stefan-marr.de>
@@ -27,19 +27,19 @@
  * @copyright  2006 Stefan Marr
  * @license    http://www.apache.org/licenses/LICENSE-2.0  Apache License 2.0
  */
-class iscReflectionClassType extends iscReflectionClass implements iscReflectionType {
+class ezcReflectionClassType extends ezcReflectionClass implements ezcReflectionType {
 
     //=======================================================================
     /**
-     * @return iscReflectionType
+     * @return ezcReflectionType
      */
-    public function getiscReflectionArrayType() {
+    public function getezcReflectionArrayType() {
         return null;
     }
 
     //=======================================================================
     /**
-     * @return iscReflectionType
+     * @return ezcReflectionType
      */
     function getMapIndexType() {
         return null;
@@ -47,7 +47,7 @@ class iscReflectionClassType extends iscReflectionClass implements iscReflection
 
     //=======================================================================
     /**
-     * @return iscReflectionType
+     * @return ezcReflectionType
      */
     function getMapValueType() {
         return null;

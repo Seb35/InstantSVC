@@ -2,7 +2,7 @@
 //***************************************************************************
 //***************************************************************************
 //**                                                                       **
-//** iscReflectionDocTagWebMethod                                                    **
+//** ezcReflectionDocTagWebMethod                                                    **
 //**                                                                       **
 //** Project: Web Services Description Generator                           **
 //**                                                                       **
@@ -14,7 +14,7 @@
 //***************************************************************************
 //***************************************************************************
 
-//***** iscReflectionDocTagWebMethod **************************************************
+//***** ezcReflectionDocTagWebMethod **************************************************
 /**
 * @todo enhance tag with additional parameters, maybe information to name it
 *       in the wsdl file or what else may be usefull (have look at java and
@@ -24,7 +24,7 @@
 * @copyright  2005 ....
 * @license    http://www.apache.org/licenses/LICENSE-2.0   Apache License 2.0
 */
-class iscReflectionDocTagWebMethod extends iscReflectionDocTag {
+class ezcReflectionDocTagWebMethod extends ezcReflectionDocTag {
 
     //=======================================================================
     /**

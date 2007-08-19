@@ -23,22 +23,22 @@
 * @copyright  2006 ....
 * @license    http://www.apache.org/licenses/LICENSE-2.0   Apache License 2.0
 */
-interface iscReflectionType {
+interface ezcReflectionType {
     /**
      * Return type of elements in an array type or null if is not an array
-     * @return iscReflectionType
+     * @return ezcReflectionType
      */
-    function getiscReflectionArrayType();
+    function getezcReflectionArrayType();
 
     /**
      * Returns type of key used in a map
-     * @return iscReflectionType
+     * @return ezcReflectionType
      */
     function getMapIndexType();
 
     /**
      * Returns type of values used in a map
-     * @return iscReflectionType
+     * @return ezcReflectionType
      */
     function getMapValueType();
 

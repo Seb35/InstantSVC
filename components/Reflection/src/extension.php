@@ -2,7 +2,7 @@
 //***************************************************************************
 //***************************************************************************
 //**                                                                       **
-//** iscReflectionExtension - Reflection API extended with PHPDoc Infos    **
+//** ezcReflectionExtension - Reflection API extended with PHPDoc Infos    **
 //**                                                                       **
 //** Project: Web Services Description Generator                           **
 //**                                                                       **
@@ -14,7 +14,7 @@
 //***************************************************************************
 //***************************************************************************
 
-//***** iscReflectionExtension **********************************************
+//***** ezcReflectionExtension **********************************************
 /**
 * Extends the reflection API using PHPDoc comments to provied
 * type information
@@ -24,7 +24,7 @@
 * @copyright  2006 ...
 * @license    http://www.apache.org/licenses/LICENSE-2.0   Apache License 2.0
 */
-class iscReflectionExtension extends ReflectionExtension {
+class ezcReflectionExtension extends ReflectionExtension {
 
     //=======================================================================
     /**
@@ -36,13 +36,13 @@ class iscReflectionExtension extends ReflectionExtension {
 
     //=======================================================================
     /**
-    * @return iscReflectionFunction[]
+    * @return ezcReflectionFunction[]
     */
     public function getFunctions() {
         $functs = parent::getFunctions();
         $result = array();
         foreach ($functs as $func) {
-        	$function = new iscReflectionFunction($func->getName());
+        	$function = new ezcReflectionFunction($func->getName());
         	$result[] = $function;
         }
         return $result;
@@ -50,13 +50,13 @@ class iscReflectionExtension extends ReflectionExtension {
 
     //=======================================================================
     /**
-     * @return iscReflectionClassType[]
+     * @return ezcReflectionClassType[]
      */
     public function getClasses() {
         $classes = parent::getClasses();
         $result = array();
         foreach ($classes as $class) {
-        	$extClass = new iscReflectionClassType($class->getName());
+        	$extClass = new ezcReflectionClassType($class->getName());
         	$result[] = $extClass;
         }
         return $result;

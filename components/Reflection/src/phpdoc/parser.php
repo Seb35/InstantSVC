@@ -2,7 +2,7 @@
 //***************************************************************************
 //***************************************************************************
 //**                                                                       **
-//** iscReflectionDocParser - Returns infos from a given PHP Documentation comment   **
+//** ezcReflectionDocParser - Returns infos from a given PHP Documentation comment   **
 //**                                                                       **
 //** Project: Web Services Description Generator                           **
 //**                                                                       **
@@ -16,7 +16,7 @@
 //***************************************************************************
 
 //***** imports *************************************************************
-//require_once(dirname(__FILE__).'/class.iscReflectionDocTagFactory.php');
+//require_once(dirname(__FILE__).'/class.ezcReflectionDocTagFactory.php');
 
 //***** Parser Constants ****************************************************
 define('BEGINNING',  10);
@@ -24,7 +24,7 @@ define('SHORT_DESC', 0);
 define('LONG_DESC',  1);
 define('TAGS',       2);
 
-//***** iscReflectionDocParser ********************************************************
+//***** ezcReflectionDocParser ********************************************************
 /**
 * Provides structured data from PHP Documentation comments
 *
@@ -34,7 +34,7 @@ define('TAGS',       2);
 * @copyright  2006 ...
 * @license    http://www.apache.org/licenses/LICENSE-2.0   Apache License 2.0
 */
-class iscReflectionDocParser {
+class ezcReflectionDocParser {
     /**
     * @var string
     */
@@ -53,7 +53,7 @@ class iscReflectionDocParser {
                                    LONG_DESC  => LONG_DESC,
                                    TAGS       => TAGS);
     /**
-    * @var iscReflectionDocTag
+    * @var ezcReflectionDocTag
     */
     protected $lastTag = null;
 
@@ -68,7 +68,7 @@ class iscReflectionDocParser {
     protected $longDesc;
 
     /**
-    * @var iscReflectionDocTag[]
+    * @var ezcReflectionDocTag[]
     */
     protected $tags;
 
@@ -151,7 +151,7 @@ class iscReflectionDocParser {
             if ($line{0} == '@') {
                 $line = substr($line, 1);
                 $words = explode(' ', $line, 4);
-                $tag = iscReflectionDocTagFactory::createTag($words[0], $words);
+                $tag = ezcReflectionDocTagFactory::createTag($words[0], $words);
                 $this->tags[$tag->getName()][] = $tag;
                 $this->lastTag = $tag;
             }
@@ -167,7 +167,7 @@ class iscReflectionDocParser {
     //=======================================================================
     /**
     * @param string $name
-    * @return iscReflectionDocTag[]
+    * @return ezcReflectionDocTag[]
     */
     public function getTagsByName($name) {
         if (isset($this->tags[$name])) {
@@ -180,7 +180,7 @@ class iscReflectionDocParser {
 
     //=======================================================================
     /**
-    * @return iscReflectionDocTag[]
+    * @return ezcReflectionDocTag[]
     */
     public function getTags() {
         $result = array();
@@ -194,7 +194,7 @@ class iscReflectionDocParser {
 
     //=======================================================================
     /**
-    * @return iscReflectionDocTagParam[]
+    * @return ezcReflectionDocTagParam[]
     */
     public function getParamTags() {
         return $this->getTagsByName('param');
@@ -202,7 +202,7 @@ class iscReflectionDocParser {
 
     //=======================================================================
     /**
-    * @return iscReflectionDocTagVar[]
+    * @return ezcReflectionDocTagVar[]
     */
     public function getVarTags() {
         return $this->getTagsByName('var');
@@ -210,7 +210,7 @@ class iscReflectionDocParser {
 
     //=======================================================================
     /**
-    * @return iscReflectionDocTagReturn[]
+    * @return ezcReflectionDocTagReturn[]
     */
     public function getReturnTags() {
         return $this->getTagsByName('return');

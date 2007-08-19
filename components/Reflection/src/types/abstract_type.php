@@ -2,7 +2,7 @@
 //***************************************************************************
 //***************************************************************************
 //**                                                                       **
-//** iscReflectionAbstractType - Abstract class provides default implementation         **
+//** ezcReflectionAbstractType - Abstract class provides default implementation         **
 //**                                                                       **
 //** Project: Web Services Description Generator                           **
 //**                                                                       **
@@ -14,7 +14,7 @@
 //***************************************************************************
 //***************************************************************************
 
-//***** iscReflectionAbstractType ********************************************************
+//***** ezcReflectionAbstractType ********************************************************
 /**
 * Provides default implementation and default null or false return falues
 *
@@ -23,21 +23,21 @@
 * @copyright  2006 ....
 * @license    http://www.apache.org/licenses/LICENSE-2.0   Apache License 2.0
 */
-abstract class iscReflectionAbstractType implements iscReflectionType {
+abstract class ezcReflectionAbstractType implements ezcReflectionType {
 
     //=======================================================================
     /**
      * Returns type of array items or null
-     * @return iscReflectionType
+     * @return ezcReflectionType
      */
-    public function getiscReflectionArrayType() {
+    public function getezcReflectionArrayType() {
         return null;
     }
 
     //=======================================================================
     /**
      * Returns key type of map items or null
-     * @return iscReflectionType
+     * @return ezcReflectionType
      */
     public function getMapIndexType() {
         return null;
@@ -46,7 +46,7 @@ abstract class iscReflectionAbstractType implements iscReflectionType {
     //=======================================================================
     /**
      * Returns value type of map items or null
-     * @return iscReflectionType
+     * @return ezcReflectionType
      */
     public function getMapValueType() {
         return null;
