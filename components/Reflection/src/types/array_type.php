@@ -1,30 +1,21 @@
 <?php
-//***************************************************************************
-//***************************************************************************
-//**                                                                       **
-//** ezcReflectionArrayType - Provide infos for array tyes                              **
-//**                                                                       **
-//** Project: Web Services Description Generator                           **
-//**                                                                       **
-//** @package    reflection                                                **
-//** @author     Stefan Marr <mail@stefan-marr.de>                         **
-//** @author     Falko Menge <mail@falko-menge.de>                         **
-//** @copyright  2006 ....                                                 **
-//** @license    www.apache.org/licenses/LICENSE-2.0   Apache License 2.0  **
-//**                                                                       **
-//***************************************************************************
-//***************************************************************************
+/**
+ * File containing the ezcReflectionArrayType class.
+ *
+ * @package Reflection
+ * @version //autogentag//
+ * @copyright Copyright (C) 2007 eZ systems as. All rights reserved.
+ * @license http://ez.no/licenses/new_bsd New BSD License
+ */
 
-//***** ezcReflectionArrayType ***********************************************************
 /**
  * Provides type information of the array item type or map types
- *
- * @package    Reflection
- * @author     Stefan Marr <mail@stefan-marr.de>
- * @author     Falko Menge <mail@falko-menge.de>
- * @copyright  2006 ....
- * @license    http://www.apache.org/licenses/LICENSE-2.0   Apache License 2.0
- * @todo       add support for ArrayAccess stuff from http://www.php.net/~helly/php/ext/spl/
+ * 
+ * @package Reflection
+ * @version //autogentag//
+ * @author Stefan Marr <mail@stefan-marr.de>
+ * @author Falko Menge <mail@falko-menge.de>
+ * @todo add support for ArrayAccess stuff from http://www.php.net/~helly/php/ext/spl/
  */
 class ezcReflectionArrayType extends ezcReflectionAbstractType {
 
@@ -36,7 +27,7 @@ class ezcReflectionArrayType extends ezcReflectionAbstractType {
     /**
      * @var ezcReflectionType
      */
-    private $ezcReflectionArrayType = null;
+    private $arrayType = null;
 
     /**
      * @var ezcReflectionType
@@ -48,76 +39,76 @@ class ezcReflectionArrayType extends ezcReflectionAbstractType {
      */
     private $mapValueType = null;
 
-    //=======================================================================
     /**
      * @param string $typeName
      */
-    public function __construct($typeName) {
+    public function __construct($typeName)
+    {
         $this->typeName = $typeName;
         $this->_parseTypeName();
     }
 
-    //=======================================================================
     /**
      * Returns type of array items or null
      * @return ezcReflectionType
      */
-    public function getezcReflectionArrayType() {
-        return $this->ezcReflectionArrayType;
+    public function getezcReflectionArrayType()
+    {
+        return $this->arrayType;
     }
 
-    //=======================================================================
     /**
      * Returns key type of map items or null
      * @return ezcReflectionType
      */
-    public function getMapIndexType() {
+    public function getMapIndexType()
+    {
         return $this->mapKeyType;
     }
 
-    //=======================================================================
     /**
      * Returns key type of map items or null
      * @return ezcReflectionType
      */
-    public function getMapValueType() {
+    public function getMapValueType()
+    {
         return $this->mapValueType;
     }
 
-    //=======================================================================
     /**
      * @return boolean
      */
-    public function isArray() {
-        return ($this->ezcReflectionArrayType != null);
+    public function isArray()
+    {
+        return ($this->arrayType != null);
     }
 
-    //=======================================================================
     /**
      * @return boolean
      */
-    public function isClass() {
+    public function isClass()
+    {
         return false;
     }
 
-    //=======================================================================
     /**
      * @return boolean
      */
-    public function isPrimitive() {
+    public function isPrimitive()
+    {
         return false;
     }
 
-    //=======================================================================
     /**
      * @return boolean
      */
-    public function isMap() {
+    public function isMap()
+    {
         return ($this->mapKeyType != null);
     }
 
-    //=======================================================================
-    protected function _parseTypeName() {
+    protected function _parseTypeName()
+    {
         $seamsToBeMap = false;
         $pos = strrpos($this->typeName, '[');
         //there seams to be an array
@@ -160,11 +151,12 @@ class ezcReflectionArrayType extends ezcReflectionAbstractType {
         }
     }
 
-    //=======================================================================
     /**
      * @return string
+     * @todo change toString output for map types
      */
-    public function toString() {
+    public function toString()
+    {
         if ($this->isArray()) {
             return $this->ezcReflectionArrayType->toString().'[]';
         }
@@ -175,15 +167,14 @@ class ezcReflectionArrayType extends ezcReflectionAbstractType {
         return null;
     }
 
-    //=======================================================================
     /**
      * @return boolean
      */
-    function isStandardType() {
+    function isStandardType()
+    {
         return false;
     }
 
-    //=======================================================================
     /**
      * Returns XML Schema name of the complexType for the array
      *
@@ -207,7 +198,6 @@ class ezcReflectionArrayType extends ezcReflectionAbstractType {
         }
     }
 
-    //=======================================================================
     /**
      * @return string
      */
@@ -215,7 +205,6 @@ class ezcReflectionArrayType extends ezcReflectionAbstractType {
         return '';
     }
 
-    //=======================================================================
     /**
      * Returns an <xsd:complexType/>
      *

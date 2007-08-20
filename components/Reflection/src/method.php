@@ -1,31 +1,23 @@
 <?php
-//***************************************************************************
-//***************************************************************************
-//**                                                                       **
-//** ezcReflectionMethod - Reflection API extended with PHPDoc Infos       **
-//**                                                                       **
-//** Project: Web Services Description Generator                           **
-//**                                                                       **
-//** @package    reflection                                                **
-//** @author     Stefan Marr <mail@stefan-marr.de>                         **
-//** @author     Falko Menge <mail@falko-menge.de>                         **
-//** @copyright  2005-2006 ...                                             **
-//** @license    www.apache.org/licenses/LICENSE-2.0   Apache License 2.0  **
-//**                                                                       **
-//***************************************************************************
-//***************************************************************************
-
-//***** ezcReflectionMethod *************************************************
 /**
-* Extends the reflection API using PHPDoc comments to provied
-* type information
-*
-* @package    Reflection
-* @author     Stefan Marr <mail@stefan-marr.de>
-* @copyright  2005-2006 ...
-* @license    http://www.apache.org/licenses/LICENSE-2.0   Apache License 2.0
-*/
-class ezcReflectionMethod extends ReflectionMethod {
+ * File containing the ezcReflectionMethod class.
+ *
+ * @package Reflection
+ * @version //autogentag//
+ * @copyright Copyright (C) 2007 eZ systems as. All rights reserved.
+ * @license http://ez.no/licenses/new_bsd New BSD License
+ */
+
+/**
+ * Extends the ReflectionMethod class using PHPDoc comments to provide
+ * type information
+ * 
+ * @package Reflection
+ * @version //autogentag//
+ * @author Stefan Marr <mail@stefan-marr.de>
+ */
+class ezcReflectionMethod extends ReflectionMethod
+{
     /**
     * @var ezcReflectionDocParser
     */
@@ -40,7 +32,6 @@ class ezcReflectionMethod extends ReflectionMethod {
      */
     protected $curClass;
 
-    //=======================================================================
     /**
     * @param mixed $class
     * @param string $name
@@ -60,7 +51,6 @@ class ezcReflectionMethod extends ReflectionMethod {
         }
     }
 
-    //=======================================================================
     /**
     * @return ezcReflectionParameter[]
     */
@@ -85,9 +75,8 @@ class ezcReflectionMethod extends ReflectionMethod {
         return $extParams;
     }
 
-    //=======================================================================
     /**
-    * Returns the type definied in PHPDoc tags
+    * Returns the type defined in PHPDoc tags
     * @return ezcReflectionType
     */
     function getReturnType() {
@@ -98,7 +87,6 @@ class ezcReflectionMethod extends ReflectionMethod {
         return null;
     }
 
-    //=======================================================================
     /**
     * Returns the description after a PHPDoc tag
     * @return string
@@ -111,7 +99,6 @@ class ezcReflectionMethod extends ReflectionMethod {
         return '';
     }
 
-    //=======================================================================
     /**
     * Check whether this method has a @webmethod tag
     * @return boolean
@@ -120,7 +107,6 @@ class ezcReflectionMethod extends ReflectionMethod {
         return $this->docParser->isTagged("webmethod");
     }
 
-    //=======================================================================
     /**
     * @return string
     */
@@ -128,7 +114,6 @@ class ezcReflectionMethod extends ReflectionMethod {
         return $this->docParser->getShortDescription();
     }
 
-    //=======================================================================
     /**
     * @return string
     */
@@ -136,7 +121,6 @@ class ezcReflectionMethod extends ReflectionMethod {
         return $this->docParser->getLongDescription();
     }
 
-    //=======================================================================
     /**
     * @param string $with
     * @return boolean
@@ -145,7 +129,6 @@ class ezcReflectionMethod extends ReflectionMethod {
         return $this->docParser->isTagged($with);
     }
 
-    //=======================================================================
     /**
     * @param string $name
     * @return ezcReflectionDocTag[]
@@ -159,17 +142,17 @@ class ezcReflectionMethod extends ReflectionMethod {
         }
     }
 
-    //=======================================================================
     /**
      * Checks if this method is a 'Magic Method' or not
      * @return boolean
      */
     function isMagic() {
-        $magicArray =  array('__construct','__destruct','__call','__get','__set','__isset','__unset','__sleep','__wakeup','__toString','__clone');
-        return in_array($this->getName(),$magicArray);
+        $magicArray =  array('__construct','__destruct','__call',
+        					 '__get','__set','__isset','__unset',
+        					 '__sleep','__wakeup','__toString','__clone');
+        return in_array($this->getName(), $magicArray);
     }
 
-    //=======================================================================
     /**
      * Checks if this is already available in the parent class
      * @return boolean
@@ -183,7 +166,6 @@ class ezcReflectionMethod extends ReflectionMethod {
         return false;
     }
 
-    //=======================================================================
     /**
      * Checks if this method is redefined in this class
      * @return boolean
@@ -203,7 +185,6 @@ class ezcReflectionMethod extends ReflectionMethod {
         return false;
     }
 
-    //=======================================================================
     /**
      * Checks if this method is appeared first in the current class
      * @return boolean
@@ -212,7 +193,6 @@ class ezcReflectionMethod extends ReflectionMethod {
         return !$this->isInherited() and !$this->isOverridden();
     }
 
-    //=======================================================================
     /**
      * @return ezcReflectionClassType
      */

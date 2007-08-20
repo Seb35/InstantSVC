@@ -1,32 +1,23 @@
 <?php
-//***************************************************************************
-//***************************************************************************
-//**                                                                       **
-//** ezcReflectionExtension - Reflection API extended with PHPDoc Infos    **
-//**                                                                       **
-//** Project: Web Services Description Generator                           **
-//**                                                                       **
-//** @package    reflection                                                **
-//** @author     Stefan Marr <mail@stefan-marr.de>                         **
-//** @copyright  2006 ...                                                  **
-//** @license    www.apache.org/licenses/LICENSE-2.0   Apache License 2.0  **
-//**                                                                       **
-//***************************************************************************
-//***************************************************************************
-
-//***** ezcReflectionExtension **********************************************
 /**
-* Extends the reflection API using PHPDoc comments to provied
-* type information
-*
-* @package    Reflection
-* @author     Stefan Marr <mail@stefan-marr.de>
-* @copyright  2006 ...
-* @license    http://www.apache.org/licenses/LICENSE-2.0   Apache License 2.0
-*/
+ * File containing the ezcReflectionExtension class.
+ *
+ * @package Reflection
+ * @version //autogentag//
+ * @copyright Copyright (C) 2007 eZ systems as. All rights reserved.
+ * @license http://ez.no/licenses/new_bsd New BSD License
+ */
+
+/**
+ * Extends the ReflectionExtension class using PHPDoc comments to provide
+ * type information
+ * 
+ * @package Reflection
+ * @version //autogentag//
+ * @author Stefan Marr <mail@stefan-marr.de>
+ */
 class ezcReflectionExtension extends ReflectionExtension {
 
-    //=======================================================================
     /**
     * @param string $name
     */
@@ -34,7 +25,6 @@ class ezcReflectionExtension extends ReflectionExtension {
         parent::__construct($name);
     }
 
-    //=======================================================================
     /**
     * @return ezcReflectionFunction[]
     */
@@ -48,7 +38,6 @@ class ezcReflectionExtension extends ReflectionExtension {
         return $result;
     }
 
-    //=======================================================================
     /**
      * @return ezcReflectionClassType[]
      */

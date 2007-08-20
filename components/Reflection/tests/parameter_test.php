@@ -11,26 +11,26 @@
 class ezcReflectionParameterTest extends ezcTestCase
 {
     public function testGetType() {
-        $func = new iscReflectionFunction('m1');
+        $func = new ezcReflectionFunction('m1');
         $params = $func->getParameters();
         $type = $params[0]->getType();
-        self::assertType('iscReflectionType', $type);
+        self::assertType('ezcReflectionType', $type);
         self::assertEquals('test', $params[0]->getName());
         self::assertEquals('string', $type->toString());
 
-        $method = new iscReflectionMethod('TestMethods', 'm3');
+        $method = new ezcReflectionMethod('TestMethods', 'm3');
         $params = $method->getParameters();
         self::assertNull($params[0]->getType());
     }
 
     public function testGetClass() {
-        $func = new iscReflectionFunction('m1');
+        $func = new ezcReflectionFunction('m1');
         $params = $func->getParameters();
 
         $type = $params[1]->getClass();
-        self::assertType('iscReflectionType', $type);
+        self::assertType('ezcReflectionType', $type);
         self::assertEquals('test2', $params[1]->getName());
-        self::assertEquals('iscReflectionApi', $type->toString());
+        self::assertEquals('ezcReflectionApi', $type->toString());
 
         //none existing type??
         //@TODO: fix this error
@@ -38,18 +38,18 @@ class ezcReflectionParameterTest extends ezcTestCase
         //with type system, at the moment type with name with empty string is
         //return, this is wrong and have to be fixed.
         $type = $params[2]->getClass();
-        self::assertType('iscReflectionType', $type);
+        self::assertType('ezcReflectionType', $type);
         self::assertEquals('test3', $params[2]->getName());
         self::assertEquals('NoneExistingType', $type->toString());
 
-        $method = new iscReflectionMethod('TestMethods', 'm3');
+        $method = new ezcReflectionMethod('TestMethods', 'm3');
         $params = $method->getParameters();
 
         self::assertNull($params[0]->getClass());
     }
 
     public function testGetDeclaringFunction() {
-        $func = new iscReflectionFunction('m1');
+        $func = new ezcReflectionFunction('m1');
         $params = $func->getParameters();
         //$decFunc = $params[0]->getDeclaringFunction();
 
@@ -58,7 +58,7 @@ class ezcReflectionParameterTest extends ezcTestCase
     }
 
     public function testGetDeclaringClass() {
-        $method = new iscReflectionMethod('TestMethods', 'm3');
+        $method = new ezcReflectionMethod('TestMethods', 'm3');
         $params = $method->getParameters();
 
         //$params[0]->getDeclaringClass();

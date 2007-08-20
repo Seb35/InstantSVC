@@ -1,34 +1,24 @@
 <?php
-//***************************************************************************
-//***************************************************************************
-//**                                                                       **
-//** ezcReflectionTypeMapper - Provides mapping between different type names used in    **
-//**              documentation                                            **
-//**                                                                       **
-//** Project: Web Services Description Generator                           **
-//**                                                                       **
-//** @package    reflection                                                **
-//** @author     Stefan Marr <mail@stefan-marr.de>                         **
-//** @author     Falko Menge <mail@falko-menge.de>                         **
-//** @copyright  2006 ....                                                 **
-//** @license    www.apache.org/licenses/LICENSE-2.0   Apache License 2.0  **
-//**                                                                       **
-//***************************************************************************
-//***************************************************************************
+/**
+ * File containing the ezcReflectionTypeMapper class.
+ *
+ * @package Reflection
+ * @version //autogentag//
+ * @copyright Copyright (C) 2007 eZ systems as. All rights reserved.
+ * @license http://ez.no/licenses/new_bsd New BSD License
+ */
 
-//***** ezcReflectionTypeMapper **********************************************************
 /**
  * Provides mapping from type names used in documentation to standardized
  * type names
- *
- * @package    Reflection
- * @author     Stefan Marr <mail@stefan-marr.de>
- * @author     Falko Menge <mail@falko-menge.de>
- * @copyright  2006 ....
- * @license    http://www.apache.org/licenses/LICENSE-2.0   Apache License 2.0
+ * 
+ * @package Reflection
+ * @version //autogentag//
+ * @author Stefan Marr <mail@stefan-marr.de>
+ * @author Falko Menge <mail@falko-menge.de>
  */
-class ezcReflectionTypeMapper {
-
+class ezcReflectionTypeMapper
+{
     /**
      * @var ezcReflectionTypeMapper
      */
@@ -44,27 +34,27 @@ class ezcReflectionTypeMapper {
      */
     protected $xmlMappingTable;
 
-    //=======================================================================
-    private function __construct() {
+    private function __construct()
+    {
         $this->initMappingTable();
     }
 
-    //=======================================================================
     /**
      * @return ezcReflectionTypeMapper
      */
-    public static function getInstance() {
+    public static function getInstance()
+    {
         if (self::$instance == null) {
             self::$instance = new ezcReflectionTypeMapper();
         }
         return self::$instance;
     }
 
-    //=======================================================================
     /**
      * @return void
      */
-    protected function initMappingTable() {
+    protected function initMappingTable()
+    {
         $boolean = 'boolean';
         $integer = 'integer';
         $float   = 'float';
@@ -145,7 +135,6 @@ class ezcReflectionTypeMapper {
         $this->xmlMappingTable[$string]  = 'string';
     }
 
-    //=======================================================================
     /**
      * Maps a type to a standard type name
      * @param string $type
@@ -160,7 +149,6 @@ class ezcReflectionTypeMapper {
         }
     }
 
-    //=======================================================================
     /**
      * Maps a typename to the name of the correspondent XML Schema datatype
      * @param string $type
@@ -184,7 +172,6 @@ class ezcReflectionTypeMapper {
         }
     }
 
-    //=======================================================================
     /**
      * Tests whether the given type is a primitive type
      * @param string $type
@@ -198,7 +185,6 @@ class ezcReflectionTypeMapper {
         return false;
     }
 
-    //=======================================================================
     /**
      * Test whether the given type is an array or array map
      * @param string $type
@@ -217,7 +203,12 @@ class ezcReflectionTypeMapper {
             }
 
             //test for array map types
+            //@TODO Remove support for array<int, int> definitions
             elseif (preg_match('/(.*)(<(.*?)(,(.*?))?>)/', $type)) {
+                return true;
+            }
+        	//test for array map types
+            elseif (preg_match('/(.*)(\((.*?)(=>(.*?))?\))/', $type)) {
                 return true;
             }
         }

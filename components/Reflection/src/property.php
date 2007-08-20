@@ -1,36 +1,27 @@
 <?php
-//***************************************************************************
-//***************************************************************************
-//**                                                                       **
-//** ezcReflectionProperty - Reflection API extended with PHPDoc Infos     **
-//**                                                                       **
-//** Project: Web Services Description Generator                           **
-//**                                                                       **
-//** @package    reflection                                                **
-//** @author     Stefan Marr <mail@stefan-marr.de>                         **
-//** @copyright  2005 ....                                                 **
-//** @license    www.apache.org/licenses/LICENSE-2.0   Apache License 2.0  **
-//**                                                                       **
-//***************************************************************************
-//***************************************************************************
-
-//***** ezcReflectionProperty ***********************************************
 /**
-* Extends the reflection API using PHPDoc comments to provied
-* type information
-*
-* @package    Reflection
-* @author     Stefan Marr <mail@stefan-marr.de>
-* @copyright  2005 ....
-* @license    http://www.apache.org/licenses/LICENSE-2.0   Apache License 2.0
-*/
+ * File containing the ezcReflectionProperty class.
+ *
+ * @package Reflection
+ * @version //autogentag//
+ * @copyright Copyright (C) 2007 eZ systems as. All rights reserved.
+ * @license http://ez.no/licenses/new_bsd New BSD License
+ */
+
+/**
+ * Extends the ReflectionProperty class using PHPDoc comments to provide
+ * type information
+ * 
+ * @package Reflection
+ * @version //autogentag//
+ * @author Stefan Marr <mail@stefan-marr.de>
+ */
 class ezcReflectionProperty extends ReflectionProperty {
     /**
     * @var ezcReflectionDocParser
     */
     protected $docParser = null;
 
-    //=======================================================================
     /**
     * @param mixed $class
     * @param string $name
@@ -44,7 +35,6 @@ class ezcReflectionProperty extends ReflectionProperty {
         }
     }
 
-    //=======================================================================
     /**
     * @return ezcReflectionType
     */
@@ -63,7 +53,6 @@ class ezcReflectionProperty extends ReflectionProperty {
         }
     }
 
-    //=======================================================================
     /**
     * @return ezcReflectionClassType
     */

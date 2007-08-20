@@ -11,47 +11,47 @@
 class ezcReflectionFunctionTest extends ezcTestCase
 {
     public function testGetTags() {
-        $func = new iscReflectionFunction('m1');
+        $func = new ezcReflectionFunction('m1');
         $tags = $func->getTags();
 
         $expectedTags = array('webmethod', 'author', 'param', 'param', 'param', 'return');
         ReflectionTestHelper::expectedTags($expectedTags, $tags, $this);
 
 
-        $func = new iscReflectionFunction('m2');
+        $func = new ezcReflectionFunction('m2');
         $tags = $func->getTags();
         $expectedTags = array('param', 'author');
         ReflectionTestHelper::expectedTags($expectedTags, $tags, $this);
     }
 
     public function testIsTagged() {
-        $func = new iscReflectionFunction('m1');
+        $func = new ezcReflectionFunction('m1');
         self::assertFalse($func->isTagged('licence'));
 
-        $func = new iscReflectionFunction('m1');
+        $func = new ezcReflectionFunction('m1');
         self::assertTrue($func->isTagged('webmethod'));
     }
 
     public function testGetLongDescription() {
-        $func = new iscReflectionFunction('m1');
+        $func = new ezcReflectionFunction('m1');
         $desc = $func->getLongDescription();
 
         $expected = '';
         self::assertEquals($expected, $desc);
 
-        $func = new iscReflectionFunction('m2');
+        $func = new ezcReflectionFunction('m2');
         $desc = $func->getLongDescription();
 
         $expected = '';
         self::assertEquals($expected, $desc);
 
-        $func = new iscReflectionFunction('m3');
+        $func = new ezcReflectionFunction('m3');
         $desc = $func->getLongDescription();
 
         $expected = '';
         self::assertEquals($expected, $desc);
 
-        $func = new iscReflectionFunction('m4');
+        $func = new ezcReflectionFunction('m4');
         $desc = $func->getLongDescription();
 
         $expected =  "This function is used to set up the DOM-Tree and to make the important\n".
@@ -64,63 +64,63 @@ class ezcReflectionFunctionTest extends ezcTestCase
     }
 
     public function testGetShortDescription() {
-        $func = new iscReflectionFunction('m1');
+        $func = new ezcReflectionFunction('m1');
         $desc = $func->getShortDescription();
         $expected = 'To check whether a tag was used';
         self::assertEquals($expected, $desc);
 
-        $func = new iscReflectionFunction('m2');
+        $func = new ezcReflectionFunction('m2');
         $desc = $func->getShortDescription();
         $expected = '';
         self::assertEquals($expected, $desc);
 
-        $func = new iscReflectionFunction('m3');
+        $func = new ezcReflectionFunction('m3');
         $desc = $func->getShortDescription();
         $expected = '';
         self::assertEquals($expected, $desc);
 
-        $func = new iscReflectionFunction('m4');
+        $func = new ezcReflectionFunction('m4');
         $desc = $func->getShortDescription();
         $expected = 'Enter description here...';
         self::assertEquals($expected, $desc);
     }
 
     public function testIsWebmethod() {
-        $func = new iscReflectionFunction('m1');
+        $func = new ezcReflectionFunction('m1');
         self::assertTrue($func->isWebmethod());
 
-        $func = new iscReflectionFunction('m2');
+        $func = new ezcReflectionFunction('m2');
         self::assertFalse($func->isWebmethod());
     }
 
     public function testGetReturnDescription() {
-        $func = new iscReflectionFunction('m1');
+        $func = new ezcReflectionFunction('m1');
         $desc = $func->getReturnDescription();
         self::assertEquals('Hello World', $desc);
 
-        $func = new iscReflectionFunction('m4');
+        $func = new ezcReflectionFunction('m4');
         $desc = $func->getReturnDescription();
         self::assertEquals('', $desc);
     }
 
     public function testGetReturnType() {
-        $func = new iscReflectionFunction('m1');
+        $func = new ezcReflectionFunction('m1');
         $type = $func->getReturnType();
-        self::assertType('iscReflectionType', $type);
+        self::assertType('ezcReflectionType', $type);
         self::assertEquals('string', $type->toString());
 
-        $func = new iscReflectionFunction('m4');
+        $func = new ezcReflectionFunction('m4');
         self::assertNull($func->getReturnType());
     }
 
     public function testGetParameters() {
-        $func = new iscReflectionFunction('m1');
+        $func = new ezcReflectionFunction('m1');
         $params = $func->getParameters();
 
         $expected = array('test', 'test2', 'test3');
         ReflectionTestHelper::expectedParams($expected, $params, $this);
 
-        $func = new iscReflectionFunction('m3');
+        $func = new ezcReflectionFunction('m3');
         $params = $func->getParameters();
         self::assertTrue(count($params) == 0);
     }

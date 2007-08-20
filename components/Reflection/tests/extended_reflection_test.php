@@ -11,7 +11,7 @@
 class ezcReflectionTest extends ezcTestCase
 {
     public function testGetTypeByName() {
-        $api = iscReflectionApi::getInstance();
+        $api = ezcReflectionApi::getInstance();
         $string = $api->getTypeByName('string');
         self::assertEquals('string', $string->toString());
 
@@ -21,8 +21,8 @@ class ezcReflectionTest extends ezcTestCase
         $webservice = $api->getTypeByName('TestWebservice');
         self::assertEquals('TestWebservice', $webservice->toString());
 
-        $class = $api->getTypeByName('iscReflectionClass');
-        self::assertEquals('iscReflectionClass', $class->toString());
+        $class = $api->getTypeByName('ezcReflectionClass');
+        self::assertEquals('ezcReflectionClass', $class->toString());
 
     }
 

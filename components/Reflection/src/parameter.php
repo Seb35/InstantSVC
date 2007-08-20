@@ -1,30 +1,22 @@
 <?php
-//***************************************************************************
-//***************************************************************************
-//**                                                                       **
-//** ezcReflectionParameter - Reflection API extended with PHPDoc Infos    **
-//**                                                                       **
-//** Project: Web Services Description Generator                           **
-//**                                                                       **
-//** @package    reflection                                                **
-//** @author     Stefan Marr <mail@stefan-marr.de>                         **
-//** @copyright  2005 ....                                                 **
-//** @license    www.apache.org/licenses/LICENSE-2.0   Apache License 2.0  **
-//**                                                                       **
-//***************************************************************************
-//***************************************************************************
-
-//***** ezcReflectionParameter **********************************************
 /**
-* Extends the reflection API using PHPDoc comments to provied
-* type information
-*
-* @package    Reflection
-* @author     Stefan Marr <mail@stefan-marr.de>
-* @copyright  2005 ....
-* @license    http://www.apache.org/licenses/LICENSE-2.0   Apache License 2.0
-*/
-class ezcReflectionParameter extends ReflectionParameter {
+ * File containing the ezcReflectionParameter class.
+ *
+ * @package Reflection
+ * @version //autogentag//
+ * @copyright Copyright (C) 2007 eZ systems as. All rights reserved.
+ * @license http://ez.no/licenses/new_bsd New BSD License
+ */
+
+/**
+ * Extends the ReflectionParameter class using PHPDoc comments to provide
+ * type information
+ * 
+ * @package Reflection
+ * @version //autogentag//
+ * @author Stefan Marr <mail@stefan-marr.de>
+ */
+ class ezcReflectionParameter extends ReflectionParameter {
     /**
     * @var ezcReflectionType
     */
@@ -35,7 +27,6 @@ class ezcReflectionParameter extends ReflectionParameter {
     */
     protected $parameter = null;
 
-    //=======================================================================
     /**
     * @param mixed $mixed Type info or $function for parent class
     * @param mixed $parameter ReflectionParameter or $parameter for parent class
@@ -52,7 +43,6 @@ class ezcReflectionParameter extends ReflectionParameter {
 
     }
 
-    //=======================================================================
     /**
     * @return ezcReflectionType
     */
@@ -60,9 +50,6 @@ class ezcReflectionParameter extends ReflectionParameter {
         return $this->type;
     }
 
-    //***** Overriding methodes if nessecary ********************************
-
-    //=======================================================================
     /**
     * @return bool
     */
@@ -75,7 +62,6 @@ class ezcReflectionParameter extends ReflectionParameter {
         }
     }
 
-    //=======================================================================
     /**
     * @return bool
     */
@@ -88,7 +74,6 @@ class ezcReflectionParameter extends ReflectionParameter {
         }
     }
 
-    //=======================================================================
     /**
     * @return bool
     */
@@ -101,7 +86,6 @@ class ezcReflectionParameter extends ReflectionParameter {
         }
     }
 
-    //=======================================================================
     /**
     * @return bool
     */
@@ -114,7 +98,6 @@ class ezcReflectionParameter extends ReflectionParameter {
         }
     }
 
-    //=======================================================================
     /**
     * @return string
     */
@@ -127,7 +110,6 @@ class ezcReflectionParameter extends ReflectionParameter {
         }
     }
 
-    //=======================================================================
     /**
     * @return mixed
     */
@@ -140,7 +122,6 @@ class ezcReflectionParameter extends ReflectionParameter {
         }
     }
 
-    //=======================================================================
     /**
     * Returns reflection object identified by php type hinting
     * @return ezcReflectionClassType
@@ -152,7 +133,6 @@ class ezcReflectionParameter extends ReflectionParameter {
         return null;
     }
 
-    //=======================================================================
     /**
     * @return ezcReflectionFunction
     */
@@ -171,7 +151,6 @@ class ezcReflectionParameter extends ReflectionParameter {
         }
 	}
 
-    //=======================================================================
     /**
     * @return ezcReflectionClassType
     */

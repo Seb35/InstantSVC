@@ -1,36 +1,28 @@
 <?php
-//***************************************************************************
-//***************************************************************************
-//**                                                                       **
-//** ezcReflectionFunction - Reflection API extended with PHPDoc Infos     **
-//**                                                                       **
-//** Project: Web Services Description Generator                           **
-//**                                                                       **
-//** @package    reflection                                                **
-//** @author     Stefan Marr <mail@stefan-marr.de>                         **
-//** @copyright  2006 ...                                                  **
-//** @license    www.apache.org/licenses/LICENSE-2.0   Apache License 2.0  **
-//**                                                                       **
-//***************************************************************************
-//***************************************************************************
-
-//***** ezcReflectionFunction ***********************************************
 /**
-* Extends the reflection API using PHPDoc comments to provied
-* type information
-*
-* @package    Reflection
-* @author     Stefan Marr <mail@stefan-marr.de>
-* @copyright  2005-2006 ...
-* @license    http://www.apache.org/licenses/LICENSE-2.0   Apache License 2.0
-*/
-class ezcReflectionFunction extends ReflectionFunction {
+ * File containing the ezcReflectionFunction class.
+ *
+ * @package Reflection
+ * @version //autogentag//
+ * @copyright Copyright (C) 2007 eZ systems as. All rights reserved.
+ * @license http://ez.no/licenses/new_bsd New BSD License
+ */
+
+/**
+ * Extends the ReflectionFunction class using PHPDoc comments to provide
+ * type information
+ * 
+ * @package Reflection
+ * @version //autogentag//
+ * @author Stefan Marr <mail@stefan-marr.de>
+ */
+class ezcReflectionFunction extends ReflectionFunction
+{
     /**
     * @var ezcReflectionDocParser
     */
     protected $docParser;
 
-    //=======================================================================
     /**
     * @param string $name
     */
@@ -40,7 +32,6 @@ class ezcReflectionFunction extends ReflectionFunction {
         $this->docParser->parse();
     }
 
-    //=======================================================================
     /**
     * @return ezcReflectionParameter[]
     */
@@ -65,9 +56,8 @@ class ezcReflectionFunction extends ReflectionFunction {
         return $extParams;
     }
 
-    //=======================================================================
     /**
-    * Returns the type definied in PHPDoc tags
+    * Returns the type defined in PHPDoc tags
     * @return ezcReflectionType
     */
     function getReturnType() {
@@ -78,7 +68,6 @@ class ezcReflectionFunction extends ReflectionFunction {
         return null;
     }
 
-    //=======================================================================
     /**
     * Returns the description after a PHPDoc tag
     * @return string
@@ -91,7 +80,6 @@ class ezcReflectionFunction extends ReflectionFunction {
         return '';
     }
 
-    //=======================================================================
     /**
     * Check whether this method has a @webmethod tag
     * @return boolean
@@ -100,7 +88,6 @@ class ezcReflectionFunction extends ReflectionFunction {
         return $this->docParser->isTagged("webmethod");
     }
 
-    //=======================================================================
     /**
     * @return string
     */
@@ -108,7 +95,6 @@ class ezcReflectionFunction extends ReflectionFunction {
         return $this->docParser->getShortDescription();
     }
 
-    //=======================================================================
     /**
     * @return string
     */
@@ -116,7 +102,6 @@ class ezcReflectionFunction extends ReflectionFunction {
         return $this->docParser->getLongDescription();
     }
 
-    //=======================================================================
     /**
     * @param string $with
     * @return boolean
@@ -125,7 +110,6 @@ class ezcReflectionFunction extends ReflectionFunction {
         return $this->docParser->isTagged($with);
     }
 
-    //=======================================================================
     /**
     * @param string $name
     * @return ezcReflectionDocTag[]

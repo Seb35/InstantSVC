@@ -8,19 +8,19 @@
  * @subpackage Tests
  */
 
-class ezcReflectioniscReflectionTypeFactoryTest extends ezcTestCase
+class ezcReflectionezcReflectionTypeFactoryTest extends ezcTestCase
 {
     /**
      * Test with primitive types
      */
     public function testGetTypePrimitive() {
-        $iscReflectionPrimitiveTypes = array('integer', 'int', 'INT', 'float', 'double',
+        $ezcReflectionPrimitiveTypes = array('integer', 'int', 'INT', 'float', 'double',
                                 'string', 'bool', 'boolean');
-        $factory = new iscReflectionTypeFactoryImpl();
-        foreach ($iscReflectionPrimitiveTypes as $prim) {
+        $factory = new ezcReflectionTypeFactoryImpl();
+        foreach ($ezcReflectionPrimitiveTypes as $prim) {
         	$type = $factory->getType($prim);
-        	self::assertType('iscReflectionType', $type);
-            self::assertType('iscReflectionPrimitiveType', $type);
+        	self::assertType('ezcReflectionType', $type);
+            self::assertType('ezcReflectionPrimitiveType', $type);
         }
     }
 
@@ -30,11 +30,11 @@ class ezcReflectioniscReflectionTypeFactoryTest extends ezcTestCase
     public function testGetTypeArray() {
         $arrays = array('array<int, string>', 'array<string, ReflectionClass>',
                         'array<ReflectionClass, float>');
-        $factory = new iscReflectionTypeFactoryImpl();
+        $factory = new ezcReflectionTypeFactoryImpl();
         foreach ($arrays as $arr) {
             $type = $factory->getType($arr);
-            self::assertType('iscReflectionType', $type);
-            self::assertType('iscReflectionArrayType', $type);
+            self::assertType('ezcReflectionType', $type);
+            self::assertType('ezcReflectionArrayType', $type);
         }
     }
 
@@ -43,18 +43,18 @@ class ezcReflectioniscReflectionTypeFactoryTest extends ezcTestCase
      */
     public function testGetTypeClass() {
         $classes = array('ReflectionClass', 'NoneExistingClassFooBarr', 'ezcTestClass');
-        $factory = new iscReflectionTypeFactoryImpl();
+        $factory = new ezcReflectionTypeFactoryImpl();
         foreach ($classes as $class) {
         	$type = $factory->getType($class);
-        	self::assertType('iscReflectionType', $type);
-            self::assertType('iscReflectionClassType', $type);
+        	self::assertType('ezcReflectionType', $type);
+            self::assertType('ezcReflectionClassType', $type);
         }
     }
 
 
     public static function suite()
     {
-         return new PHPUnit_Framework_TestSuite( "ezcReflectioniscReflectionTypeFactoryTest" );
+         return new PHPUnit_Framework_TestSuite( "ezcReflectionezcReflectionTypeFactoryTest" );
     }
 }
 ?>

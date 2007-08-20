@@ -1,33 +1,28 @@
 <?php
-//***************************************************************************
-//***************************************************************************
-//**                                                                       **
-//** ezcReflectionTypeFactory - Interface definition for a ezcReflectionTypeFactory                  **
-//**                                                                       **
-//** Project: Web Services Description Generator                           **
-//**                                                                       **
-//** @package    reflection                                                **
-//** @author     Stefan Marr <mail@stefan-marr.de>                         **
-//** @copyright  2006 ....                                                 **
-//** @license    www.apache.org/licenses/LICENSE-2.0   Apache License 2.0  **
-//**                                                                       **
-//***************************************************************************
-//***************************************************************************
-
-//***** ezcReflectionTypeFactory *********************************************************
 /**
- * @package    Reflection
- * @author     Stefan Marr <mail@stefan-marr.de>
- * @copyright  2006 Stefan Marr
- * @license    http://www.apache.org/licenses/LICENSE-2.0  Apache License 2.0
+ * File containing the ezcReflectionTypeFactory interface.
+ *
+ * @package Reflection
+ * @version //autogentag//
+ * @copyright Copyright (C) 2007 eZ systems as. All rights reserved.
+ * @license http://ez.no/licenses/new_bsd New BSD License
+ */
+
+/**
+ * Interface definition for the type factory used by the reflection
+ * 
+ * @package Reflection
+ * @version //autogentag//
+ * @author Stefan Marr <mail@stefan-marr.de>
  */
 interface ezcReflectionTypeFactory {
+
     /**
-     * Creates a type object for given typename
-     * @param string $typename
+     * Creates a type object for given typeName
+     * @param string $typeName
      * @return ezcReflectionType
      */
-    function getType($typename);
+    function getType($typeName);
 }
 
 ?>

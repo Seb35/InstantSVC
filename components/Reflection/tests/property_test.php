@@ -11,19 +11,19 @@
 class ezcReflectionPropertyTest extends ezcTestCase
 {
     public function testGetType() {
-        $method = new iscReflectionMethod('iscReflectionClass', 'isTagged');
+        $method = new ezcReflectionMethod('ezcReflectionClass', 'isTagged');
         $params = $method->getParameters();
         $type = $params[0]->getType();
-        self::assertType('iscReflectionPrimitiveType', $type);
+        self::assertType('ezcReflectionPrimitiveType', $type);
         self::assertEquals('string', $type->toString());
     }
 
     public function testGetDeclaringClass() {
-        $method = new iscReflectionMethod('iscReflectionClass', 'isTagged');
+        $method = new ezcReflectionMethod('ezcReflectionClass', 'isTagged');
         $params = $method->getParameters();
         $class = $params[0]->getDeclaringClass();
-        self::assertType('iscReflectionClassType', $class);
-        self::assertEquals('iscReflectionClass', $class->toString());
+        self::assertType('ezcReflectionClassType', $class);
+        self::assertEquals('ezcReflectionClass', $class->toString());
     }
 
 

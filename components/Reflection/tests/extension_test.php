@@ -11,23 +11,23 @@
 class ezcReflectionExtensionTest extends ezcTestCase
 {
     public function testGetFunctions() {
-        $ext = new iscReflectionExtension('Spl');
+        $ext = new ezcReflectionExtension('Spl');
         $functs = $ext->getFunctions();
         foreach ($functs as $func) {
-            self::assertType('iscReflectionFunction', $func);
+            self::assertType('ezcReflectionFunction', $func);
         }
 
-        $ext = new iscReflectionExtension('Reflection');
+        $ext = new ezcReflectionExtension('Reflection');
         $functs = $ext->getFunctions();
         self::assertEquals(0, count($functs));
     }
 
     public function testGetClasses() {
-        $ext = new iscReflectionExtension('Reflection');
+        $ext = new ezcReflectionExtension('Reflection');
         $classes = $ext->getClasses();
 
         foreach ($classes as $class) {
-            self::assertType('iscReflectionClassType', $class);
+            self::assertType('ezcReflectionClassType', $class);
         }
     }
 

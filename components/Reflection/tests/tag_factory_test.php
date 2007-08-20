@@ -8,23 +8,23 @@
  * @subpackage Tests
  */
 
-class ezcReflectioniscReflectionDocTagFactoryTest extends ezcTestCase
+class ezcReflectionezcReflectionDocTagFactoryTest extends ezcTestCase
 {
     public function testCreateTag() {
-        $param  = iscReflectionDocTagFactory::createTag('param', array('param', 'string', 'param'));
+        $param  = ezcReflectionDocTagFactory::createTag('param', array('param', 'string', 'param'));
 
-        self::assertType('iscReflectionDocTagParam', $param);
+        self::assertType('ezcReflectionDocTagParam', $param);
 
-        $var    = iscReflectionDocTagFactory::createTag('var', array('var', 'string'));
-        self::assertType('iscReflectionDocTagVar', $var);
+        $var    = ezcReflectionDocTagFactory::createTag('var', array('var', 'string'));
+        self::assertType('ezcReflectionDocTagVar', $var);
 
-        $return = iscReflectionDocTagFactory::createTag('return', array('return', 'string', 'hello', 'world'));
-        self::assertType('iscReflectionDocTagReturn', $return);
+        $return = ezcReflectionDocTagFactory::createTag('return', array('return', 'string', 'hello', 'world'));
+        self::assertType('ezcReflectionDocTagReturn', $return);
     }
 
     public static function suite()
     {
-         return new PHPUnit_Framework_TestSuite( "ezcReflectioniscReflectionDocTagFactoryTest" );
+         return new PHPUnit_Framework_TestSuite( "ezcReflectionezcReflectionDocTagFactoryTest" );
     }
 }
 ?>

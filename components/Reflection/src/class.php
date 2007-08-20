@@ -1,32 +1,24 @@
 <?php
-//***************************************************************************
-//***************************************************************************
-//**                                                                       **
-//** ezcReflectionClass - Reflection API extended with PHPDoc Infos        **
-//**                                                                       **
-//** Project: Web Services Description Generator                           **
-//**                                                                       **
-//** @package    reflection                                                **
-//** @author     Stefan Marr <mail@stefan-marr.de>                         **
-//** @author     Falko Menge <mail@falko-menge.de>                         **
-//** @copyright  2005-2006 ...                                             **
-//** @license    www.apache.org/licenses/LICENSE-2.0   Apache License 2.0  **
-//**                                                                       **
-//***************************************************************************
-//***************************************************************************
-
-//***** ezcReflectionClass **************************************************
 /**
-* Extends the reflection API using PHPDoc comments to provied
-* type information
-*
-* @package    Reflection
-* @author     Stefan Marr <mail@stefan-marr.de>
-* @author     Falko Menge <mail@falko-menge.de>
-* @copyright  2005-2006 ...
-* @license    http://www.apache.org/licenses/LICENSE-2.0   Apache License 2.0
-*/
-class ezcReflectionClass extends ReflectionClass {
+ * File containing the ezcReflectionClass class.
+ *
+ * @package Reflection
+ * @version //autogentag//
+ * @copyright Copyright (C) 2007 eZ systems as. All rights reserved.
+ * @license http://ez.no/licenses/new_bsd New BSD License
+ */
+
+/**
+ * Extends the ReflectionClass using PHPDoc comments to provide
+ * type information
+ * 
+ * @package Reflection
+ * @version //autogentag//
+ * @author Stefan Marr <mail@stefan-marr.de>
+ * @author Falko Menge <mail@falko-menge.de>
+ */
+class ezcReflectionClass extends ReflectionClass
+{
     /**
     * @var ezcReflectionDocParser
     */

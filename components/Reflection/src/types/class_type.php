@@ -1,43 +1,30 @@
 <?php
-//***************************************************************************
-//***************************************************************************
-//**                                                                       **
-//** ezcReflectionClassType - representation for all class types                        **
-//**                                                                       **
-//** Project: Web Services Description Generator                           **
-//**                                                                       **
-//** @package    Reflection                                           **
-//** @author     Stefan Marr <mail@stefan-marr.de>                         **
-//** @author     Falko Menge <mail@falko-menge.de>                         **
-//** @copyright  2006 ....                                                 **
-//** @license    www.apache.org/licenses/LICENSE-2.0   Apache License 2.0  **
-//**                                                                       **
-//***************************************************************************
-//***************************************************************************
-
-//***** imports *************************************************************
-//require_once(dirname(__FILE__).'/class.ezcReflectionClass.php');
-//require_once(dirname(__FILE__).'/interface.Type.php');
-
-//***** ezcReflectionClassType ***********************************************************
 /**
- * @package    Reflection
- * @author     Stefan Marr <mail@stefan-marr.de>
- * @author     Falko Menge <mail@falko-menge.de>
- * @copyright  2006 Stefan Marr
- * @license    http://www.apache.org/licenses/LICENSE-2.0  Apache License 2.0
+ * File containing the ezcReflectionClassType class.
+ *
+ * @package Reflection
+ * @version //autogentag//
+ * @copyright Copyright (C) 2007 eZ systems as. All rights reserved.
+ * @license http://ez.no/licenses/new_bsd New BSD License
+ */
+
+/**
+ * Representation for all class types
+ * 
+ * @package Reflection
+ * @version //autogentag//
+ * @author Stefan Marr <mail@stefan-marr.de>
+ * @author Falko Menge <mail@falko-menge.de>
  */
 class ezcReflectionClassType extends ezcReflectionClass implements ezcReflectionType {
 
-    //=======================================================================
     /**
      * @return ezcReflectionType
      */
-    public function getezcReflectionArrayType() {
+    public function getArrayType() {
         return null;
     }
 
-    //=======================================================================
     /**
      * @return ezcReflectionType
      */
@@ -45,7 +32,6 @@ class ezcReflectionClassType extends ezcReflectionClass implements ezcReflection
         return null;
     }
 
-    //=======================================================================
     /**
      * @return ezcReflectionType
      */
@@ -53,7 +39,6 @@ class ezcReflectionClassType extends ezcReflectionClass implements ezcReflection
         return null;
     }
 
-    //=======================================================================
     /**
      * @return boolean
      */
@@ -61,7 +46,6 @@ class ezcReflectionClassType extends ezcReflectionClass implements ezcReflection
         return false;
     }
 
-    //=======================================================================
     /**
      * @return boolean
      */
@@ -69,7 +53,6 @@ class ezcReflectionClassType extends ezcReflectionClass implements ezcReflection
         return true;
     }
 
-    //=======================================================================
     /**
      * @return boolean
      */
@@ -77,7 +60,6 @@ class ezcReflectionClassType extends ezcReflectionClass implements ezcReflection
         return false;
     }
 
-    //=======================================================================
     /**
      * @return boolean
      */
@@ -85,7 +67,6 @@ class ezcReflectionClassType extends ezcReflectionClass implements ezcReflection
         return false;
     }
 
-    //=======================================================================
     /**
      * @return string
      */
@@ -94,7 +75,6 @@ class ezcReflectionClassType extends ezcReflectionClass implements ezcReflection
     }
 
 
-    //=======================================================================
     /**
      * @return boolean
      */
@@ -102,7 +82,6 @@ class ezcReflectionClassType extends ezcReflectionClass implements ezcReflection
         return false;
     }
 
-    //=======================================================================
     /**
      * Returns XML Schema name of the complexType for the class
      *
@@ -121,7 +100,6 @@ class ezcReflectionClassType extends ezcReflectionClass implements ezcReflection
         return $prefix . $this->getName();
     }
 
-    //=======================================================================
     /**
      * Returns an <xsd:complexType/>
      * @param DOMDocument $dom

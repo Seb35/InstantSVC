@@ -1,28 +1,20 @@
 <?php
-//***************************************************************************
-//***************************************************************************
-//**                                                                       **
-//** ezcReflectionApi - Main Class, holds type factory                **
-//**                                                                       **
-//** Project: Web Services Description Generator                           **
-//**                                                                       **
-//** @package    reflection                                                **
-//** @author     Stefan Marr <mail@stefan-marr.de>                         **
-//** @copyright  2006 ....                                                 **
-//** @license    www.apache.org/licenses/LICENSE-2.0   Apache License 2.0  **
-//**                                                                       **
-//***************************************************************************
-//***************************************************************************
-
-//***** ezcReflectionApi ***********************************************
 /**
-* Holds type factory for generating type objects by given name
-*
-* @package    Reflection
-* @author     Stefan Marr <mail@stefan-marr.de>
-* @copyright  2006 ....
-* @license    http://www.apache.org/licenses/LICENSE-2.0   Apache License 2.0
-*/
+ * File containing the ezcReflectionApi class.
+ *
+ * @package Reflection
+ * @version //autogentag//
+ * @copyright Copyright (C) 2007 eZ systems as. All rights reserved.
+ * @license http://ez.no/licenses/new_bsd New BSD License
+ */
+
+/**
+ * Holds type factory for generating type objects by given name
+ * 
+ * @package Reflection
+ * @version //autogentag//
+ * @author Stefan Marr <mail@stefan-marr.de>
+ */
 class ezcReflectionApi {
 
 	/**
@@ -36,12 +28,10 @@ class ezcReflectionApi {
 	private $ezcReflectionTypeFactory = null;
 
 
-    //=======================================================================
     private function __construct() {
 
     }
 
-    //=======================================================================
     /**
     * @return ezcReflectionApi
     */
@@ -52,7 +42,6 @@ class ezcReflectionApi {
         return self::$instance;
     }
 
-    //=======================================================================
     /**
      * Factory to create type objects
      * @param ezcReflectionTypeFactory $factory
@@ -62,9 +51,8 @@ class ezcReflectionApi {
         $this->ezcReflectionTypeFactory = $factory;
     }
 
-    //=======================================================================
     /**
-     * Returns a ezcReflectionType object for the given typename
+     * Returns a ezcReflectionType object for the given type name
      *
      * @param string $typeName
      * @return ezcReflectionType

@@ -29,12 +29,12 @@ class ReflectionTestHelper {
      * Checks if all expected tags and only these are set
      *
      * @param string[] $expectedTags
-     * @param iscReflectionDocTag[] $tags
+     * @param ezcReflectionDocTag[] $tags
      * @param ezcTestCase $test
      */
     static public function expectedTags($expectedTags, $tags, $test) {
         foreach ($tags as $tag) {
-            $test->assertType('iscReflectionDocTag', $tag);
+            $test->assertType('ezcReflectionDocTag', $tag);
             $test->assertContains($tag->getName(), $expectedTags);
 
             self::deleteFromArray($tag->getName(), $expectedTags);
@@ -47,12 +47,12 @@ class ReflectionTestHelper {
      * Checks if all expected parameters and only these are set
      *
      * @param string[] $expectedTags
-     * @param iscReflectionDocTag[] $tags
+     * @param ezcReflectionDocTag[] $tags
      * @param ezcTestCase $test
      */
     static public function expectedParams($expectedParams, $params, $test) {
         foreach ($params as $param) {
-            $test->assertType('iscReflectionParameter', $param);
+            $test->assertType('ezcReflectionParameter', $param);
             $test->assertContains($param->getName(), $expectedParams);
 
             self::deleteFromArray($param->getName(), $expectedParams);

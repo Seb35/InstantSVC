@@ -1,27 +1,21 @@
 <?php
-//***************************************************************************
-//***************************************************************************
-//**                                                                       **
-//** ezcReflectionPrimitiveType - representation for all primitive types like string,   **
-//**                 integer, float aso.                                   **
-//**                                                                       **
-//** Project: Web Services Description Generator                           **
-//**                                                                       **
-//** @package    Reflection                                           **
-//** @author     Stefan Marr <mail@stefan-marr.de>                         **
-//** @author     Falko Menge <mail@falko-menge.de>                         **
-//** @copyright  2006 ....                                                 **
-//** @license    www.apache.org/licenses/LICENSE-2.0   Apache License 2.0  **
-//**                                                                       **
-//***************************************************************************
-//***************************************************************************
-
-//***** ezcReflectionPrimitiveType *******************************************************
 /**
- * @package    Reflection
- * @author     Stefan Marr <mail@stefan-marr.de>
- * @copyright  2006 Stefan Marr
- * @license    http://www.apache.org/licenses/LICENSE-2.0  Apache License 2.0
+ * File containing the ezcReflectionPrimitiveType class.
+ *
+ * @package Reflection
+ * @version //autogentag//
+ * @copyright Copyright (C) 2007 eZ systems as. All rights reserved.
+ * @license http://ez.no/licenses/new_bsd New BSD License
+ */
+
+/**
+ * Representation for all primitive types like string, integer, float
+ * and boolean
+ * 
+ * @package Reflection
+ * @version //autogentag//
+ * @author Stefan Marr <mail@stefan-marr.de>
+ * @author Falko Menge <mail@falko-menge.de>
  */
 class ezcReflectionPrimitiveType extends ezcReflectionAbstractType {
 
@@ -30,7 +24,6 @@ class ezcReflectionPrimitiveType extends ezcReflectionAbstractType {
      */
     private $typeName;
 
-    //=======================================================================
     /**
      * @param string $typeName
      */
@@ -38,7 +31,6 @@ class ezcReflectionPrimitiveType extends ezcReflectionAbstractType {
         $this->typeName = $typeName;
     }
 
-    //=======================================================================
     /**
      * @return boolean
      */
@@ -46,7 +38,6 @@ class ezcReflectionPrimitiveType extends ezcReflectionAbstractType {
         return true;
     }
 
-    //=======================================================================
     /**
      * @return string
      */
@@ -54,7 +45,6 @@ class ezcReflectionPrimitiveType extends ezcReflectionAbstractType {
         return $this->typeName;
     }
 
-    //=======================================================================
     /**
      * @return boolean
      */
@@ -65,7 +55,6 @@ class ezcReflectionPrimitiveType extends ezcReflectionAbstractType {
         return false;
     }
 
-    //=======================================================================
     /**
      * Returns name of the correspondent XML Schema datatype
      *
@@ -84,7 +73,6 @@ class ezcReflectionPrimitiveType extends ezcReflectionAbstractType {
         return $prefix . ezcReflectionTypeMapper::getInstance()->getXmlType($this->typeName);
     }
 
-    //=======================================================================
     /**
      * @param DOMDocument
      * @return DOMElement

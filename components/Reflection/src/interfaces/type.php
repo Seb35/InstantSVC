@@ -1,43 +1,39 @@
 <?php
-//***************************************************************************
-//***************************************************************************
-//**                                                                       **
-//** Type - Interface for type objects representing a type                 **
-//**                                                                       **
-//** Project: Web Services Description Generator                           **
-//**                                                                       **
-//** @package    reflection                                                **
-//** @author     Stefan Marr <mail@stefan-marr.de>                         **
-//** @copyright  2006 ....                                                 **
-//** @license    www.apache.org/licenses/LICENSE-2.0   Apache License 2.0  **
-//**                                                                       **
-//***************************************************************************
-//***************************************************************************
-
-//***** Type ****************************************************************
 /**
-* Interface for type objects representing a type
-*
-* @package    Reflection
-* @author     Stefan Marr <mail@stefan-marr.de>
-* @copyright  2006 ....
-* @license    http://www.apache.org/licenses/LICENSE-2.0   Apache License 2.0
-*/
+ * File containing the ezcReflectionType interface.
+ *
+ * @package Reflection
+ * @version //autogentag//
+ * @copyright Copyright (C) 2007 eZ systems as. All rights reserved.
+ * @license http://ez.no/licenses/new_bsd New BSD License
+ */
+
+/**
+ * Interface for type objects representing a type/class
+ * 
+ * @package Reflection
+ * @version //autogentag//
+ * @author Stefan Marr <mail@stefan-marr.de>
+ */
 interface ezcReflectionType {
+
     /**
      * Return type of elements in an array type or null if is not an array
+     * 
      * @return ezcReflectionType
      */
-    function getezcReflectionArrayType();
+    function getArrayType();
 
     /**
      * Returns type of key used in a map
+     * 
      * @return ezcReflectionType
      */
     function getMapIndexType();
 
     /**
      * Returns type of values used in a map
+     * 
      * @return ezcReflectionType
      */
     function getMapValueType();
@@ -64,8 +60,9 @@ interface ezcReflectionType {
 
     /**
      * Return the name of this type as string
+     * 
      * @return string
-     * @todo aprove name, may be getName is better
+     * @todo approve name, may be getName is better
      */
     function toString();
 
