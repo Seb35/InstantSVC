@@ -101,10 +101,11 @@ libs/reflection
 (Falko)               - improve and fix XML Schema output
 		 REM  - unterst?tzt werden nur einfache arrays, bei den der index nicht relevant ist,
 		        Klassen und einfach datentypen, KEINE Maps (Key=>Value) Typen
-                      - rename DocTag classes into Annotiation
+                 DONE - rename DocTag classes into Annotiation
                       - introduce a type mixed to represent mixed types or type expressions using the | to list multiple types
                       - introduce a type numeric as a special mixed type for integer & float
                       - change signatures to fit the original reflection api and avoid notices
+                      - Web Service annotations into correspondent components
 		        
 REST
 		DONE  - ser/deserialisieren der eingabedaten?
