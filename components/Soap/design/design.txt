@@ -1,0 +1,88 @@
+eZ component: SOAP, Design
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Introduction
+============
+
+Description
+-----------
+The SOAP component is based on PHP5's SOAP extension and enhances its features
+by extending the classes SoapServer and SoapClient.
+
+Design description
+------------------
+
+ezcSoapServer
+	The ezcSoapServer extends the SoapServer class with a handler chain
+	mechanism implemented using the strategy design pattern. Additional handlers
+	are implemented by extending the abstract class ezcSoapIntermediary and can
+	be added to the server by passing an instance to the method
+	addSoapIntermediary. As depicted in the class diagram an ezcSoapIntermediary
+    is actually an extended XML parser based on the SAX API.
+
+ezcSoapSecurityIntermediary
+	In order to implement WS-Security this class provides a generic handler for
+	security headers. The actual authentication is done by an implementation of
+	the interface ezcSoapTokenProfile which can be specified through the method
+	setTokenProfile.
+
+ezcSoapUsernameTokenProfile
+	This class implements the authentication mechanism specified by the
+	Username Token Profile of the WS-Security standard.
+
+ezcSoapServerDispatcher
+	To avoid writing several very similar server scripts when providing
+	multiple Web Services this class provides a generic SOAP server which can be
+	configured via simple deployment descriptors. Basically it works like a
+	front controller for SOAP since it forwards incoming SOAP Requests to a
+	correspondent SOAP server instance.
+
+ezcSoapDdGenerator
+	This generator class provides an API to create deployment descriptors for
+	ezcSoapServerDispatcher which are actually include files returning a PHP
+	array with configuration settings.
+
+ezcSoapAdapterGenerator
+	An important requirement is to avoid changes to the method signatures of
+	existing application classes when generating document/wrapped Web Services.
+	This code generator builds adapter classes which perform the unwrapping of
+	arguments and wrapping of return values.
+
+ezcSoapClient
+    Class ezcSoapClient inherits from SoapClient and extends it with
+    WS-Security support. In particular the constructor method has two new
+    arguments for providing username and password to the Username Token Profile
+    authentication. Plans for future versions are to also apply a handler chain
+    on the client side. But it has not yet been examined if that is technically
+    feasible.
+
+ezcSoapClientSecurityStruct
+	This data structure contains an ezcSoapUsernameToken and is used by
+	ezcSoapClient to create the SOAP headers for WS-Security.
+
+ezcSoapUsernameToken
+    A Username Token is a data structure consisting of a user name, a nonce
+    (in cryptography this is an abbreviation for a number used once),
+    a time stamp and the encrypted password of the user. The token is sent as
+    a WS-Security header from a SOAP client to a SOAP server in order to
+    perform authentication. The class uses a database table to store nonces and
+    timestamps.
+
+Guidelines
+----------
+
+Algorithms
+----------
+As described in the specification the Username Token Profile related classes use
+the MD5, SHA1 and base64 algorithms.
+
+
+Data structures
+---------------
+
+Diagrams
+========
+
+ezcSoapServer.class-diagram.png - Class diagram of the handler chain mechanism in the SOAP server
+ezcSoapServer-with-WS-Security.class-diagram.png - Class diagram of the WS-Security implementation
+ezcSoapClient.callgraph-with-external-calls.png - Static call graph with external calls for class ezcSoapClient

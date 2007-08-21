@@ -1,0 +1,94 @@
+eZ component: SOAP, Requirements
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Introduction
+============
+With PHP5's SOAP extension and the WSDL component the core standards for
+creating Web Services are available to PHP developers. But real world SOA
+applications need much more than that. They have to deal with aspects like e.g.
+security, synchronization or sessioning. Therefore a large number additional Web
+Service standards -- also called WS-* standards -- have evolved which commonly
+add new elements to the headers of SOAP messages. In order to be able to work
+with those header elements the SOAP standard describes intermediary nodes, which
+can be introduced to a communication channel between sender and receiver as
+shown in the FMC block diagram soap_intermediaries.png.
+
+Those SOAP Intermediaries can add new header elements, work with them and also
+remove them at a later time. This way new communication features can be applied
+transparently for sender and receiver.
+
+
+Description
+-----------
+The SOAP component provides enhanced versions of the classes SoapServer and
+SoapClient which are easier to use and have additional communication features.
+Furthermore it serves as a platform for implementing WS-* standards in order to
+use them with PHP. As a first standard based on that platform this component
+provides a WS-Security implementation using the Username Token Profile.
+
+
+Current implementation
+----------------------
+Recently the SoapServer has been redesigned and not yet reimplemented. But the
+changes are merely refactoring in order to make the API more comprehensible.
+WS-Security and the Username Token Profile are implemented conform to the
+specifications. When developing the WS-Security client a problem occurred with
+PHP's SOAP extension lacking some features. However the current version of the
+SoapClient only supports the Username Token Profile and is not as extensible as
+requested in the requirements.
+
+
+Requirements
+============
+The SOAP component should be a platform to implement WS-* standards as SOAP
+Intermediaries in client and server. As a first standard WS-Security should be
+implemented with the Username Token Profile as a first token profile.
+
+Another problem the component should solve is that the SOAP extension of PHP is
+very generic. That is of course an advantage because it allows to use all kinds
+of SOAP bindings namely rpc/encoded, rpc/literal and document/literal. However
+especially a document/literal style is somewhat difficult to use because most
+Web Service platforms prefer the special document/wrapped flavor and in that
+case the PHP application has to do wrapping and unwrapping of return values and
+arguments. But if an existing class should additionally become accessible as a
+Web Service it is not acceptable to change the signatures of the methods and the
+wrapping and unwrapping should be encapsulated inside the SOAP component.
+
+In order to facilitate the creation of large numbers of Web Services the SOAP
+component should provide a more generic server. This server should be
+configurable with simple deployment descriptors to handle SOAP requests for
+multiple services.
+
+Interesting features for future versions would be to implement SOAP with
+Attachments (http://www.w3.org/TR/SOAP-attachments), other token profiles for
+WS-Security and of course other WS-* standards.
+
+
+Design goals
+============
+A common pattern for the realization of SOAP Intermediaries is a handler chain.
+The SOAP component should therefore enhance client and server with a handler
+chain mechanism.
+
+
+Special considerations
+======================
+In order to be interoperable with other platforms the SOAP component should also
+conform to the Basic Profile of the Web Services Interoperability Organization
+(WS-I) (http://www.ws-i.org/Profiles/BasicProfile-1.2.html).
+
+
+Format
+======
+The security mechanisms must adhere to the Web Services Security 1.1
+(http://www.oasis-open.org/committees/download.php/16790/wss-v1.1-spec-os-SOAPMessageSecurity.pdf)
+and Username Token Profile 1.1
+(http://www.oasis-open.org/committees/download.php/16782/wss-v1.1-spec-os-UsernameTokenProfile.pdf)
+specifications.
+Besides all enhancements the component still has to be compliant with the SOAP
+specification version 1.2 (http://www.w3.org/TR/soap/).
+
+Diagrams
+========
+
+soap_intermediaries.png - SOAP Intermediaries
