@@ -1,0 +1,49 @@
+eZ component: ReST, Design
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Design description
+------------------
+ezcRestServer
+	This class provides a server for ReSTful Web Services. It deserializes
+	incoming requests into PHP data types and calls the correspondent method of
+	an application class. The output of the method is serialized and returned to
+	the client with the HTTP response. Additionally it is able to authenticate
+	users via HTTP Digest authentication.
+
+ezcRestDigestAuth
+	This class handles HTTP Digest Authentication for ReST services.
+
+ezcRestSerializer
+	This interface has to be implemented by serializers and deserializers in
+	order to be used with the ReST server.
+
+ezcRestXmlSerializer
+	This class implements a serializer to produce XML output for a ReST
+	service.
+
+ezcRestXmlDeserializer
+	The counterpart of the XML serializer is this deserializer which is able to
+	parse XML input.
+
+ezcRestPearSerializer
+ezcRestXbelParser
+ezcRestXbelSerializer
+ezcRestMapping
+ezcRestMappingTable
+
+ezcRestDdGenerator
+	This generator class provides an API to create deployment descriptors for
+	ezcSoapServerDispatcher which are actually include files returning a PHP
+	array with configuration settings.
+
+Guidelines
+----------
+
+Algorithms
+----------
+
+Data structures
+---------------
+
+Diagrams
+========

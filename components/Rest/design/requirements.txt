@@ -1,0 +1,60 @@
+eZ component: ReST, Requirements
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Introduction
+============
+Representational State Transfer (ReST) is an architectural style which can be
+applied to the HTTP protocol (http://tools.ietf.org/html/rfc2616) in order to
+form an alternative technology for interoperable Web Services. The major
+advantage of this concept is that all so called ReSTful Web Services have the
+same uniform and minimal interface consisting of the HTTP methods GET, POST, PUT
+and DELETE. This improves interoperability and interchangeability of services
+and contrasts to SOAP where generally every service has its own interface. A
+second advantage is that all the well known standards, concepts and tools which
+exist for HTTP can be reused for ReSTful Web Services. This greatly reduces the
+complexity of the tool chain and makes the services usable from virtually every
+platform capable of accessing the internet.
+
+
+Description
+-----------
+The ReST component provides a server for ReSTful Web Services which maps URLs to
+methods of a class and handles deserialization of incoming arguments as well as
+serialization of return values.
+
+
+Current implementation
+----------------------
+The current implementation of the component can be considered as stable.
+
+Requirements
+============
+The server of the ReST component should be easily configurable to serve multiple
+services. It should support authentication through the Basic or Digest
+authentication mechanisms of HTTP (http://tools.ietf.org/html/rfc2617) and
+encapsulate the process of serialization and deserialization for PHP data types.
+The used type of data serialization should be configurable and at least a XML
+serialization should be implemented.
+
+Design goals
+============
+The ReST server should be generic server for all services which is configurable
+through deployment descriptors in order to minimize the effort needed to add new
+services in an evolving application.
+
+Special considerations
+======================
+The component should try to ensure that the semantics of the HTTP methods are
+not violated.
+
+Format
+======
+The provided services must conform to the HTTP 1.1 specification and the ReST
+concept as described by Roy Thomas Fielding
+(http://www.ics.uci.edu/~fielding/pubs/dissertation/top.htm).
+The payloads are supposed to be valid according to internet standard formats
+like XML (http://www.w3.org/TR/xml11/) for instance, but could be encoded in
+other formats like JSON for AJAX requests, too.
+
+Diagrams
+========
