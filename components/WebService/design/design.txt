@@ -1,0 +1,28 @@
+eZ component: WebService, Design
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Design description
+------------------
+
+ezcWebServiceGenerator
+	The Web Service component consists of a single generator class which
+	leverages several tools of other components namely ezcCodeAnalyzer,
+	ezcReflectionClass, ezcWsdlGenerator, ezcSoapDdGenerator,
+	ezcSoapAdapterGenerator and ezcRestDdGenerator.
+
+
+Guidelines
+----------
+
+Algorithms
+----------
+The generator contains no complex algorithms. It just provides a unified API for
+all Web Service related components.
+
+Data structures
+---------------
+
+Diagrams
+========
+
+ezcWebService.block-diagram.png - FMC block diagram (http://www.fmc-modeling.org/) of the Web Service component

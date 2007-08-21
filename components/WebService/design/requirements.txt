@@ -1,0 +1,47 @@
+eZ component: WebService, Requirements
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Introduction
+============
+The Web Services world is nowadays split into SOAP-based and ReSTful Web
+Services. Since eZ Components incorporated solutions for both approaches there
+is a unique chance to provide a new layer of abstraction on top of them.
+
+Description
+-----------
+The ezcWebService integrates all Web Service related components namely ezcRest,
+ezcSoap and ezcWsdl and some helpers like ezcReflection and ezcCodeAnalyzer into
+one powerful component.
+
+Current implementation
+----------------------
+The component is currently in a beta stage and is used as a central tool library
+for the web front-end provided by the InstantSVC project.
+
+Requirements
+============
+The component should be able to inspect an application's class tree and generate
+a complete SOAP and/or ReST Web Services environment including all classes
+annotated with special Web Service annotations and/or classes specified
+explicitly via API calls.
+
+Design goals
+============
+The generator has to be usable by command line interfaces as well as web
+front-ends and it should be ready to be integrated in larger SOA applications or
+frameworks.
+
+Special considerations
+======================
+If SOAP services are set up, WSDL files and required adapter classes are to be
+generated.
+
+Format
+======
+To annotate classes for publication as Web Services the @webservice annotation
+can be set. Methods are annotated in the style of Java with @webmethod for SOAP
+services and using @restmethod for ReSTful Web Services. Classes whose instances
+are to be transferred through Web Services can be annotated as @webserializable.
+
+Diagrams
+========
