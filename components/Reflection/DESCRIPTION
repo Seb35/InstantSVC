@@ -1,1 +1,5 @@
-Enhances the PHP Reflection API by annotations and type support based on PHPDoc-Tags
+The main objective of the Reflection component is to enhance PHP by type
+information and annotations. It uses source code documentation to determine data
+types and other pieces of information provided via annotations. Those
+annotations can be used to realize systems which depend on strong type
+information or additional details about the source code itself.
