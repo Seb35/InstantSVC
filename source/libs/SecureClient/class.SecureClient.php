@@ -20,7 +20,7 @@
 //***************************************************************************
 
 //***** imports *************************************************************
-require_once('./UserTokenProfile/class.SecurityStruct.php');
+require_once('UserTokenProfile/class.SecurityStruct.php');
 
 //***** SecureSoapClient *******************************************************
 /**
@@ -80,8 +80,7 @@ class SecureSoapClient extends SoapClient {
               SOAP_ENC_OBJECT);
 
 	  $header =  new SoapHeader(
-                'http:/docs.oasis-open.org/wss/'.
-				'oasis-wss-wsssecurity-secext-1.0.xsd/',
+                'http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd',
 		        'Security',
 		        $auth);
 
