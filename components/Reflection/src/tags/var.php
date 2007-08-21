@@ -1,29 +1,22 @@
 <?php
-//***************************************************************************
-//***************************************************************************
-//**                                                                       **
-//** ezcReflectionDocTagVar - Returns infos from a given PHP Documentation comment   **
-//**                                                                       **
-//** Project: Web Services Description Generator                           **
-//**                                                                       **
-//** @package    reflection                                                **
-//** @author     Stefan Marr <mail@stefan-marr.de>                         **
-//** @copyright  2005 ....                                                 **
-//** @license    www.apache.org/licenses/LICENSE-2.0   Apache License 2.0  **
-//**                                                                       **
-//***************************************************************************
-//***************************************************************************
-
-//***** ezcReflectionDocTagVar ********************************************************
 /**
-* @package    reflection.tags
-* @author     Stefan Marr <mail@stefan-marr.de>
-* @copyright  2005 ....
-* @license    http://www.apache.org/licenses/LICENSE-2.0   Apache License 2.0
-*/
+ * File containing the ezcReflectionDocTagVar class.
+ *
+ * @package Reflection
+ * @version //autogentag//
+ * @copyright Copyright (C) 2007 eZ systems as. All rights reserved.
+ * @license http://ez.no/licenses/new_bsd New BSD License
+ */
+
+/**
+ * Represents a var doc tag in the php source code comment. 
+ * 
+ * @package Reflection
+ * @version //autogentag//
+ * @author Stefan Marr <mail@stefan-marr.de>
+ */
 class ezcReflectionDocTagVar extends ezcReflectionDocTag {
 
-    //=======================================================================
     /**
     * @param string[] $line Array of words
     */
@@ -41,7 +34,6 @@ class ezcReflectionDocTagVar extends ezcReflectionDocTag {
         }
     }
 
-    //=======================================================================
     /**
     * @return string
     */

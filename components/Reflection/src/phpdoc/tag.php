@@ -1,31 +1,27 @@
 <?php
-//***************************************************************************
-//***************************************************************************
-//**                                                                       **
-//** ezcReflectionDocTag - Provides structured data from PHP Documentation comments  **
-//**                                                                       **
-//** Project: Web Services Description Generator                           **
-//**                                                                       **
-//** @package    reflection                                                **
-//** @author     Stefan Marr <mail@stefan-marr.de>                         **
-//** @copyright  2005 ....                                                 **
-//** @license    www.apache.org/licenses/LICENSE-2.0   Apache License 2.0  **
-//**                                                                       **
-//***************************************************************************
-//***************************************************************************
-
-//***** imports *************************************************************
-//require_once(dirname(__FILE__).'/tags/require.tags.php');
-
-//***** ezcReflectionDocTag ***********************************************************
 /**
-* Provides structured data from PHP Documentation comments
-*
-* @package    Reflection
-* @author     Stefan Marr <mail@stefan-marr.de>
-* @copyright  2006 Stefan Marr
-* @license    http://www.apache.org/licenses/LICENSE-2.0   Apache License 2.0
-*/
+ * File containing the ezcReflectionDocTag class.
+ *
+ * @package Reflection
+ * @version //autogentag//
+ * @copyright Copyright (C) 2007 eZ systems as. All rights reserved.
+ * @license http://ez.no/licenses/new_bsd New BSD License
+ */
+
+/**
+ * Represents a doc tag in the php source code comment.
+ * 
+ * This class is used as standard implementation for representing
+ * annotations. It is only used if no specialized tag class could be
+ * found deriving from this class.
+ * 
+ * The comment line is tokenized by at spaces and if no further structure is recognized,
+ * tokens are available at getParams. 
+ * 
+ * @package Reflection
+ * @version //autogentag//
+ * @author Stefan Marr <mail@stefan-marr.de>
+ */
 class ezcReflectionDocTag {
     /**
     * @var string
@@ -43,7 +39,6 @@ class ezcReflectionDocTag {
     protected $desc;
 
 
-    //=======================================================================
     /**
     * @param string[] $line Array of words
     */
@@ -67,7 +62,6 @@ class ezcReflectionDocTag {
         }
     }
 
-    //=======================================================================
     /**
     * @return string
     */
@@ -75,7 +69,6 @@ class ezcReflectionDocTag {
         return $this->desc;
     }
 
-    //=======================================================================
     /**
     * @param string $line
     */
@@ -83,7 +76,6 @@ class ezcReflectionDocTag {
         $this->desc .= "\n".$line;
     }
 
-    //=======================================================================
     /**
     * @return string
     */
@@ -91,7 +83,6 @@ class ezcReflectionDocTag {
         return $this->tagName;
     }
 
-    //=======================================================================
     /**
     * @return string[]
     */

@@ -1,34 +1,25 @@
 <?php
-//***************************************************************************
-//***************************************************************************
-//**                                                                       **
-//** ezcReflectionDocTagFactory - Creates a ezcReflectionDocTag object be the given doctag     **
-//**                                                                       **
-//** Project: Web Services Description Generator                           **
-//**                                                                       **
-//** @package    reflection                                                **
-//** @author     Stefan Marr <mail@stefan-marr.de>                         **
-//** @copyright  2005 ....                                                 **
-//** @license    www.apache.org/licenses/LICENSE-2.0   Apache License 2.0  **
-//**                                                                       **
-//***************************************************************************
-//***************************************************************************
-
-//***** ezcReflectionDocTagFactory ****************************************************
 /**
-* Creates a ezcReflectionDocTag object be the given doctag
-*
-* @package    Reflection
-* @author     Stefan Marr <mail@stefan-marr.de>
-* @copyright  2006 Stefan Marr
-* @license    http://www.apache.org/licenses/LICENSE-2.0   Apache License 2.0
-*/
+ * File containing the ezcReflectionDocTagFactory class.
+ *
+ * @package Reflection
+ * @version //autogentag//
+ * @copyright Copyright (C) 2007 eZ systems as. All rights reserved.
+ * @license http://ez.no/licenses/new_bsd New BSD License
+ */
+
+/**
+ * Creates a ezcReflectionDocTag object be the given doctag
+ * 
+ * @package Reflection
+ * @version //autogentag//
+ * @author Stefan Marr <mail@stefan-marr.de>
+ */
 class ezcReflectionDocTagFactory {
 
-    //=======================================================================
     /**
     * @param string $type
-    * @param string[] $line Array of words
+    * @param string[] $line array of words
     * @return ezcReflectionDocTag
     */
     static public function createTag($type, $line) {

@@ -1,30 +1,24 @@
 <?php
-//***************************************************************************
-//***************************************************************************
-//**                                                                       **
-//** ezcReflectionDocTagReturn                                                       **
-//**                                                                       **
-//** Project: Web Services Description Generator                           **
-//**                                                                       **
-//** @package    reflection                                                **
-//** @author     Stefan Marr <mail@stefan-marr.de>                         **
-//** @copyright  2005 ....                                                 **
-//** @license    www.apache.org/licenses/LICENSE-2.0   Apache License 2.0  **
-//**                                                                       **
-//***************************************************************************
-//***************************************************************************
-
-//***** ezcReflectionDocTagReturn *****************************************************
 /**
-* @package    reflection.tags
-* @author     Stefan Marr <mail@stefan-marr.de>
-* @copyright  2005 ....
-* @license    http://www.apache.org/licenses/LICENSE-2.0   Apache License 2.0
-*/
+ * File containing the ezcReflectionDocTagReturn class.
+ *
+ * @package Reflection
+ * @version //autogentag//
+ * @copyright Copyright (C) 2007 eZ systems as. All rights reserved.
+ * @license http://ez.no/licenses/new_bsd New BSD License
+ */
+
+/**
+ * Represents a return doc tag in the php source code comment. 
+ * 
+ * @package Reflection
+ * @version //autogentag//
+ * @author Stefan Marr <mail@stefan-marr.de>
+ */
 class ezcReflectionDocTagReturn extends ezcReflectionDocTag {
-    //=======================================================================
-    /**
-    * @param string[] $line Array of words
+    
+	/**
+    * @param string[] $line array of words
     */
     public function __construct($line) {
         $this->tagName = $line[0];
@@ -40,7 +34,6 @@ class ezcReflectionDocTagReturn extends ezcReflectionDocTag {
         }
     }
 
-    //=======================================================================
     /**
     * @return string
     */

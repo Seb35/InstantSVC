@@ -1,40 +1,31 @@
 <?php
-//***************************************************************************
-//***************************************************************************
-//**                                                                       **
-//** ezcReflectionDocParser - Returns infos from a given PHP Documentation comment   **
-//**                                                                       **
-//** Project: Web Services Description Generator                           **
-//**                                                                       **
-//** @package    reflection                                                **
-//** @author     Stefan Marr <mail@stefan-marr.de>                         **
-//** @author     Falko Menge <mail@falko-menge.de>                         **
-//** @copyright  2005-2006 ...                                             **
-//** @license    www.apache.org/licenses/LICENSE-2.0   Apache License 2.0  **
-//**                                                                       **
-//***************************************************************************
-//***************************************************************************
-
-//***** imports *************************************************************
-//require_once(dirname(__FILE__).'/class.ezcReflectionDocTagFactory.php');
-
-//***** Parser Constants ****************************************************
-define('BEGINNING',  10);
-define('SHORT_DESC', 0);
-define('LONG_DESC',  1);
-define('TAGS',       2);
-
-//***** ezcReflectionDocParser ********************************************************
 /**
-* Provides structured data from PHP Documentation comments
-*
-* @package    Reflection
-* @author     Stefan Marr <mail@stefan-marr.de>
-* @author     Falko Menge <mail@falko-menge.de>
-* @copyright  2006 ...
-* @license    http://www.apache.org/licenses/LICENSE-2.0   Apache License 2.0
-*/
+ * File containing the ezcReflectionDocParser class.
+ *
+ * @package Reflection
+ * @version //autogentag//
+ * @copyright Copyright (C) 2007 eZ systems as. All rights reserved.
+ * @license http://ez.no/licenses/new_bsd New BSD License
+ */
+
+/**
+ * Provides structured data from PHP Documentation comments
+ * 
+ * Parser is implemented as state based parser using a state transisiton
+ * table consisting of transition rules for empty and non-empty lines.
+ * 
+ * @package Reflection
+ * @version //autogentag//
+ * @author Stefan Marr <mail@stefan-marr.de>
+ * @author Falko Menge <mail@falko-menge.de>
+ */
 class ezcReflectionDocParser {
+	
+	const BEGINNING  = 10;
+	const SHORT_DESC = 0;
+	const LONG_DESC  = 1;
+	const TAGS 		 = 2;
+	
     /**
     * @var string
     */
@@ -43,15 +34,24 @@ class ezcReflectionDocParser {
     /**
     * @var int STATE
     */
-    protected $state = BEGINNING;
+    protected $state = self::BEGINNING;
 
     /**
     * @var array<int,int>
     */
-    protected $stateTable = array(BEGINNING  => SHORT_DESC,
-                                   SHORT_DESC => SHORT_DESC,
-                                   LONG_DESC  => LONG_DESC,
-                                   TAGS       => TAGS);
+    protected $stateTable = array(
+    							true => array ( // empty lines
+    							  self::BEGINNING  => self::BEGINNING,
+                                  self::SHORT_DESC => self::LONG_DESC,
+                                  self::LONG_DESC  => self::LONG_DESC,
+                                  self::TAGS       => self::TAGS),
+                                  
+                                false => array ( // non empty lines
+    							  self::BEGINNING  => self::SHORT_DESC,
+                                  self::SHORT_DESC => self::SHORT_DESC,
+                                  self::LONG_DESC  => self::LONG_DESC,
+                                  self::TAGS       => self::TAGS)
+                                  );
     /**
     * @var ezcReflectionDocTag
     */
@@ -72,7 +72,6 @@ class ezcReflectionDocParser {
     */
     protected $tags;
 
-    //=======================================================================
     /**
     * @param string $docComment
     */
@@ -81,7 +80,6 @@ class ezcReflectionDocParser {
         $this->tags = array();
     }
 
-    //=======================================================================
     public function parse() {
         $lines = explode("\n", $this->docComment);
 
@@ -89,46 +87,32 @@ class ezcReflectionDocParser {
             $line = trim($line);
             $line = $this->stripDocPrefix($line);
 
-            if (strlen($line) > 0) {
-                //special condition for state change
-                if ($line{0} == '@' or $this->state == TAGS) {
+            // in some states we need to do something
+            if (!empty($line)) {
+                if ($line{0} == '@' or $this->state == self::TAGS) {
                     $this->parseTag($line);
                 }
                 else {
-                    if ($this->state == SHORT_DESC
-                                      OR $this->state == BEGINNING) {
+                    if ($this->state == self::SHORT_DESC
+                        	or $this->state == self::BEGINNING) {
                         $this->shortDesc .= $line . "\n";
                     }
-                    elseif ($this->state == LONG_DESC) {
+                    elseif ($this->state == self::LONG_DESC) {
                         $this->longDesc .= $line . "\n";
                     }
                 }
-                //next state
-                $this->state = $this->stateTable[$this->state];
             }
-            else {
-                //Change to next state if nessesary
-                switch ($this->state) {
-                    case BEGINNING:
-                        //NOP
-                        break;
-                    case LONG_DESC:
-                        $this->longDesc .= "\n";
-                        break;
-                    case SHORT_DESC:
-                        $this->state = LONG_DESC;
-                        break;
-                    default:
-                        $this->state = $this->stateTable[$this->state];
-                        break;
-                }
+            else if ($this->state == self::LONG_DESC) {
+                $this->longDesc .= "\n";
             }
+            
+            //next state
+            $this->state = $this->stateTable[empty($line)][$this->state];
         }
         $this->shortDesc = trim($this->shortDesc);
         $this->longDesc = trim($this->longDesc);
     }
 
-    //=======================================================================
     /**
     * @param string $line
     * @return string
@@ -141,7 +125,6 @@ class ezcReflectionDocParser {
         return trim($line);
     }
 
-    //=======================================================================
     /**
     * @param string $line
     * @return void
@@ -164,7 +147,6 @@ class ezcReflectionDocParser {
         }
     }
 
-    //=======================================================================
     /**
     * @param string $name
     * @return ezcReflectionDocTag[]
@@ -178,7 +160,6 @@ class ezcReflectionDocParser {
         }
     }
 
-    //=======================================================================
     /**
     * @return ezcReflectionDocTag[]
     */
@@ -192,7 +173,6 @@ class ezcReflectionDocParser {
         return $result;
     }
 
-    //=======================================================================
     /**
     * @return ezcReflectionDocTagParam[]
     */
@@ -200,7 +180,6 @@ class ezcReflectionDocParser {
         return $this->getTagsByName('param');
     }
 
-    //=======================================================================
     /**
     * @return ezcReflectionDocTagVar[]
     */
@@ -208,7 +187,6 @@ class ezcReflectionDocParser {
         return $this->getTagsByName('var');
     }
 
-    //=======================================================================
     /**
     * @return ezcReflectionDocTagReturn[]
     */
@@ -216,7 +194,6 @@ class ezcReflectionDocParser {
         return $this->getTagsByName('return');
     }
 
-    //=======================================================================
     /**
     * To check whether a tag was used
     * @param string $with name of used tag
@@ -226,7 +203,6 @@ class ezcReflectionDocParser {
         return isset($this->tags[$with]);
     }
 
-    //=======================================================================
     /**
     * @return string
     */
@@ -234,7 +210,6 @@ class ezcReflectionDocParser {
         return $this->shortDesc;
     }
 
-    //=======================================================================
     /**
     * @return string
     */
