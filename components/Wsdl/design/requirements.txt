@@ -1,0 +1,67 @@
+eZ component: WSDL, Requirements
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Introduction
+============
+The Web Services Description Language (WSDL) (http://www.w3.org/TR/wsdl) is one
+of the most important standards for professional Web Service applications
+because it allows for automated creation of SOAP servers and clients. The SOAP
+extension of PHP5 supports this if a WSDL file is provided. A WSDL file is an
+XML document describing the interface of a Web Service. A service provider can
+offer this description to its clients which are then able to determine the
+operations provided by the service and the messages they have to send. In this
+scenario the WSDL document serves as a contract between server and client and
+both parties have to abide by it in order to communicate successfully.
+
+Although it is possible to write WSDL documents by hand the additional time and
+effort do not result in a major advantage. Due to the fact that nearly all
+information needed for a WSDL description already exist in the source code of
+the class or the functions implementing the Web Service. The complete service
+description can be generated automatically.
+
+The only pieces of information in a WSDL file that are new are the binding and
+the service access point URL.
+
+Description
+-----------
+The WSDL component generates a WSDL document from a given service
+implementation.
+
+Current implementation
+----------------------
+The generator is currently in a beta stage. The code is stable but there are
+some details to be improved and some of the features have not been tested
+thoroughly enough.
+
+Requirements
+============
+The WSDL component should be able to generate a WSDL document from a given
+service implementation. Just like the SOAP server of PHP5 it should accept a
+class or a set of functions as a service implementation. The generator should be
+capable of building complex type definitions for multidimensional arrays or
+class structures and source code documentation should be added automatically.
+
+Design goals
+============
+The signature of the methods for adding a class or a function should be similar
+to those known from PHP's SoapServer class. Since the generator knows all
+details about a service it could provide convenience methods for creating a SOAP
+server. This is particularly interesting for debugging purposes since it speeds
+up the testing process for service implementations.
+
+Special considerations
+======================
+To be interoperable with other platforms the WSDL component should conform to
+the Basic Profile of the Web Services-Interoperability Organization (WS-I)
+(http://www.ws-i.org/Profiles/BasicProfile-1.2.html). But users should also be
+able to create service descriptions which do not conform to the Basic Profile,
+e.g. to integrate legacy applications with an rpc/encoded binding.
+
+Format
+======
+Of course requiring the WS-I Basic Profile implies that the complete WSDL 1.1
+standard has to be implemented. When the WSDL 2.0 specification
+(http://www.w3.org/TR/wsdl20) is finished the WSDL component could be enhanced
+to support this as well.
+
+Diagrams
+========
