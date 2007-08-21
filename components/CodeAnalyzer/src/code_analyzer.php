@@ -33,6 +33,10 @@
 */
 class iscCodeAnalyzer {
 
+    //TODO: correct folder names
+    //TODO: paths with slashes instead of backslashes
+    //TODO: static analysis should be able to handle multiple class declarations with the same name, although this may be bad design
+
 	/**
 	 * @var string
 	 */
@@ -242,6 +246,7 @@ class iscCodeAnalyzer {
                 set_include_path("'.addslashes($includes).'");
                 @include_once \'ezc/Base/base.php\';
                 @include_once \'Base/base.php\';
+                @include_once \'Base/src/base.php\';
                 function __autoload( $className ) { ezcBase::autoload( $className ); }
                 require_once "'.addslashes(__FILE__).'";
 
@@ -522,18 +527,24 @@ class iscCodeAnalyzer {
 
         $methodCount = 0;
         $mv = self::countClassesSeeingMethods($classes, $methodCount);
-        $project['MHF'] = 1 - ($mv / (count($classes) - 1) / $methodCount);
+        if ($methodCount > 0 ) {
+            $project['MHF'] = 1 - ($mv / (count($classes) - 1) / $methodCount);
+
+            $inM = self::countInheritedMethods($classes);
+            $project['MIF'] = $inM / $methodCount;
+        }
 
         $attrCount = 0;
         $av = self::countClassesSeeingProperties($classes, $attrCount);
-        $project['AHF'] = 1 - ($av / (count($classes) - 1) / $attrCount);
-
-        $inM = self::countInheritedMethods($classes);
-        $project['MIF'] = $inM / $methodCount;
+        if ($attrCount > 0) {
+            $project['AHF'] = 1 - ($av / (count($classes) - 1) / $attrCount);
+        }
 
         $over = self::countOverriddenMethods($classes);
         $posOver = self::countPossibleOverriddes($classes);
-        $project['PF'] = ($posOver == 0) ? 0 : $over / $posOver;
+        if ($posOver > 0) {
+            $project['PF'] = ($posOver == 0) ? 0 : $over / $posOver;
+        }
 
         $project['methods'] = self::collectMethodsStats($classes);
         $project['functions'] = $this->collectFunctionStats();
