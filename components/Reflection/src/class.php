@@ -24,7 +24,6 @@ class ezcReflectionClass extends ReflectionClass
     */
     protected $docParser;
 
-    //=======================================================================
     /**
     * @param string $name
     */
@@ -35,11 +34,10 @@ class ezcReflectionClass extends ReflectionClass
         catch (Exception $e) {
             return;
         }
-        $this->docParser = new ezcReflectionDocParser($this->getDocComment());
-        $this->docParser->parse();
+        $this->docParser = ezcReflectionApi::getDocParserInstance();
+        $this->docParser->parse($this->getDocComment());
     }
 
-    //=======================================================================
     /**
     * @param string $name
     * @return ezcReflectionMethod
@@ -48,7 +46,6 @@ class ezcReflectionClass extends ReflectionClass
         return new ezcReflectionMethod($this->getName(), $name);
     }
 
-    //=======================================================================
     /**
     * @return ezcReflectionMethod
     */
@@ -63,7 +60,6 @@ class ezcReflectionClass extends ReflectionClass
         }
     }
 
-    //=======================================================================
     /**
     * @return ezcReflectionMethod[]
     */
@@ -76,7 +72,6 @@ class ezcReflectionClass extends ReflectionClass
         return $extMethodes;
     }
 
-    //=======================================================================
     /**
     * @return ezcReflectionClassType
     */
@@ -90,7 +85,6 @@ class ezcReflectionClass extends ReflectionClass
         }
     }
 
-    //=======================================================================
     /**
     * @param string $name
     * @return ezcReflectionProperty
@@ -101,7 +95,6 @@ class ezcReflectionClass extends ReflectionClass
         return new ezcReflectionProperty($this->getName(), $name);
     }
 
-    //=======================================================================
     /**
     * @return ezcReflectionProperty[]
     */
@@ -115,7 +108,6 @@ class ezcReflectionClass extends ReflectionClass
         return $extProps;
     }
 
-    //=======================================================================
     /**
     * Check whether this class has been tagged with @webservice
     * @return boolean
@@ -124,7 +116,6 @@ class ezcReflectionClass extends ReflectionClass
         return $this->docParser->isTagged("webservice");
     }
 
-    //=======================================================================
     /**
     * @return string
     */
@@ -132,7 +123,6 @@ class ezcReflectionClass extends ReflectionClass
         return $this->docParser->getShortDescription();
     }
 
-    //=======================================================================
     /**
     * @return string
     */
@@ -140,7 +130,6 @@ class ezcReflectionClass extends ReflectionClass
         return $this->docParser->getLongDescription();
     }
 
-    //=======================================================================
     /**
     * @param string $with
     * @return boolean
@@ -149,7 +138,6 @@ class ezcReflectionClass extends ReflectionClass
         return $this->docParser->isTagged($with);
     }
 
-    //=======================================================================
     /**
     * @param string $name
     * @return ezcReflectionDocTag[]
@@ -163,7 +151,6 @@ class ezcReflectionClass extends ReflectionClass
         }
     }
 
-    //=======================================================================
     /**
     * @return ezcReflectionExtension
     */

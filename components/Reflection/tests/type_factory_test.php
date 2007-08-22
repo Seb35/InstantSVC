@@ -8,7 +8,7 @@
  * @subpackage Tests
  */
 
-class ezcReflectionezcReflectionTypeFactoryTest extends ezcTestCase
+class ezcReflectionTypeFactoryTest extends ezcTestCase
 {
     /**
      * Test with primitive types
@@ -54,7 +54,7 @@ class ezcReflectionezcReflectionTypeFactoryTest extends ezcTestCase
 
     public static function suite()
     {
-         return new PHPUnit_Framework_TestSuite( "ezcReflectionezcReflectionTypeFactoryTest" );
+         return new PHPUnit_Framework_TestSuite( "ezcReflectionTypeFactoryTest" );
     }
 }
 ?>

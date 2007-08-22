@@ -16,6 +16,7 @@ require_once '../src/property.php';
 require_once '../src/parameter.php';
 require_once '../src/extension.php';
 require_once '../src/function.php';
+require_once '../src/interfaces/parser.php';
 require_once '../src/phpdoc/parser.php';
 require_once '../src/phpdoc/tag_factory.php';
 require_once '../src/phpdoc/tag.php';

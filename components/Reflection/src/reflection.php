@@ -18,37 +18,40 @@
 class ezcReflectionApi {
 
 	/**
-	* @var ezcReflectionApi
-	*/
-	private static $instance = null;
-
-	/**
 	 * @var ezcReflectionTypeFactory
 	 */
-	private $ezcReflectionTypeFactory = null;
+	private static $reflectionTypeFactory = null;
+	
+	/**
+	 * @var ezcReflectionDocParser
+	 */
+	private static $docParser = null;
 
+	/**
+	 * Don't allow objects, it is just a static factory
+	 */
+    private function __construct() {}
 
-    private function __construct() {
-
-    }
-
-    /**
-    * @return ezcReflectionApi
-    */
-    public static function getInstance() {
-    	if (self::$instance == null) {
-    		self::$instance = new ezcReflectionApi();
+    public static function getDocParserInstance()
+    {
+    	if (self::$docParser == null) {
+    		self::$docParser = new ezcReflectionPhpDocParser();
     	}
-        return self::$instance;
+    	return clone self::$docParser;
     }
-
+    
+    public static function setDocParser($docParser)
+    {
+    	self::$docParser = $docParser;
+    }
+    
     /**
      * Factory to create type objects
      * @param ezcReflectionTypeFactory $factory
      * @return void
      */
-    public function setezcReflectionTypeFactory($factory) {
-        $this->ezcReflectionTypeFactory = $factory;
+    public static function setReflectionTypeFactory($factory) {
+        self::$reflectionTypeFactory = $factory;
     }
 
     /**
@@ -57,11 +60,11 @@ class ezcReflectionApi {
      * @param string $typeName
      * @return ezcReflectionType
      */
-    public function getTypeByName($typeName) {
-        if ($this->ezcReflectionTypeFactory == null) {
-            $this->ezcReflectionTypeFactory = new ezcReflectionTypeFactoryImpl();
+    public static function getTypeByName($typeName) {
+        if (self::$reflectionTypeFactory == null) {
+            self::$reflectionTypeFactory = new ezcReflectionTypeFactoryImpl();
         }
-        return $this->ezcReflectionTypeFactory->getType($typeName);
+        return self::$reflectionTypeFactory->getType($typeName);
     }
 }
 

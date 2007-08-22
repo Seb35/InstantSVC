@@ -38,8 +38,9 @@ class ezcReflectionMethod extends ReflectionMethod
     */
     public function __construct($class, $name) {
         parent::__construct($class, $name);
-        $this->docParser = new ezcReflectionDocParser($this->getDocComment());
-        $this->docParser->parse();
+        $this->docParser = ezcReflectionApi::getDocParserInstance();
+        $this->docParser->parse($this->getDocComment());
+        
         if ($class instanceof ReflectionClass) {
             $this->curClass = $class;
         }
@@ -82,7 +83,7 @@ class ezcReflectionMethod extends ReflectionMethod
     function getReturnType() {
         $re = $this->docParser->getReturnTags();
         if (count($re) == 1 and isset($re[0])) {
-            return ezcReflectionApi::getInstance()->getTypeByName($re[0]->getType());
+            return ezcReflectionApi::getTypeByName($re[0]->getType());
         }
         return null;
     }

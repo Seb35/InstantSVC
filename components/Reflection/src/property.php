@@ -30,8 +30,8 @@ class ezcReflectionProperty extends ReflectionProperty {
         parent::__construct($class, $name);
 
         if (method_exists($this, 'getDocComment')) {
-            $this->docParser = new ezcReflectionDocParser($this->getDocComment());
-            $this->docParser->parse();
+            $this->docParser = ezcReflectionApi::getDocParserInstance();
+        	$this->docParser->parse($this->getDocComment());
         }
     }
 

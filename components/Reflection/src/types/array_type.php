@@ -132,10 +132,10 @@ class ezcReflectionArrayType extends ezcReflectionAbstractType {
             $type1 = null;
             $type2 = null;
             if (isset($matches[3])) {
-                $type1 = ezcReflectionApi::getInstance()->getTypeByName($matches[3]);
+                $type1 = ezcReflectionApi::getTypeByName($matches[3]);
             }
             if (isset($matches[5])) {
-                $type2 = ezcReflectionApi::getInstance()->getTypeByName($matches[3]);
+                $type2 = ezcReflectionApi::getTypeByName($matches[3]);
             }
 
             if ($type1 == null and $type2 != null) {

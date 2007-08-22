@@ -8,7 +8,7 @@
  * @subpackage Tests
  */
 
-class ezcReflectionezcReflectionDocTagFactoryTest extends ezcTestCase
+class ezcReflectionDocTagFactoryTest extends ezcTestCase
 {
     public function testCreateTag() {
         $param  = ezcReflectionDocTagFactory::createTag('param', array('param', 'string', 'param'));
@@ -24,7 +24,7 @@ class ezcReflectionezcReflectionDocTagFactoryTest extends ezcTestCase
 
     public static function suite()
     {
-         return new PHPUnit_Framework_TestSuite( "ezcReflectionezcReflectionDocTagFactoryTest" );
+         return new PHPUnit_Framework_TestSuite( "ezcReflectionDocTagFactoryTest" );
     }
 }
 ?>

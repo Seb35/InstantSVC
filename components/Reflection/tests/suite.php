@@ -43,8 +43,8 @@ class ezcReflectionSuite extends PHPUnit_Framework_TestSuite
         parent::__construct();
         $this->setName("Reflection");
 
-        $this->addTest( ezcReflectionezcReflectionDocTagFactoryTest::suite() );
-        $this->addTest( ezcReflectionezcReflectionDocParserTest::suite() );
+        $this->addTest( ezcReflectionDocTagFactoryTest::suite() );
+        $this->addTest( ezcReflectionDocParserTest::suite() );
 
         $this->addTest( ezcReflectionTest::suite() );
         $this->addTest( ezcReflectionFunctionTest::suite() );
@@ -53,8 +53,8 @@ class ezcReflectionSuite extends PHPUnit_Framework_TestSuite
         $this->addTest( ezcReflectionMethodTest::suite() );
         $this->addTest( ezcReflectionPropertyTest::suite() );
         $this->addTest( ezcReflectionExtensionTest::suite() );
-        $this->addTest( ezcReflectionezcReflectionTypeFactoryTest::suite() );
-        $this->addTest( ezcReflectionezcReflectionTypeMapperTest::suite() );
+        $this->addTest( ezcReflectionTypeFactoryTest::suite() );
+        $this->addTest( ezcReflectionTypeMapperTest::suite() );
     }
 
     public static function suite()

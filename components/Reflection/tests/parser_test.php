@@ -8,7 +8,7 @@
  * @subpackage Tests
  */
 
-class ezcReflectionezcReflectionDocParserTest extends ezcTestCase
+class ezcReflectionDocParserTest extends ezcTestCase
 {
     /**
      * @var string[]
@@ -16,8 +16,8 @@ class ezcReflectionezcReflectionDocParserTest extends ezcTestCase
     private static $docs;
 
     public function testGetTagsByName() {
-        $parser = new ezcReflectionDocParser(self::$docs[0]);
-        $parser->parse();
+        $parser = ezcReflectionApi::getDocParserInstance();
+        $parser->parse(self::$docs[0]);
         $tags = $parser->getTagsByName('copyright');
         self::assertEquals(1, count($tags));
 
@@ -27,77 +27,77 @@ class ezcReflectionezcReflectionDocParserTest extends ezcTestCase
         $tags = $parser->getTagsByName('noneExistingTag');
         self::assertEquals(0, count($tags));
 
-        $parser = new ezcReflectionDocParser(self::$docs[2]);
-        $parser->parse();
+        $parser = ezcReflectionApi::getDocParserInstance();
+        $parser->parse(self::$docs[2]);
         $tags = $parser->getTagsByName('onetagonly');
         self::assertEquals(1, count($tags));
 
-        $parser = new ezcReflectionDocParser(self::$docs[3]);
-        $parser->parse();
+        $parser = ezcReflectionApi::getDocParserInstance();
+        $parser->parse(self::$docs[3]);
         $tags = $parser->getTagsByName('param');
         self::assertEquals(1, count($tags));
 
-        $parser = new ezcReflectionDocParser(self::$docs[4]);
-        $parser->parse();
+        $parser = ezcReflectionApi::getDocParserInstance();
+        $parser->parse(self::$docs[4]);
         $tags = $parser->getTagsByName('foobar');
         self::assertEquals(1, count($tags));
 
-        $parser = new ezcReflectionDocParser(self::$docs[6]);
-        $parser->parse();
+        $parser = ezcReflectionApi::getDocParserInstance();
+        $parser->parse(self::$docs[6]);
         $tags = $parser->getTagsByName('author');
         self::assertEquals(1, count($tags));
     }
 
     public function testGetTags() {
-        $parser = new ezcReflectionDocParser(self::$docs[0]);
-        $parser->parse();
+        $parser = ezcReflectionApi::getDocParserInstance();
+        $parser->parse(self::$docs[0]);
         $tags = $parser->getTags();
         self::assertEquals(6, count($tags));
 
-        $parser = new ezcReflectionDocParser(self::$docs[1]);
-        $parser->parse();
+        $parser = ezcReflectionApi::getDocParserInstance();
+        $parser->parse(self::$docs[1]);
         $tags = $parser->getTags();
         self::assertEquals(0, count($tags));
 
-        $parser = new ezcReflectionDocParser(self::$docs[2]);
-        $parser->parse();
+        $parser = ezcReflectionApi::getDocParserInstance();
+        $parser->parse(self::$docs[2]);
         $tags = $parser->getTags();
         self::assertEquals(1, count($tags));
 
-        $parser = new ezcReflectionDocParser(self::$docs[3]);
-        $parser->parse();
+        $parser = ezcReflectionApi::getDocParserInstance();
+        $parser->parse(self::$docs[3]);
         $tags = $parser->getTags();
         self::assertEquals(2, count($tags));
 
-        $parser = new ezcReflectionDocParser(self::$docs[4]);
-        $parser->parse();
+        $parser = ezcReflectionApi::getDocParserInstance();
+        $parser->parse(self::$docs[4]);
         $tags = $parser->getTags();
         self::assertEquals(3, count($tags));
 
-        $parser = new ezcReflectionDocParser(self::$docs[5]);
-        $parser->parse();
+        $parser = ezcReflectionApi::getDocParserInstance();
+        $parser->parse(self::$docs[5]);
         $tags = $parser->getTags();
         self::assertEquals(0, count($tags));
 
-        $parser = new ezcReflectionDocParser(self::$docs[6]);
-        $parser->parse();
+        $parser = ezcReflectionApi::getDocParserInstance();
+        $parser->parse(self::$docs[6]);
         $tags = $parser->getTags();
         self::assertEquals(6, count($tags));
     }
 
     public function testGetParamTags() {
-        $parser = new ezcReflectionDocParser(self::$docs[0]);
-        $parser->parse();
+        $parser = ezcReflectionApi::getDocParserInstance();
+        $parser->parse(self::$docs[0]);
         $tags = $parser->getParamTags();
         self::assertEquals(0, count($tags));
 
-        $parser = new ezcReflectionDocParser(self::$docs[3]);
-        $parser->parse();
+        $parser = ezcReflectionApi::getDocParserInstance();
+        $parser->parse(self::$docs[3]);
         $tags = $parser->getParamTags();
         self::assertEquals(1, count($tags));
 
-        $parser = new ezcReflectionDocParser(self::$docs[6]);
-        $parser->parse();
+        $parser = ezcReflectionApi::getDocParserInstance();
+        $parser->parse(self::$docs[6]);
         $tags = $parser->getParamTags();
         self::assertEquals(3, count($tags));
         self::assertEquals('test', $tags[0]->getParamName());
@@ -113,15 +113,15 @@ class ezcReflectionezcReflectionDocParserTest extends ezcTestCase
 * @var string
 */
 EOF;
-        $parser = new ezcReflectionDocParser($comment);
-        $parser->parse();
-        $tags = $parser->getVarTags();
+        $parser = ezcReflectionApi::getDocParserInstance();
+        $parser->parse($comment);
+		$tags = $parser->getVarTags();
         self::assertEquals('string', $tags[0]->getType());
     }
 
     public function testGetReturnTags() {
-        $parser = new ezcReflectionDocParser(self::$docs[6]);
-        $parser->parse();
+        $parser = ezcReflectionApi::getDocParserInstance();
+        $parser->parse(self::$docs[6]);
         $tags = $parser->getReturnTags();
 
         self::assertEquals('Hello World', $tags[0]->getDescription());
@@ -129,16 +129,16 @@ EOF;
     }
 
     public function testIsTagged() {
-        $parser = new ezcReflectionDocParser(self::$docs[6]);
-        $parser->parse();
+        $parser = ezcReflectionApi::getDocParserInstance();
+        $parser->parse(self::$docs[6]);
         self::assertTrue($parser->isTagged('return'));
     }
 
     public function testGetShortDescription() {
         $class = new ReflectionClass('TestWebservice');
         $doc = $class->getDocComment();
-        $parser = new ezcReflectionDocParser($doc);
-        $parser->parse();
+        $parser = ezcReflectionApi::getDocParserInstance();
+        $parser->parse($doc);
         $desc = $parser->getShortDescription();
 
         self::assertEquals('This is the short description', $desc);
@@ -147,8 +147,8 @@ EOF;
     public function testGetLongDescription() {
         $class = new ReflectionClass('TestWebservice');
         $doc = $class->getDocComment();
-        $parser = new ezcReflectionDocParser($doc);
-        $parser->parse();
+        $parser = ezcReflectionApi::getDocParserInstance();
+        $parser->parse($doc);
         $desc = $parser->getLongDescription();
 
         $expected = "This is the long description with may be additional infos and much more lines\nof text.\n\nEmpty lines are valide to.\n\nfoo bar";
@@ -158,7 +158,7 @@ EOF;
     public static function suite()
     {
         self::$docs = array();
-        $class = new ReflectionClass('ezcReflectionezcReflectionDocParserTest');
+        $class = new ReflectionClass('ezcReflectionDocParserTest');
         self::$docs[] = $class->getDocComment();
 
         $class = new ReflectionClass('TestMethods');
@@ -169,7 +169,7 @@ EOF;
             self::$docs[] = $method->getDocComment();
         }
 
-        return new PHPUnit_Framework_TestSuite( "ezcReflectionezcReflectionDocParserTest" );
+        return new PHPUnit_Framework_TestSuite( "ezcReflectionDocParserTest" );
     }
 }
 ?>

@@ -35,7 +35,7 @@
     public function __construct($mixed, $parameter) {
         if ($parameter instanceof ReflectionParameter) {
             $this->parameter = $parameter;
-            $this->type = ezcReflectionApi::getInstance()->getTypeByName($mixed);
+            $this->type = ezcReflectionApi::getTypeByName($mixed);
         }
         else {
             parent::__construct($mixed, $parameter);

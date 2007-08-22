@@ -8,7 +8,7 @@
  * @subpackage Tests
  */
 
-class ezcReflectionezcReflectionTypeMapperTest extends ezcTestCase
+class ezcReflectionTypeMapperTest extends ezcTestCase
 {
     public function testIsPrimitive() {
         $ezcReflectionPrimitiveTypes = array('integer', 'int', 'INT', 'float', 'double',
@@ -59,7 +59,7 @@ class ezcReflectionezcReflectionTypeMapperTest extends ezcTestCase
 
     public static function suite()
     {
-         return new PHPUnit_Framework_TestSuite( "ezcReflectionezcReflectionTypeMapperTest" );
+         return new PHPUnit_Framework_TestSuite( "ezcReflectionTypeMapperTest" );
     }
 }
 ?>

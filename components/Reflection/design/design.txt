@@ -23,20 +23,20 @@ ezcReflectionClass
 	getLongDescription. These methods return only the relevant parts of interest
 	from a PHPDoc comment.
 
-	class ExtReflectionClass extends ReflectionClass {
+	class ezcReflectionClass extends ReflectionClass {
 	    public void __construct(string $name)
-	    public ExtReflectionMethod getMethod(string $name)
-	    public ExtReflectionMethod getConstructor()
-	    public ExtReflectionMethod[] getMethods()
-	    public ClassType getParentClass()
-	    public ExtReflectionProperty getProperty(string $name)
-	    public ExtReflectionProperty[] getProperties()
+	    public ezcReflectionMethod getMethod(string $name)
+	    public ezcReflectionMethod getConstructor()
+	    public ezcReflectionMethod[] getMethods()
+	    public ezcReflectionClassType getParentClass()
+	    public ezcReflectionProperty getProperty(string $name)
+	    public ezcReflectionProperty[] getProperties()
 	    public boolean isWebService()
 	    public string getShortDescription()
 	    public string getLongDescription()
 	    public boolean isTagged(string $with)
-	    public PHPDocTag[] getTags(string $name)
-	    public ExtReflectionExtension getExtension()
+	    public ezcReflectionDocTag[] getTags(string $name)
+	    public ezcReflectionExtension getExtension()
 	}
 
 The enhancements to the Reflection API in the classes ezcReflectionFunction,
@@ -44,50 +44,50 @@ ezcReflectionMethod, ezcReflectionParameter, ezcReflectionProperty and
 ezcReflectionExtension are analogue to those made in ezcReflectionClass and have
 a similar behavior.
 
-	class ExtReflectionExtension extends ReflectionExtension {
+	class ezcReflectionExtension extends ReflectionExtension {
 	    public void __construct(string $name)
-	    public ExtReflectionFunction[] getFunctions()
-	    public ExtReflectionClass[] getClasses()
+	    public ezcReflectionFunction[] getFunctions()
+	    public ezcReflectionClass[] getClasses()
 	}
 	
-	class ExtReflectionFunction extends ReflectionFunction {
+	class ezcReflectionFunction extends ReflectionFunction {
 	    public void __construct(string $name)
-	    public ExtReflectionParameter[] getParameters()
-	    public Type getReturnType()
+	    public ezcReflectionParameter[] getParameters()
+	    public ezcReflectionType getReturnType()
 	    public string getReturnDescription()
 	    public boolean isWebmethod()
 	    public string getShortDescription()
 	    public string getLongDescription()
 	    public boolean isTagged(string $with)
-	    public PHPDocTag[] getTags(string $name)
+	    public ezcReflectionDocTag[] getTags(string $name)
 	}
 	
-	class ExtReflectionMethod extends ReflectionMethod {
+	class ezcReflectionMethod extends ReflectionMethod {
 	    public void __construct(mixed class, string name)
-	    public ExtReflectionParameter[] getParameters()
-	    public Type getReturnType()
+	    public ezcReflectionParameter[] getParameters()
+	    public ezcReflectionType getReturnType()
 	    public string getReturnDescription()
 	    public boolean isWebmethod()
 	    public string getShortDescription()
 	    public string getLongDescription()
 	    public boolean isTagged(string $with)
-	    public PHPDocTag[] getTags(string $name)
+	    public ezcReflectionDocTag[] getTags(string $name)
 	    public boolean isMagic()
-	    public ClassType getDeclaringClass()
+	    public ezcReflectionClassType getDeclaringClass()
 	}
 	
-	class ExtReflectionParameter extends ReflectionParameter {
+	class ezcReflectionParameter extends ReflectionParameter {
 	    public void __construct(mixed mixed, mixed parameter)
-	    public Type getType()
-	    public ClassType getClass()
-	    public ExtReflectionFunction getDeclaringFunction()
-	    public ClassType getDeclaringClass()
+	    public ezcReflectionType getType()
+	    public ezcReflectionClassType getClass()
+	    public ezcReflectionFunction getDeclaringFunction()
+	    public ezcReflectionClassType getDeclaringClass()
 	}
 	
-	class ExtReflectionProperty extends ReflectionProperty {
+	class ezcReflectionProperty extends ReflectionProperty {
 	    public void __construct(mixed class, string name)
-	    public Type getType()
-	    public ClassType getDeclaringClass()
+	    public ezcReflectionType getType()
+	    public ezcReflectionClassType getDeclaringClass()
 	}
 
 
@@ -111,7 +111,7 @@ ezcReflectionTypeFactoryImpl
 	class ezcReflection {
 	    public static ezcReflection getInstance()
 	    public void setTypeFactory(ezcReflectionTypeFactory $factory)
-	    public Type getTypeByName(string $typeName)
+	    public ezcReflectionType getTypeByName(string $typeName)
 	}
 
 ezcReflectionTypeMapper
@@ -160,10 +160,10 @@ ezcReflectionClassType
 	ezcReflectionArrayType the ezcReflectionClassType is tightly integrated with
 	the Reflection API.
 
-	class ClassType extends ExtReflectionClass implements Type {
-	    public Type getArrayType()
-	    public Type getMapIndexType()
-	    public Type getMapValueType()
+	class ezcReflectionClassType extends ezcReflectionClass implements ezcReflectionType {
+	    public ezcReflectionType getArrayType()
+	    public ezcReflectionType getMapIndexType()
+	    public ezcReflectionType getMapValueType()
 	    public boolean isArray()
 	    public boolean isClass()
 	    public boolean isPrimitive()
@@ -176,6 +176,10 @@ ezcReflectionClassType
 	}
 
 ezcReflectionDocParser
+	Is an generic documentation parser interface to be able to parse what ever
+	documentation style is used. 
+
+ezcReflectionPhpDocParser
 	This class parses PHPDoc comments and provides retrieved data in the form
 	of annotation objects.
 

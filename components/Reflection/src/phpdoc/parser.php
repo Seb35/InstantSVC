@@ -1,6 +1,6 @@
 <?php
 /**
- * File containing the ezcReflectionDocParser class.
+ * File containing the ezcReflectionPhpDocParser class.
  *
  * @package Reflection
  * @version //autogentag//
@@ -19,7 +19,7 @@
  * @author Stefan Marr <mail@stefan-marr.de>
  * @author Falko Menge <mail@falko-menge.de>
  */
-class ezcReflectionDocParser {
+class ezcReflectionPhpDocParser implements ezcReflectionDocParser {
 	
 	const BEGINNING  = 10;
 	const SHORT_DESC = 0;
@@ -72,15 +72,13 @@ class ezcReflectionDocParser {
     */
     protected $tags;
 
-    /**
-    * @param string $docComment
-    */
-    public function __construct($docComment) {
-        $this->docComment = $docComment;
+    public function __construct() {
         $this->tags = array();
     }
 
-    public function parse() {
+    public function parse($docComment) {
+    	$this->docComment = $docComment;
+    	
         $lines = explode("\n", $this->docComment);
 
         foreach ($lines as $line) {
