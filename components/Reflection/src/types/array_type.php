@@ -119,13 +119,13 @@ class ezcReflectionArrayType extends ezcReflectionAbstractType {
                 if ($posm < $pos) {
                     $typeName = substr($this->typeName, 0, $pos);
                     $this->ezcReflectionArrayType
-                       = ezcReflectionApi::getInstance()->getTypeByName($typeName);
+                       = ezcReflectionApi::getTypeByName($typeName);
                 }
             }
             else {
                 $typeName = substr($this->typeName, 0, $pos);
                 $this->ezcReflectionArrayType
-                   = ezcReflectionApi::getInstance()->getTypeByName($typeName);
+                   = ezcReflectionApi::getTypeByName($typeName);
             }
         }
         if (preg_match('/(.*)(<(.*?)(,(.*?))?>)/', $this->typeName, $matches)) {

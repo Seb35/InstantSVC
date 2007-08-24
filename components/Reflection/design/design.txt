@@ -92,12 +92,20 @@ a similar behavior.
 
 
 ezcReflection
-	A singleton class called ezcReflection is defined which acts as a central
-	entry point and factory for reflection by type name. Therefore it provides
-	methods necessary to generate Reflection Objects e.g. the method
+	A static class called ezcReflection is defined which acts as a central
+	entry point and factory for reflection.
+	It holds a factory for reflection type objects and a factory for
+	documentation parser objects.
+	
 	getTypeByName will return the appropriate type object for a given data type
-	name specified in an annotation. For extensibility it is also possible to
-	set a different factory for type objects
+	name e.g., specified in an annotation.
+	For extensibility it is possible to set a different factory for type objects
+	and implement custom type objects with new features.
+	
+	Currently the ezcReflectionPhpDocParser is used to parse the documentation
+	to gather type information. If another documentation style then PHPDoc is used
+	a new parser can be set with setDocParser. The parser object has to support
+	the clone operation, because each new type object got its own parser object.
 
 ezcReflectionTypeFactory
 	A type factory has to implement the interface ezcReflectionTypeFactory and
@@ -109,10 +117,11 @@ ezcReflectionTypeFactoryImpl
 	mapping for type names provided as strings.
 
 	class ezcReflection {
-	    public static ezcReflection getInstance()
-	    public void setTypeFactory(ezcReflectionTypeFactory $factory)
-	    public ezcReflectionType getTypeByName(string $typeName)
-	}
+	    public static ezcReflectionDocParser getDocParserInstance()
+	    public static setDocParser(ezcReflectionDocParser $docParser)
+	    public void setReflectionTypeFactory(ezcReflectionTypeFactory $factory)
+	    public static ezcReflectionType getTypeByName(string $typeName)
+   	}
 
 ezcReflectionTypeMapper
 	ezcReflectionTypeMapper is a helper class used by the default type factory,
