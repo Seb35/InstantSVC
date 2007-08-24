@@ -26,16 +26,16 @@
 *   - Missing DocTags per element
 *   - used DocTags
 *
+* @TODO: correct folder names
+* @TODO: paths with slashes instead of backslashes
+* @TODO: static analysis should be able to handle multiple class declarations with the same name, although this may be bad design
+*
 * @package    CodeAnalyzer
 * @author     Stefan Marr <mail@stefan-marr.de>
 * @copyright  2006 InstantSVC Team
 * @license    http://www.apache.org/licenses/LICENSE-2.0   Apache License 2.0
 */
 class iscCodeAnalyzer {
-
-    //TODO: correct folder names
-    //TODO: paths with slashes instead of backslashes
-    //TODO: static analysis should be able to handle multiple class declarations with the same name, although this may be bad design
 
 	/**
 	 * @var string
@@ -48,16 +48,15 @@ class iscCodeAnalyzer {
 	protected $statsArray;
 
 	/**
-	 * @var array<string,iscCodeAnalyzerFileDetails>
+	 * @var array(string => iscCodeAnalyzerFileDetails)
 	 */
-	protected $flatStatsArray;
+	protected $flatStatsArray = array();
 
 	/**
 	 * @var array<string,mixed>
 	 */
 	protected $docuFlaws;
 
-    //=======================================================================
     /**
     * @param string $path
     */
@@ -65,15 +64,13 @@ class iscCodeAnalyzer {
         $this->path = $path;
     }
 
-    //=======================================================================
     /**
-    * @return array<string,mixed>
+    * @return array(string=>mixed)
     */
     public function getCodeSummary() {
         return $this->docuFlaws;
     }
 
-    //=======================================================================
     /**
     * @return array<string,mixed>
     */
@@ -81,7 +78,6 @@ class iscCodeAnalyzer {
         return $this->flatStatsArray;
     }
 
-    //=======================================================================
     /**
     * Starts collection of stats
     * Traverses the directory tree and collects statistical data
@@ -93,7 +89,6 @@ class iscCodeAnalyzer {
         $this->inspectFiles(null);
     }
 
-    //=======================================================================
     /**
      * Parse the given directory recursivly
      *
@@ -121,12 +116,11 @@ class iscCodeAnalyzer {
     	}
     }
 
-    //=======================================================================
     /**
      * Convert statsArray to a flat one dimensional array
-     * @param array<string,mixed> $array
+     * @param array(string=>mixed) $array
      * @param string $basekey
-     * @return array<string,mixed>
+     * @return array(string=>mixed)
      */
     protected function flatoutStatsArray($array, $basekey) {
         $result = array();
@@ -155,7 +149,6 @@ class iscCodeAnalyzer {
         return $result;
     }
 
-    //=======================================================================
     /**
      * Collects informations about classes, functions by spawning a new
      * php process for each file
@@ -247,6 +240,7 @@ class iscCodeAnalyzer {
                 @include_once \'ezc/Base/base.php\';
                 @include_once \'Base/base.php\';
                 @include_once \'Base/src/base.php\';
+                
                 function __autoload( $className ) { ezcBase::autoload( $className ); }
                 require_once "'.addslashes(__FILE__).'";
 
@@ -311,19 +305,27 @@ class iscCodeAnalyzer {
     /**
      * Collect summary for given file
      *
-     * @param string $filename
+     * @param string $fileName
      * @return array(string => array)
      */
-    public static function summarizeFile($filename) {
+    public static function summarizeFile($fileName) {
         ob_start();
-        require_once $filename;
+        try {
+        	require_once $fileName;
+        }
+        catch (Exception $e)
+        {
+        	unset($e);
+        }
         ob_end_clean();
+
 
         $classes = array();
         $decClasses = get_declared_classes();
+   
         foreach ($decClasses as $class) {
             $class = new ReflectionClass($class);
-            if ($class->getFileName() == realpath($filename)) {
+            if ($class->getFileName() == realpath($fileName)) {
                 $classes[] = $class->getName();
             }
         }
@@ -333,7 +335,7 @@ class iscCodeAnalyzer {
         $interfaces = get_declared_interfaces();
         foreach ($interfaces as $inter) {
             $inter = new ReflectionClass($inter);
-            if ($inter->getFileName() == realpath($filename)) {
+            if ($inter->getFileName() == realpath($fileName)) {
                 $inters[] = $inter->getName();
             }
         }
@@ -343,7 +345,7 @@ class iscCodeAnalyzer {
         $functions = get_defined_functions();
         foreach ($functions['user'] as $func) {
             $func = new ReflectionFunction($func);
-            if ($func->getFileName() == realpath($filename)) {
+            if ($func->getFileName() == realpath($fileName)) {
         	   $functs[] = $func->getName();
             }
         }
@@ -516,7 +518,7 @@ class iscCodeAnalyzer {
             }
             $max = max(count($class['methods']), $max);
         }
-        $avg = $mCount / count($classes);
+        $avg = (count($classes) > 0)? $mCount / count($classes) : 0;
         return array('min'=>$min, 'avg'=>$avg, 'max'=>$max);
     }
 
@@ -527,33 +529,42 @@ class iscCodeAnalyzer {
 
         $methodCount = 0;
         $mv = self::countClassesSeeingMethods($classes, $methodCount);
-        if ($methodCount > 0 ) {
-            $project['MHF'] = 1 - ($mv / (count($classes) - 1) / $methodCount);
-
-            $inM = self::countInheritedMethods($classes);
-            $project['MIF'] = $inM / $methodCount;
+        if ($methodCount > 0 && count($classes) > 1) {
+        	$project['MHF'] = 1 - ($mv / (count($classes) - 1) / $methodCount);
+        }
+        else {
+        	$project['MHF'] = 1;
         }
 
         $attrCount = 0;
         $av = self::countClassesSeeingProperties($classes, $attrCount);
-        if ($attrCount > 0) {
-            $project['AHF'] = 1 - ($av / (count($classes) - 1) / $attrCount);
+        if ($attrCount > 0 && count($classes) > 1) {
+        	$project['AHF'] = 1 - ($av / (count($classes) - 1) / $attrCount);
         }
+        else {
+        	$project['AHF'] = 1;
+        }
+
+        $inM = self::countInheritedMethods($classes);
+        $project['MIF'] = ($methodCount > 0)? $inM / $methodCount : 0;
+        
 
         $over = self::countOverriddenMethods($classes);
         $posOver = self::countPossibleOverriddes($classes);
-        if ($posOver > 0) {
-            $project['PF'] = ($posOver == 0) ? 0 : $over / $posOver;
-        }
+        $project['PF'] = ($posOver == 0) ? 0 : $over / $posOver;
 
         $project['methods'] = self::collectMethodsStats($classes);
         $project['functions'] = $this->collectFunctionStats();
         $project['classes'] = $this->collectClassStats();
 
-        $project['dbcRatio'] = ($project['classes']['lodbSum'] +
-                                $project['functions']['lodbSum']) /
-                                $project['functions']['locSum'];
-
+        if ($project['functions']['locSum'] > 0) {
+        	$project['dbcRatio'] = ($project['classes']['lodbSum'] +
+            	                    $project['functions']['lodbSum']) /
+                	                $project['functions']['locSum'];
+        }
+        else {
+        	$project['dbcRatio'] = 0;
+        }
 
         $this->docuFlaws['project'] = $project;
     }
@@ -597,7 +608,7 @@ class iscCodeAnalyzer {
         	$locSum += $class['LoC'];
         	$lodbSum += $class['LoDB'];
         }
-        $ditAvg = $ditSum / $cCount;
+        $ditAvg = ($cCount > 0)? $ditSum / $cCount : 0;
         return array('min' => $min, 'max' => $max, 'avg' => $avg,
                      'DITmax' => $ditMax, 'DITavg' => $ditAvg,
                      'leaf' => $leafClasses, 'root' => $rootClasses,
@@ -684,9 +695,16 @@ class iscCodeAnalyzer {
             	$lodbSum += $func['LoDB'];
         	}
         }
-        $locAvg = $locSum / $fCount;
-        $lodbAvg = $lodbSum / $fCount;
-        $paramAvg = $pCount / $fCount;
+        if ($fCount > 0) {
+        	$locAvg = $locSum / $fCount;
+        	$lodbAvg = $lodbSum / $fCount;
+        	$paramAvg = $pCount / $fCount;
+        }
+        else {
+        	$locAvg = 0;
+        	$lodbAvg = 0;
+        	$paramAvg = 0;
+        }
         return array('min' => $min, 'max' => $max, 'avg' => $avg,
                      'paramMin' => $paramMin, 'paramMax' => $paramMax,
                      'paramAvg' => $paramAvg, 'locMin' => $locMin,
@@ -696,7 +714,6 @@ class iscCodeAnalyzer {
                      'lodbSum' => $lodbSum);
     }
 
-    //=======================================================================
     /**
      * Retrieves all information from the class signature
      *
@@ -743,7 +760,6 @@ class iscCodeAnalyzer {
         return $result;
     }
 
-    //=======================================================================
     /**
      * Retrieve all Information about defined properties of a class
      *
@@ -787,7 +803,6 @@ class iscCodeAnalyzer {
         return $result;
     }
 
-    //=======================================================================
     /**
      * Retrieve all information about parameters of a method or a function
      *
@@ -821,8 +836,6 @@ class iscCodeAnalyzer {
     	return $result;
     }
 
-
-    //=======================================================================
     /**
      * Retrieve all information of all methods of a class
      *
@@ -899,7 +912,6 @@ class iscCodeAnalyzer {
         return $result;
     }
 
-    //=======================================================================
     /**
      * Will build summary of all code constructs and their meta data
      *
@@ -912,7 +924,7 @@ class iscCodeAnalyzer {
     public static function summarizeClasses($classes) {
         $result = array();
         foreach ($classes as $className) {
-            $class = new iscReflectionClassType($className);
+            $class = new ezcReflectionClassType($className);
 
             $result[$className] = self::summarizeClassSignature($class);
             $result[$className]['interfaceCount'] = count($result[$className]['interfaces']);
@@ -967,9 +979,9 @@ class iscCodeAnalyzer {
     public static function summarizeFunctions($functions) {
         $functs = array();
         foreach ($functions as $funcName) {
-        	$func = new iscReflectionFunction($funcName);
+        	$func = new ezcReflectionFunction($funcName);
         	$functs[$funcName]['comment'] = (strlen($func->getDocComment()) > 10);
-            $functs[$funcName]['file'] = $func->getFileName();
+        	$functs[$funcName]['file'] = $func->getFileName();
             $functs[$funcName]['LoDB'] = substr_count($func->getDocComment(), "\n");
             $functs[$funcName]['LoC'] = $func->getEndLine() - $func->getStartLine();
 

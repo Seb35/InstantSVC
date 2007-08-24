@@ -10,6 +10,17 @@
 
 class ezcCodeAnalyzerTest extends ezcTestCase
 {
+	public function testSummarizeFile() {
+		$result = iscCodeAnalyzer::summarizeFile(dirname(__FILE__).'/test_files/dependency/depclass.php');
+		self::assertEquals(1, count($result['classes']));
+		self::assertEquals(0, count($result['functions']));
+        self::assertEquals(0, count($result['interfaces']));
+        
+        $result = iscCodeAnalyzer::summarizeFile(dirname(__FILE__).'/test_files/dependency/class.php');
+		self::assertEquals(1, count($result['classes']));
+		self::assertEquals(2, count($result['functions']));
+        self::assertEquals(0, count($result['interfaces']));
+	}
 
     public function testCollect_On_LoadDirFolder() {
         $ca = new iscCodeAnalyzer(dirname(__FILE__).'/test_files/load_dir');

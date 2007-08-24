@@ -20,11 +20,9 @@
  * @license    http://www.apache.org/licenses/LICENSE-2.0  Apache License 2.0
  */
 class iscCodeAnalyzerClassLoader {
+	
+	private function __construct() {}
 
-    //=======================================================================
-    private function __construct() {}
-
-    //=======================================================================
     /**
      * Load php-files in the given directory recursivly
      * @param string $path
@@ -48,8 +46,6 @@ class iscCodeAnalyzerClassLoader {
         }
     }
 
-
-    //=======================================================================
     /**
      * Includes a file if it seams to be a php file.
      * All files without parsing errors are included.
@@ -63,18 +59,19 @@ class iscCodeAnalyzerClassLoader {
                 //called from apache/none-cli to prevent console popup's
                 //if (ezcSystemInfo::getInstance()->osType == 'win32') {
                 //}
-
+                
                 exec( 'php -l ' . escapeshellarg( $file ), $output, $return );
-
-                //if no parsing error occured, file can be included
+	
+	                //if no parsing error occured, file can be included
                 if ( $return == 0 ) {
-                    ob_start();
+                	ob_start();
                     include_once( $file );
                     ob_end_clean();
                 }
             }
             catch(Exception $e) {
                 //nothing to do with exceptions here
+                unset($e);
             }
         }
     }

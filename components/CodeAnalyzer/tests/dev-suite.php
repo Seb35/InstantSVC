@@ -2,6 +2,7 @@
 error_reporting(E_ALL | E_STRICT);
 
 require_once 'ezc/Base/base.php';
+
 //set_include_path( realpath(dirname(__FILE__) . '/../..') . PATH_SEPARATOR . ini_get( "include_path" )  );
 //require_once 'Base/src/base.php';
 function __autoload( $className ) { ezcBase::autoload( $className ); }
