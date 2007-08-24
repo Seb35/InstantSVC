@@ -1,0 +1,70 @@
+InstantSVC: Code Tools, README
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+For working with large PHP applications some tools to check source metrics
+are necessary to keep an idea of the overall code quality beside automated
+unit tests.
+ 
+Design description
+------------------
+
+The code tools are build on top of the CodeAnalyzer component.
+They provided various functionality in terms of quality hints
+and problem detection on source code level.
+
+check-docuflaws
+	If your using PHPDoc to comment your code, this tool will help
+	you to find missing or incomplete comments.
+	It checks whether all code structures are properly documented and
+	prints out all found flaws.
+	
+	Usage: checkDocuFlaws <SOURCE_FOLDER> [-w] [-wm]
+         -w    only webservices will be listed
+         -wm   only web- and rest-methods will be listed
+    
+    The options -w and -wm can be used to report only flaws in 
+    web service code.
+    
+codestats-report
+	This reporting tool calculates various code metrics and prints out
+	a HTML report.
+	
+	Usage: $ codestats-report.php [-h] [-s]  [[--] <args>]
+	Colects stats and metrics for a given source tree or file.
+
+		-h / --help     Show this help.
+		-s / --summary  Only Summary  
+	
+	With e.g., php codestats-report.php . > report.html
+	a report of code in the current directory and all subdirectories
+	is created and written into the file report.html.
+	
+	The tool is using the file tpls\codestats.tpl as a template.
+	If desired, this template could be easily customized.
+	
+interface-def
+	This tool generates an interface overview for a given file. All classes and functions
+	inside these file will be printed like in the php.net documentation.
+	
+	Usage: $ interface-def.php <file> [outputfile]
+	
+	Output file is optional, if omitted, results are written to stdout.
+	 
+
+Deprecated Tools
+----------------
+
+These tools are out dated and are not maintained any longer because
+they are build with wrong the assumptions in mind to work on PHP 4.0 code
+with hard source file dependencies using require and include.
+
+The tools should do their job for this kind of code, but because of the
+security flaws, they come with, they are not suggested to be used.
+Keep in mind that to verify the source base with these tools, all files
+are included in one php process and all executable code is processed
+without filtering problematic methods out in any way. 
+ 
+Deprecated:
+	- checkDependencies
+	- checkDependecy
+	- checkSourceTree
