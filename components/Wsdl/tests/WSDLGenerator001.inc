@@ -8,7 +8,12 @@ error_reporting( E_ALL | E_STRICT );
 ini_set( 'include_path', getcwd(). PATH_SEPARATOR . dirname( __FILE__ ) . '/../..' . PATH_SEPARATOR . ini_get( 'include_path' ) );
 
 // configuring the ezc autoloading
-require_once("Base/src/base.php");
+//require_once("Base/src/base.php");
+require_once 'ezc/Base/base.php';
+
+require_once dirname(__FILE__).'/../src/interfaces/wsdl_generator_plugin.php';
+require_once dirname(__FILE__).'/../src/wsdl_generator.php';
+
 function __autoload( $className )
 {
     if ( strpos( $className, "_" ) !== false )
@@ -34,7 +39,7 @@ $service_access_point = 'test://';
 $namespace = 'http://www.example.org/webservices/' . $testCase;
 $typeNamespace = 'http://www.example.org/webservices/' . $testCase . '/types';
 
-$myWSDLGenerator = new isvcWsdlGenerator(
+$myWSDLGenerator = new iscWsdlGenerator(
     $classname,
     $service_access_point,
     $namespace,

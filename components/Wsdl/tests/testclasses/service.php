@@ -16,7 +16,7 @@
 //***************************************************************************
 
 //***** imports *************************************************************
-require_once 'class.Foo.php';
+require_once 'foo.php';
 
 /**
  * class for testing WSDL generation for methods with different parameter and return types
@@ -28,7 +28,7 @@ require_once 'class.Foo.php';
  * @license    www.apache.org/licenses/LICENSE-2.0   Apache License 2.0
  *
  */
-class WSDLGeneratorTest {
+class Service {
 
     //=========================================================================
     /**

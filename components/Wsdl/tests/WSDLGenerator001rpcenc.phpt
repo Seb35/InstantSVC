@@ -4,7 +4,7 @@ WSDLGenerator 001 (rpc/enc): HelloWorld->sayHello()
 <?php
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4 filetype=php: */
 
-require_once 'testclasses/class.HelloWorld.php';
+require_once 'testclasses/hello_world.php';
 $classname = 'HelloWorld';
 $soapBinding = 2;
 

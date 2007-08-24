@@ -4,9 +4,9 @@ WSDLGenerator 003 (doc/lit): WSDLGeneratorTest->duplicateFoo(Foo)
 <?php
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4 filetype=php: */
 
-require_once 'testclasses/class.Foo.php';
-require_once 'testclasses/class.WSDLGeneratorTest.php';
-$classname = 'WSDLGeneratorTest';
+require_once 'testclasses/foo.php';
+require_once 'testclasses/service.php';
+$classname = 'Service';
 $soapBinding = 0;
 
 require_once 'WSDLGenerator001.inc';
