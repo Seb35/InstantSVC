@@ -1,31 +1,23 @@
 <?php
-//***************************************************************************
-//***************************************************************************
-//**                                                                       **
-//** isvcWsdlGenerator                                                     **
-//**                                                                       **
-//** Project: Web Services Description Generator                           **
-//**                                                                       **
-//** @package    Wsdl                                                      **
-//** @author     Gregor Gabrysiak <gregor_abrak at web dot de>             **
-//** @author     Falko Menge <mail@falko-menge.de>                         **
-//** @author     Stefan Marr <mail@stefan-marr.de>                         **
-//** @copyright  2005-2006 ...                                             **
-//** @license    www.apache.org/licenses/LICENSE-2.0   Apache License 2.0  **
-//**                                                                       **
-//***************************************************************************
-//***************************************************************************
-
-//***** isvcWsdlGenerator *******************************************************
 /**
+ * File containing the iscWsdlGenerator class.
+ *
+ * @package Reflection
+ * @version //autogentag//
+ * @copyright Copyright (C) 2007 eZ systems as. All rights reserved.
+ * @license http://ez.no/licenses/new_bsd New BSD License
+ */
+
+/**
+ * Implements a generator for web service descriptions
+ * 
+ * @version //autogentag//
  * @package    Wsdl
  * @author     Gregor Gabrysiak <gregor_abrak at web dot de>
  * @author     Falko Menge <mail@falko-menge.de>
  * @author     Stefan Marr <mail@stefan-marr.de>
- * @copyright  2006 ...
- * @license    http://www.apache.org/licenses/LICENSE-2.0  Apache License 2.0
  */
-class isvcWsdlGenerator
+class iscWsdlGenerator
 {
 	const DOCUMENT_WRAPPED = 0;
     const RPC_LITERAL = 1;
@@ -61,7 +53,7 @@ class isvcWsdlGenerator
      */
     private $myFunctionNames;
     /**
-     * @var isvcWsdlGeneratorPlugin
+     * @var iscWsdlGeneratorPlugin
      */
     private $plugin;
     /**
@@ -113,7 +105,6 @@ class isvcWsdlGenerator
      */
     private $service;
 
-    //==========================================================================
     /**
      * The Constructor stores the necessary parameters into global attributes.
      *
@@ -127,7 +118,7 @@ class isvcWsdlGenerator
         $serviceName,
         $serviceAccessPointURL,
         $namespace,
-        $soapBinding = isvcWsdlGenerator::DOCUMENT_WRAPPED)
+        $soapBinding = iscWsdlGenerator::DOCUMENT_WRAPPED)
     {
         // to avoid invalid arguments
         if (empty($serviceName))
@@ -146,12 +137,12 @@ class isvcWsdlGenerator
         $this->bindingStyle = 'document';
         $this->bindingUse = 'literal';
 
-        if (($soapBinding == 1) or ($soapBinding == isvcWsdlGenerator::RPC_LITERAL))
+        if (($soapBinding == 1) or ($soapBinding == iscWsdlGenerator::RPC_LITERAL))
         {
             $this->bindingStyle = 'rpc';
             $this->bindingUse = 'literal';
         }
-        elseif (($soapBinding == 2) or ($soapBinding == isvcWsdlGenerator::RPC_ENCODED))
+        elseif (($soapBinding == 2) or ($soapBinding == iscWsdlGenerator::RPC_ENCODED))
         {
             $this->bindingStyle = 'rpc';
             $this->bindingUse = 'encoded';
@@ -166,7 +157,6 @@ class isvcWsdlGenerator
         $this->xmlns['xsd'] = 'http://www.w3.org/2001/XMLSchema';
     }
 
-    //==========================================================================
     /**
      * This function is used to set up the DOM-Tree and to make the important
      * nodes accessible by assigning global variables to them. Furthermore,
@@ -236,7 +226,6 @@ class isvcWsdlGenerator
         $this->service->setAttribute('name',$this->serviceName);
     }
 
-    //==========================================================================
     /**
      * This method is useful to get the order of the DOMNodes like they should
      * be. That means, that we wait till all the message elements are finished,
@@ -255,7 +244,7 @@ class isvcWsdlGenerator
             $this->treeFinished = true;
         }
     }
-    //==========================================================================
+
     /**
      * This method enables the usage of a plugin. An instance of the plugin has
      * to be set. These plugins may implement different ideas how to sort out 
@@ -263,12 +252,11 @@ class isvcWsdlGenerator
      *
      * @return void
      */    
-    public function setPlugin(isvcWsdlGeneratorPlugin $pluginInstance)
+    public function setPlugin(iscWsdlGeneratorPlugin $pluginInstance)
     {
         $this->plugin = $pluginInstance;
     }
 
-    //==========================================================================
     /**
      * This function is used to start the generation of a WSDL-file for the
      * class whose name is given.
@@ -298,7 +286,7 @@ class isvcWsdlGenerator
             $this->myComplexTypes[] = null;
 
             // retrieving information about the methods of the class
-            $myExtReflectionClass = new iscReflectionClass($classname);
+            $myExtReflectionClass = new ezcReflectionClass($classname);
             $myMethods = $myExtReflectionClass->getMethods();
 
             if ($this->plugin)
@@ -325,7 +313,6 @@ class isvcWsdlGenerator
         }
     }
 
-    //==========================================================================
     /**
      * This method enables the use of a seperate namespace for the schema. This
      * namespace has to be set before setClass() or addFunction() were called.
@@ -348,7 +335,6 @@ class isvcWsdlGenerator
         }
     }
 
-    //==========================================================================
     /**
      * The generation of the WSDL-file is step by step for each function. That's
      * why it is possible to pass a set of functions step by step to this
@@ -372,7 +358,7 @@ class isvcWsdlGenerator
                     $this->generateTree();
                 }
 
-                $myExtReflectionFunction = new ExtReflectionFunction($functionName);
+                $myExtReflectionFunction = new ezcReflectionFunction($functionName);
 
                 if ($this->addOperation($myExtReflectionFunction))
                 {
@@ -396,7 +382,6 @@ class isvcWsdlGenerator
         }
     }
 
-    //==========================================================================
     /**
      * This method processes methods passed to it by addFunction() and
      * setClass(). Depending on Style and Use, different methods are called to
@@ -404,7 +389,7 @@ class isvcWsdlGenerator
      * The method returns TRUE if the processing was successful, otherwise,
      * FALSE is returned.
      *
-     * @param ExtReflectionMethod $method
+     * @param ezcReflectionMethod $method
      * @return boolean
      */
     protected function addOperation($method)
@@ -434,14 +419,13 @@ class isvcWsdlGenerator
         return true;
     }
 
-    //==========================================================================
     /**
      * This method generates two messages for each function - one for the
      * request, send from client to Web Server, and for the response, which
      * is sent from the Web Server to theclient who invoked the function.
      * Like the name says, the method is used for RPC/LITERAL and ENCODED.
      *
-     * @param ExtReflectionMethod $method
+     * @param ezcReflectionMethod $method
      * @return boolean
      */
     protected function generateMessageRPC($method)
@@ -502,7 +486,6 @@ class isvcWsdlGenerator
         return true;
     }
 
-    //==========================================================================
     /**
      * A schema is generated for the type given. It is possible, that this
      * method needs to be called recursively to create schema for more complex
@@ -511,7 +494,7 @@ class isvcWsdlGenerator
      * used in the WSDL-file as "type" of the given parameter.
      * This method generates schemas for RPC/ENCODED.
      *
-     * @param ExtReflectionType $type
+     * @param ezcReflectionType $type
      * @return void
      */
     protected function generateEncodedSchema($type)
@@ -687,7 +670,6 @@ class isvcWsdlGenerator
         return $returnValue;
     }
 
-    //==========================================================================
     /**
      * A schema is generated for the type given. It is possible, that this
      * method needs to be called recursively to create schema for more complex
@@ -696,7 +678,7 @@ class isvcWsdlGenerator
      * used in the WSDL-file as "type" of the given parameter.
      * This method generates schemas for RPC/ENCODED.
      *
-     * @param ExtReflectionType $type
+     * @param ezcReflectionType $type
      * @param boolean $usePrefix
      * @param tring $prefix namespace prefix for names of complex types (for simple types it will be `xsd')
      * @return void
@@ -753,7 +735,7 @@ class isvcWsdlGenerator
                 // generate schema for the array type
                 $arrayType = $type->getArrayType();
                 $this->generateLiteralSchema($arrayType);
-                // obtain the schema for the array from the Extended Reflection API
+                // obtain the schema for the array from the extended Reflection API
                 $complexTypeAndContent = $type->getXmlSchema($this->dom, $this->xmlns['xsd']);
                 $complexTypeAndContent = $this->schema->appendChild($complexTypeAndContent);
                 $this->myComplexTypes[] = $name;
@@ -766,7 +748,7 @@ class isvcWsdlGenerator
             //*/
 
             /*
-            // old Code which doesn't use all Features of the Extended Reflection API
+            // old Code which doesn't use all Features of the extended Reflection API
             $arrayType = $type->getArrayType();
             $complexTypeName = 'ArrayOf' . $arrayType->toString();
 
@@ -881,13 +863,12 @@ class isvcWsdlGenerator
         return $returnValue;
     }
 
-    //==========================================================================
     /**
      * This method is used for creating the necessary request schema inside the
      * complexType element for the request message parameter list.
      * It's used for Document Literal Wrapped
      *
-     * @param ExtReflectionMethod $method
+     * @param ezcReflectionMethod $method
      * @return void
      */
     protected function generateComplexTypeRequestDocLitW($method)
@@ -943,13 +924,12 @@ class isvcWsdlGenerator
         return true;
     }
 
-    //==========================================================================
     /**
      * The method is used for creating the necessary response schema inside the
      * complexType element for the response message parameter list.
      * Returns TRUE if successful.
      *
-     * @param ExtReflectionMethod $method
+     * @param ezcReflectionMethod $method
      * @return void
      */
     protected function generateComplexTypeResponseDocLitW($method)
@@ -982,7 +962,6 @@ class isvcWsdlGenerator
         return true;
     }
 
-    //==========================================================================
     /**
      * This function generates two messages for each function - one for the
      * request, send from client to Web Server and also the response, which
@@ -991,7 +970,7 @@ class isvcWsdlGenerator
      * exchanged, their type and their order.
      * This function is used for DOCUMENT LITERAL WRAPPED.
      *
-     * @param ExtReflectionMethod $method
+     * @param ezcReflectionMethod $method
      * @return boolean
      */
     protected function generateMessageDocLit($method)
@@ -1031,7 +1010,6 @@ class isvcWsdlGenerator
         return true;
     }
 
-    //==========================================================================
     /**
      * For each method, an operation has to be added inside the PortType-element.
      * The comments retrieved by the policyPlugIn are added as documentation. If
@@ -1039,7 +1017,7 @@ class isvcWsdlGenerator
      * be completed nevertheless by editing the WSDL-file by yourself.
      * This method is invoked for encoded ans literal as well.
      *
-     * @param ExtReflectionMethod $method
+     * @param ezcReflectionMethod $method
      * @return void
      */
     protected function generatePorttypeOperation($method)
@@ -1078,12 +1056,11 @@ class isvcWsdlGenerator
         $output = $operation->appendChild($output);
     }
 
-    //==========================================================================
     /**
      * The binding is generated. This includes the bindingStyle and the
      * bindingUse.
      *
-     * @param ExtendedReflectionMethodObject $method
+     * @param ezcReflectionMethod $method
      * @return void
      */
     protected function generateBinding($method)
@@ -1122,7 +1099,6 @@ class isvcWsdlGenerator
         $soapout = $output->appendChild($soapout);
     }
 
-    //==========================================================================
     /**
      * The method generates the serviceelement for the WSDL-file in which the
      * port is bound to the appropriate binding.
@@ -1141,7 +1117,6 @@ class isvcWsdlGenerator
         $soap = $port->appendChild($soap);
     }
 
-    //==========================================================================
     /**
      * Returns the DOM-Tree for further use by the user.
      * If necessary, the DOM-Tree is finished before (all nodes are finally
@@ -1155,7 +1130,6 @@ class isvcWsdlGenerator
         return $this->dom;
     }
 
-    //==========================================================================
     /**
      * Returns the DOM-Tree converted into a string.
      * If necessary, the DOM-Tree is finished before (all nodes are finally
@@ -1169,7 +1143,6 @@ class isvcWsdlGenerator
         return $this->dom->saveXML();
     }
 
-    //==========================================================================
     /**
      * Saves the content of the WSDL to the given filename.
      * If necessary, the DOM-Tree is finished before (all nodes are finally
@@ -1193,7 +1166,6 @@ class isvcWsdlGenerator
         // which returns the number of bits written or FALSE
     }
 
-    //==========================================================================
     /**
      * The WSDL-content is saved by calling the method saveToFile() and
      * afterwards, the saved file is used to start the SOAP server to handle

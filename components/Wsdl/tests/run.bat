@@ -1,0 +1,1 @@
+@phpunit iscWsdlSuite dev-suite.php
