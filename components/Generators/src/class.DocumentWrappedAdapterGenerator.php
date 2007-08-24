@@ -13,8 +13,6 @@
 //***************************************************************************
 //***************************************************************************
 
-require_once dirname(__FILE__).'/../../../trunk/libs/misc/class.file.php';
-
 //***** DocumentWrappedAdapterGenerator *************************************
 /**
  * generates adapter classes for document-literal Web Services.
@@ -93,7 +91,7 @@ class DocumentWrappedAdapterGenerator {
             throw new Exception('Class not found '.$className);
         }
 
-        $myExtReflectionClass = new iscReflectionClass($this->className);
+        $myExtReflectionClass = new ezcReflectionClass($this->className);
 
         $this->classFile = $myExtReflectionClass->getFileName();
 
@@ -219,7 +217,8 @@ class DocumentWrappedAdapterGenerator {
         $path = $outputFolder . '/' . $fileName;
 
         if ($requireDependingClass) {
-            $file = File::absolutePathToRelativePath($outputFolder, $this->classFile);
+        	//$file = File::absolutePathToRelativePath($outputFolder, $this->classFile);
+        	$file = ezcFile::calculateRelativePath($outputFolder, $this->classFile);
             $req = 'require_once(\''.$file.'\');'."\n\n";
         }
         else {
