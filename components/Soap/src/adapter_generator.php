@@ -1,31 +1,15 @@
 <?php
-//***************************************************************************
-//***************************************************************************
-//**                                                                       **
-//** DocumentWrappedAdapterGenerator                                       **
-//**                                                                       **
-//** Project: Web Services Description Generator                           **
-//**                                                                       **
-//** @author     Falko Menge <mail@falko-menge.de>                         **
-//** @copyright  2006 ...                                                  **
-//** @license    www.apache.org/licenses/LICENSE-2.0   Apache License 2.0  **
-//**                                                                       **
-//***************************************************************************
-//***************************************************************************
-
-//***** DocumentWrappedAdapterGenerator *************************************
 /**
- * generates adapter classes for document-literal Web Services.
+ * Generates adapter classes for document-literal Web Services.
  *
  * The generated classes will make the unwrapping arguments and the
  * wrapping of return values.
  *
  * @example
  * <code>
- *   require_once 'class.MyClass.php';
- *   require_once 'class.DocumentWrappedAdapterGenerator.php';
- *   $myDocumentWrappedAdapterGenerator = new DocumentWrappedAdapterGenerator('MyClass', NULL, 'MyClassDocumentWrappedAdapter');
- *   $adapterClassFile = $myDocumentWrappedAdapterGenerator->saveToFile('./', 'class.MyClassDocumentWrappedAdapter.php');
+ *   require_once 'my_class.php';
+ *   $generator = new iscSoapAdapterGenerator('MyClass', NULL, 'MyClassDocumentWrappedAdapter');
+ *   $adapterClassFile = $generator->saveToFile('./', 'adapter.php');
  *
  *   require_once $adapterClassFile;
  *   $server = new SoapServer('./service.wsdl');
@@ -35,22 +19,22 @@
  *
  * @example
  * <code>
- *   require_once 'class.MyClass.php';
- *   require_once 'class.DocumentWrappedAdapterGenerator.php';
- *   $myDocumentWrappedAdapterGenerator = new DocumentWrappedAdapterGenerator('MyClass');
- *   eval($myDocumentWrappedAdapterGenerator->getAdapterClass());
+ *   require_once 'my_class.php';
+ *   $generator = new iscSoapAdapterGenerator('MyClass');
+ *   eval($generator->getAdapterClass());
  *
  *   $server = new SoapServer('./service.wsdl');
- *   $server->setClass($myDocumentWrappedAdapterGenerator->getAdapterClassName());
+ *   $server->setClass($generator->getAdapterClassName());
  *   $server->handle();
  * </code>
  *
- * @package    libs.generator
+ * @package    Soap
  * @author     Falko Menge <mail@falko-menge.de>
+ * @author     Stefan Marr <mail@stefan-marr.de>
  * @copyright  2006 ...
  * @license    http://www.apache.org/licenses/LICENSE-2.0   Apache License 2.0
  */
-class DocumentWrappedAdapterGenerator {
+class iscSoapAdapterGenerator {
 
     /**
      * @var string
@@ -72,7 +56,6 @@ class DocumentWrappedAdapterGenerator {
      */
     private $adapterClass;
 
-    //=======================================================================
     /**
      * generates adapter classes for document-literal Web Services.
      *
@@ -181,9 +164,8 @@ class DocumentWrappedAdapterGenerator {
         $this->adapterClass = $gen;
     }
 
-    //=======================================================================
     /**
-     * returns the generated php code for the adapter class
+     * Returns the generated php code for the adapter class
      *
      * @return string generated php code for the adapter class
      */
@@ -191,9 +173,8 @@ class DocumentWrappedAdapterGenerator {
         return $this->adapterClass;
     }
 
-    //=======================================================================
     /**
-     * returns name of the generated adapter class
+     * Returns name of the generated adapter class
      *
      * @return string name of the generated adapter class
      */
@@ -201,9 +182,8 @@ class DocumentWrappedAdapterGenerator {
         return $this->adapterClassName;
     }
 
-    //=======================================================================
     /**
-     * writes the generated php code for the adapter class into a file
+     * Writes the generated php code for the adapter class into a file
      *
      * @param string $outputFolder folder for the generated php file
      * @param string $fileName name for the generated php file
@@ -229,9 +209,8 @@ class DocumentWrappedAdapterGenerator {
         return $path;
     }
 
-    //=======================================================================
     /**
-     * generates a name for an adapter class based on the name of the original class
+     * Generates a name for an adapter class based on the name of the original class
      *
      * @param string $classname name of the original class
      * @return string filename for an adapter class
@@ -240,7 +219,6 @@ class DocumentWrappedAdapterGenerator {
         return $classname . 'DocumentWrappedAdapter';
     }
 
-    //=======================================================================
     /**
      * generates a filename for a class based on the name of the class
      *

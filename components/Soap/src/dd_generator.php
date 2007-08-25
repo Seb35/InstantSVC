@@ -25,7 +25,7 @@ require_once(dirname(__FILE__).'/../../../trunk/libs/misc/class.file.php');
  * @copyright  2006 Stefan Marr
  * @license    http://www.apache.org/licenses/LICENSE-2.0  Apache License 2.0
  */
-class SoapDeploymentDescriptorGenerator {
+class iscSoapDdGenerator {
 
     /**
      * @var array<string, array<string, string[2]>>
