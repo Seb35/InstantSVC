@@ -25,7 +25,7 @@ class ezcCodeAnalyzerFileDetailsTest extends ezcTestCase
                                                '/test_files/test.txt');
         self::assertEquals( realpath(dirname(__FILE__).'/test_files/test.txt'),
                             $file->fileName );
-        self::assertEquals( 83, $file->fileSize );
+        self::assertEquals( 79, $file->fileSize );
         self::assertEquals( 5, $file->linesOfCode );
         self::assertEquals( 'text/plain', $file->mimeType );
     }
