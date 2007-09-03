@@ -17,72 +17,72 @@
 
 //***** iscCodeAnalyzer *****************************************************
 /**
-* searchs through source tree and collects infos about found classes
-* and files
-*
-* Some basic statistics are collected:
-*   - LoC
-*   - count of elements (classes, methods, ...)
-*   - Missing DocTags per element
-*   - used DocTags
-*
-* @TODO: correct folder names
-* @TODO: paths with slashes instead of backslashes
-* @TODO: static analysis should be able to handle multiple class declarations with the same name, although this may be bad design
-*
-* @package    CodeAnalyzer
-* @author     Stefan Marr <mail@stefan-marr.de>
-* @copyright  2006 InstantSVC Team
-* @license    http://www.apache.org/licenses/LICENSE-2.0   Apache License 2.0
-*/
+ * searchs through source tree and collects infos about found classes
+ * and files
+ *
+ * Some basic statistics are collected:
+ *   - LoC
+ *   - count of elements (classes, methods, ...)
+ *   - Missing DocTags per element
+ *   - used DocTags
+ *
+ * @TODO: correct folder names
+ * @TODO: paths with slashes instead of backslashes
+ * @TODO: static analysis should be able to handle multiple class declarations with the same name, although this may be bad design
+ *
+ * @package    CodeAnalyzer
+ * @author     Stefan Marr <mail@stefan-marr.de>
+ * @copyright  2006 InstantSVC Team
+ * @license    http://www.apache.org/licenses/LICENSE-2.0   Apache License 2.0
+ */
 class iscCodeAnalyzer {
 
-	/**
-	 * @var string
-	 */
-	protected $path;
-
-	/**
-	 * @var array<string,mixed>
-	 */
-	protected $statsArray;
-
-	/**
-	 * @var array(string => iscCodeAnalyzerFileDetails)
-	 */
-	protected $flatStatsArray = array();
-
-	/**
-	 * @var array<string,mixed>
-	 */
-	protected $docuFlaws;
+    /**
+     * @var string
+     */
+    protected $path;
 
     /**
-    * @param string $path
-    */
+     * @var array<string,mixed>
+     */
+    protected $statsArray;
+
+    /**
+     * @var array(string => iscCodeAnalyzerFileDetails)
+     */
+    protected $flatStatsArray = array();
+
+    /**
+     * @var array<string,mixed>
+     */
+    protected $docuFlaws;
+
+    /**
+     * @param string $path
+     */
     public function __construct($path = '.') {
         $this->path = $path;
     }
 
     /**
-    * @return array(string=>mixed)
-    */
+     * @return array(string=>mixed)
+     */
     public function getCodeSummary() {
         return $this->docuFlaws;
     }
 
     /**
-    * @return array<string,mixed>
-    */
+     * @return array<string,mixed>
+     */
     public function getStats() {
         return $this->flatStatsArray;
     }
 
     /**
-    * Starts collection of stats
-    * Traverses the directory tree and collects statistical data
-    * Doesn't include any file in current php process
-    */
+     * Starts collection of stats
+     * Traverses the directory tree and collects statistical data
+     * Doesn't include any file in current php process
+     */
     public function collect() {
         $this->parseDir($this->path, $this->statsArray);
         $this->flatStatsArray = $this->flatoutStatsArray($this->statsArray, '');
@@ -96,8 +96,8 @@ class iscCodeAnalyzer {
      * @param array $statsArray
      */
     protected function parseDir($path, &$statsArray) {
-    	if (is_dir($path)) {
-    	    if ($dir = opendir($path)) {
+        if (is_dir($path)) {
+            if ($dir = opendir($path)) {
                 while (($file = readdir($dir)) !== false) {
                     if ($file != '..' && $file != '.' &&
                         $file != '.svn' && $file != 'CVS') {
@@ -112,8 +112,8 @@ class iscCodeAnalyzer {
                     }
                 }
                 closedir($dir);
-    	    }
-    	}
+            }
+        }
     }
 
     /**
@@ -128,23 +128,23 @@ class iscCodeAnalyzer {
         $dirDetails->mimeType = 'folder';
         $result[$basekey] = $dirDetails;
         foreach ($array as $key => $value) {
-        	if (is_array($value)) {
-        	    $r = $this->flatoutStatsArray($value, $key);
-        	    $first = true;
-        	    foreach ($r as $k => $v) {
-        	        if ($first) {
-        	            $first = false;
-        	            $dirDetails->fileSize += $v->fileSize;
-        	            $dirDetails->linesOfCode += $v->linesOfCode;
-        	        }
+            if (is_array($value)) {
+                $r = $this->flatoutStatsArray($value, $key);
+                $first = true;
+                foreach ($r as $k => $v) {
+                    if ($first) {
+                        $first = false;
+                        $dirDetails->fileSize += $v->fileSize;
+                        $dirDetails->linesOfCode += $v->linesOfCode;
+                    }
                     $result[$basekey.'\\'.$k] = $v;
-        	    }
-        	}
-        	else {
-        	    $result[$basekey.'\\'.$key] = $value;
-        	    $dirDetails->fileSize += $value->fileSize;
-        	    $dirDetails->linesOfCode += $value->linesOfCode;
-        	}
+                }
+            }
+            else {
+                $result[$basekey.'\\'.$key] = $value;
+                $dirDetails->fileSize += $value->fileSize;
+                $dirDetails->linesOfCode += $value->linesOfCode;
+            }
         }
         return $result;
     }
@@ -324,11 +324,11 @@ class iscCodeAnalyzer {
     public static function summarizeFile($fileName) {
         ob_start();
         try {
-        	require_once $fileName;
+            require_once $fileName;
         }
         catch (Exception $e)
         {
-        	unset($e);
+            unset($e);
         }
         ob_end_clean();
 
@@ -359,7 +359,7 @@ class iscCodeAnalyzer {
         foreach ($functions['user'] as $func) {
             $func = new ReflectionFunction($func);
             if ($func->getFileName() == realpath($fileName)) {
-        	   $functs[] = $func->getName();
+               $functs[] = $func->getName();
             }
         }
         $functs = self::summarizeFunctions($functs);
@@ -384,23 +384,23 @@ class iscCodeAnalyzer {
         $methodCount = 0;
         $classCount = count($classes);
         foreach ($classes as $className => $class) {
-        	foreach ($class['methods'] as $method) {
-        		++$methodCount;
+            foreach ($class['methods'] as $method) {
+                ++$methodCount;
 
-        		//simple
-        		if ($method['isPublic']) {
+                //simple
+                if ($method['isPublic']) {
                     $methodsVisibleToOthers += $classCount - 1;
                 }
 
-        		//nothing
-        		if ($method['isPrivate']) { }
+                //nothing
+                if ($method['isPrivate']) { }
 
-        		//complicated
+                //complicated
                 if ($method['isProtected']) {
                     $methodsVisibleToOthers += self::countSubclasses($classes,
                                                                     $className);
                 }
-        	}
+            }
         }
         return $methodsVisibleToOthers;
     }
@@ -421,22 +421,22 @@ class iscCodeAnalyzer {
         $propCount = 0;
         $classCount = count($classes);
         foreach ($classes as $className => $class) {
-        	foreach ($class['properties'] as $prop) {
-        		++$propCount;
-        		//simple
-        		if ($prop['isPublic']) {
+            foreach ($class['properties'] as $prop) {
+                ++$propCount;
+                //simple
+                if ($prop['isPublic']) {
                     $propsVisibleToOthers += $classCount - 1;
                 }
 
-        		//nothing
-        		if ($prop['isPrivate']) { }
+                //nothing
+                if ($prop['isPrivate']) { }
 
-        		//complicated
+                //complicated
                 if ($prop['isProtected']) {
                     $propsVisibleToOthers += self::countSubclasses($classes,
                                                                     $className);
                 }
-        	}
+            }
         }
         return $propsVisibleToOthers;
     }
@@ -450,11 +450,11 @@ class iscCodeAnalyzer {
     protected  static function countInheritedMethods($classes) {
         $i = 0;
         foreach ($classes as $class) {
-        	foreach ($class['methods'] as $method) {
-        		if ($method['isInherited']) {
-        		    ++$i;
-        		}
-        	}
+            foreach ($class['methods'] as $method) {
+                if ($method['isInherited']) {
+                    ++$i;
+                }
+            }
         }
         return $i;
     }
@@ -468,11 +468,11 @@ class iscCodeAnalyzer {
     protected static function countOverriddenMethods($classes) {
         $overridden = 0;
         foreach ($classes as $class) {
-        	foreach ($class['methods'] as $method) {
-        		if ($method['isOverridden']) {
-        		    ++$overridden;
-        		}
-        	}
+            foreach ($class['methods'] as $method) {
+                if ($method['isOverridden']) {
+                    ++$overridden;
+                }
+            }
         }
         return $overridden;
     }
@@ -490,12 +490,12 @@ class iscCodeAnalyzer {
         $pos = 0;
         foreach ($classes as $className => $class) {
             $new = 0;
-        	foreach ($class['methods'] as $mName => $method) {
-        		if ($method['isIntroduced'] and !$method['isFinal']) {
-        		    ++$new;
-        		}
-        	}
-        	$pos += $new * self::countSubclasses($classes, $className);
+            foreach ($class['methods'] as $mName => $method) {
+                if ($method['isIntroduced'] and !$method['isFinal']) {
+                    ++$new;
+                }
+            }
+            $pos += $new * self::countSubclasses($classes, $className);
         }
         return $pos;
     }
@@ -543,19 +543,19 @@ class iscCodeAnalyzer {
         $methodCount = 0;
         $mv = self::countClassesSeeingMethods($classes, $methodCount);
         if ($methodCount > 0 && count($classes) > 1) {
-        	$project['MHF'] = 1 - ($mv / (count($classes) - 1) / $methodCount);
+            $project['MHF'] = 1 - ($mv / (count($classes) - 1) / $methodCount);
         }
         else {
-        	$project['MHF'] = 1;
+            $project['MHF'] = 1;
         }
 
         $attrCount = 0;
         $av = self::countClassesSeeingProperties($classes, $attrCount);
         if ($attrCount > 0 && count($classes) > 1) {
-        	$project['AHF'] = 1 - ($av / (count($classes) - 1) / $attrCount);
+            $project['AHF'] = 1 - ($av / (count($classes) - 1) / $attrCount);
         }
         else {
-        	$project['AHF'] = 1;
+            $project['AHF'] = 1;
         }
 
         $inM = self::countInheritedMethods($classes);
@@ -571,12 +571,12 @@ class iscCodeAnalyzer {
         $project['classes'] = $this->collectClassStats();
 
         if ($project['functions']['locSum'] > 0) {
-        	$project['dbcRatio'] = ($project['classes']['lodbSum'] +
-            	                    $project['functions']['lodbSum']) /
-                	                $project['functions']['locSum'];
+            $project['dbcRatio'] = ($project['classes']['lodbSum'] +
+                                    $project['functions']['lodbSum']) /
+                                    $project['functions']['locSum'];
         }
         else {
-        	$project['dbcRatio'] = 0;
+            $project['dbcRatio'] = 0;
         }
 
         $this->docuFlaws['project'] = $project;
@@ -590,12 +590,12 @@ class iscCodeAnalyzer {
         $fileC = 0;
         foreach ($this->flatStatsArray as $file) {
             $cCount += $file->countClasses;
-        	if ($min == 0) {
-        	    $min = $file->countClasses;
-        	}
-        	else {
-        	    $min = min($min, $file->countClasses);
-        	}
+            if ($min == 0) {
+                $min = $file->countClasses;
+            }
+            else {
+                $min = min($min, $file->countClasses);
+            }
             $max = max($max, $file->countClasses);
             if ($file->countClasses > 0) {
                 ++$fileC;
@@ -613,13 +613,13 @@ class iscCodeAnalyzer {
         $lodbSum = 0;
         $locSum = 0;
         foreach ($this->docuFlaws['classes'] as $class) {
-        	$ditMax = max($class['DIT'], $ditMax);
-        	$ditSum += $class['DIT'];
-        	if ($class['isAbstract']) { ++$abstractClasses; }
-        	if (empty($class['parentClass'])) { ++$rootClasses; }
-        	if ($class['childrenCount'] < 1) { ++$leafClasses; }
-        	$locSum += $class['LoC'];
-        	$lodbSum += $class['LoDB'];
+            $ditMax = max($class['DIT'], $ditMax);
+            $ditSum += $class['DIT'];
+            if ($class['isAbstract']) { ++$abstractClasses; }
+            if (empty($class['parentClass'])) { ++$rootClasses; }
+            if ($class['childrenCount'] < 1) { ++$leafClasses; }
+            $locSum += $class['LoC'];
+            $lodbSum += $class['LoDB'];
         }
         $ditAvg = ($cCount > 0)? $ditSum / $cCount : 0;
         return array('min' => $min, 'max' => $max, 'avg' => $avg,
@@ -637,12 +637,12 @@ class iscCodeAnalyzer {
         $fileC = 0;
         foreach ($this->flatStatsArray as $file) {
             $fCount += $file->countFunctions;
-        	if ($min == 0) {
-        	    $min = $file->countFunctions;
-        	}
-        	else {
-        	    $min = min($min, $file->countFunctions);
-        	}
+            if ($min == 0) {
+                $min = $file->countFunctions;
+            }
+            else {
+                $min = min($min, $file->countFunctions);
+            }
             $max = max($max, $file->countFunctions);
             if ($file->countFunctions > 0) {
                 ++$fileC;
@@ -668,55 +668,55 @@ class iscCodeAnalyzer {
         $lodbSum = 0;
         foreach ($this->docuFlaws['functions'] as $func) {
             if ($paramMin == -1) { $paramMin = $func['paramCount']; }
-        	else { $paramMin = min($paramMin, $func['paramCount']); }
+            else { $paramMin = min($paramMin, $func['paramCount']); }
 
-        	$paramMax = max($paramMax, $func['paramCount']);
-        	$pCount += $func['paramCount'];
-        	++$fCount;
+            $paramMax = max($paramMax, $func['paramCount']);
+            $pCount += $func['paramCount'];
+            ++$fCount;
 
-        	if ($locMin == -1) { $locMin = $func['LoC']; }
-        	else { $locMin = min($locMin, $func['LoC']); }
+            if ($locMin == -1) { $locMin = $func['LoC']; }
+            else { $locMin = min($locMin, $func['LoC']); }
 
-        	$locMax = max($locMax, $func['LoC']);
-        	$locSum += $func['LoC'];
+            $locMax = max($locMax, $func['LoC']);
+            $locSum += $func['LoC'];
 
-        	if ($lodbMin == -1) { $lodbMin = $func['LoDB']; }
-        	else { $lodbMin = min($lodbMin, $func['LoDB']); }
+            if ($lodbMin == -1) { $lodbMin = $func['LoDB']; }
+            else { $lodbMin = min($lodbMin, $func['LoDB']); }
 
-        	$lodbMax = max($lodbMax, $func['LoDB']);
-        	$lodbSum += $func['LoDB'];
+            $lodbMax = max($lodbMax, $func['LoDB']);
+            $lodbSum += $func['LoDB'];
         }
         foreach ($this->docuFlaws['classes'] as $class) {
-        	foreach ($class['methods'] as $func) {
-        		if ($paramMin == -1) { $paramMin = $func['paramCount']; }
-            	else { $paramMin = min($paramMin, $func['paramCount']); }
+            foreach ($class['methods'] as $func) {
+                if ($paramMin == -1) { $paramMin = $func['paramCount']; }
+                else { $paramMin = min($paramMin, $func['paramCount']); }
 
-            	$paramMax = max($paramMax, $func['paramCount']);
-            	$pCount += $func['paramCount'];
-            	++$fCount;
+                $paramMax = max($paramMax, $func['paramCount']);
+                $pCount += $func['paramCount'];
+                ++$fCount;
 
-            	if ($locMin == -1) { $locMin = $func['LoC']; }
-            	else { $locMin = min($locMin, $func['LoC']); }
+                if ($locMin == -1) { $locMin = $func['LoC']; }
+                else { $locMin = min($locMin, $func['LoC']); }
 
-            	$locMax = max($locMax, $func['LoC']);
-            	$locSum += $func['LoC'];
+                $locMax = max($locMax, $func['LoC']);
+                $locSum += $func['LoC'];
 
-            	if ($lodbMin == -1) { $lodbMin = $func['LoDB']; }
-            	else { $lodbMin = min($lodbMin, $func['LoDB']); }
+                if ($lodbMin == -1) { $lodbMin = $func['LoDB']; }
+                else { $lodbMin = min($lodbMin, $func['LoDB']); }
 
-            	$lodbMax = max($lodbMax, $func['LoDB']);
-            	$lodbSum += $func['LoDB'];
-        	}
+                $lodbMax = max($lodbMax, $func['LoDB']);
+                $lodbSum += $func['LoDB'];
+            }
         }
         if ($fCount > 0) {
-        	$locAvg = $locSum / $fCount;
-        	$lodbAvg = $lodbSum / $fCount;
-        	$paramAvg = $pCount / $fCount;
+            $locAvg = $locSum / $fCount;
+            $lodbAvg = $lodbSum / $fCount;
+            $paramAvg = $pCount / $fCount;
         }
         else {
-        	$locAvg = 0;
-        	$lodbAvg = 0;
-        	$paramAvg = 0;
+            $locAvg = 0;
+            $lodbAvg = 0;
+            $paramAvg = 0;
         }
         return array('min' => $min, 'max' => $max, 'avg' => $avg,
                      'paramMin' => $paramMin, 'paramMax' => $paramMax,
@@ -737,7 +737,7 @@ class iscCodeAnalyzer {
         //Collect Class-Tags
         $tags = $class->getTags();
         foreach ($tags as $tag) {
-        	$result['tags'][] = $tag->getName();
+            $result['tags'][] = $tag->getName();
         }
 
         //Collect special class info
@@ -753,7 +753,7 @@ class iscCodeAnalyzer {
         $result['interfaces'] = array();
         $interfaces = $class->getInterfaces();
         foreach ($interfaces as $inter) {
-        	$result['interfaces'][] = $inter->getName();
+            $result['interfaces'][] = $inter->getName();
         }
 
         $result['DIT'] = 1;
@@ -762,8 +762,8 @@ class iscCodeAnalyzer {
 
             $parent = $class->getParentClass();
             while ($parent != null) {
-            	++$result['DIT'];
-            	$parent = $parent->getParentClass();
+                ++$result['DIT'];
+                $parent = $parent->getParentClass();
             }
         }
         else {
@@ -784,9 +784,9 @@ class iscCodeAnalyzer {
         $result = array();
         foreach ($props as $property) {
             if (is_object($property->getType())) {
-        	   $result[$property->getName()]['type'] =
-        	                                   $property->getType()->toString();
-        	   $result[$property->getName()]['docuMissing'] = false;
+               $result[$property->getName()]['type'] =
+                                               $property->getType()->toString();
+               $result[$property->getName()]['docuMissing'] = false;
             }
             else {
                $result[$property->getName()] = null;
@@ -794,24 +794,24 @@ class iscCodeAnalyzer {
             }
 
            $result[$property->getName()]['LoDB'] =
-    	                         substr_count($property->getDocComment(), "\n");
+                                 substr_count($property->getDocComment(), "\n");
 
-    	   $result[$property->getName()]['modifiers'] =
-    	                                              $property->getModifiers();
-    	   $result[$property->getName()]['isDefault'] = $property->isDefault();
+           $result[$property->getName()]['modifiers'] =
+                                                      $property->getModifiers();
+           $result[$property->getName()]['isDefault'] = $property->isDefault();
 
-    	   $result[$property->getName()]['isPrivate'] = $property->isPrivate();
-    	   $result[$property->getName()]['isPublic'] = $property->isPublic();
-    	   $result[$property->getName()]['isProtected'] = $property->isProtected();
+           $result[$property->getName()]['isPrivate'] = $property->isPrivate();
+           $result[$property->getName()]['isPublic'] = $property->isPublic();
+           $result[$property->getName()]['isProtected'] = $property->isProtected();
 
-    	   if ($property->isPrivate())
-    	   { $result[$property->getName()]['visibility'] = 'private'; }
-    	   elseif ($property->isPublic())
-    	   { $result[$property->getName()]['visibility'] = 'public'; }
-    	   elseif ($property->isProtected())
-    	   { $result[$property->getName()]['visibility'] = 'protected'; }
+           if ($property->isPrivate())
+           { $result[$property->getName()]['visibility'] = 'private'; }
+           elseif ($property->isPublic())
+           { $result[$property->getName()]['visibility'] = 'public'; }
+           elseif ($property->isProtected())
+           { $result[$property->getName()]['visibility'] = 'protected'; }
 
-    	   $result[$property->getName()]['isStatic'] = $property->isStatic();
+           $result[$property->getName()]['isStatic'] = $property->isStatic();
         }
         return $result;
     }
@@ -824,29 +824,29 @@ class iscCodeAnalyzer {
      * @return array(string => mixed)
      */
     public static function summarizeFunctionParameters($method, &$paramFlaws) {
-    	$params = $method->getParameters();
-    	$paramFlaws = 0;
-    	$result = array();
-    	foreach ($params as $param) {
-    	    if (is_object($param->getType())) {
+        $params = $method->getParameters();
+        $paramFlaws = 0;
+        $result = array();
+        foreach ($params as $param) {
+            if (is_object($param->getType())) {
                 $result[$param->getName()]['type'] = $param->getType()->toString();
-    	    }
-    	    else {
-    	        $result[$param->getName()]['type'] = null;
-    	    }
+            }
+            else {
+                $result[$param->getName()]['type'] = null;
+            }
 
-    	    if ($param->getType() == null) {
-    	        $paramFlaws++;
-    	    }
+            if ($param->getType() == null) {
+                $paramFlaws++;
+            }
 
-    	    $result[$param->getName()]['isOptional'] = $param->isOptional();
-    	    $result[$param->getName()]['byReference'] = $param->isPassedByReference();
-    	    if ($param->isOptional()) {
-        	    $result[$param->getName()]['hasDefault'] = $param->isDefaultValueAvailable();
-        	    $result[$param->getName()]['defaultValue'] = $param->getDefaultValue();
-    	    }
-    	}
-    	return $result;
+            $result[$param->getName()]['isOptional'] = $param->isOptional();
+            $result[$param->getName()]['byReference'] = $param->isPassedByReference();
+            if ($param->isOptional()) {
+                $result[$param->getName()]['hasDefault'] = $param->isDefaultValueAvailable();
+                $result[$param->getName()]['defaultValue'] = $param->getDefaultValue();
+            }
+        }
+        return $result;
     }
 
     /**
@@ -868,7 +868,7 @@ class iscCodeAnalyzer {
             //Collect method tags
             $tags = $method->getTags();
             foreach ($tags as $tag) {
-            	$result[$method->getName()]['tags'][] = $tag->getName();
+                $result[$method->getName()]['tags'][] = $tag->getName();
             }
 
             //Collect more infos about this method
@@ -881,46 +881,45 @@ class iscCodeAnalyzer {
             $result[$method->getName()]['isStatic'] = $method->isStatic();
             $result[$method->getName()]['modifiers'] = $method->getModifiers();
             $result[$method->getName()]['isConstructor'] = $method->isConstructor();
-        	$result[$method->getName()]['isDestructor'] = $method->isDestructor();
-        	$result[$method->getName()]['isOverridden'] = $method->isOverridden();
-        	$result[$method->getName()]['isInherited'] = $method->isInherited();
-        	$result[$method->getName()]['isIntroduced'] = $method->isIntroduced();
+            $result[$method->getName()]['isDestructor'] = $method->isDestructor();
+            $result[$method->getName()]['isOverridden'] = $method->isOverridden();
+            $result[$method->getName()]['isInherited'] = $method->isInherited();
+            $result[$method->getName()]['isIntroduced'] = $method->isIntroduced();
 
-        	if ($method->isPublic())
-        	{ $result[$method->getName()]['visibility'] = 'public'; }
-        	elseif ($method->isProtected())
-        	{ $result[$method->getName()]['visibility'] = 'protected'; }
-        	elseif ($method->isPrivate())
-        	{ $result[$method->getName()]['visibility'] = 'private'; }
+            if ($method->isPublic())
+            { $result[$method->getName()]['visibility'] = 'public'; }
+            elseif ($method->isProtected())
+            { $result[$method->getName()]['visibility'] = 'protected'; }
+            elseif ($method->isPrivate())
+            { $result[$method->getName()]['visibility'] = 'private'; }
 
 
             $result[$method->getName()]['LoDB'] =
                                    substr_count($method->getDocComment(), "\n");
-        	if ($result[$method->getName()]['LoDB'] < 1) {
-        	   $missingMethodComments++;
-        	}
+            if ($result[$method->getName()]['LoDB'] < 1) {
+               $missingMethodComments++;
+            }
 
-        	if (is_object($method->getReturnType())) {
-        	   $result[$method->getName()]['return'] = $method->getReturnType()->toString();
-        	}
-        	else {
-        	   $result[$method->getName()]['return'] = null;
-        	}
-        	$result[$method->getName()]['isWebMethod'] = $method->isWebmethod();
-        	$result[$method->getName()]['isRestMethod']
-        	                                  = $method->isTagged('restmethod');
+            if (is_object($method->getReturnType())) {
+               $result[$method->getName()]['return'] = $method->getReturnType()->toString();
+            } else {
+               $result[$method->getName()]['return'] = null;
+            }
+            $result[$method->getName()]['isWebMethod'] = $method->isWebmethod();
+            $result[$method->getName()]['isRestMethod']
+                                              = $method->isTagged('restmethod');
 
-        	$result[$method->getName()]['LoC'] = $method->getEndLine() - $method->getStartLine();
+            $result[$method->getName()]['LoC'] = $method->getEndLine() - $method->getStartLine();
 
-        	$result[$method->getName()]['paramCount'] = $method->getNumberOfParameters();
-        	$result[$method->getName()]['reqParamCount'] = $method->getNumberOfRequiredParameters();
+            $result[$method->getName()]['paramCount'] = $method->getNumberOfParameters();
+            $result[$method->getName()]['reqParamCount'] = $method->getNumberOfRequiredParameters();
 
             $paramFlaws = 0;
             $result[$method->getName()]['params'] =
                      self::summarizeFunctionParameters($method, $paramFlaws);
 
-        	$missingParamTypes += $paramFlaws;
-        	$result[$method->getName()]['paramflaws'] = $paramFlaws;
+            $missingParamTypes += $paramFlaws;
+            $result[$method->getName()]['paramflaws'] = $paramFlaws;
         }
         return $result;
     }
@@ -955,15 +954,15 @@ class iscCodeAnalyzer {
             $result[$className]['inheritedMethods'] = 0;
             $result[$className]['overriddenMethods'] = 0;
             foreach ($result[$className]['methods'] as $method) {
-            	if (!$method['isPrivate']) {
-            	    ++$result[$className]['nonePrivateMethods'];
-            	}
-            	if ($method['isOverridden']) {
-            	    ++$result[$className]['overriddenMethods'];
-            	}
-            	if ($method['isInherited']) {
-            	    ++$result[$className]['inheritedMethods'];
-            	}
+                if (!$method['isPrivate']) {
+                    ++$result[$className]['nonePrivateMethods'];
+                }
+                if ($method['isOverridden']) {
+                    ++$result[$className]['overriddenMethods'];
+                }
+                if ($method['isInherited']) {
+                    ++$result[$className]['inheritedMethods'];
+                }
             }
 
             $result[$className]['missingMethodComments'] = $missingMethodComments;
@@ -992,35 +991,34 @@ class iscCodeAnalyzer {
     public static function summarizeFunctions($functions) {
         $functs = array();
         foreach ($functions as $funcName) {
-        	$func = new ezcReflectionFunction($funcName);
-        	$functs[$funcName]['comment'] = (strlen($func->getDocComment()) > 10);
-        	$functs[$funcName]['file'] = $func->getFileName();
+            $func = new ezcReflectionFunction($funcName);
+            $functs[$funcName]['comment'] = (strlen($func->getDocComment()) > 10);
+            $functs[$funcName]['file'] = $func->getFileName();
             $functs[$funcName]['LoDB'] = substr_count($func->getDocComment(), "\n");
             $functs[$funcName]['LoC'] = $func->getEndLine() - $func->getStartLine();
 
             $functs[$funcName]['paramCount'] = $func->getNumberOfParameters();
             $functs[$funcName]['reqParamCount'] = $func->getNumberOfRequiredParameters();
 
-        	if (is_object($func->getReturnType())) {
-        	    $functs[$funcName]['return'] = $func->getReturnType()->toString();
-        	}
-        	else {
-        	    $functs[$funcName]['return'] = null;
-        	}
-
-        	$tags = $func->getTags();
-        	foreach ($tags as $tag) {
-        	    if (is_object($tag)) {
-            	   $functs[$funcName]['tags'][] = $tag->getName();
-        	    }
+            if (is_object($func->getReturnType())) {
+                $functs[$funcName]['return'] = $func->getReturnType()->toString();
+            } else {
+                $functs[$funcName]['return'] = null;
             }
 
-        	//Collect paramter infos
-        	$paramFlaws = 0;
+            $tags = $func->getTags();
+            foreach ($tags as $tag) {
+                if (is_object($tag)) {
+                   $functs[$funcName]['tags'][] = $tag->getName();
+                }
+            }
+
+            //Collect paramter infos
+            $paramFlaws = 0;
             $functs[$funcName]['params'] =
                           self::summarizeFunctionParameters($func, $paramFlaws);
 
-        	$functs[$funcName]['paramflaws'] = $paramFlaws;
+            $functs[$funcName]['paramflaws'] = $paramFlaws;
         }
 
         return $functs;
