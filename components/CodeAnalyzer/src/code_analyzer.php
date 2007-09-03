@@ -237,9 +237,14 @@ class iscCodeAnalyzer {
 
             $phpCommands = '<?php
                 set_include_path("'.addslashes($includes).'");
-                @include_once \'ezc/Base/base.php\';
-                @include_once \'Base/base.php\';
+
                 @include_once \'Base/src/base.php\';
+                if (!class_exists(\'ezcBase\')) {
+                    @include_once \'Base/base.php\';
+                }
+                if (!class_exists(\'ezcBase\')) {
+                    @include_once \'ezc/Base/base.php\';
+                }
                 
                 function __autoload( $className ) { ezcBase::autoload( $className ); }
                 require_once "'.addslashes(__FILE__).'";
@@ -278,11 +283,15 @@ class iscCodeAnalyzer {
 
                 //another time fatal errors will bring us to hang
                 if (strpos($read, "##ERR##\nFatal error: ") !== false) {
+                    //echo 'Error in code analyzer sandbox: ', $read, "\n";
                     break;
                 }
             }
 
-            //$error = stream_get_contents($pipes[2]);
+            /*
+            $error = stream_get_contents($pipes[2]);
+            echo $error, "\n";
+            //*/
 
             fclose($pipes[1]);
             fclose($pipes[2]);
@@ -290,6 +299,10 @@ class iscCodeAnalyzer {
             // pipes are closed to avoid a deadlock
             proc_close($process);
 
+            /*
+            echo '$filename = ', var_export($filename, true), ";\n";
+            echo '$result   = ', var_export($result, true), ";\n";
+            //*/
             $arr = split('#-#-#-#-#', $result);
 
             if (isset($arr[1])) {
