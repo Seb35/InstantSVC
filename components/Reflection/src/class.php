@@ -61,7 +61,9 @@ class ezcReflectionClass extends ReflectionClass
     }
 
     /**
-     * @param integer $filter
+     * @param integer $filter a combination of ReflectionMethod::IS_STATIC,
+     * ReflectionMethod::IS_PUBLIC, ReflectionMethod::IS_PROTECTED, ReflectionMethod::IS_PRIVATE,
+     * ReflectionMethod::IS_ABSTRACT and ReflectionMethod::IS_FINAL
      * @return ezcReflectionMethod[]
      */
     public function getMethods($filter = 0) {
@@ -101,7 +103,9 @@ class ezcReflectionClass extends ReflectionClass
     }
 
     /**
-     * @param integer $filter
+     * @param integer $filter a combination of ReflectionProperty::IS_STATIC,
+     * ReflectionProperty::IS_PUBLIC, ReflectionProperty::IS_PROTECTED,
+     * ReflectionProperty::IS_PRIVATE
      * @return ezcReflectionProperty[]
      */
     public function getProperties($filter = 0) {
