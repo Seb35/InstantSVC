@@ -1,4 +1,6 @@
 <?php
+/* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
+
 //***************************************************************************
 //***************************************************************************
 //**                                                                       **
@@ -127,23 +129,25 @@ class iscCodeAnalyzer {
         $dirDetails = new iscCodeAnalyzerFileDetails($basekey);
         $dirDetails->mimeType = 'folder';
         $result[$basekey] = $dirDetails;
-        foreach ($array as $key => $value) {
-            if (is_array($value)) {
-                $r = $this->flatoutStatsArray($value, $key);
-                $first = true;
-                foreach ($r as $k => $v) {
-                    if ($first) {
-                        $first = false;
-                        $dirDetails->fileSize += $v->fileSize;
-                        $dirDetails->linesOfCode += $v->linesOfCode;
+        if (!empty($array)) {
+            foreach ($array as $key => $value) {
+                if (is_array($value)) {
+                    $r = $this->flatoutStatsArray($value, $key);
+                    $first = true;
+                    foreach ($r as $k => $v) {
+                        if ($first) {
+                            $first = false;
+                            $dirDetails->fileSize += $v->fileSize;
+                            $dirDetails->linesOfCode += $v->linesOfCode;
+                        }
+                        $result[$basekey.'\\'.$k] = $v;
                     }
-                    $result[$basekey.'\\'.$k] = $v;
                 }
-            }
-            else {
-                $result[$basekey.'\\'.$key] = $value;
-                $dirDetails->fileSize += $value->fileSize;
-                $dirDetails->linesOfCode += $value->linesOfCode;
+                else {
+                    $result[$basekey.'\\'.$key] = $value;
+                    $dirDetails->fileSize += $value->fileSize;
+                    $dirDetails->linesOfCode += $value->linesOfCode;
+                }
             }
         }
         return $result;
@@ -748,6 +752,8 @@ class iscCodeAnalyzer {
         $result['isAbstract'] = $class->isAbstract();
         $result['isFinal'] = $class->isFinal();
         $result['isInterface'] = $class->isInterface();
+        $result['startLine'] = $class->getStartLine();
+        $result['endLine'] = $class->getEndLine();
         $result['LoC'] = $class->getEndLine() - $class->getStartLine();
 
         $result['interfaces'] = array();
@@ -909,6 +915,8 @@ class iscCodeAnalyzer {
             $result[$method->getName()]['isRestMethod']
                                               = $method->isTagged('restmethod');
 
+            $result[$method->getName()]['startLine'] = $method->getStartLine();
+            $result[$method->getName()]['endLine'] = $method->getEndLine();
             $result[$method->getName()]['LoC'] = $method->getEndLine() - $method->getStartLine();
 
             $result[$method->getName()]['paramCount'] = $method->getNumberOfParameters();
@@ -992,12 +1000,14 @@ class iscCodeAnalyzer {
         $functs = array();
         foreach ($functions as $funcName) {
             $func = new ezcReflectionFunction($funcName);
-            $functs[$funcName]['comment'] = (strlen($func->getDocComment()) > 10);
-            $functs[$funcName]['file'] = $func->getFileName();
-            $functs[$funcName]['LoDB'] = substr_count($func->getDocComment(), "\n");
-            $functs[$funcName]['LoC'] = $func->getEndLine() - $func->getStartLine();
+            $functs[$funcName]['comment']       = (strlen($func->getDocComment()) > 10);
+            $functs[$funcName]['file']          = $func->getFileName();
+            $functs[$funcName]['LoDB']          = substr_count($func->getDocComment(), "\n");
+            $functs[$funcName]['startLine']     = $func->getStartLine();
+            $functs[$funcName]['endLine']       = $func->getEndLine();
+            $functs[$funcName]['LoC']           = $func->getEndLine() - $func->getStartLine();
 
-            $functs[$funcName]['paramCount'] = $func->getNumberOfParameters();
+            $functs[$funcName]['paramCount']    = $func->getNumberOfParameters();
             $functs[$funcName]['reqParamCount'] = $func->getNumberOfRequiredParameters();
 
             if (is_object($func->getReturnType())) {
