@@ -289,6 +289,7 @@ class iscCodeAnalyzer {
 
                 //another time fatal errors will bring us to hang
                 if (strpos($read, "##ERR##\nFatal error: ") !== false) {
+                    //TODO: provide error message in the output data structure
                     //echo 'Error in code analyzer sandbox: ', $read, "\n";
                     break;
                 }
