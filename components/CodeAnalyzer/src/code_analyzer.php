@@ -31,6 +31,8 @@
  * @TODO: correct folder names
  * @TODO: paths with slashes instead of backslashes
  * @TODO: static analysis should be able to handle multiple class declarations with the same name, although this may be bad design
+ *        data structure could be changed into: $codeSummary['classes']['MyClass'][0]['file']
+ *                                              $codeSummary['classes']['MyClass'][1]['file']
  *
  * @package    CodeAnalyzer
  * @author     Stefan Marr <mail@stefan-marr.de>
