@@ -229,13 +229,92 @@ class iscCodeAnalyzer {
      */
     public static function summarizeInSandbox($filename) {
         $return = null;
+
+        // prepare php.ini for sandbox        
+        $functionWhiteList = array(
+            '__autoload',
+            'set_include_path',
+            'class_exists',
+            'ob_start',
+            'serialize',
+            'ob_end_clean',
+            'chr',
+            'flush',
+            'get_declared_classes',
+            'realpath',
+            'get_declared_interfaces',
+            'get_defined_functions',
+            'substr_count',
+            'is_object',
+            'count',
+            'strlen',
+            'dirname',
+            'array_key_exists',
+            'preg_match',
+            'sizeof',
+            'strtolower',
+            'file_exists',
+            'is_array',
+            'array_merge',
+            'explode',
+            'trim',
+            'substr',
+            'is_string',
+            'method_exists',
+            'strrpos',
+            'trigger_error',
+        );
+
+        $classWhiteList = array(
+            'ezcBase',
+            'ezcBaseStruct',
+            'iscCodeAnalyzer',
+            'ezcReflectionApi',
+            'ezcReflectionClass',
+            'ezcReflectionClassType',
+            'ezcReflectionFunction',
+            'ezcReflectionMethod',
+            'Exception',
+            'ReflectionException',
+            'Reflection',
+            'ReflectionFunctionAbstract',
+            'ReflectionFunction',
+            'ReflectionParameter',
+            'ReflectionMethod',
+            'ReflectionClass',
+            'ReflectionProperty',
+        );
+
+        $functions = get_defined_functions();
+        $functionBlackList = array_diff($functions['internal'], $functionWhiteList);
+        $classBlackList    = array_diff(get_declared_classes(), $classWhiteList);
+
+        $iniFile = dirname(__FILE__) . DIRECTORY_SEPARATOR . 'php.ini';
+        $configuration = file_get_contents($iniFile);
+        $configuration = preg_replace(
+            '/disable_functions.*?\n/',
+            'disable_functions = ' . implode(', ', $functionBlackList) . "\n",
+             $configuration
+        );
+        $configuration = preg_replace(
+            '/disable_classes.*?\n/',
+            'disable_classes = ' . implode(', ', $classBlackList) . "\n",
+            $configuration
+        );
+        $newIniFile = 'php.ini.for-code-analyzer-sandbox';
+        $useNewIniFile = file_put_contents($newIniFile, $configuration);
+        if ($useNewIniFile) {
+            $iniFile = $newIniFile;
+        }
+
+        // create a second php process
         $pipeDesc = array(
            0 => array('pipe', 'r'),  //in, child reads from
            1 => array('pipe', 'w'),  //out, child writes to
            2 => array('pipe', 'w')   //err, child writes to
         );
 
-        $cmd = 'php -c '.escapeshellarg(dirname(__FILE__).DIRECTORY_SEPARATOR.'php.ini');
+        $cmd = 'php -c '.escapeshellarg($iniFile);
         $process = proc_open($cmd, $pipeDesc, $pipes);
 
         if (is_resource($process)) {
@@ -305,6 +384,10 @@ class iscCodeAnalyzer {
 
             // pipes are closed to avoid a deadlock
             proc_close($process);
+
+            if ($useNewIniFile) {
+                unlink($newIniFile);
+            }
 
             /*
             echo '$filename = ', var_export($filename, true), ";\n";
