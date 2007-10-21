@@ -1,6 +1,6 @@
 <?php
 error_reporting(E_ALL);
-require_once 'ezc/Base/base.php';        
+require_once 'ezc/Base/base.php'; 
 
 function __autoload($className) {        
 	ezcBase::autoload($className);        
@@ -39,6 +39,18 @@ class MyApp {
 		
 		$lm = new GtkSourceLanguagesManager();
 	    $this->sourceLang = $lm->get_language_from_mime_type('application/x-php');
+	    
+	    $buffer = GtkSourceBuffer::new_with_language($this->sourceLang);
+    	$buffer->set_highlight(true);
+    	$buffer->set_text('echo "\n\n";'."\n\n".
+    		'$c = new iscReflectionClass(\'Test\');'."\n".
+    		'$m = $c->getMethod(\'sayHello\');'."\n".
+			'var_dump($m->getCode());'."\n".
+    		'$m->setCode(\'echo "Test";\');'."\n".
+    		'$t = new Test();'."\n".
+    		'$t->sayHello();');
+		
+    	$this->methodCodeTxt->set_buffer($buffer);
 	}
 	
 	private function collectWidgets() {
@@ -72,6 +84,12 @@ class MyApp {
 		
 		$selection = $this->methodsList->get_selection();
 		$selection->connect("changed", array($this, "methodSelected"));
+	}
+	
+	public function execCode() {
+		$buffer = $this->methodCodeTxt->get_buffer();
+	    $code = $buffer->get_text($buffer->get_start_iter(), $buffer->get_end_iter());
+	    eval($code);
 	}
 	
 	public function setMethodCode() {
@@ -141,8 +159,16 @@ class MyApp {
 	}
 }
 
+include('test.php');
+
+
 $app = new MyApp();
 
+$class = new iscReflectionClass('Test');
+$class->getMethod('sayHello')->setCode('echo "Reflection::setCode Works :)";');
+
+$test = new Test();
+$test->sayHello();
 
 //Start the main loop
 Gtk::main();

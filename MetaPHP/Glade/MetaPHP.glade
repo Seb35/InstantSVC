@@ -65,7 +65,14 @@
                       <placeholder/>
                     </child>
                     <child>
-                      <placeholder/>
+                      <widget class="GtkButton" id="button3">
+                        <property name="visible">True</property>
+                        <property name="label" translatable="yes">execute code</property>
+                        <signal name="clicked" handler="execCode"/>
+                      </widget>
+                      <packing>
+                        <property name="position">1</property>
+                      </packing>
                     </child>
                     <child>
                       <widget class="GtkButton" id="button2">

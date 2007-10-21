@@ -42,7 +42,6 @@ class iscReflectionMethod extends ezcReflectionMethod
 	    		$this->code = $code;
 	    	}
     	}
-    	
     	return $this->code;
     }
     
