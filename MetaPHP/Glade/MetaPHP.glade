@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE glade-interface SYSTEM "glade-2.0.dtd">
-<!--Generated with glade3 3.0.2 on Sat Oct 20 20:12:44 2007 by GRon@ARTEMIS-->
+<!--Generated with glade3 3.0.2 on Sun Oct 21 01:54:18 2007 by GRon@ARTEMIS-->
 <glade-interface>
   <widget class="GtkWindow" id="MetaPHP">
     <property name="visible">True</property>
     <property name="has_focus">True</property>
     <property name="title" translatable="yes">MetaPHP</property>
     <property name="window_position">GTK_WIN_POS_CENTER</property>
+    <property name="default_width">800</property>
+    <property name="default_height">600</property>
     <signal name="destroy" handler="gtk::main_quit"/>
     <child>
       <widget class="GtkNotebook" id="notebook1">
@@ -14,6 +16,8 @@
         <child>
           <widget class="GtkVPaned" id="vpaned1">
             <property name="visible">True</property>
+            <property name="position">200</property>
+            <property name="position_set">True</property>
             <child>
               <widget class="GtkHBox" id="hbox1">
                 <property name="visible">True</property>
@@ -79,8 +83,15 @@
                   </packing>
                 </child>
                 <child>
-                  <widget class="GtkTextView" id="methodCodeTxt">
+                  <widget class="GtkScrolledWindow" id="scrolledwindow3">
                     <property name="visible">True</property>
+                    <property name="hscrollbar_policy">GTK_POLICY_AUTOMATIC</property>
+                    <property name="vscrollbar_policy">GTK_POLICY_AUTOMATIC</property>
+                    <child>
+                      <widget class="GtkSourceView" id="methodCodeTxt">
+                        <property name="visible">True</property>
+                      </widget>
+                    </child>
                   </widget>
                   <packing>
                     <property name="position">1</property>

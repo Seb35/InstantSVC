@@ -7,6 +7,7 @@ class MyApp {
 	private $methodsList;
 	private $glade;
 	private $methodCodeTxt;
+	private $sourceLang;
 	
 	public function __construct() {
 		$this->glade = new GladeXML(dirname(__FILE__) . '/../Glade/MetaPHP.glade');
@@ -16,6 +17,16 @@ class MyApp {
 		
 		$this->initClasses();
 		$this->initMethods();
+		$this->initSourceView();
+	}
+	
+	private function initSourceView() {
+		$this->methodCodeTxt->set_show_line_numbers(true);
+		$this->methodCodeTxt->set_show_line_markers(true);
+		$this->methodCodeTxt->set_tabs_width(4);
+		
+		$lm = new GtkSourceLanguagesManager();
+	    $this->sourceLang = $lm->get_language_from_mime_type('application/x-php');
 	}
 	
 	private function collectWidgets() {
@@ -88,13 +99,16 @@ class MyApp {
 	    		
 	    		$code = '';
 	    		foreach ($lines as $i => $line) {
-	    			if ($i >= $start && $i <= $end) {
+	    			if ($i >= $start && $i < $end - 1) {
 	    				$code .= $line;
 	    			}
 	    		}
 	    	}
-	    	$buffer = new GtkTextBuffer();
+	    	
+	    	$buffer = GtkSourceBuffer::new_with_language($this->sourceLang);
+	    	$buffer->set_highlight(true);
 	    	$buffer->set_text($code);
+			
 	    	$this->methodCodeTxt->set_buffer($buffer);
 	    }
 	}
