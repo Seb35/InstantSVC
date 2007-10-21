@@ -70,8 +70,8 @@
                     <child>
                       <widget class="GtkButton" id="button2">
                         <property name="visible">True</property>
-                        <property name="label" translatable="yes">button</property>
-                        <signal name="clicked" handler="clickBtn1"/>
+                        <property name="label" translatable="yes">Set Code</property>
+                        <signal name="clicked" handler="setMethodCode"/>
                       </widget>
                       <packing>
                         <property name="position">2</property>

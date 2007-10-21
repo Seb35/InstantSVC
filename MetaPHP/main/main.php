@@ -1,10 +1,22 @@
 <?php
 error_reporting(E_ALL);
+require_once 'ezc/Base/base.php';        
+
+function __autoload($className) {        
+	ezcBase::autoload($className);        
+}
+
+require_once(dirname(__FILE__) . '/../Reflection2/type_factory.php');
+
+$factory = new iscReflectionTypeFactoryImpl();
+ezcReflectionApi::setReflectionTypeFactory($factory);
+
 
 class MyApp {
 	
 	private $classesList;
 	private $methodsList;
+	private $mainWindow;
 	private $glade;
 	private $methodCodeTxt;
 	private $sourceLang;
@@ -33,6 +45,7 @@ class MyApp {
 		$this->classesList = $this->glade->get_widget('classesList'); 
 		$this->methodsList = $this->glade->get_widget('methodsList');
 		$this->methodCodeTxt = $this->glade->get_widget('methodCodeTxt');
+		$this->mainWindow = $this->glade->get_widget('MetaPHP');
 	}
 	
 	private function initClasses() {
@@ -61,25 +74,53 @@ class MyApp {
 		$selection->connect("changed", array($this, "methodSelected"));
 	}
 	
-	public function clickBtn1() {
-		echo 'btn clicked';
+	public function setMethodCode() {
+		$selection = $this->methodsList->get_selection();
+		list($model, $iter) = $selection->get_selected();
+	    
+	    if (!is_null($iter)) {
+	    	$method = $model->get_value($iter, 1);
+	    	$buffer = $this->methodCodeTxt->get_buffer();
+	    	$code = $buffer->get_text($buffer->get_start_iter(), $buffer->get_end_iter());
+	    	
+	    	
+	    	try {
+	    		$method->setCode($code);
+	    	} catch (Exception $e) {
+	    		$dialog = new GtkMessageDialog(
+				    $this->mainWindow,//parent
+				    0,
+				    Gtk::MESSAGE_ERROR,
+				    Gtk::BUTTONS_OK,
+				    $e->getMessage()
+				);
+				/*$dialog->set_markup(
+				    'Do <b>you</b> like PHP-Gtk '
+				    . '<span foreground="red">2</span>?'
+				);*/
+				$answer = $dialog->run();
+				$dialog->destroy();
+	    	}
+	    }
 	}
 
 	public function classSelected($selection) {
 		//get_selected returns the store and the iterator for that row
 	    list($classModel, $iter) = $selection->get_selected();
 	    
-	    $model = new GtkListStore(Gtk::TYPE_STRING, Gtk::TYPE_PHP_VALUE);
-	    $className = $classModel->get_value($iter, 0);
-	    
-	    if (class_exists($className)) {
-		    $class = new ReflectionClass($className);
-		    $methods = $class->getMethods();
-		
-			foreach ($methods as $method) {
-				$model->append(array($method->getName(), $method));	
-			}
-			$this->methodsList->set_model($model);
+	    if (!is_null($iter)) {
+		    $model = new GtkListStore(Gtk::TYPE_STRING, Gtk::TYPE_PHP_VALUE);
+		    $className = $classModel->get_value($iter, 0);
+		    
+		    if (class_exists($className)) {
+			    $class = new iscReflectionClass($className);
+			    $methods = $class->getMethods();
+			
+				foreach ($methods as $method) {
+					$model->append(array($method->getName(), $method));	
+				}
+				$this->methodsList->set_model($model);
+		    }
 	    }
 	}
 	
@@ -89,21 +130,7 @@ class MyApp {
 	    
 	    if (!is_null($iter)) {
 	    	$method = $model->get_value($iter, 1);
-	    	if ($method->isInternal()) {
-	    		$code = 'Is internal Method, no code to display!';
-	    	} else {
-	    		$filename = $method->getDeclaringClass()->getFileName();
-	    		$lines = file($filename);
-	    		$start = $method->getStartLine();
-	    		$end = $method->getEndLine();
-	    		
-	    		$code = '';
-	    		foreach ($lines as $i => $line) {
-	    			if ($i >= $start && $i < $end - 1) {
-	    				$code .= $line;
-	    			}
-	    		}
-	    	}
+	    	$code = $method->getCode();
 	    	
 	    	$buffer = GtkSourceBuffer::new_with_language($this->sourceLang);
 	    	$buffer->set_highlight(true);
