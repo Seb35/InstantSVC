@@ -54,7 +54,7 @@ class iscReflectionTypeFactoryImpl implements ezcReflectionTypeFactory {
     }
     
     public static function getMethodObject($class, $name) {
-    	$methodKey = $class->getName() . '$' . $name;
+    	$methodKey = strtolower($class->getName()) . '$' . strtolower($name);
     	if (!isset(self::$methodCache[$methodKey])) {
     		self::$methodCache[$methodKey] = new iscReflectionMethod($class->getName(), $name);
     	}
