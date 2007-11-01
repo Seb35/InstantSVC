@@ -15,7 +15,7 @@ class Test {
 	}
 }
 
-$test = new Test();
+/*$test = new Test();
 
 $test->sayHello();
 
@@ -25,5 +25,5 @@ runkit_method_redefine('Test', 'sayHello', '', $newCode, RUNKIT_ACC_PUBLIC);
 $test->sayHello();
 
 //$test->sayWorld();
-
+*/
 ?>

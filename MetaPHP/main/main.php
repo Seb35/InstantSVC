@@ -60,7 +60,7 @@ class MyApp {
 		$this->mainWindow = $this->glade->get_widget('MetaPHP');
 	}
 	
-	private function initClasses() {
+	private function showCurrentClasses() {
 		$model = new GtkListStore(Gtk::TYPE_STRING);
 
 		$classes = get_declared_classes();
@@ -68,7 +68,15 @@ class MyApp {
 			$model->append(array($class));	
 		}
 		
+		echo "setModel\n";
+		
 		$this->classesList->set_model($model);
+	}
+	
+	private function initClasses() {
+		echo "initClasses\n";
+		$this->showCurrentClasses();
+		
 		$renderer = new GtkCellRendererText();
 		$column = new GtkTreeViewColumn("Class", $renderer, "text", 0);
 		$this->classesList->append_column($column);
@@ -78,6 +86,7 @@ class MyApp {
 	}
 	
 	private function initMethods() {
+		echo "initMethods\n";
 		$renderer = new GtkCellRendererText();
 		$column = new GtkTreeViewColumn("Method", $renderer, "text", 0);
 		$this->methodsList->append_column($column);
@@ -90,12 +99,14 @@ class MyApp {
 		$buffer = $this->methodCodeTxt->get_buffer();
 	    $code = $buffer->get_text($buffer->get_start_iter(), $buffer->get_end_iter());
 	    eval($code);
+	    
+	    $this->showCurrentClasses();
 	}
 	
 	public function setMethodCode() {
 		$selection = $this->methodsList->get_selection();
 		list($model, $iter) = $selection->get_selected();
-	    
+		
 	    if (!is_null($iter)) {
 	    	$method = $model->get_value($iter, 1);
 	    	$buffer = $this->methodCodeTxt->get_buffer();
@@ -104,9 +115,10 @@ class MyApp {
 	    	
 	    	try {
 	    		$method->setCode($code);
+	    		$this->showCurrentClasses();
 	    	} catch (Exception $e) {
 	    		$dialog = new GtkMessageDialog(
-				    $this->mainWindow,//parent
+				    null, //$this->mainWindow,//parent
 				    0,
 				    Gtk::MESSAGE_ERROR,
 				    Gtk::BUTTONS_OK,
@@ -161,14 +173,7 @@ class MyApp {
 
 include('test.php');
 
-
 $app = new MyApp();
-
-$class = new iscReflectionClass('Test');
-$class->getMethod('sayHello')->setCode('echo "Reflection::setCode Works :)";');
-
-$test = new Test();
-$test->sayHello();
 
 //Start the main loop
 Gtk::main();

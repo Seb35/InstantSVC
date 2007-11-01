@@ -22,6 +22,26 @@ class iscReflectionMethod extends ezcReflectionMethod
 {
     private $code = null;
     
+/**
+    * @param mixed $class
+    * @param string $name
+    */
+    public function __construct($class, $name) {
+        parent::__construct($class, $name);
+        $this->docParser = ezcReflectionApi::getDocParserInstance();
+        $this->docParser->parse($this->getDocComment());
+        
+        if ($class instanceof ReflectionClass) {
+            $this->curClass = $class;
+        }
+        elseif (is_string($class)) {
+            $this->curClass = new ReflectionClass($class);
+        }
+        else {
+            $this->curClass = null;
+        }
+    }
+    
     public function getCode() {
     	if ($this->code == null) {
     		if ($this->isInternal()) {
@@ -46,9 +66,9 @@ class iscReflectionMethod extends ezcReflectionMethod
     }
     
     public function setCode($code) {
-    	if (function_exists('runkit_lint') && !runkit_lint($code)) {
-    		throw new Exception('Code doesnt compile. Please correct error and try again.', 77);
-    	}
+    	//if (function_exists('runkit_lint') && !runkit_lint($code)) {
+    	//	throw new Exception('Code doesnt compile. Please correct error and try again.', 77);
+    	//}
     	$this->code = $code;
     	
     	$className = $this->getDeclaringClass()->getName();
@@ -57,9 +77,9 @@ class iscReflectionMethod extends ezcReflectionMethod
     	$params = $this->getParameters();
     	foreach ($params as $param) {
     		if ($args == '') {
-    			$args = $param->getName();
+    			$args = '$'.$param->getName();
     		} else {
-    			$args .= ','.$param->getName();
+    			$args .= ', $'.$param->getName();
     		}
     	}
     
@@ -70,11 +90,13 @@ class iscReflectionMethod extends ezcReflectionMethod
     	} else if ($this->isPublic()) {
     		$flags = RUNKIT_ACC_PUBLIC;
     	}
-    	
-    	echo 'Tring to set following code: '. $code;
+    	ob_start();
     	
     	if (!runkit_method_redefine($className, $methodName, $args, $code , $flags)) {
-    		throw new Exception('Code couldnt be set. May be this method is on the current call stack?.', 78);
+    		$output = ob_get_clean();
+    		throw new Exception('Code couldnt be set. May be this method is on the current call stack?.' . "\n $output", 78);
+    	} else {
+    		ob_flush();
     	}
     }
 	
