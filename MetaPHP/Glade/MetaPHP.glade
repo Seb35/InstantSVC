@@ -122,7 +122,7 @@
             <property name="tab_fill">False</property>
           </packing>
         </child>
-        <child>
+        <!-- <child>
           <widget class="GtkVPaned" id="vpaned2">
             <property name="visible">True</property>
             <child>
@@ -184,7 +184,7 @@
             <property name="tab_expand">False</property>
             <property name="tab_fill">False</property>
           </packing>
-        </child>
+        </child> -->
       </widget>
     </child>
   </widget>
