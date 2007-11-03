@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE glade-interface SYSTEM "glade-2.0.dtd">
-<!--Generated with glade3 3.0.2 on Sun Oct 21 01:54:18 2007 by GRon@ARTEMIS-->
+<!--Generated with glade3 3.4.0 on Sat Nov  3 17:31:12 2007 -->
 <glade-interface>
   <widget class="GtkWindow" id="MetaPHP">
     <property name="visible">True</property>
@@ -24,6 +24,7 @@
                 <child>
                   <widget class="GtkScrolledWindow" id="scrolledwindow1">
                     <property name="visible">True</property>
+                    <property name="can_focus">False</property>
                     <property name="hscrollbar_policy">GTK_POLICY_AUTOMATIC</property>
                     <property name="vscrollbar_policy">GTK_POLICY_AUTOMATIC</property>
                     <child>
@@ -38,6 +39,7 @@
                 <child>
                   <widget class="GtkScrolledWindow" id="scrolledwindow2">
                     <property name="visible">True</property>
+                    <property name="can_focus">False</property>
                     <property name="hscrollbar_policy">GTK_POLICY_AUTOMATIC</property>
                     <property name="vscrollbar_policy">GTK_POLICY_AUTOMATIC</property>
                     <child>
@@ -53,6 +55,7 @@
               </widget>
               <packing>
                 <property name="resize">False</property>
+                <property name="shrink">True</property>
               </packing>
             </child>
             <child>
@@ -62,26 +65,78 @@
                   <widget class="GtkHButtonBox" id="hbuttonbox1">
                     <property name="visible">True</property>
                     <child>
-                      <placeholder/>
+                      <widget class="GtkHBox" id="hbox2">
+                        <property name="visible">True</property>
+                        <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
+                        <child>
+                          <widget class="GtkRadioButton" id="rbUser">
+                            <property name="visible">True</property>
+                            <property name="can_focus">True</property>
+                            <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
+                            <property name="label" translatable="yes">User</property>
+                            <property name="response_id">0</property>
+                            <property name="active">True</property>
+                            <property name="draw_indicator">True</property>
+                            <signal name="toggled" handler="showCurrentClasses"/>
+                          </widget>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">False</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <widget class="GtkRadioButton" id="rbInternal">
+                            <property name="visible">True</property>
+                            <property name="can_focus">True</property>
+                            <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
+                            <property name="label" translatable="yes">Internal</property>
+                            <property name="response_id">0</property>
+                            <property name="active">True</property>
+                            <property name="draw_indicator">True</property>
+                            <property name="group">rbUser</property>
+                          </widget>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">False</property>
+                            <property name="position">1</property>
+                          </packing>
+                        </child>
+                      </widget>
                     </child>
                     <child>
-                      <widget class="GtkButton" id="button3">
+                      <widget class="GtkToggleButton" id="btnFunctions">
                         <property name="visible">True</property>
-                        <property name="label" translatable="yes">execute code</property>
-                        <signal name="clicked" handler="execCode"/>
+                        <property name="can_focus">True</property>
+                        <property name="receives_default">True</property>
+                        <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
+                        <property name="label" translatable="yes">Only Functions</property>
+                        <property name="response_id">0</property>
+                        <signal name="toggled" handler="showFunctionsOnly"/>
                       </widget>
                       <packing>
                         <property name="position">1</property>
                       </packing>
                     </child>
                     <child>
-                      <widget class="GtkButton" id="button2">
+                      <widget class="GtkButton" id="button3">
                         <property name="visible">True</property>
-                        <property name="label" translatable="yes">Set Code</property>
-                        <signal name="clicked" handler="setMethodCode"/>
+                        <property name="label" translatable="yes">execute code</property>
+                        <property name="response_id">0</property>
+                        <signal name="clicked" handler="execCode"/>
                       </widget>
                       <packing>
                         <property name="position">2</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <widget class="GtkButton" id="button2">
+                        <property name="visible">True</property>
+                        <property name="label" translatable="yes">Set Code</property>
+                        <property name="response_id">0</property>
+                        <signal name="clicked" handler="setMethodCode"/>
+                      </widget>
+                      <packing>
+                        <property name="position">3</property>
                       </packing>
                     </child>
                   </widget>
@@ -92,6 +147,7 @@
                 <child>
                   <widget class="GtkScrolledWindow" id="scrolledwindow3">
                     <property name="visible">True</property>
+                    <property name="can_focus">False</property>
                     <property name="hscrollbar_policy">GTK_POLICY_AUTOMATIC</property>
                     <property name="vscrollbar_policy">GTK_POLICY_AUTOMATIC</property>
                     <child>
@@ -105,11 +161,12 @@
                   </packing>
                 </child>
               </widget>
+              <packing>
+                <property name="resize">True</property>
+                <property name="shrink">True</property>
+              </packing>
             </child>
           </widget>
-          <packing>
-            <property name="tab_expand">False</property>
-          </packing>
         </child>
         <child>
           <widget class="GtkLabel" id="lbPane1">
@@ -118,73 +175,9 @@
           </widget>
           <packing>
             <property name="type">tab</property>
-            <property name="tab_expand">False</property>
             <property name="tab_fill">False</property>
           </packing>
         </child>
-        <!-- <child>
-          <widget class="GtkVPaned" id="vpaned2">
-            <property name="visible">True</property>
-            <child>
-              <widget class="GtkVBox" id="vbox2">
-                <property name="visible">True</property>
-                <child>
-                  <widget class="GtkTextView" id="textview2">
-                    <property name="visible">True</property>
-                  </widget>
-                </child>
-                <child>
-                  <widget class="GtkHButtonBox" id="hbuttonbox2">
-                    <property name="visible">True</property>
-                    <child>
-                      <placeholder/>
-                    </child>
-                    <child>
-                      <placeholder/>
-                    </child>
-                    <child>
-                      <widget class="GtkButton" id="button1">
-                        <property name="visible">True</property>
-                        <property name="label" translatable="yes">button</property>
-                      </widget>
-                      <packing>
-                        <property name="position">2</property>
-                      </packing>
-                    </child>
-                  </widget>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="position">1</property>
-                  </packing>
-                </child>
-              </widget>
-              <packing>
-                <property name="resize">False</property>
-              </packing>
-            </child>
-            <child>
-              <widget class="GtkTextView" id="textview3">
-                <property name="visible">True</property>
-              </widget>
-            </child>
-          </widget>
-          <packing>
-            <property name="position">1</property>
-            <property name="tab_expand">False</property>
-          </packing>
-        </child>
-        <child>
-          <widget class="GtkLabel" id="lbPane2">
-            <property name="visible">True</property>
-            <property name="label" translatable="yes">Console</property>
-          </widget>
-          <packing>
-            <property name="type">tab</property>
-            <property name="position">1</property>
-            <property name="tab_expand">False</property>
-            <property name="tab_fill">False</property>
-          </packing>
-        </child> -->
       </widget>
     </child>
   </widget>

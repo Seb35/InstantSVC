@@ -21,6 +21,9 @@ class MyApp {
 	private $methodCodeTxt;
 	private $sourceLang;
 	private $notebook;
+	private $rbUser;
+	private $rbInternal;
+	private $btnFunctions;
 	
 	private $snippets;
 	
@@ -74,6 +77,9 @@ class MyApp {
 		$this->methodCodeTxt = $this->glade->get_widget('methodCodeTxt');
 		$this->mainWindow = $this->glade->get_widget('MetaPHP');
 		$this->notebook = $this->glade->get_widget('notebook1');
+		$this->rbInternal = $this->glade->get_widget('rbInternal');
+		$this->rbUser = $this->glade->get_widget('rbUser');
+		$this->btnFunctions = $this->glade->get_widget('btnFunctions');
 	}
 	
 	private function loadSnippets($snippetFolder) {
@@ -114,12 +120,41 @@ class MyApp {
 		$this->snippets[$nr]->resultView = $resultView;
 	}
 	
-	private function showCurrentClasses() {
+	public function showFunctionsOnly() {
+		if ($this->btnFunctions->get_active()) {
+			$this->classesList->hide();
+			$model = new GtkListStore(Gtk::TYPE_STRING, Gtk::TYPE_PHP_VALUE);
+		    
+		    
+		    $functions = get_defined_functions();
+		    if ($this->rbUser->get_active()) {
+		    	$functions = $functions['user'];
+		    } else {
+		    	$functions = $functions['internal'];
+		    }
+		    
+			foreach ($functions as $func) {
+				$function = new ReflectionFunction($func);
+				$model->append(array($func, $function));	
+			}
+			$this->methodsList->set_model($model);
+		    
+		} else {
+			$this->classesList->show();
+		}
+	}
+	
+	public function showCurrentClasses() {
 		$model = new GtkListStore(Gtk::TYPE_STRING);
 
 		$classes = get_declared_classes();
 		foreach ($classes as $class) {
-			$model->append(array($class));	
+			$classObj = new ReflectionClass($class);
+			if ($classObj->isInternal() && $this->rbInternal->get_active()
+			|| !$classObj->isInternal() && $this->rbUser->get_active()
+				) {
+				$model->append(array($class));
+			}	
 		}
 		
 		$this->classesList->set_model($model);
@@ -234,6 +269,10 @@ class MyApp {
 	    
 	    	$this->showCurrentClasses();
 		}
+	}
+	
+	private function changeClassTypes() {
+		
 	}
 }
 
