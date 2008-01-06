@@ -79,7 +79,7 @@ class iscSoapDdGenerator {
 
         $ddStr = "<?php\n";
         $ddStr.= "//** SOAPServer Deployment Descriptor **//\n";
-        $ddStr.= "//** generated via generateRestDd.php **//\n\n";
+        $ddStr.= "//** generated with InstantSVC **//\n\n";
         $ddStr.= "//** constants **//\n\n";
 
         $ddStr.= "//** imports **//\n";
