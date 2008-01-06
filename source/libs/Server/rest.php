@@ -1,23 +1,6 @@
 <?php
-//***************************************************************************
-//***************************************************************************
-//**                                                                       **
-//** RESTServer - his server is implemented without class structur to avoid duplicate                    **
-//**                      class problems                            **
-//**                                                                       **
-//** Project: Web Services Security                                        **
-//**                                                                       **
-//** @package    rest                                               **
-//** @author     Stefan Marr <mail@stefan-marr.de>    **
-//** @copyright  2006 Stefan Marr                 **
-//** @license www.apache.org/licenses/LICENSE-2.0   Apache License 2.0     **
-//**                                                                       **
-//***************************************************************************
-//***************************************************************************
-
-//***** RESTServer **************************************************
 /**
-  * This server is implemented without class structur to avoid duplicate
+ * This server is implemented without class structure to avoid duplicate
  * class problems
  *
  * This server includes a rest.dd.php deployment descriptor with informations

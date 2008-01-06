@@ -127,7 +127,7 @@ class RestDeploymentDescriptorGenerator {
 
         $ddStr = "<?php\n";
         $ddStr.= "//** RESTServer Deployment Descriptor **//\n";
-        $ddStr.= "//** generated via generateRestDd.php **//\n\n";
+        $ddStr.= "//** generated with InstantSVC **//\n\n";
         $ddStr.= "//** constants **//\n";
         if (!empty($this->baseUri)) {
             $ddStr.= "if (!defined('REST_BASE')) {\n";
