@@ -1,5 +1,5 @@
-{{include file="admin-tool/admin-tool-header.tpl"}}
-{{include file="admin-tool/admin-tool-navi.tpl"}}
+{{include file="admin-tool-header.tpl"}}
+{{include file="admin-tool-navi.tpl"}}
 <div id="main">
   <p>W&auml;hlen sie eine Klasse aus um sich deren Methoden anzeigen zu lassen.</p>
   <form method="POST" action="?view={{$view}}">
@@ -11,4 +11,4 @@
 	</p>
   </form>
 </div>
-{{include file="admin-tool/admin-tool-footer.tpl"}}
+{{include file="admin-tool-footer.tpl"}}

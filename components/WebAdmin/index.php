@@ -26,13 +26,21 @@ define('STD_SEARCHPATH', $_SERVER['DOCUMENT_ROOT']);
 error_reporting(E_ALL);
 
 //***** imports *************************************************************
+require_once '../Base/src/base.php';
+//@include_once \'ezc/Base/base.php\';
+//@include_once \'Base/base.php\';
+//require_once 'ezc/Base/base.php';
+//ezcBase::addClassRepository(dirname(__FILE__) . '/..', dirname(__FILE__) . '/../autoload');
+
 
 require_once(dirname(__FILE__).'/admin-tool-config.php');
-require_once(dirname(__FILE__).'/admin-tool-lib.php');
 require_once(dirname(__FILE__).'/admin-tool-smarty-connect.php');
-require_once(dirname(__FILE__).'/admin-tool-db.php');
 
-require_once(dirname(__FILE__).'/../../../libs/reflection/class.ExtReflectionClass.php');
+// Create the autoload environment for calling eZ components
+function __autoload( $className )
+{
+    ezcBase::autoload( $className );
+}
 
 
 //***** AdminToolApp ********************************************************
@@ -52,12 +60,12 @@ class AdminToolApp {
   private $smarty = null;
 
   /**
-   * @var AdminToolLibrary
+   * @var isvcWebServiceToolLibrary
    */
   private $library = null;
 
   /**
-   * @var AdminToolDB
+   * @var isvcWebServiceToolDatabase
    */
   private $db = null;
 
@@ -84,8 +92,8 @@ public function __construct() {
   // Variablen initialisieren
   // $this->smarty = new wsRenderEngine(null);
   $this->smarty  = new AdminToolSmartyConnect();
-  $this->library = new AdminToolLibrary();
-  $this->db      = new AdminToolDB();
+  $this->library = new isvcWebServiceToolLibrary();
+  $this->db      = new isvcWebServiceToolDatabase();
 
   $this->ws_output_folder = $_SERVER["DOCUMENT_ROOT"] . "/webservices";
 
@@ -248,7 +256,7 @@ public function run() {
  */
 private function showIntro() {
 
-  $this->smarty->display('admin-tool/admin-tool-intro.tpl');
+  $this->smarty->display('admin-tool-intro.tpl');
 
 } // Ende von showIntro()
 
@@ -353,7 +361,7 @@ private function showIntro() {
         		break;
         }
         $this->smarty->assign('step', $step);
-        $this->smarty->display('admin-tool/admin-tool-wsgen-view.tpl');
+        $this->smarty->display('admin-tool-wsgen-view.tpl');
     }
 
     //=======================================================================
@@ -509,11 +517,11 @@ private function showIntro() {
         }
         $this->smarty->assign('step', $_SESSION['wizard']['step']);
         if ($_SESSION['wizard']['step'] == 'cancel') {
-            $this->smarty->display('admin-tool/admin-tool-intro.tpl');
+            $this->smarty->display('admin-tool-intro.tpl');
             unset($_SESSION['wizard']['step']);
         }
         else {
-            $this->smarty->display('admin-tool/admin-tool-wizard.tpl');
+            $this->smarty->display('admin-tool-wizard.tpl');
         }
     }
 
@@ -560,7 +568,7 @@ private function handleRegister() {
             $this->smarty->assign('tabledata',$regClasses);
             $this->smarty->assign('subview','Registriert');
             $this->smarty->assign('view','register');
-            $this->smarty->display('admin-tool/admin-tool-register-view.tpl');
+            $this->smarty->display('admin-tool-register-view.tpl');
             break;
           }
           else {
@@ -581,7 +589,7 @@ private function handleRegister() {
         // TODO: Reflection Objekt hat Methodenzugriff / für Smarty aufbereiten
         $this->smarty->assign('tabledata',$simpleClasses);
 
-        $this->smarty->display('admin-tool/admin-tool-register-view.tpl');
+        $this->smarty->display('admin-tool-register-view.tpl');
 
         break;
       case 'Abbrechen':
@@ -589,7 +597,7 @@ private function handleRegister() {
         // $_SESSION['markedServer'] = $old_markedServer;
         // $_SESSION['markedSecurity'] = $old_markedSecurity;
         // Zurück zum Hauptmenü
-        $this->smarty->display('admin-tool/admin-tool-intro.tpl');
+        $this->smarty->display('admin-tool-intro.tpl');
         break;
       default:
         // Bei anderen Aktionen mache nichts
@@ -603,7 +611,7 @@ private function handleRegister() {
     $regClasses = $this->library->getRegisteredClasses();
     $this->smarty->assign('tabledata',$regClasses);
 
-    $this->smarty->display('admin-tool/admin-tool-register-view.tpl');
+    $this->smarty->display('admin-tool-register-view.tpl');
 
   }
 
@@ -657,7 +665,7 @@ private function showClasses() {
 
   $this->smarty->assign('class_list', $class_list);
   $this->smarty->assign('view', 'methods');
-  $this->smarty->display('admin-tool/admin-tool-classView.tpl');
+  $this->smarty->display('admin-tool-classView.tpl');
 } // end of selectClass
 
 //===========================================================================
@@ -691,7 +699,7 @@ private function showMethods($class_id) {
   $this->smarty->assign('method_list_checked', $method_list_checked);
   $this->smarty->assign('view', 'methods');
   $this->smarty->assign('class_id', $class_id);
-  $this->smarty->display('admin-tool/admin-tool-methodView.tpl');
+  $this->smarty->display('admin-tool-methodView.tpl');
 
 } // end of showMethods
 
@@ -716,7 +724,7 @@ private function showMethodDetail($method_id) {
   $this->smarty->assign('source_code_comment', $source_code_comment["comment"]);
   $this->smarty->assign('user_comment', $user_comment["comment"]);
 
-  $this->smarty->display('admin-tool/admin-tool-methodDetailsView.tpl');
+  $this->smarty->display('admin-tool-methodDetailsView.tpl');
 
 }
 
@@ -774,7 +782,7 @@ $this->smarty->assign("classes_checked","");
   $this->smarty->assign('root_path',$this->db->getProperty("stats_root"));
   $this->smarty->assign('classes',$classes);
   $this->smarty->assign('view','wsreg');
-  $this->smarty->display('admin-tool/admin-tool-wsgen-view.tpl');
+  $this->smarty->display('admin-tool-wsgen-view.tpl');
 
 }
 
@@ -812,14 +820,14 @@ private function handleSettings() {
           $_SESSION['markedSecurity'] = $_REQUEST['selectedSecurity'];
         $_SESSION['searchpath'] = $_REQUEST['searchpath'];
         // Zurück zum Hauptmenü
-        $this->smarty->display('admin-tool/admin-tool-intro.tpl');
+        $this->smarty->display('admin-tool-intro.tpl');
         break;
       case 'Abbrechen':
         // Alte Werte wiederherstellen ...
         // $_SESSION['markedServer'] = $old_markedServer;
         // $_SESSION['markedSecurity'] = $old_markedSecurity;
         // Zurück zum Hauptmenü
-        $this->smarty->display('admin-tool/admin-tool-intro.tpl');
+        $this->smarty->display('admin-tool-intro.tpl');
         break;
       default:
         // Bei anderen Aktionen mache nichts
@@ -834,7 +842,7 @@ private function handleSettings() {
     $this->smarty->assign('markedSecurity', $_SESSION['markedSecurity']);
     $this->smarty->assign('securityList', $securityList);
     // Einstellungsdialog anzeigen
-    $this->smarty->display('admin-tool/admin-tool-settings-view.tpl');
+    $this->smarty->display('admin-tool-settings-view.tpl');
   }
 }
 

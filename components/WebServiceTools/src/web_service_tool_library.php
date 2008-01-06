@@ -20,11 +20,9 @@
 error_reporting(E_ALL);
 
 //***** imports *************************************************************
-require_once dirname(__FILE__).'/../../../libs/misc/class.codeAnalyzer.php';
-require_once dirname(__FILE__).'/admin-tool-db.php';
-require_once(dirname(__FILE__).'/../../libs/Generators/class.WSDLGenerator.php');
-require_once(dirname(__FILE__).'/../../libs/Generators/class.soapDdGenerator.php');
-require_once(dirname(__FILE__).'/../../libs/Generators/class.DocumentWrappedAdapterGenerator.php');
+require_once(dirname(__FILE__).'/../../Generators/class.WSDLGenerator.php');
+require_once(dirname(__FILE__).'/../../Generators/class.soapDdGenerator.php');
+require_once(dirname(__FILE__).'/../../Generators/class.DocumentWrappedAdapterGenerator.php');
 
 //***** isvcWebServiceToolLibrary ****************************************************
 /**
@@ -41,7 +39,7 @@ class isvcWebServiceToolLibrary {
 
 /** Variable für Datenbankzugriff */
   /**
-   * @var AdminToolDB
+   * @var isvcWebServiceToolDatabase
    */
   private $db = null;
 
@@ -53,7 +51,7 @@ class isvcWebServiceToolLibrary {
 public function __construct() {
 
   // Variablen initialisieren
-  $this->db      = new AdminToolDB();
+  $this->db      = new isvcWebServiceToolDatabase();
 
 }
 
@@ -90,8 +88,7 @@ public function saveMethods($class_id, $method_list = array()) {
 public function getAllClasses($path) {
   $path = realpath($path);
   if ($path !== false) {
-      $analyzer = new CodeAnalyzer($path);
-      $analyzer->setPhpBinPath(PHP_BIN_PATH);
+      $analyzer = new iscCodeAnalyzer($path);
       $analyzer->collect();
       $analyzer->inspectFiles();
       $summary = $analyzer->getCodeSummary();

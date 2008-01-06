@@ -1,5 +1,5 @@
-{{include file="admin-tool/admin-tool-header.tpl"}}
-{{include file="admin-tool/admin-tool-navi.tpl"}}
+{{include file="admin-tool-header.tpl"}}
+{{include file="admin-tool-navi.tpl"}}
 <div id="main">
   <p>Hier werden alle Details einer Methode angezeigt. Die Source-Code
      Kommentare k&ouml;nnen durch benutzerdefinierte Kommentare ersetzt
@@ -25,4 +25,4 @@
 
   </form>
 </div>
-{{include file="admin-tool/admin-tool-footer.tpl"}}
+{{include file="admin-tool-footer.tpl"}}

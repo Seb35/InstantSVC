@@ -1,5 +1,5 @@
-{{include file="admin-tool/admin-tool-header.tpl"}}
-{{include file="admin-tool/admin-tool-navi.tpl"}}
+{{include file="admin-tool-header.tpl"}}
+{{include file="admin-tool-navi.tpl"}}
 <div id="main">
 <form method="POST" action="?view=wizard">
 {{if $step eq "start"}}
@@ -100,4 +100,4 @@
 </p>
 </form>
 </div>
-{{include file="admin-tool/admin-tool-footer.tpl"}}
+{{include file="admin-tool-footer.tpl"}}

@@ -18,7 +18,6 @@
 
 //***** imports *************************************************************
 require_once(dirname(__FILE__).'/../../../tools/admin-tool/admin-tool-db.php');
-require_once(dirname(__FILE__).'/../../../tools/admin-tool/admin-tool-lib.php');
 
 
 //***** PolicyPlugIn ********************************************************
@@ -37,12 +36,12 @@ class PolicyPlugIn {
 
     /**
      * Instanzvariable, kapselt Verbindung zur Datenbank
-     * @var AdminToolDB
+     * @var isvcWebServiceToolDatabase
      */
     private $db;
 
     /**
-     * @var AdminToolLibrary
+     * @var isvcWebServiceToolLibrary
      */
     private $lib;
 
@@ -52,7 +51,7 @@ class PolicyPlugIn {
  *                stellt über DB-Klasse Verbindung zur Datenbank her
  */
 public function __construct() {
-  $this->db = new AdminToolDB();
+  $this->db = new isvcWebServiceToolDatabase();
 }
 
 //===========================================================================

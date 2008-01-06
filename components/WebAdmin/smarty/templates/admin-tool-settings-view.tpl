@@ -1,5 +1,5 @@
-{{include file="admin-tool/admin-tool-header.tpl"}}
-{{include file="admin-tool/admin-tool-navi.tpl"}}
+{{include file="admin-tool-header.tpl"}}
+{{include file="admin-tool-navi.tpl"}}
 <div id="main">
 <form method="POST" action="?view={{$view}}">
 
@@ -29,4 +29,4 @@
 
 </form>
 </div>
-{{include file="admin-tool/admin-tool-footer.tpl"}}
+{{include file="admin-tool-footer.tpl"}}

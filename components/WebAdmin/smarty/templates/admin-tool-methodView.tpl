@@ -1,5 +1,5 @@
-{{include file="admin-tool/admin-tool-header.tpl"}}
-{{include file="admin-tool/admin-tool-navi.tpl"}}
+{{include file="admin-tool-header.tpl"}}
+{{include file="admin-tool-navi.tpl"}}
 <div id="main">
   <p>W&auml;hlen sie die Methoden aus, die mittels WebService ver&ouml;ffentlicht werden sollen.</p>
   <form method="POST" action="?view={{$view}}&amp;class_id={{$class_id}}">
@@ -11,4 +11,4 @@
     <input type="submit" name="methodView_action" value="Web Service erstellen" /></p>
   </form>
 </div>
-{{include file="admin-tool/admin-tool-footer.tpl"}}
+{{include file="admin-tool-footer.tpl"}}

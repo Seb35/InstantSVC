@@ -1,5 +1,5 @@
-<title>AdminTool Setup</title>{{include file="admin-tool/admin-tool-header.tpl"}}
-{{include file="admin-tool/admin-tool-navi.tpl"}}
+<title>AdminTool Setup</title>{{include file="admin-tool-header.tpl"}}
+{{include file="admin-tool-navi.tpl"}}
 <div id="main">
   <h2>Setup</h2>
   {{if $step == 'unfinished'}}
@@ -19,7 +19,7 @@
 		</tr>
 		<tr>
 			<td>Database: </td>
-			<td><input type="text" name="database" value="webservice" /></td>
+			<td><input type="text" name="database" value="instantsvc" /></td>
 		</tr>
 		<tr>
 			<td></td><td><input type="submit" /></td>
@@ -31,4 +31,4 @@
   {{/if}}
   
 </div>
-{{include file="admin-tool/admin-tool-footer.tpl"}}
+{{include file="admin-tool-footer.tpl"}}

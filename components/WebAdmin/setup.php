@@ -15,10 +15,11 @@
 error_reporting(E_ALL);
 
 //***** imports *************************************************************
-require_once(dirname(__FILE__).'/admin-tool-config.php');
-require_once(dirname(__FILE__).'/admin-tool-smarty-connect.php');
-require_once(dirname(__FILE__).'/readsqldump.php');
-require_once(ADODB_DIR.'/adodb.inc.php');
+require_once dirname(__FILE__) . '/admin-tool-config.php';
+require_once dirname(__FILE__) . '/admin-tool-smarty-connect.php';
+require_once dirname(__FILE__) . '/readsqldump.php';
+// TODO: remove hard coded adodb path
+require_once dirname(__FILE__) . '/../../../adodb/adodb.inc.php';
 
 $smarty  = new AdminToolSmartyConnect();
 
@@ -34,10 +35,12 @@ if (isset($_REQUEST['server'])) {
     $db->Connect($dbconfig['server'], $dbconfig['user'], $dbconfig['password'], $dbconfig['database']);
     $db->SetFetchMode(ADODB_FETCH_ASSOC);
 
-    $queries = PMA_splitSqlFile(file_get_contents(dirname(__FILE__).'/sql/wsdl-db.sql'));
+    $queries = PMA_splitSqlFile(file_get_contents(dirname(__FILE__).'/../WebServiceTools/sql/instantsvc.sql'));
 
-    $cfg = "<?php \nreturn ".var_export($dbconfig, true)."\n?>";
-    file_put_contents(dirname(__FILE__).'/dbconfig.php' , $cfg);
+    $cfg = '<?php ' . "\n"
+            . 'return ' . var_export($dbconfig, true) . "\n"
+            . '?>';
+    file_put_contents(dirname(__FILE__).'/../WebServiceTools/src/dbconfig.php' , $cfg);
 
     foreach ($queries as $query) {
         $db->Execute($query);
@@ -48,5 +51,5 @@ else {
     $smarty->assign('step', 'unfinished');
 }
 
-$smarty->display('admin-tool/admin-tool-setup.tpl');
+$smarty->display('admin-tool-setup.tpl');
 ?>
