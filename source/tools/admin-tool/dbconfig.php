@@ -3,6 +3,6 @@ return array (
   'server' => 'localhost',
   'user' => 'root',
   'password' => '',
-  'database' => 'webservice',
+  'database' => 'instantsvc',
 )
 ?>

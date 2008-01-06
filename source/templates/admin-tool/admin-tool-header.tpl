@@ -6,6 +6,6 @@
   </head>
   <body>
   <div id="header">
-    <h1>Administration Tool des Web Service Frameworks</h1>
+    <h1><img src="logo.png"></h1>
     <!--hr-->
   

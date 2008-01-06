@@ -63,7 +63,7 @@ class ExtReflectionParameter extends ReflectionParameter {
 
     //=======================================================================
     /**
-    * @return bool
+    * @return boolean
     */
     public function allowsNull() {
         if ($this->parameter != null) {
@@ -76,7 +76,7 @@ class ExtReflectionParameter extends ReflectionParameter {
 
     //=======================================================================
     /**
-    * @return bool
+    * @return boolean
     */
     public function isOptional() {
         if ($this->parameter != null) {
@@ -89,7 +89,7 @@ class ExtReflectionParameter extends ReflectionParameter {
 
     //=======================================================================
     /**
-    * @return bool
+    * @return boolean
     */
     public function isPassedByReference() {
         if ($this->parameter != null) {
@@ -102,7 +102,7 @@ class ExtReflectionParameter extends ReflectionParameter {
 
     //=======================================================================
     /**
-    * @return bool
+    * @return boolean
     */
     public function isDefaultValueAvailable() {
         if ($this->parameter != null) {
@@ -145,7 +145,7 @@ class ExtReflectionParameter extends ReflectionParameter {
     * @return ClassType
     */
     public function getClass() {
-        if ($this->type->isClass()) {
+        if ($this->type && $this->type->isClass()) {
             return $this->type;
         }
         return null;
@@ -156,9 +156,9 @@ class ExtReflectionParameter extends ReflectionParameter {
     * @return ExtReflectionFunction
     */
     public function getDeclaringFunction() {
-        if (!empty(parent::getDeclaringFunction())) {
-            return new ExtReflectionFunction(parent::getDeclaringFunction()
-                                             ->getName());
+        $func = parent::getDeclaringFunction();
+        if (!empty($func)) {
+            return new ExtReflectionFunction($func->getName());
         }
         else {
             return null;
@@ -170,8 +170,10 @@ class ExtReflectionParameter extends ReflectionParameter {
     * @return ClassType
     */
     function getDeclaringClass() {
-		if (!empty(parent::getDeclaringClass())) {
-		    return new ClassType(parent::getDeclaringClass()->getName());
+        $class = parent::getDeclaringClass();
+        
+		if (!empty($class)) {
+		    return new ClassType($class->getName());
 		}
 		else {
 		    return null;

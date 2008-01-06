@@ -441,7 +441,11 @@ private function showIntro() {
                 }
                 $_SESSION['classes2generate'] = $classes;
                 $this->smarty->assign('classes', $classes);
-
+                if ($_SERVER['HTTPS'] == 'on') {
+                    $this->smarty->assign('serviceuri', 'https://' . $_SERVER['HTTP_HOST'] . '/services/soap.php/');
+                } else {
+                    $this->smarty->assign('serviceuri', 'http://' . $_SERVER['HTTP_HOST'] . '/services/soap.php/');
+                }
                 break;
             case 'generate':
                 if (!isset($_REQUEST['targetpath']) or
@@ -483,7 +487,6 @@ private function showIntro() {
 
                                 if ((int)$_REQUEST['wsdlstyle'][$className] == WSDLGenerator::DOCUMENT_WRAPPED) {
                                     $classfile = AdminToolLibrary::generateAdapter($className, $targetPath);
-                                    
                                     $className = AdminToolLibrary::getAdapterClassName($className);
                                 }
                                 else {
@@ -500,6 +503,14 @@ private function showIntro() {
                                 $services[] = $service;
                     	    }
                     	}
+                        
+                        //TODO: remove hard coded WSDL URL
+                        if (isset($_SERVER['HTTPS']) and $_SERVER['HTTPS'] == 'on') {
+                            $this->smarty->assign('wsdlurl', 'https://' . $_SERVER['HTTP_HOST'] . '/services/');
+                        } else {
+                            $this->smarty->assign('wsdlurl', 'http://' . $_SERVER['HTTP_HOST'] . '/services/');
+                        }
+                        $this->smarty->assign('generatedServices', $services);
                     	//after all services are generates build dd
                     	AdminToolLibrary::generateDd($targetPath, $services);
                     	AdminToolLibrary::generateServer($targetPath);

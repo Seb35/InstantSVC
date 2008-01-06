@@ -23,6 +23,7 @@ error_reporting(E_ALL);
 require_once dirname(__FILE__).'/../../../libs/misc/class.codeAnalyzer.php';
 require_once dirname(__FILE__).'/admin-tool-db.php';
 require_once(dirname(__FILE__).'/../../libs/Generators/class.WSDLGenerator.php');
+require_once(dirname(__FILE__).'/../../libs/Generators/WsdlPolicyPlugin/policy-plugin.php');
 require_once(dirname(__FILE__).'/../../libs/Generators/class.soapDdGenerator.php');
 require_once(dirname(__FILE__).'/../../libs/Generators/class.DocumentWrappedAdapterGenerator.php');
 
@@ -203,7 +204,8 @@ public function getRegisteredClasses() {
             require_once($classFile);
         }
         $generator = new WSDLGenerator($serviceName, $serviceUri, $namespace, $binding);
-        $generator->setClass($className, true);
+        //$generator->setClass($className, true);
+        $generator->setClass($className);
         return $generator->saveToFile($wsdlfile);
     }
 

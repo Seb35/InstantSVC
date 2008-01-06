@@ -53,6 +53,7 @@ class PolicyPlugIn {
  */
 public function __construct() {
   $this->db = new AdminToolDB();
+  $this->lib = new AdminToolLibrary();
 }
 
 //===========================================================================
