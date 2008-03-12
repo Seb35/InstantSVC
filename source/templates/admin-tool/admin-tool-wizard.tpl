@@ -29,7 +29,7 @@
   </tr>
   {{foreach item=classfile key=name from=$list_classes}}
   <tr>
-  	<td><input type="checkbox" name="class[]" value="{{$name}}" /></td>
+  	<td><input type="checkbox" name="class[]" value="{{$name}}" checked="checked"/></td>
     <td>{{$name}}</td>
     <td>{{$classfile}}</td>
   </tr>
