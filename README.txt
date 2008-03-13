@@ -14,7 +14,8 @@ Extract the following files into the document root of your webserver:
     adodb5      => instantsvc/adodb
     snapshot    => instantsvc/snapshot
 
-define PHP_BIN_PATH in instantsvc/snapshot/source/tools/admin-tool/admin-tool-config.php
+If neccessary change the constants in
+    instantsvc/snapshot/source/tools/admin-tool/admin-tool-config.php
 
 write permissions for:
     instantsvc/snapshot/source/tools/admin-tool/admin-tool-log.txt
@@ -26,7 +27,10 @@ write permissions for:
 database: create schema 'instantsvc'
 
 Point your browser to http://localhost/instantsvc/snapshot/source/tools/admin-tool/setup.php
-
+    The installation programm will import
+        instantsvc/snapshot/source/tools/admin-tool/sql/instantsvc.sql
+    into the database and adjust the database connection settings in
+        instantsvc/snapshot/source/tools/admin-tool/admin-tool-db.php
 
 In order to use authentication via WS-Security Username Token Profile you have to import
     instantsvc/snapshot/source/libs/UserTokenProfile/sql/usertokenstorage.sql
