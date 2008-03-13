@@ -5,20 +5,23 @@ Requirements:
     options in php.ini:
         session.use_cookies = 1      # required for admin tool
         soap.wsdl_cache_enabled = 0  # recommended for development servers
-    MySQL
+    Smarty Template Engine
+    AdoDB for PHP
+    MySQL (for the admin tool and when using the Username Token Profile)
 
-Extract files:
+Extract the following files into the document root of your webserver:
     Smarty/libs => instantsvc/smarty
     adodb5      => instantsvc/adodb
     snapshot    => instantsvc/snapshot
 
-define PHP_BIN_PATH in /var/www/instantsvc/snapshot/source/tools/admin-tool/admin-tool-config.php
+define PHP_BIN_PATH in instantsvc/snapshot/source/tools/admin-tool/admin-tool-config.php
 
 write permissions for:
-    /var/www/instantsvc/snapshot/source/tools/admin-tool/admin-tool-log.txt
-    /var/www/instantsvc/snapshot/source/tools/admin-tool/dbconfig.php
-    /var/www/instantsvc/snapshot/source/templates_c
-    /var/www/services => empty directory
+    instantsvc/snapshot/source/tools/admin-tool/admin-tool-log.txt
+    instantsvc/snapshot/source/tools/admin-tool/dbconfig.php
+    instantsvc/snapshot/source/templates_c
+    instantsvc/snapshot/source/templates_c/admin-tool
+    services => empty directory in the document root of your webserver
 
 database: create schema 'instantsvc'
 
@@ -26,9 +29,9 @@ Point your browser to http://localhost/instantsvc/snapshot/source/tools/admin-to
 
 
 In order to use authentication via WS-Security Username Token Profile you have to import
-    source/libs/UserTokenProfile/sql/usertokenstorage.sql
+    instantsvc/snapshot/source/libs/UserTokenProfile/sql/usertokenstorage.sql
 into your database and configure the database connection settings in lines 87-91 of
-    source/libs/UserTokenProfile/CheckUserDB.php
+    instantsvc/snapshot/source/libs/UserTokenProfile/CheckUserDB.php
 It may be also neccessary to adjust the constant ADODB_DIR in line 21.
 After that you have to change the method getPassword,
 so that it returns the password of a given user from your application.
