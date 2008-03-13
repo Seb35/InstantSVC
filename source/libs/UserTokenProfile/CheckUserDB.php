@@ -17,14 +17,14 @@
 //***************************************************************************
 //***************************************************************************
 
-// set the path to adbdo, most likely in the php include folder
-define("ADODB_DIR", "adodb\\");
+// set the path to adbdb, most likely in the php include folder
+define("ADODB_DIR", "adodb/");
 
 require_once(ADODB_DIR.'adodb.inc.php');
 require_once(ADODB_DIR.'adodb-exceptions.inc.php');
 
 // include teleTask User Managemen
-require_once("User/classes/User.php");
+//require_once("User/classes/User.php");
 
 
 //***** CheckUserDB ***********************************************************
@@ -84,11 +84,11 @@ class CheckUserDB {
   * Get ADO database connection
   */
   public function retrieveDbConnection() {
-    // TODO put in external config
+    // TODO: put in external config
     $server = "localhost";
-    $user   = "";
+    $user   = "root";
     $pwd    = "";
-    $db     = "usertokenstorage";
+    $db     = "instantsvc";
 
     try {
       // create Database Connection
@@ -98,7 +98,7 @@ class CheckUserDB {
       $this->dbConnectionEstablished = TRUE;
     }  // end try
 	  catch (exception $e) {
-      // TODO print error
+      // TODO: print error
     } // end catch
   }
 
@@ -152,24 +152,19 @@ class CheckUserDB {
     return FALSE;
   } // end of isNonceOkay
 
-  private function setGlobalUser($account){
-    // set global user object
-    $GLOBALS['USER'] = $account;
-  }
 
-  // TODO Kommentare bauen
-  public function setGuestAccount() {
-    $this->setGlobalUser(User::getInstanceGuest());
-  }
-
-  public function setAccount($username) {
-    $account = User::getInstanceFromUsername($username);
-    $this->setGlobalUser($account);
-  }
-
+  /**
+   * Requests the password of a user
+   *
+   * @param string $username The username
+   * @return string The password
+   */
   public function getPassword($username) {
-    $account = User::getInstanceFromUsername($username);
-    return $account->getPassword();
+    // Change this according to your needs!
+    // It is advisable to return only the md5 hash of the password.
+    // If you do so, the client also has to send the md5 value.
+    // (The SecureClient provided by InstantSVC uses MD5 by default)
+    return md5('password');
   }
 
 } // end of class CheckUserDB
