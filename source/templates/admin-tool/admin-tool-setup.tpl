@@ -19,7 +19,7 @@
 		</tr>
 		<tr>
 			<td>Database: </td>
-			<td><input type="text" name="database" value="webservice" /></td>
+			<td><input type="text" name="database" value="instantsvc" /></td>
 		</tr>
 		<tr>
 			<td></td><td><input type="submit" /></td>
