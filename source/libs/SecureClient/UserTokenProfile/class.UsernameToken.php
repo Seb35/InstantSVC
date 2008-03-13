@@ -64,6 +64,7 @@ class UsernameToken {
     // Timestamp - ISO - Format
     $this->Created = date("c");
     // Generate Hashvalue
+    //TODO: remove MD5 hashing and the according comment in source/libs/UserTokenProfile/CheckUserDB.php
     $this->Password = base64_encode(
                       sha1($this->Nonce . $this->Created . md5($pw), true));
     // encode nonce in base64
