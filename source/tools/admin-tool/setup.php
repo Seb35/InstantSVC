@@ -34,7 +34,7 @@ if (isset($_REQUEST['server'])) {
     $db->Connect($dbconfig['server'], $dbconfig['user'], $dbconfig['password'], $dbconfig['database']);
     $db->SetFetchMode(ADODB_FETCH_ASSOC);
 
-    $queries = PMA_splitSqlFile(file_get_contents(dirname(__FILE__).'/sql/wsdl-db.sql'));
+    $queries = PMA_splitSqlFile(file_get_contents(dirname(__FILE__).'/sql/instantsvc.sql'));
 
     $cfg = "<?php \nreturn ".var_export($dbconfig, true)."\n?>";
     file_put_contents(dirname(__FILE__).'/dbconfig.php' , $cfg);
