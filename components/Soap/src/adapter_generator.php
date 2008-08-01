@@ -108,7 +108,7 @@ class iscSoapAdapterGenerator {
         $gen.= '        if (empty($target)) {' . "\n";
         
         $gen.= '			//May be we have a singleton class, just check for some common names' . "\n";
-        $gen.= '            $class = new ReflectionClass(\''.$this->className.'\');';
+        $gen.= '            $class = new ReflectionClass(\''.$this->className.'\');' . "\n";
 		$gen.= '            if ($class->isInstantiable()) {' . "\n";
 		$gen.= '                $obj = $class->newInstance();' . "\n";
 		$gen.= '            }' . "\n";
@@ -118,8 +118,8 @@ class iscSoapAdapterGenerator {
         $gen.= '		    elseif (is_callable(array(\''.$this->className.'\', \'getSingleton\'), false)) {' . "\n";
 	    $gen.= '		       $obj = call_user_func(array(\''.$this->className.'\', \'getSingleton\'));' . "\n";
         $gen.= '		    }' . "\n";
-        $gen.= '		    else {';
-        $gen.= '		    	throw new Exception(\'Could not create an object instance of class '. $this->className .'\', 0);' . "\n";
+        $gen.= '		    else {' . "\n";
+        $gen.= '		    	throw new Exception(\'Could not create an object instance of class '. $this->className .'\');' . "\n";
         $gen.= '		    }' . "\n";
         $gen.= '            $this->target = $obj;' . "\n";
         $gen.= '        } else {' . "\n";
