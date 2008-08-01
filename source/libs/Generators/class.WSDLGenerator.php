@@ -138,7 +138,7 @@ class WSDLGenerator
 
         // to make parameters globally available
         $this->serviceName = $serviceName;
-        $this->$serviceAccessPointURL = $serviceAccessPointURL;
+        $this->serviceAccessPointURL = $serviceAccessPointURL;
         $this->namespace = $namespace;
 
         // default DOCUMENT LITERAL WRAPPED
@@ -1128,7 +1128,7 @@ class WSDLGenerator
         $port = $this->service->appendChild($port);
 
         $soap = $this->dom->createElement('soap:address','');
-        $soap->setAttribute('location',$this->namespace);
+        $soap->setAttribute('location', $this->serviceAccessPointURL);
         $soap = $port->appendChild($soap);
     }
 
