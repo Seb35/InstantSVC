@@ -57,8 +57,8 @@
     <option value="{{"WSDLGenerator::RPC_ENCODED"|constant}}">RPC / Encoded</option>
   </select></td></tr>
       <tr><td><label>Service Name:</label></td><td><input type="text" name="servicename[{{$name}}]" value="{{$name}}" /></td></tr>
-	  <tr><td><label>Service URI:</label></td><td><input type="text" name="serviceuri[{{$name}}]" value="{{$serviceuri}}{{$name}}" style="width:450px" /></td></tr>
-	  <tr><td><label>Namespace:</label></td><td><input type="text" name="namespace[{{$name}}]" value="{{$serviceuri}}{{$name}}" style="width: 450px;" /></td></tr>
+	  <tr><td><label>Service URI:</label></td><td><input type="text" name="serviceuri[{{$name}}]" value="{{$serviceuri}}{{$name}}" style="width:500px" /></td></tr>
+	  <tr><td><label>Namespace:</label></td><td><input type="text" name="namespace[{{$name}}]" value="{{$serviceuri}}{{$name}}" style="width: 500px;" /></td></tr>
 	  <tr><td><label>Authentifikation mit <acronym title="Web Service Security: User Token Profile">UTP</acronym>:</label></td><td><input type="checkbox" name="useutp[{{$name}}]" value="true" /></td></tr>
 	</table>
 	{{if !$smarty.foreach.classes.last}}
@@ -67,7 +67,7 @@
 	</li>
   {{/foreach}}
   </ul>
-  <p><label>Zielpfad:</label> <input type="text" name="targetpath" value="{{$smarty.const.STD_SEARCHPATH}}/services" /></p>
+  <p><label>Zielpfad:</label> <input type="text" name="targetpath" value="{{$smarty.const.STD_SEARCHPATH}}/services" style="width: 600px;" /></p>
   {{if isset($pathinvalid)}}<p>Der angegebene Pfad ist nicht g&uuml;ltig.</p>
   {{/if}}
   {{elseif $step eq "generate"}}  
