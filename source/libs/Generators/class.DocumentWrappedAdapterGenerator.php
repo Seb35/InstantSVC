@@ -130,7 +130,7 @@ class DocumentWrappedAdapterGenerator {
         $gen.= '        if (empty($target)) {' . "\n";
         
         $gen.= '			//May be we have a singleton class, just check for some common names' . "\n";
-        $gen.= '			if (is_callable(array(\''.$this->className.'\', \'__contruct\'), false)) {' . "\n";
+        $gen.= '			if (is_callable(array(\''.$this->className.'\', \'__construct\'), false)) {' . "\n";
 	    $gen.= '		       $obj = new '.$this->className.'();' . "\n";
         $gen.= '		    }' . "\n";
         $gen.= '			elseif (is_callable(array(\''.$this->className.'\', \'getInstance\'), false)) {' . "\n";
