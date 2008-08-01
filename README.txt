@@ -2,6 +2,9 @@ Steps for getting the InstantSVC snapshot to work
 
 Requirements:
     PHP => 5.2.0 (http://www.php.net/)
+        required extensions:
+            Reflection
+            SOAP
     options in php.ini:
         session.use_cookies = 1      # required for admin tool
         soap.wsdl_cache_enabled = 0  # recommended for development servers
@@ -16,15 +19,18 @@ Extract the following files into the document root of your webserver:
 
 If neccessary change the constants in
     instantsvc/snapshot/source/tools/admin-tool/admin-tool-config.php
+    instantsvc/snapshot/libs/config/config.php
 
-write permissions for:
+Set write permissions for:
     instantsvc/snapshot/source/tools/admin-tool/admin-tool-log.txt
     instantsvc/snapshot/source/tools/admin-tool/dbconfig.php
     instantsvc/snapshot/source/templates_c
     instantsvc/snapshot/source/templates_c/admin-tool
     services => empty directory in the document root of your webserver
 
-database: create schema 'instantsvc'
+Create a database schema, e.g. named 'instantsvc', in MySQL
+You may also want to create a separate MySQL user for InstantSVC
+with permissions to access the database you just created.
 
 Point your browser to http://localhost/instantsvc/snapshot/source/tools/admin-tool/setup.php
     The installation programm will import
