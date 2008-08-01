@@ -657,6 +657,7 @@ private function showClasses() {
 
   // String zusammenbauen für Smarty-Template
   $index = 1;
+  $class_list = array();
   foreach($classes as $key => $class) {
     $temp_string = "<b>" . $index . "</b> - " . $class["class_name"];
     if ($class["description"] != '') {

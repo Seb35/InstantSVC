@@ -141,7 +141,7 @@ private function lwrite($content) {
  * @param string $path - Pfad zur Datei der Klasse
  * @return int - ID der Klasse, -1 bei Fehler
  */
-public function insertClass($className) {
+public function insertClass($className, $path) {
 
   // SQL-Anfragestring: Steht Klassenname schon in der DB?
   $query = "SELECT class_table_id " .
