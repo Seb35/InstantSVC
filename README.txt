@@ -1,13 +1,13 @@
 Steps for getting the InstantSVC snapshot to work
 
 Requirements:
-    PHP => 5.2.0
+    PHP => 5.2.0 (http://www.php.net/)
     options in php.ini:
         session.use_cookies = 1      # required for admin tool
         soap.wsdl_cache_enabled = 0  # recommended for development servers
-    Smarty Template Engine
-    AdoDB for PHP
-    MySQL (for the admin tool and when using the Username Token Profile)
+    Smarty Template Engine (http://www.smarty.net/)
+    AdoDB for PHP (http://adodb.sourceforge.net/)
+    MySQL (for the admin tool and when using the Username Token Profile) (http://www.mysql.com/)
 
 Extract the following files into the document root of your webserver:
     Smarty/libs => instantsvc/smarty
