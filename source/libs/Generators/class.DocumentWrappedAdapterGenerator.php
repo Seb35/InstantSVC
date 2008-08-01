@@ -20,7 +20,7 @@ require_once dirname(__FILE__).'/../../../libs/misc/class.file.php';
 
 //***** DocumentWrappedAdapterGenerator *************************************
 /**
- * generates adapter classes for document-literal Web Services.
+ * Generates adapter classes for document-literal Web Services.
  *
  * The generated classes will make the unwrapping arguments and the
  * wrapping of return values.
@@ -77,7 +77,6 @@ class DocumentWrappedAdapterGenerator {
      */
     private $adapterClass;
 
-    //=======================================================================
     /**
      * generates adapter classes for document-literal Web Services.
      *
@@ -87,7 +86,7 @@ class DocumentWrappedAdapterGenerator {
      */
     public function __construct($className, $methods = NULL, $adapterClassName = '') {
         if (empty($className)) {
-            throw new Exeption('Argument className was empty.');
+            throw new Exception('Argument className was empty.');
         } else {
             $this->className = $className;
         }
@@ -130,14 +129,18 @@ class DocumentWrappedAdapterGenerator {
         $gen.= '        if (empty($target)) {' . "\n";
         
         $gen.= '			//May be we have a singleton class, just check for some common names' . "\n";
-        $gen.= '			if (is_callable(array(\''.$this->className.'\', \'__construct\'), false)) {' . "\n";
-	    $gen.= '		       $obj = new '.$this->className.'();' . "\n";
-        $gen.= '		    }' . "\n";
+        $gen.= '            $class = new ReflectionClass(\''.$this->className.'\');';
+		$gen.= '            if ($class->isInstantiable()) {' . "\n";
+		$gen.= '                $obj = $class->newInstance();' . "\n";
+		$gen.= '            }' . "\n";
         $gen.= '			elseif (is_callable(array(\''.$this->className.'\', \'getInstance\'), false)) {' . "\n";
 	    $gen.= '			   $obj = call_user_func(array(\''.$this->className.'\', \'getInstance\'));' . "\n";
         $gen.= '		    }' . "\n";
         $gen.= '		    elseif (is_callable(array(\''.$this->className.'\', \'getSingleton\'), false)) {' . "\n";
 	    $gen.= '		       $obj = call_user_func(array(\''.$this->className.'\', \'getSingleton\'));' . "\n";
+        $gen.= '		    }' . "\n";
+        $gen.= '		    else {';
+        $gen.= '		    	throw new Exception(\'Could not create an object instance of class '. $this->className .'\', 0);' . "\n";
         $gen.= '		    }' . "\n";
         $gen.= '            $this->target = $obj;' . "\n";
         $gen.= '        } else {' . "\n";
@@ -186,9 +189,8 @@ class DocumentWrappedAdapterGenerator {
         $this->adapterClass = $gen;
     }
 
-    //=======================================================================
     /**
-     * returns the generated php code for the adapter class
+     * Returns the generated php code for the adapter class
      *
      * @return string generated php code for the adapter class
      */
@@ -196,9 +198,8 @@ class DocumentWrappedAdapterGenerator {
         return $this->adapterClass;
     }
 
-    //=======================================================================
     /**
-     * returns name of the generated adapter class
+     * Returns name of the generated adapter class
      *
      * @return string name of the generated adapter class
      */
@@ -206,9 +207,8 @@ class DocumentWrappedAdapterGenerator {
         return $this->adapterClassName;
     }
 
-    //=======================================================================
     /**
-     * writes the generated php code for the adapter class into a file
+     * Writes the generated php code for the adapter class into a file
      *
      * @param string $outputFolder folder for the generated php file
      * @param string $fileName name for the generated php file
@@ -233,9 +233,8 @@ class DocumentWrappedAdapterGenerator {
         return $path;
     }
 
-    //=======================================================================
     /**
-     * generates a name for an adapter class based on the name of the original class
+     * Generates a name for an adapter class based on the name of the original class
      *
      * @param string $classname name of the original class
      * @return string filename for an adapter class
@@ -244,7 +243,6 @@ class DocumentWrappedAdapterGenerator {
         return $classname . 'DocumentWrappedAdapter';
     }
 
-    //=======================================================================
     /**
      * generates a filename for a class based on the name of the class
      *
