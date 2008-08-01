@@ -441,7 +441,7 @@ private function showIntro() {
                 }
                 $_SESSION['classes2generate'] = $classes;
                 $this->smarty->assign('classes', $classes);
-                if ($_SERVER['HTTPS'] == 'on') {
+                if (isset($_SERVER['HTTPS']) and $_SERVER['HTTPS'] == 'on') {
                     $this->smarty->assign('serviceuri', 'https://' . $_SERVER['HTTP_HOST'] . '/services/soap.php/');
                 } else {
                     $this->smarty->assign('serviceuri', 'http://' . $_SERVER['HTTP_HOST'] . '/services/soap.php/');
