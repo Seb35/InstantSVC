@@ -229,6 +229,9 @@ class CodeAnalyzer {
 
                 if ($cli) {
                     $out = shell_exec($cmd);
+                    if ($out == "Could not startup.\n") {
+                        throw new Exception('The PHP commandline interpreter could not be started. It failed with the message \'Could not startup\'. Try removing extensions like PHP-Gtk from the php.ini used by your PHP CLI.');
+                    }
                 }
                 else {
                     ob_start();
