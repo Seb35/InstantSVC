@@ -51,7 +51,7 @@ if ($getRequestPath !== false) {
 
         //wsdl request?
         if (isset($_REQUEST['WSDL']) or isset($_REQUEST['wsdl'])) {
-            header('Content-type: application/xml');
+            header('Content-type: text/xml');
             echo file_get_contents($service['wsdlfile']);
             exit();
         }
