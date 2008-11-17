@@ -1,0 +1,5 @@
+- UnknownTypeException
+- minOccurs="1" instead of minOccurs="0"
+- Documentation
+- copy default value into schema
+- review the use of sequences in generated WSDL, since the order of properties is probably irrelevant, although that of arguments is
