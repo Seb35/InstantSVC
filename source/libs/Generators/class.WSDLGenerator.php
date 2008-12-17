@@ -19,7 +19,6 @@
 //***** imports *************************************************************
 require_once dirname(__FILE__).'/../../../libs/reflection/class.ExtReflectionClass.php';
 
-//***** WSDLGenerator *******************************************************
 /**
  * @package    libs.generator
  * @author     Gregor Gabrysiak <gregor_abrak at web dot de>
@@ -112,7 +111,6 @@ class WSDLGenerator
      */
     private $service;
 
-    //==========================================================================
     /**
      * The Constructor stores the necessary parameters into global attributes.
      *
@@ -157,7 +155,7 @@ class WSDLGenerator
         }
         // signals the generator, that finishTree() still has to be called
         $this->treeFinished = false;
-        
+
         // initialize the list of XML namespaces
         $this->xmlns['wsdl'] = 'http://schemas.xmlsoap.org/wsdl/';
         $this->xmlns['soap'] = 'http://schemas.xmlsoap.org/wsdl/soap/';
@@ -165,11 +163,10 @@ class WSDLGenerator
         $this->xmlns['xsd'] = 'http://www.w3.org/2001/XMLSchema';
     }
 
-    //==========================================================================
     /**
      * This function is used to set up the DOM-Tree and to make the important
      * nodes accessible by assigning global variables to them. Furthermore,
-     * depending on the used "USE", diferent namespaces are added to the
+     * depending on the used "USE", different namespaces are added to the
      * definition element.
      * Important: the nodes are not appended now, because the messages are not
      * created yet. That's why they are appended after the messages are created.
@@ -211,6 +208,7 @@ class WSDLGenerator
         $this->schema->setAttribute('targetNamespace', $this->typeNamespace);
         $this->schema->setAttribute('xmlns:tns', $this->typeNamespace);
         $this->schema->setAttribute('elementFormDefault', 'qualified');
+        $this->schema->setAttribute('attributeFormDefault', 'unqualified');
         if ($this->bindingUse == 'encoded')
         {
             $this->schema->setAttribute('xmlns:soapenc', $this->xmlns['soapenc']);
@@ -235,7 +233,6 @@ class WSDLGenerator
         $this->service->setAttribute('name',$this->serviceName);
     }
 
-    //==========================================================================
     /**
      * This method is useful to get the order of the DOMNodes like they should
      * be. That means, that we wait till all the message elements are finished,
@@ -255,7 +252,6 @@ class WSDLGenerator
         }
     }
 
-    //==========================================================================
     /**
      * This function is used to start the generation of a WSDL-file for the
      * class whose name is given.
@@ -263,7 +259,7 @@ class WSDLGenerator
      * It is not intended to use a class as well as
      * a set of functions for the WSDL-file. Therefore, as soon as at least one
      * function was added by addFunction(), this method will throw an exception.
-     * addFunction and setClass exclude eachother!
+     * AddFunction() and setClass() exclude eachother!
      *
      * If it is used with $usePolicyPlugIn = true, the class PolicyPlugIn has to
      * be loaded, it's not included by this generator.
@@ -316,7 +312,6 @@ class WSDLGenerator
         }
     }
 
-    //==========================================================================
     /**
      * This method enables the use of a seperate namespace for the schema. This
      * namespace has to be set before setClass() or addFunction() were called.
@@ -339,7 +334,6 @@ class WSDLGenerator
         }
     }
 
-    //==========================================================================
     /**
      * The generation of the WSDL-file is step by step for each function. That's
      * why it is possible to pass a set of functions step by step to this
@@ -387,7 +381,6 @@ class WSDLGenerator
         }
     }
 
-    //==========================================================================
     /**
      * This method processes methods passed to it by addFunction() and
      * setClass(). Depending on Style and Use, different methods are called to
@@ -425,7 +418,6 @@ class WSDLGenerator
         return true;
     }
 
-    //==========================================================================
     /**
      * This method generates two messages for each function - one for the
      * request, send from client to Web Server, and for the response, which
@@ -493,7 +485,6 @@ class WSDLGenerator
         return true;
     }
 
-    //==========================================================================
     /**
      * A schema is generated for the type given. It is possible, that this
      * method needs to be called recursively to create schema for more complex
@@ -678,7 +669,6 @@ class WSDLGenerator
         return $returnValue;
     }
 
-    //==========================================================================
     /**
      * A schema is generated for the type given. It is possible, that this
      * method needs to be called recursively to create schema for more complex
@@ -698,7 +688,7 @@ class WSDLGenerator
         if (substr($prefix, -1) == ':') {
             $prefix = substr($prefix, 0, -1);
         }
-        
+
         $name = $type->getXmlName(false); // name without namespace prefix
         $qname = $type->getXmlName(true); // name qualified with namesspace prefix
         $returnValue = '';
@@ -744,7 +734,7 @@ class WSDLGenerator
                 // generate schema for the array type
                 $arrayType = $type->getArrayType();
                 $this->generateLiteralSchema($arrayType);
-                // obtain the schema for the array from the Extended Reflection API
+                // obtain the schema for the array from the extended Reflection API
                 $complexTypeAndContent = $type->getXmlSchema($this->dom, $this->xmlns['xsd']);
                 $complexTypeAndContent = $this->schema->appendChild($complexTypeAndContent);
                 $this->myComplexTypes[] = $name;
@@ -757,7 +747,7 @@ class WSDLGenerator
             //*/
 
             /*
-            // old Code which doesn't use all Features of the Extended Reflection API
+            // old Code which doesn't use all Features of the extended Reflection API
             $arrayType = $type->getArrayType();
             $complexTypeName = 'ArrayOf' . $arrayType->toString();
 
@@ -795,10 +785,10 @@ class WSDLGenerator
             // and an array of that item min=0 max=unbounded type= (item)
             $indexType = $type->getMapIndexType();
             $valueType = $type->getMapValueType();
-            
+
             // Name of Map: e.g. integerstringmap
             $mapComplexTypeName = $indexType->toString() . $valueType->toString() . 'Map';
-            
+
             // checks, if the generated WSDL already contains a schema for
             // that map
             if (!in_array($mapComplexTypeName, $this->myComplexTypes))
@@ -834,7 +824,7 @@ class WSDLGenerator
                     $valueElement = $sequence->appendChild($valueElement);
                     $this->myComplexTypes[] = $itemComplexTypeName;
                 }
-                
+
                 // generate schema for the map type
                 $complexType = $this->dom->createElement('complexType', '');
                 $complexType->setAttribute('name', $mapComplexTypeName);
@@ -872,7 +862,6 @@ class WSDLGenerator
         return $returnValue;
     }
 
-    //==========================================================================
     /**
      * This method is used for creating the necessary request schema inside the
      * complexType element for the request message parameter list.
@@ -934,7 +923,6 @@ class WSDLGenerator
         return true;
     }
 
-    //==========================================================================
     /**
      * The method is used for creating the necessary response schema inside the
      * complexType element for the response message parameter list.
@@ -973,7 +961,6 @@ class WSDLGenerator
         return true;
     }
 
-    //==========================================================================
     /**
      * This function generates two messages for each function - one for the
      * request, send from client to Web Server and also the response, which
@@ -1022,7 +1009,6 @@ class WSDLGenerator
         return true;
     }
 
-    //==========================================================================
     /**
      * For each method, an operation has to be added inside the PortType-element.
      * The comments retrieved by the policyPlugIn are added as documentation. If
@@ -1069,7 +1055,6 @@ class WSDLGenerator
         $output = $operation->appendChild($output);
     }
 
-    //==========================================================================
     /**
      * The binding is generated. This includes the bindingStyle and the
      * bindingUse.
@@ -1113,7 +1098,6 @@ class WSDLGenerator
         $soapout = $output->appendChild($soapout);
     }
 
-    //==========================================================================
     /**
      * The method generates the serviceelement for the WSDL-file in which the
      * port is bound to the appropriate binding.
@@ -1128,11 +1112,10 @@ class WSDLGenerator
         $port = $this->service->appendChild($port);
 
         $soap = $this->dom->createElement('soap:address','');
-        $soap->setAttribute('location', $this->serviceAccessPointURL);
+        $soap->setAttribute('location',$this->serviceAccessPointURL);
         $soap = $port->appendChild($soap);
     }
 
-    //==========================================================================
     /**
      * Returns the DOM-Tree for further use by the user.
      * If necessary, the DOM-Tree is finished before (all nodes are finally
@@ -1146,7 +1129,6 @@ class WSDLGenerator
         return $this->dom;
     }
 
-    //==========================================================================
     /**
      * Returns the DOM-Tree converted into a string.
      * If necessary, the DOM-Tree is finished before (all nodes are finally
@@ -1160,7 +1142,6 @@ class WSDLGenerator
         return $this->dom->saveXML();
     }
 
-    //==========================================================================
     /**
      * Saves the content of the WSDL to the given filename.
      * If necessary, the DOM-Tree is finished before (all nodes are finally
@@ -1184,7 +1165,6 @@ class WSDLGenerator
         // which returns the number of bits written or FALSE
     }
 
-    //==========================================================================
     /**
      * The WSDL-content is saved by calling the method saveToFile() and
      * afterwards, the saved file is used to start the SOAP server to handle
