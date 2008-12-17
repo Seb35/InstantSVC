@@ -202,6 +202,7 @@ class iscWsdlGenerator
         $this->schema->setAttribute('targetNamespace', $this->typeNamespace);
         $this->schema->setAttribute('xmlns:tns', $this->typeNamespace);
         $this->schema->setAttribute('elementFormDefault', 'qualified');
+        $this->schema->setAttribute('attributeFormDefault', 'unqualified');
         if ($this->bindingUse == 'encoded')
         {
             $this->schema->setAttribute('xmlns:soapenc', $this->xmlns['soapenc']);
