@@ -1,5 +1,10 @@
 - UnknownTypeException
 - minOccurs="1" instead of minOccurs="0"
-- Documentation
+- generate wsdl:documentation elements for operations and messages
+- generate XML Schema dokumentation which can be used for generating user interfaces, e.g. XForms
+    <xs:annotation>
+        <xs:documentation>Enter the street address.</xs:documentation>
+        <xs:documentation>For example, 160 Manitoba Street.</xs:documentation>
+    </xs:annotation>
 - copy default value into schema
 - review the use of sequences in generated WSDL, since the order of properties is probably irrelevant, although that of arguments is
