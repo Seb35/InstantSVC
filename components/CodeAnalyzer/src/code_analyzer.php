@@ -960,7 +960,7 @@ SANDBOXCODE;
         //Collect special class info
         $result['file'] = $class->getFileName();
         $result['LoDB'] = substr_count($class->getDocComment(), "\n");
-        $result['isWebService'] = $class->isWebService();
+        $result['isWebService'] = $class->isTagged('webservice');
         $result['isInternal'] = $class->isInternal();
         $result['isAbstract'] = $class->isAbstract();
         $result['isFinal'] = $class->isFinal();
@@ -1084,6 +1084,8 @@ SANDBOXCODE;
         $missingParamTypes = 0;
         $result = array();
         foreach ($methods as $method) {
+            //echo $class->getFileName(), ' ', $class->getName(), '::', $method->getName(), "\n";
+
             //Collect method tags
             $tags = $method->getTags();
             foreach ($tags as $tag) {
