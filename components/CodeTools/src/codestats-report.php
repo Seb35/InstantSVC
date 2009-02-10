@@ -1,4 +1,4 @@
-#!/usr/bin/php5.1
+#!/usr/bin/env php
 <?php
 //init ezComponents autoload
 require_once('ezc/Base/base.php');

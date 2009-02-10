@@ -1,4 +1,4 @@
-#!/usr/bin/php5.1
+#!/usr/bin/env php
 <?php
 /**
  * @todo use ezcConsoleInput
@@ -17,7 +17,9 @@
 //***************************************************************************
 
 //init ezComponents autoload
-require_once('ezc/Base/base.php');
+//require_once 'ezc/Base/base.php';
+set_include_path( realpath(dirname(__FILE__) . '/../..') . PATH_SEPARATOR . ini_get( "include_path" )  );
+require_once 'Base/src/base.php';
 function __autoload( $className ) { ezcBase::autoload( $className ); }
 
 if (!isset($_SERVER['argv'][1])) {
@@ -35,6 +37,7 @@ else {
 }
 
 $stats = new iscCodeAnalyzer($path);
+$stats->setDebug(true);
 $stats->collect();
 $flaws = $stats->getCodeSummary();
 $flaws = $flaws['classes'];
