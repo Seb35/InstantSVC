@@ -1126,7 +1126,7 @@ SANDBOXCODE;
             } else {
                $result[$method->getName()]['return'] = null;
             }
-            $result[$method->getName()]['isWebMethod'] = $method->isWebmethod();
+            $result[$method->getName()]['isWebMethod'] = $method->isTagged('webmethod');
             $result[$method->getName()]['isRestMethod']
                                               = $method->isTagged('restmethod');
 
