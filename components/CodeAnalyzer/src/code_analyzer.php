@@ -304,6 +304,7 @@ class iscCodeAnalyzer {
             'trigger_error',
             'preg_split',
             'function_exists',
+            'ucfirst',
             // may be needed for autoload implementations
             '__autoload',
             'define',
