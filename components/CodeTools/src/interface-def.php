@@ -1,8 +1,7 @@
 #!/usr/bin/env php
 <?php
 //init ezComponents autoload
-require_once('ezc/Base/base.php');
-function __autoload( $className ) { ezcBase::autoload( $className ); }
+require_once dirname( __FILE__ ) . '/../../autoload-ezcomponents.php';
 
 $input = new ezcConsoleInput();
 

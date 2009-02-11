@@ -1,8 +1,7 @@
 #!/usr/bin/env php
 <?php
 //init ezComponents autoload
-require_once('ezc/Base/base.php');
-function __autoload( $className ) { ezcBase::autoload( $className ); }
+require_once dirname( __FILE__ ) . '/../../autoload-ezcomponents.php';
 
 $input = new ezcConsoleInput();
 $helpOption = $input->registerOption( new ezcConsoleOption( 'h', 'help' ) );
@@ -48,6 +47,7 @@ else {
 
     if (is_dir($files) && is_readable($files)) {
         $analyzer = new iscCodeAnalyzer($files);
+        //$analyzer->setDebug(true);
         $analyzer->collect();
         $sum = $analyzer->getCodeSummary();
         $stats = $analyzer->getStats();
