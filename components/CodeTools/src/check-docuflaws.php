@@ -43,7 +43,7 @@ $flaws = $stats->getCodeSummary();
 $flaws = $flaws['classes'];
 
 foreach ($flaws as $classname => $class) {
-    if ($class['webservice'] or !$webservices) {
+    if (isset($class['webservice']) or !$webservices) {
         echo "Web Service Class: $classname\n";
         echo '  Missing Method Comments: #'.$class['missingMethodComments']."\n";
         echo '  Missing Param Types:     #'.$class['missingParamTypes']."\n";
@@ -54,7 +54,7 @@ foreach ($flaws as $classname => $class) {
             if ($method['isInherited']) {
                 continue;
             }
-            if ($method['webmethod'] or $method['restmethod'] or !$webmethods) {
+            if (isset($method['webmethod']) or isset($method['restmethod']) or !$webmethods) {
                 if ($method['LoDB'] < 1 or $method['paramflaws'] > 0) {
                     echo "  $classname"."->$methodName()\n";
                     if ($method['LoDB'] < 1) {echo "      - comment missing\n";}
