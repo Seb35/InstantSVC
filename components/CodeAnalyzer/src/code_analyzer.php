@@ -1003,6 +1003,7 @@ SANDBOXCODE;
         $props = $class->getProperties();
         $result = array();
         foreach ($props as $property) {
+            // echo $class->getFileName(), "\n", $class->getName(), '::', $property->getName(), "\n";
             if (is_object($property->getType())) {
                $result[$property->getName()]['type'] =
                                                $property->getType()->toString();
