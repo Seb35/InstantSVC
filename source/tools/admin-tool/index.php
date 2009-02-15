@@ -6,7 +6,9 @@
  *
  * @package    admintool
  * @author     Martin Sprengel <martin.sprengel@hpi.uni-potsdam.de>
- * @copyright  2006 ....
+ * @author     Stefan Marr <mail@stefan-marr.de>
+ * @author     Falko Menge <mail@falko-menge.de>
+ * @copyright  2006-2009 InstantSVC Team
  * @license    www.apache.org/licenses/LICENSE-2.0   Apache License 2.0
  * @lastchange 2005-11-26 Martin Sprengel
  *             2006-03-08 Stefan Marr
@@ -14,6 +16,7 @@
  *                         - Speichern des published Flags der Methoden
  *                         - Wizard reaktiviert, neu implementiert
  *                         - Web Services erstellen implementiert
+ *             See svn log for further changes
  */
 
 error_reporting(E_ALL);
@@ -40,27 +43,27 @@ class AdminToolApp {
      * attribute for Smarty
      * @var AdminToolSmartyConnect
      */
-    private $smarty = null;
+    protected $smarty = null;
 
     /**
      * @var AdminToolLibrary
      */
-    private $library = null;
+    protected $library = null;
 
     /**
      * @var AdminToolDB
      */
-    private $db = null;
+    protected $db = null;
 
     /**
      * @var string
      */
-    private $ws_output_folder = '';
+    protected $ws_output_folder = '';
 
     /**
      * @var Mime_Handler
      */
-    private static $mimeHandler;
+    protected static $mimeHandler;
 
     /**
      * Initialisierung
@@ -77,8 +80,6 @@ class AdminToolApp {
         $this->library = new AdminToolLibrary();
         $this->db      = new AdminToolDB();
 
-        $this->ws_output_folder = $_SERVER["DOCUMENT_ROOT"] . "/webservices";
-
         // TODO: Nicht auf DB durchgreifen, evtl. durch Lib kapseln
         if (!isset($_SESSION['searchpath'])) {
             if (!is_null($this->db->getProperty('searchpath'))) {
@@ -90,27 +91,14 @@ class AdminToolApp {
 
     }
 
-
-    /**
-     * Überprüfung, ob der Ausgabeordner für SOAP-Server existiert
-     * @return void
-     */
-    private function check_ws_output_folder() {
-
-        if (!file_exists($this->ws_output_folder)) {
-            mkdir($this->ws_output_folder);
-        }
-
-    }
-
     /**
      * dispatches the request
      * @return void
      */
     public function run() {
 
-        $this->smarty->assign('title','AdminTool');
-        $this->smarty->assign('name','AdminTool');
+        $this->smarty->assign('title','InstantSVC Administration Tool');
+        $this->smarty->assign('name','InstantSVC Administration Tool');
         $this->smarty->assign('action','');
 
         if (isset($_REQUEST['view'])) {
@@ -119,6 +107,7 @@ class AdminToolApp {
                 case 'build':
                     $this->handleBuild();
                     break;
+
                 case 'wizard':
                     $this->handleWizard();
                     break;
@@ -131,14 +120,13 @@ class AdminToolApp {
                     $this->handleConfig();
                     break;
 
-                    // Klassen sollen angezeigt werden
+                // Klassen sollen angezeigt werden
                 case 'classes':
-
                     // Klassen anzeigen
                     $this->showClasses();
                     break;
 
-                    // Methoden sollen angezeigt werden ...
+                // Methoden sollen angezeigt werden ...
                 case 'methods':
 
                     // ... Methoden welcher Klasse ...
@@ -164,7 +152,7 @@ class AdminToolApp {
                                     break;
 
                                     // Sonst (Zurueck)
-                                case 'back':
+                                case 'Back':
                                     $this->showClasses();
                                     break;
                             }
@@ -208,7 +196,7 @@ class AdminToolApp {
                     }
                     break;
 
-                    // Methoden Details anzeigen
+                // Show method details 
                 case 'wsreg':
                     $this->showWSRegistrationView();
                     break;
@@ -231,7 +219,7 @@ class AdminToolApp {
      * Zeigt den Startbildschirm an
      * @return void
      */
-    private function showIntro() {
+    protected function showIntro() {
 
         $this->smarty->display('admin-tool/admin-tool-intro.tpl');
 
@@ -251,12 +239,14 @@ class AdminToolApp {
         }
 
         switch ($step) {
+            // show registered classes and let the user select some
             case 0:
                 $regClasses = $this->library->getRegisteredClasses();
                 $this->smarty->assign('list_classes', $regClasses);
                 $_SESSION['regClasses'] = $regClasses;
                 break;
 
+            // configure services
             case 1:
                 if (isset($_REQUEST['class'])) {
                     $classes = array();
@@ -267,12 +257,18 @@ class AdminToolApp {
                     }
                     $_SESSION['classes2generate'] = $classes;
                     $this->smarty->assign('classes', $classes);
+                    if (substr(INSTANTSVC_DEFAULT_SERVICE_URI, -1) == '/') {
+                        $this->smarty->assign('serviceuri', INSTANTSVC_DEFAULT_SERVICE_URI);
+                    } else {
+                        $this->smarty->assign('serviceuri', INSTANTSVC_DEFAULT_SERVICE_URI . '/');
+                    }
+                    $this->smarty->assign('targetpath', realpath(INSTANTSVC_DEFAULT_TARGET_DIR));
                 }
                 break;
+
+            // generate services
             case 2:
-                if (!isset($_REQUEST['targetpath']) or
-                        !is_dir($_REQUEST['targetpath']) or
-                        !is_writable($_REQUEST['targetpath'])) {
+                if (!$this->checkTargetDir()) {
 
                     $this->smarty->assign('pathinvalid', true);
                     $this->smarty->assign('classes', $_SESSION['classes2generate']);
@@ -281,7 +277,6 @@ class AdminToolApp {
                 } else {
                     $targetPath = $_REQUEST['targetpath'];
                 }
-
 
                 if (isset($_SESSION['classes2generate'])) {
                     $classes = $_SESSION['classes2generate'];
@@ -325,7 +320,24 @@ class AdminToolApp {
                             }
                         }
 
-                        //after all services are generates build dd
+                        // assign data to display results
+                        if (isset($_SERVER['HTTPS']) and $_SERVER['HTTPS'] == 'on') {
+                            $protocol = 'https://';
+                        } else {
+                            $protocol = 'http://';
+                        }
+                        $this->smarty->assign(
+                            'wsdlurl',
+                            $protocol . $_SERVER['HTTP_HOST']
+                                . substr(
+                                    realpath($targetPath),
+                                    strlen(realpath($_SERVER['DOCUMENT_ROOT']))
+                                )
+                                .  '/'
+                        );
+                        $this->smarty->assign('generatedServices', $services);
+
+                        //after all services are generated build deployment descriptor
                         AdminToolLibrary::generateDd($targetPath, $services);
                         AdminToolLibrary::generateServer($targetPath);
                     }
@@ -337,46 +349,49 @@ class AdminToolApp {
     }
 
     protected function handleWizard() {
+        $currentStep = $_SESSION['wizard']['step'];
+        $nextStep = $currentStep;
         if (!isset($_REQUEST['step'])) {
-            $_SESSION['wizard']['step'] = 'start';
+            $nextStep = 'start';
         } else {
-            $_SESSION['wizard']['step'] = $_REQUEST['step'];
+            $nextStep = $_REQUEST['step'];
         }
         if (isset($_REQUEST['next'])) {
-            if ($_SESSION['wizard']['step'] == 'start') {
-                $_SESSION['wizard']['step'] = 'step1';
-            } elseif ($_SESSION['wizard']['step'] == 'step1') {
-                $_SESSION['wizard']['step'] = 'step2';
-            } elseif ($_SESSION['wizard']['step'] == 'step2') {
-                $_SESSION['wizard']['step'] = 'finish';
-            } elseif ($_SESSION['wizard']['step'] == 'finish') {
-                $_SESSION['wizard']['step'] = 'generate';
+            if ($currentStep == 'start') {
+                $nextStep = 'step1';
+            } elseif ($currentStep == 'step1') {
+                $nextStep = 'step2';
+            } elseif ($currentStep == 'step2') {
+                $nextStep = 'finish';
+            } elseif ($currentStep == 'finish') {
+                $nextStep = 'generate';
             }
         } elseif (isset($_REQUEST['back'])) {
-            if ($_SESSION['wizard']['step'] == 'step1') {
-                $_SESSION['wizard']['step'] = 'start';
-            } elseif ($_SESSION['wizard']['step'] == 'step2') {
-                $_SESSION['wizard']['step'] = 'step1';
-            } elseif ($_SESSION['wizard']['step'] == 'finish') {
-                $_SESSION['wizard']['step'] = 'step2';
-            } elseif ($_SESSION['wizard']['step'] == 'generate') {
-                $_SESSION['wizard']['step'] = 'finish';
+            if ($currentStep == 'step1') {
+                $nextStep = 'start';
+            } elseif ($currentStep == 'step2') {
+                $nextStep = 'step1';
+            } elseif ($currentStep == 'finish') {
+                $nextStep = 'step2';
+            } elseif ($currentStep == 'generate') {
+                $nextStep = 'finish';
             }
         } elseif (isset($_REQUEST['cancel'])) {
-            $_SESSION['wizard']['step'] = 'cancel';
+            $nextStep = 'cancel';
         }
+        $_SESSION['wizard']['step'] = $nextStep;
 
         switch ($_SESSION['wizard']['step']) {
             // select class path
             case 'step1':
                 if (isset($_SESSION['searchpath'])) {
-                    $this->smarty->assign('searchpath', $_SESSION['searchpath']);
+                    $this->smarty->assign('searchpath', realpath($_SESSION['searchpath']));
                 } else {
-                    $this->smarty->assign('searchpath', STD_SEARCHPATH);
+                    $this->smarty->assign('searchpath', realpath(STD_SEARCHPATH));
                 }
                 break;
 
-                // select classes
+            // select classes
             case 'step2':
                 if (isset($_REQUEST['searchpath'])) {
                     $_SESSION['searchpath'] = stripslashes($_REQUEST['searchpath']);
@@ -397,7 +412,7 @@ class AdminToolApp {
                 $_SESSION['wizard']['step'] = 'step1';
                 //and do step1
 
-                // configure services
+            // configure services
             case 'finish':
                 $classes = array();
                 if (isset($_REQUEST['class'])) {
@@ -411,18 +426,17 @@ class AdminToolApp {
                 }
                 $_SESSION['classes2generate'] = $classes;
                 $this->smarty->assign('classes', $classes);
-                if (isset($_SERVER['HTTPS']) and $_SERVER['HTTPS'] == 'on') {
-                    $this->smarty->assign('serviceuri', 'https://' . $_SERVER['HTTP_HOST'] . '/services/soap.php/');
-                } else {
-                    $this->smarty->assign('serviceuri', 'http://' . $_SERVER['HTTP_HOST'] . '/services/soap.php/');
-                }
+                    if (substr(INSTANTSVC_DEFAULT_SERVICE_URI, -1) == '/') {
+                        $this->smarty->assign('serviceuri', INSTANTSVC_DEFAULT_SERVICE_URI);
+                    } else {
+                        $this->smarty->assign('serviceuri', INSTANTSVC_DEFAULT_SERVICE_URI . '/');
+                    }
+                $this->smarty->assign('targetpath', realpath(INSTANTSVC_DEFAULT_TARGET_DIR));
                 break;
 
-                // generate services
+            // generate services
             case 'generate':
-                if (!isset($_REQUEST['targetpath']) or
-                        !is_dir($_REQUEST['targetpath']) or
-                        !is_writable($_REQUEST['targetpath'])) {
+                if (!$this->checkTargetDir()) {
 
                     $this->smarty->assign('pathinvalid', true);
                     $this->smarty->assign('classes', $_SESSION['classes2generate']);
@@ -474,14 +488,24 @@ class AdminToolApp {
                             }
                         }
 
-                        //TODO: remove hard coded WSDL URL
+                        // assign data to display results
                         if (isset($_SERVER['HTTPS']) and $_SERVER['HTTPS'] == 'on') {
-                            $this->smarty->assign('wsdlurl', 'https://' . $_SERVER['HTTP_HOST'] . '/services/');
+                            $protocol = 'https://';
                         } else {
-                            $this->smarty->assign('wsdlurl', 'http://' . $_SERVER['HTTP_HOST'] . '/services/');
+                            $protocol = 'http://';
                         }
+                        $this->smarty->assign(
+                            'wsdlurl',
+                            $protocol . $_SERVER['HTTP_HOST']
+                                . substr(
+                                    realpath($targetPath),
+                                    strlen(realpath($_SERVER['DOCUMENT_ROOT']))
+                                )
+                                .  '/'
+                        );
                         $this->smarty->assign('generatedServices', $services);
-                        //after all services are generates build dd
+
+                        //after all services are generated build deployment descriptor
                         AdminToolLibrary::generateDd($targetPath, $services);
                         AdminToolLibrary::generateServer($targetPath);
                     }
@@ -501,12 +525,12 @@ class AdminToolApp {
      * Das Registrieren von Web Service Klassen behandeln
      * @return void
      */
-    private function handleRegister() {
+    protected function handleRegister() {
 
         // Bei einer Aktion im Settings-View ...
         if (isset($_REQUEST['action'])) {
             if (isset($_SESSION['temp.searchpath'])) {
-                $this->smarty->assign('searchpath', stripslashes($_SESSION['temp.searchpath']));
+                $this->smarty->assign('searchpath', realpath(stripslashes($_SESSION['temp.searchpath'])));
             }
             switch ($_REQUEST['action']) {
                 case 'Registrieren':
@@ -552,7 +576,7 @@ class AdminToolApp {
                     $this->smarty->assign('view','register');
                     $this->smarty->assign('subview','Suchen');
 
-                    $simpleClasses = $this->doSearch($_SESSION['temp.searchpath'], !isset($_REQUEST['only_ws_tag']));
+                    $simpleClasses = $this->doSearch($_SESSION['temp.searchpath'], isset($_REQUEST['only_ws_tag']));
 
 
 
@@ -575,7 +599,8 @@ class AdminToolApp {
         } else {
 
             $this->smarty->assign('view','register');
-            $this->smarty->assign('searchpath',$_SESSION['searchpath']);
+            $this->smarty->assign('searchpath', realpath($_SESSION['searchpath']));
+            $this->smarty->assign("only_ws_tag", true);
 
             $regClasses = $this->library->getRegisteredClasses();
             $this->smarty->assign('tabledata',$regClasses);
@@ -614,7 +639,7 @@ class AdminToolApp {
      * Zeigt alle registrierten Klassen an
      * @return void
      */
-    private function showClasses() {
+    protected function showClasses() {
 
         // Registrierte Klassen bekommen ...
         $classes = $this->db->getClasses();
@@ -640,7 +665,7 @@ class AdminToolApp {
      * Zeigt alle Methoden einer Klasse an
      * @return void
      */
-    private function showMethods($class_id) {
+    protected function showMethods($class_id) {
 
         // Methoden einer Klassen bekommen ...
         $methods = $this->db->getMethodsByClass($class_id);
@@ -651,7 +676,7 @@ class AdminToolApp {
         foreach($methods as $key => $method) {
             $temp_string = "<b>" . $index . "</b> - " . $method["method_name"];
             if ($method["publish"] == true) {
-                $temp_string = $temp_string . " (zurzeit ver&ouml;ffentlicht)";
+                $temp_string = $temp_string . " (zur Zeit ver&ouml;ffentlicht)";
                 $method_list_checked[] = $key;
             }
             if ($method["description"] != '') {
@@ -675,7 +700,7 @@ class AdminToolApp {
      * Speichert Methoden einer Klasse
      * @return void
      */
-    private function showMethodDetail($method_id) {
+    protected function showMethodDetail($method_id) {
 
         $method = $this->db->getMethodByID($method_id);
         $source_code_comment = $this->db->getSourceCodeCommentByMethod($method_id);
@@ -699,7 +724,7 @@ class AdminToolApp {
      * Speichert Methoden einer Klasse
      * @return void
      */
-    private function showWSRegistrationView() {
+    protected function showWSRegistrationView() {
         $this->smarty->assign("classes_checked","");
         //$classes = $this->getAllClasses($this->db->getProperty("stats_root"));
 
@@ -707,38 +732,33 @@ class AdminToolApp {
             switch ($_REQUEST["action"]) {
                 case "Registrieren":
                     $selected_list = $_REQUEST["class_ids"];
-                foreach($classes as $key => $value) {
-                    if (in_array($key, $selected_list)) {
-                        $class = new ExtReflectionClass($value);
-                        $methods = $class->getMethods();
-                        $this->library->getPublishedMethods($methods);
+                    foreach($classes as $key => $value) {
+                        if (in_array($key, $selected_list)) {
+                            $class = new ExtReflectionClass($value);
+                            $methods = $class->getMethods();
+                            $this->library->getPublishedMethods($methods);
+                        }
                     }
-                }
+                    break;
                 case "Anwenden":
-
                     $this->db->setProperty("stats_root",$_REQUEST["root_path"]);
-                $classes = $this->library->getAllClasses($this->db->getProperty("stats_root"));
-                // Checkbox makieren oder nicht ...
-                if (isset($_REQUEST["only_ws_tag"])) {
-                    $this->smarty->assign("only_ws_tag","checked");
-                    $classes = $this->library->filterWebServiceClasses($classes);
-                } else {
-                    $this->smarty->assign("only_ws_tag","");
-                }
-
-                break;
-
-
-
+                    $classes = $this->library->getAllClasses($this->db->getProperty("stats_root"));
+                    // Checkbox makieren oder nicht ...
+                    if (isset($_REQUEST["only_ws_tag"])) {
+                        $this->smarty->assign("only_ws_tag", true);
+                        $classes = $this->library->filterWebServiceClasses($classes);
+                    } else {
+                        $this->smarty->assign("only_ws_tag", false);
+                    }
+                    break;
                 default:
 
             }
 
 
         } else {
-
-            // Initial
-            $this->smarty->assign("only_ws_tag","checked");
+            // initial values
+            $this->smarty->assign("only_ws_tag", true);
             $classes = $this->library->filterWebServiceClasses($classes);
 
         }
@@ -757,7 +777,7 @@ class AdminToolApp {
      * Nutzereingaben bzgl. der Einstellungen
      * @return void
      */
-    private function handleSettings() {
+    protected function handleSettings() {
 
         // Liste der gebotenen Server- und Sicherheitseinstellungen sowie Standardsuchpfad
         // für Web Service Klassen
@@ -799,7 +819,7 @@ class AdminToolApp {
         } else {
             // Wenn keine Aktion ausgeführt wird, zeige Einstellungsdialog
             $this->smarty->assign('view', 'settings');
-            $this->smarty->assign('searchpath', $_SESSION['searchpath']);
+            $this->smarty->assign('searchpath', realpath($_SESSION['searchpath']));
             $this->smarty->assign('markedServer', $_SESSION['markedServer']);
             $this->smarty->assign('serverList', $serverList);
             $this->smarty->assign('markedSecurity', $_SESSION['markedSecurity']);
@@ -809,7 +829,38 @@ class AdminToolApp {
         }
     }
 
-
+    /**
+     * Überprüfung, ob der Ausgabeordner für SOAP-Server existiert
+     * @return boolean
+     */
+    protected function checkTargetDir() {
+        $returnValue = false;
+        if (isset($_REQUEST['targetpath'])) {
+            $dir = $_REQUEST['targetpath'];
+            // check whether $dir is a subdirectory of the base dir
+            if (
+                strpos(
+                    $dir,
+                    realpath(INSTANTSVC_GENERATION_BASE_DIR)
+                ) === 0
+                and !preg_match('/[\\\\\/]\.\./', $dir)
+            ) {
+                if (
+                    is_dir($dir)
+                ) {
+                    if (is_writable($dir)) {
+                        $returnValue = true;
+                    }
+                } elseif (
+                    !file_exists($dir)
+                    and isset($_REQUEST['createTargetDirectory'])
+                ) {
+                    $returnValue = mkdir($dir, 0777, true);
+                }
+            }
+        }
+        return $returnValue;
+    }
 
 }
 

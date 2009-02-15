@@ -35,13 +35,13 @@
 	<table style="margin:15px 0px;">
 	<tr><th colspan="2">Service Konfiguration</th></tr>
 	<tr><td><label>WSDL Style:</label></td><td><select name="wsdlstyle[{{$id}}]">
-    <option selected="selected" value="{{"WSDLGenerator::DOCUMENT_WRAPPED"|constant}}">wrapped</option>
-    <option value="{{"WSDLGenerator::RPC_LITERAL"|constant}}">RPC Literal</option>
-    <option value="{{"WSDLGenerator::RPC_ENCODED"|constant}}">RPC Encoded</option>
+    <option selected="selected" value="{{"WSDLGenerator::DOCUMENT_WRAPPED"|constant}}">Document / Literal (wrapped)</option>
+    <option value="{{"WSDLGenerator::RPC_LITERAL"|constant}}">RPC / Literal</option>
+    <option value="{{"WSDLGenerator::RPC_ENCODED"|constant}}">RPC / Encoded</option>
   </select></td></tr>
       <tr><td><label>Service Name:</label></td><td><input type="text" name="servicename[{{$id}}]" value="{{$class.class_name}}" /></td></tr>
-	  <tr><td><label>Service URI:</label></td><td><input type="text" name="serviceuri[{{$id}}]" value="http://localhost/soap.php/{{$class.class_name}}" /></td></tr>
-	  <tr><td><label>Namespace:</label></td><td><input type="text" name="namespace[{{$id}}]" value="http://localhost/soap.php/{{$class.class_name}}" /></td></tr>
+	  <tr><td><label>Service URI:</label></td><td><input type="text" name="serviceuri[{{$id}}]" value="{{$serviceuri}}{{$class.class_name}}" style="width:500px" /></td></tr>
+	  <tr><td><label>Namespace:</label></td><td><input type="text" name="namespace[{{$id}}]" value="{{$serviceuri}}{{$class.class_name}}" style="width:500px" /></td></tr>
 	  <tr><td><label>Authentifikation mit <acronym title="Web Service Security: User Token Profile">UTP</acronym>:</label></td><td><input type="checkbox" name="useutp[{{$id}}]" value="true" /></td></tr>
 	</table>
 	{{if !$smarty.foreach.classes.last}}
@@ -50,14 +50,17 @@
 	</li>
   {{/foreach}}
   </ul>
-  <p>
-  <label>Zielpfad:</label> <input type="text" name="targetpath" value="{{$smarty.const.STD_SEARCHPATH}}" /></p>
+  <p><label>Zielpfad:</label> <input type="text" name="targetpath" value="{{$targetpath}}" style="width: 600px;" /></p>
+  <p><label><input type="checkbox" name="createTargetDirectory" value="1" />Zielverzeichnis erstellen, falls es noch nicht existiert.</label></p>
   {{if isset($pathinvalid)}}<p>Der angegebene Pfad ist nicht g&uuml;ltig.</p>
   {{/if}}
   {{elseif $step == 2}}  
     {{if !isset($generationfailed)}}
     <h1>Services erfolgreich erstellt</h1>
 	<p>Die WSDL-Dateien und der SOAP-Server wurden erfolgreich erstellt und konfiguriert.</p>
+    {{foreach from=$generatedServices item=generatedService}}
+        <a href="{{$wsdlurl}}soap.php/{{$generatedService.servicename}}?wsdl" target="_blank">{{$wsdlurl}}soap.php/{{$generatedService.servicename}}?wsdl</a>
+    {{/foreach}}
 	{{else}}
 	<h1>Erstellen der WSDL-Datei fehlgeschlagen!</h1>
 	{{/if}}

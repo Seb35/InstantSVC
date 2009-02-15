@@ -6,9 +6,9 @@
     <h3>Methoden:</h3>
     <p>{{html_checkboxes name="method_ids" selected=$method_list_checked options=$method_list separator="<br />"}}</p>
     <p>
-    <input type="submit" name="methodView_action" value="back" />
+    <input type="submit" name="methodView_action" value="Back" />
     <input type="submit" name="methodView_action" value="Speichern" />
-    <input type="submit" name="methodView_action" value="Web Service erstellen" /></p>
+    <!--<input type="submit" name="methodView_action" value="Web Service erstellen" />--></p>
   </form>
 </div>
 {{include file="admin-tool/admin-tool-footer.tpl"}}

@@ -23,7 +23,7 @@
   {{/foreach}}
 </table>
 <p>
-  <input type="reset" name="action" value="Abbrechen" />
+  <input type="reset" name="action" />
   <input type="submit" name="action" value="Registrieren">
 </p>
 
@@ -35,9 +35,9 @@
     <tr>
       <td><input type="radio" name="searchmethod" value="byPath" checked="checked"><label>Verzeichnis durchsuchen:</label></td>
       <td>
-        <input type="text" value="{{$searchpath}}" name="searchpath" size="70"/><br/>
-        <input type="checkbox" {{$only_ws_tag}} name="only_ws_tag" value="checked">
-        Nur Klassen mit @webservice-Tag ber&uuml;cksichtigen
+        <input type="text" value="{{$searchpath}}" name="searchpath" size="70" /><br/>
+        <input type="checkbox" name="only_ws_tag" value="true" {{if $only_ws_tag}}checked="checked"{{/if}} />
+        Nur Klassen mit @webservice-Annotation ber&uuml;cksichtigen
       </td>
     </tr>
     <!-- <tr>
@@ -46,7 +46,7 @@
     </tr> -->
   </table>
   <p>
-    <input type="reset" name="action" value="Abbrechen" />
+    <input type="reset" name="action" />
     <input type="submit" name="action" value="Suchen">
   </p>
 </form>

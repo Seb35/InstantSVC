@@ -4,9 +4,10 @@
 <form method="POST" action="?view=wizard">
 {{if $step eq "start"}}
   <!-- erster Schritt des Wizards -->
-  <h2>Willkommen beim Wizard des Admin-Tools.</h2>
-  <p>Bitte folgen Sie den Anweisungen, um die Funktionen ihrer Klassen als Web Service
-   zur Verf&uuml;gung zu stellen.</p>
+  <h2>Willkommen beim Web Service Assistenten</h2>
+  <p>Bitte folgen Sie den Anweisungen, um die Methoden Ihrer Klassen als Web Services
+   zur ver&ouml;ffentlichen.</p>
+  <p><b>Hinweis:</b> Bei Verwendung des Assistenten werden die Klassen nicht in der internen Datenbank registriert.</p>
 
 {{elseif $step eq "step1"}}
   <h2>Schritt 1</h2>
@@ -15,7 +16,7 @@
   {{if isset($pathfailed)}}
     <p class="err">Suchpfad wurde nicht gefunden oder enth&auml;lt keine passenden Klassen</p>
   {{/if}}
-  <p><input type="checkbox" checked="checked" name="only_ws_tag" value="true" /> Nur Klassen mit @webservice-Tag ber&uuml;cksichtigen</p>
+  <p><input type="checkbox" name="only_ws_tag" value="true" checked="checked" />Nur Klassen mit @webservice-Annotation ber&uuml;cksichtigen</p>
 
 {{elseif $step eq "step2"}}
   <h2>Schritt 2</h2>
@@ -52,7 +53,7 @@
 	<table style="margin:15px 0px;">
 	<tr><th colspan="2">Service Konfiguration</th></tr>
 	<tr><td><label>WSDL Style:</label></td><td><select name="wsdlstyle[{{$name}}]">
-<option selected="selected" value="{{"WSDLGenerator::DOCUMENT_WRAPPED"|constant}}">Document / Literal (wrapped)</option>
+    <option selected="selected" value="{{"WSDLGenerator::DOCUMENT_WRAPPED"|constant}}">Document / Literal (wrapped)</option>
     <option value="{{"WSDLGenerator::RPC_LITERAL"|constant}}">RPC / Literal</option>
     <option value="{{"WSDLGenerator::RPC_ENCODED"|constant}}">RPC / Encoded</option>
   </select></td></tr>
@@ -67,7 +68,8 @@
 	</li>
   {{/foreach}}
   </ul>
-  <p><label>Zielpfad:</label> <input type="text" name="targetpath" value="{{$smarty.const.STD_SEARCHPATH}}/services" style="width: 600px;" /></p>
+  <p><label>Zielpfad:</label> <input type="text" name="targetpath" value="{{$targetpath}}" style="width: 600px;" /></p>
+  <p><label><input type="checkbox" name="createTargetDirectory" value="1" />Zielverzeichnis erstellen, falls es noch nicht existiert.</label></p>
   {{if isset($pathinvalid)}}<p>Der angegebene Pfad ist nicht g&uuml;ltig.</p>
   {{/if}}
   {{elseif $step eq "generate"}}  
