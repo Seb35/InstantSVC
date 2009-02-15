@@ -56,8 +56,8 @@ private $password = '';
  * Name der Datenbank
  * @var string
  */
-private $database = 'wsdl-db';
-//private $database = 'teletask';
+private $database = 'instantsvc';
+
 /**
  * Instanzvariable für den Zugriff auf die Datenbank
  * @var ADOConnection

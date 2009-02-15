@@ -19,7 +19,7 @@ CREATE TABLE class_table (
 
 CREATE TABLE `method_table` (
   `method_table_id` int(11) NOT NULL auto_increment,
-  `method_name` varchar(30) NOT NULL default '',
+  `method_name` varchar(255) NOT NULL default '',
   `class_table_id` int(11) NOT NULL default '0',
   `publish` tinyint(1) NOT NULL default '1',
   `source_comment` int(11) default NULL,
@@ -51,7 +51,7 @@ CREATE TABLE `comment_table` (
 
 CREATE TABLE `tool_properties` (
   `id` int(11) NOT NULL auto_increment,
-  `property` varchar(30) NOT NULL default '',
+  `property` varchar(255) NOT NULL default '',
   `value` varchar(255) NOT NULL default '',
   `description` text,
   PRIMARY KEY  (`id`)
