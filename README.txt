@@ -36,7 +36,7 @@ Point your browser to http://localhost/instantsvc/snapshot/source/tools/admin-to
     The installation programm will import
         instantsvc/snapshot/source/tools/admin-tool/sql/instantsvc.sql
     into the database and adjust the database connection settings in
-        instantsvc/snapshot/source/tools/admin-tool/admin-tool-db.php
+        instantsvc/snapshot/source/tools/admin-tool/dbconfig.php
 
 In order to use authentication via WS-Security Username Token Profile you have to import
     instantsvc/snapshot/source/libs/UserTokenProfile/sql/usertokenstorage.sql
