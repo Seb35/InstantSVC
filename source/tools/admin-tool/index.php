@@ -397,6 +397,17 @@ private function showIntro() {
         }
 
         switch ($_SESSION['wizard']['step']) {
+            // select class path
+            case 'step1':
+                if (isset($_SESSION['searchpath'])) {
+                    $this->smarty->assign('searchpath', $_SESSION['searchpath']);
+                }
+                else {
+                    $this->smarty->assign('searchpath', STD_SEARCHPATH);
+                }
+                break;
+
+            // select classes
             case 'step2':
                 if (isset($_REQUEST['searchpath'])) {
                     $_SESSION['searchpath'] = stripslashes($_REQUEST['searchpath']);
@@ -419,15 +430,7 @@ private function showIntro() {
                 $_SESSION['wizard']['step'] = 'step1';
                 //and do step1
 
-            case 'step1':
-                if (isset($_SESSION['searchpath'])) {
-                    $this->smarty->assign('searchpath', $_SESSION['searchpath']);
-                }
-                else {
-                    $this->smarty->assign('searchpath', STD_SEARCHPATH);
-
-                }
-                break;
+            // configure services
             case 'finish':
                 $classes = array();
                 if (isset($_REQUEST['class'])) {
@@ -447,6 +450,8 @@ private function showIntro() {
                     $this->smarty->assign('serviceuri', 'http://' . $_SERVER['HTTP_HOST'] . '/services/soap.php/');
                 }
                 break;
+
+            // generate services
             case 'generate':
                 if (!isset($_REQUEST['targetpath']) or
                     !is_dir($_REQUEST['targetpath']) or
