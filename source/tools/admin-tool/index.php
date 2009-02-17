@@ -349,7 +349,7 @@ class AdminToolApp {
     }
 
     protected function handleWizard() {
-        if (isset($_SESSION['wizard']['step']) {
+        if (isset($_SESSION['wizard']['step'])) {
             $currentStep = $_SESSION['wizard']['step'];
             $nextStep = $currentStep;
         }
