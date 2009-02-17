@@ -349,8 +349,10 @@ class AdminToolApp {
     }
 
     protected function handleWizard() {
-        $currentStep = $_SESSION['wizard']['step'];
-        $nextStep = $currentStep;
+        if (isset($_SESSION['wizard']['step']) {
+            $currentStep = $_SESSION['wizard']['step'];
+            $nextStep = $currentStep;
+        }
         if (!isset($_REQUEST['step'])) {
             $nextStep = 'start';
         } else {
