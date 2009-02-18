@@ -63,12 +63,7 @@ class FileDetails {
     public function __construct($file = '') {
         $this->fileName = realpath($file);
         if ($file != '' and file_exists($file)) {
-            if (function_exists('mime_content_type')) {
-                $this->mimeType = mime_content_type($file);
-            }
-            else {
-                $this->mimeType = $this->guessMimeType($file);
-            }
+            $this->mimeType = $this->guessMimeType($file);
 
             if ($this->shouldCountLines($this->mimeType)) {
                 $this->linesOfCode = count(file($file));
