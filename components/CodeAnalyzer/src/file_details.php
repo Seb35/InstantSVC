@@ -88,9 +88,13 @@ class iscCodeAnalyzerFileDetails extends ezcBaseStruct {
             self::$mimeHandler = 1;
             self::$finfo = finfo_open(FILEINFO_MIME);
         }
+        // removed because deprecated and returning only text/plain
+        // for PHP files
+        /*
         elseif (function_exists('mime_content_type')) {
             self::$mimeHandler = 2;
         }
+        */
         else {
             //map file extensions to mime type
             $php = array('php', 'php3', 'php4', 'php5', 'inc');
