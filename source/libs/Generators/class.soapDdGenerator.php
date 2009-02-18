@@ -23,7 +23,8 @@ require_once(dirname(__FILE__).'/../../../libs/misc/class.file.php');
 /**
  * @package    libs.generator
  * @author     Stefan Marr <mail@stefan-marr.de>
- * @copyright  2006 Stefan Marr
+ * @author     Falko Menge <mail@falko-menge.de>
+ * @copyright  2006-2009 InstantSVC Team
  * @license    http://www.apache.org/licenses/LICENSE-2.0  Apache License 2.0
  */
 class SoapDeploymentDescriptorGenerator {
@@ -49,16 +50,40 @@ class SoapDeploymentDescriptorGenerator {
     protected $services;
     
     /**
-     * @var bool
+     * @var boolean
      */
     protected $utpIncludes = false;
+
+    /**
+     * @var boolean
+     *      Whether to append the service configurations to an existing
+     *      deployment descriptor
+     */
+    protected $append = false;
     
 
     //=======================================================================
     /**
+     * Constructor
      *
+     * @param boolean $append
+     *        Whether to append the service configurations to an existing
+     *        deployment descriptor
      */
-    public function __construct() {
+    public function __construct($append = false) {
+        $this->append = $append;
+    }
+
+    /**
+     * Sets whether to append the service configurations to an existing
+     * deployment descriptor
+     *
+     * @param boolean $append
+     *        Whether to append the service configurations to an existing
+     *        deployment descriptor
+     */
+    public function setAppend($append = true) {
+        $this->append = $append;
     }
 
     //=======================================================================
@@ -70,13 +95,24 @@ class SoapDeploymentDescriptorGenerator {
      */
     public function save($path = null) {
         if ($path != null) $this->setDeployPath($path);
+        $filename = $this->deploymentPath.'/'.$this->ddFile;
 
-        foreach ($this->services as $key => $value) {
-        	$this->services[$key]['classfile'] =
+        $services = $this->services;
+        foreach ($services as $key => $value) {
+        	$services[$key]['classfile'] =
         	                 $this->makeBasedOnDeployPath($value['classfile']);
         }
 
-        $ddArray = 'return '.var_export($this->services, true).';';
+        if ($this->append) {
+            $existingServices = @include($filename);
+            if (is_array($existingServices) and count($existingServices) > 0) {
+                # merge existing and new services
+                # services with the same name will be overwritten by the new version
+                $services = array_merge($existingServices, $services);
+            }
+        }
+
+        $ddArray = 'return '.var_export($services, true).';';
 
         $ddStr = "<?php\n";
         $ddStr.= "//** SOAPServer Deployment Descriptor **//\n";
@@ -103,7 +139,7 @@ class SoapDeploymentDescriptorGenerator {
         $ddStr.= $ddArray;
         $ddStr.= "\n?>";
 
-        $file = fopen($this->deploymentPath.'/'.$this->ddFile, 'w');
+        $file = fopen($filename, 'w');
         if ($file !== false) {
             fwrite($file, $ddStr);
             fclose($file);

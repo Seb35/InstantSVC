@@ -70,6 +70,7 @@
   </ul>
   <p><label>Zielpfad:</label> <input type="text" name="targetpath" value="{{$targetpath}}" style="width: 600px;" /></p>
   <p><label><input type="checkbox" name="createTargetDirectory" value="1" />Zielverzeichnis erstellen, falls es noch nicht existiert.</label></p>
+  <p><label><input type="checkbox" name="appendToExistingDd" value="1" checked="checked" />Append the service configurations if a deployment descriptor already exists in the target directory.</label></p>
   {{if isset($pathinvalid)}}<p>Der angegebene Pfad ist nicht g&uuml;ltig.</p>
   {{/if}}
   {{elseif $step eq "generate"}}  

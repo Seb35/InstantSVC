@@ -338,7 +338,7 @@ class AdminToolApp {
                         $this->smarty->assign('generatedServices', $services);
 
                         //after all services are generated build deployment descriptor
-                        AdminToolLibrary::generateDd($targetPath, $services);
+                        AdminToolLibrary::generateDd($targetPath, $services, isset($_REQUEST['appendToExistingDd']));
                         AdminToolLibrary::generateServer($targetPath);
                     }
                 }
@@ -511,7 +511,7 @@ class AdminToolApp {
                         $this->smarty->assign('generatedServices', $services);
 
                         //after all services are generated build deployment descriptor
-                        AdminToolLibrary::generateDd($targetPath, $services);
+                        AdminToolLibrary::generateDd($targetPath, $services, isset($_REQUEST['appendToExistingDd']));
                         AdminToolLibrary::generateServer($targetPath);
                     }
                 }

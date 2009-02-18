@@ -213,9 +213,12 @@ public function getRegisteredClasses() {
     /**
      * @param String $targetPath
      * @param array<string,string>[] $ddInfos
+     * @param boolean $append
+     *        Whether to append the service configurations if a deployment
+     *        descriptor already exists in the target directory
      */
-    public static function generateDd($targetPath, array $ddInfos) {
-        $generator = new SoapDeploymentDescriptorGenerator();
+    public static function generateDd($targetPath, array $ddInfos, $append = false) {
+        $generator = new SoapDeploymentDescriptorGenerator($append);
 
         foreach ($ddInfos as $ser) {
             $generator->addService($ser['wsdlfile'], $ser['servicename'],
