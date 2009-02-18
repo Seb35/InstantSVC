@@ -349,14 +349,16 @@ class AdminToolApp {
     }
 
     protected function handleWizard() {
-        if (isset($_SESSION['wizard']['step'])) {
+        $steps = array('start', 'step1', 'step2', 'finish', 'generate', 'cancel');
+        if (isset($_SESSION['wizard']['step']) and in_array($_SESSION['wizard']['step'], $steps)) {
             $currentStep = $_SESSION['wizard']['step'];
-            $nextStep = $currentStep;
-        }
-        if (!isset($_REQUEST['step'])) {
-            $nextStep = 'start';
         } else {
+            $currentStep = 'start';
+        }
+        if (isset($_REQUEST['step']) and in_array($_REQUEST['step'], $steps)) {
             $nextStep = $_REQUEST['step'];
+        } else {
+            $nextStep = 'start';
         }
         if (isset($_REQUEST['next'])) {
             if ($currentStep == 'start') {
