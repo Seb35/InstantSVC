@@ -96,11 +96,17 @@ class SoapDeploymentDescriptorGenerator {
     public function save($path = null) {
         if ($path != null) $this->setDeployPath($path);
         $filename = $this->deploymentPath.'/'.$this->ddFile;
+        if (isset($_SERVER['HTTPS']) and $_SERVER['HTTPS'] == 'on') {
+            $protocol = 'https://';
+        } else {
+            $protocol = 'http://';
+        }
 
         $services = $this->services;
         foreach ($services as $key => $value) {
         	$services[$key]['classfile'] =
         	                 $this->makeBasedOnDeployPath($value['classfile']);
+            $services[$key]['urlprefix'] = $protocol . $_SERVER['HTTP_HOST'];
         }
 
         if ($this->append) {
@@ -137,7 +143,6 @@ class SoapDeploymentDescriptorGenerator {
         $ddStr.= "\n";
         $ddStr.= "//** settings **//\n";
         $ddStr.= $ddArray;
-        $ddStr.= "\n?>";
 
         $file = fopen($filename, 'w');
         if ($file !== false) {

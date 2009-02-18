@@ -51,7 +51,14 @@ if ($getRequestPath !== false and isset($dd[$getRequestPath])) {
         //wsdl request?
         if (isset($_REQUEST['WSDL']) or isset($_REQUEST['wsdl'])) {
             header('Content-type: text/xml');
-            echo file_get_contents($service['wsdlfile']);
+            if (isset($_SERVER['HTTPS']) and $_SERVER['HTTPS'] == 'on') {
+                $protocol = 'https://';
+            } else {
+                $protocol = 'http://';
+            }
+            $urlprefix = $protocol . $_SERVER['HTTP_HOST'];
+            
+            echo str_replace($service['urlprefix'], $urlprefix, file_get_contents($service['wsdlfile']));
             exit();
         }
 
