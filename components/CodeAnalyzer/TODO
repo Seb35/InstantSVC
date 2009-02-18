@@ -6,3 +6,4 @@
        leads to deadlogs on crawling through source tree
    -   implement a new class which can be ask to rate a specific metric
        on the base of some configurable values in a ini file for example
+   -   Document the possibility of using the PECL extension Fileinfo
