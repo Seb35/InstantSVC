@@ -60,7 +60,7 @@
     <h1>Services erfolgreich erstellt</h1>
 	<p>Die WSDL-Dateien und der SOAP-Server wurden erfolgreich erstellt und konfiguriert.</p>
     {{foreach from=$generatedServices item=generatedService}}
-        <a href="{{$wsdlurl}}soap.php/{{$generatedService.servicename}}?wsdl" target="_blank">{{$wsdlurl}}soap.php/{{$generatedService.servicename}}?wsdl</a>
+        <a href="{{$wsdlurl}}soap.php/{{$generatedService.servicename}}?wsdl" target="_blank">{{$wsdlurl}}soap.php/{{$generatedService.servicename}}?wsdl</a><br />
     {{/foreach}}
 	{{else}}
 	<h1>Erstellen der WSDL-Datei fehlgeschlagen!</h1>
