@@ -399,13 +399,14 @@ class AdminToolApp {
             case 'step2':
                 if (isset($_REQUEST['searchpath'])) {
                     $_SESSION['searchpath'] = stripslashes($_REQUEST['searchpath']);
-                    $result = $this->doSearch($_REQUEST['searchpath'], isset($_REQUEST['only_ws_tag']));
+                    $result = $this->doSearch($_SESSION['searchpath'], isset($_REQUEST['only_ws_tag']));
                     if ($result != null) {
                         $_SESSION['simpleClassList'] = $result;
                         $this->smarty->assign('list_classes', $result);
                         break;
                     } else {
                         $this->smarty->assign('pathfailed', true);
+                        $this->smarty->assign('searchpath', realpath($_SESSION['searchpath']));
                     }
                 } elseif (isset($_SESSION['simpleClassList'])) {
                     $this->smarty->assign('list_classes', $_SESSION['simpleClassList']);
