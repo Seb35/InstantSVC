@@ -57,8 +57,11 @@ if ($getRequestPath !== false and isset($dd[$getRequestPath])) {
                 $protocol = 'http://';
             }
             $urlprefix = $protocol . $_SERVER['HTTP_HOST'];
-            
-            echo str_replace($service['urlprefix'], $urlprefix, file_get_contents($service['wsdlfile']));
+            if ($service['urlprefix'] != $urlprefix) {
+                echo str_replace($service['urlprefix'], $urlprefix, file_get_contents($service['wsdlfile']));
+            } else {
+                readfile($service['wsdlfile']);
+            }
             exit();
         }
 
