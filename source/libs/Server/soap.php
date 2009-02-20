@@ -48,15 +48,16 @@ $dd = require(dirname(__FILE__).'/soap.dd.php');
 if ($getRequestPath !== false and isset($dd[$getRequestPath])) {
         $service = $dd[$getRequestPath];
 
+        if (isset($_SERVER['HTTPS']) and $_SERVER['HTTPS'] == 'on') {
+            $protocol = 'https://';
+        } else {
+            $protocol = 'http://';
+        }
+        $urlprefix = $protocol . $_SERVER['HTTP_HOST'];
+
         //wsdl request?
         if (isset($_REQUEST['WSDL']) or isset($_REQUEST['wsdl'])) {
             header('Content-type: text/xml');
-            if (isset($_SERVER['HTTPS']) and $_SERVER['HTTPS'] == 'on') {
-                $protocol = 'https://';
-            } else {
-                $protocol = 'http://';
-            }
-            $urlprefix = $protocol . $_SERVER['HTTP_HOST'];
             if ($service['urlprefix'] != $urlprefix) {
                 echo str_replace($service['urlprefix'], $urlprefix, file_get_contents($service['wsdlfile']));
             } else {
@@ -89,7 +90,18 @@ if ($getRequestPath !== false and isset($dd[$getRequestPath])) {
             $server->addXmlHandler($xmlSoapHeaderParser);
         } //end if
         else {
-            $server = new SoapServer($service['wsdlfile']);
+            if ($service['urlprefix'] != $urlprefix) {
+                $tempFile = tempnam(sys_get_temp_dir(), 'instantsvc-wsdl-');
+                if ($tempFile) {
+                    file_put_contents($tempFile, str_replace($service['urlprefix'], $urlprefix, file_get_contents($service['wsdlfile'])));
+                } else {
+                    throw new SoapFault('TempFileCreationFault', 'A temporary file could not be created');
+                }
+                $server = new SoapServer($tempFile);
+                unlink($tempFile);
+            } else {
+                $server = new SoapServer($service['wsdlfile']);
+            }
         }
         $server->setClass($service['classname']);
         $server->handle();
