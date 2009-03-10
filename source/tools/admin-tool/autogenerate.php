@@ -39,7 +39,7 @@ if (!isset($_REQUEST['folder']) or !isset($_REQUEST['classname']) or !isset($_RE
   die('Not all parameters were filled in');
 }
 
-$targetPath = INSTANTSVC_DEFAULT_TARGET_DIR;
+$targetPath = realpath(INSTANTSVC_DEFAULT_TARGET_DIR);
 $searchPath = STD_SEARCHPATH . 'generated-from-html/';
 $onlyConsiderAnnotatedClasses = true;
 $generatedUniqueFolder = $_REQUEST['folder']; // 123423782742389472389
@@ -51,17 +51,19 @@ $namespace = "http://servicecomposer.no-ip.org/instantsvc/services/soap.php/" . 
 $wsdlStyle = WSDLGenerator::RPC_LITERAL;
 $wsdlPath = $targetPath . '/' . $serviceName . '.wsdl'; // /var/www/instantsvc/services     /      Meinwebservice    .wsdl
 $realSearchPath = $searchPath . $generatedUniqueFolder;
-$appendToExistingDeploymentDescriptor = "1";
+$appendToExistingDeploymentDescriptor = true;
 $useUTP = false;
 
 $saved = AdminToolLibrary::generateWsdl(
-$className,
-$fileName,
-$serviceName,
-$serviceUri,
-$namespace,
-$wsdlStyle,
-$wsdlPath);
+  $className, 
+  $fileName,
+  $serviceName,
+  $serviceUri,
+  $namespace,
+  (int) $wsdlStyle,
+  $wsdlPath
+);
+
 
 if (!$saved) {
   header('HTTP/1.0 500');
@@ -71,16 +73,20 @@ if (!$saved) {
 // correct (purge) $targetPath
 $targetPath = realPath($targetPath);
 
-if ($wsdlStyle == WSDLGenerator::DOCUMENT_WRAPPED) {
+
+
+if ((int) $wsdlStyle == WSDLGenerator::DOCUMENT_WRAPPED) {
   $classfile = AdminToolLibrary::generateAdapter($className, $targetPath);
   $className = AdminToolLibrary::getAdapterClassName($className);
-  $service['classfile'] = $classfile;
-
+} else {
+  $classfile = $fileName;
 }
 
-$service['wsdlfile']    = $serviceName.'.wsdl';
+
+$service['wsdlfile']    = $serviceName . '.wsdl';
 $service['servicename'] = $serviceName;
 $service['utp']         = $useUTP;
+$service['classfile']   = $classfile;
 $service['classname']   = $className;
 
 $services = array();
