@@ -48,7 +48,7 @@ $fileName = $_REQUEST['filename']; // /var/www.../123454348593485934589345893458
 $serviceName = $_REQUEST['servicename']; //Meinwebservice
 $serviceUri = "http://servicecomposer.no-ip.org/instantsvc/services/soap.php/" . $className;
 $namespace = "http://servicecomposer.no-ip.org/instantsvc/services/soap.php/" . $className;
-$wsdlStyle = "1";
+$wsdlStyle = WSDLGenerator::RPC_LITERAL;
 $wsdlPath = $targetPath . '/' . $serviceName . '.wsdl'; // /var/www/instantsvc/services     /      Meinwebservice    .wsdl
 $realSearchPath = $searchPath . $generatedUniqueFolder;
 $appendToExistingDeploymentDescriptor = "1";
@@ -71,13 +71,16 @@ if (!$saved) {
 // correct (purge) $targetPath
 $targetPath = realPath($targetPath);
 
-$classfile = AdminToolLibrary::generateAdapter($className, $targetPath);
-$className = AdminToolLibrary::getAdapterClassName($className);
+if ($wsdlStyle == WSDLGenerator::DOCUMENT_WRAPPED) {
+  $classfile = AdminToolLibrary::generateAdapter($className, $targetPath);
+  $className = AdminToolLibrary::getAdapterClassName($className);
+  $service['classfile'] = $classfile;
+
+}
 
 $service['wsdlfile']    = $serviceName.'.wsdl';
 $service['servicename'] = $serviceName;
 $service['utp']         = $useUTP;
-$service['classfile']   = $classfile;
 $service['classname']   = $className;
 
 $services = array();
