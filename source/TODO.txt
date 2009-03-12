@@ -2,8 +2,6 @@ DONE -> Erledigt
 REM  -> Remember/Merke
 Vn	 -> Bsp. V2 geplant für Version 2.0
 
-KORREKTUREN FÜR ENDBENOTUNG
-
 	DONE	- rest.dd.generator setDeploymentPath Parameter prüfen
 	DONE	- datei operationen nicht gesichert (exception handling)
 (Christoph)	- mehrere klassen in einer datei? in eigene dateien verteilen
@@ -40,6 +38,8 @@ Admin-Tool (TODOs aus Martins Email)
         
         - WARNUNG ausgeben, dass scannen des quellcodes mit gefahren verbunden ist?
     V2  - Ausgabe der Doku Fehler, in optisch ansprechnder Art und Weise
+        - Commit compiled Smarty templates to SVN and include them in releases
+        - Remove instructions on how to set write access to the directory containing the compiled Smarty templates from the readme files
 
 WSDL Generator
 DONE - test cases for the generator (http://qa.php.net/write-test.php)
@@ -50,7 +50,7 @@ DONE - constants as class constants
 DONE - use ExdReflectionMethod->isMagic() in the Document/Wrapped-Adapter-Generator
      - test WSDL generation for Map-Types (JAX and WCF/Indigo compatible?)
      - more test cases for rpc/literal
-     - verify doc-lit and rpc-lit output with WS-I Basic Profile 1.1
+     - verify doc-lit and rpc-lit output with WS-I Basic Profile 1.1 using the WS-I test tool, e.g., via soapUI
 REM    Possible Flaws:
 REM    R2206 rpc-lit
 V2   - add documentation when adding functions [should be triggered by an optional argument of addFunction()]
