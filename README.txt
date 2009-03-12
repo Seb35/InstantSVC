@@ -17,6 +17,16 @@ Extract the following files into the document root of your webserver:
     adodb5      => instantsvc/adodb
     snapshot    => instantsvc/snapshot
 
+WARNING:
+It is strongly advised to restrict access to the directory
+    instantsvc/snapshot/source/tools/admin-tool
+for example by using the HTTP Authentication standard as described in RFC 2617.
+This directory contains the Web-based adminstration tools of InstantSVC that
+allow for scanning arbitrary directories on you server for PHP classes as well
+as generating Web Services to make these classes accessible for the public,
+i.e., executing the PHP code remotely. Consult the documentation of your
+webserver for information on how HTTP Authentication can be configured.
+
 If neccessary change the constants in
     instantsvc/snapshot/source/tools/admin-tool/admin-tool-config.php
     instantsvc/snapshot/libs/config/config.php
