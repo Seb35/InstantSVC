@@ -106,16 +106,17 @@ if ($getRequestPath !== false and isset($dd[$getRequestPath])) {
         $server->setClass($service['classname']);
         $server->handle();
 } else {
+    $serverDir = dirname($_SERVER['SCRIPT_NAME']);
 ?>
 <html>
   <head>
     <title>InstantSVC SOAP Server</title>
-    <link rel="stylesheet" type="text/css" href="default.css">
+    <link rel="stylesheet" type="text/css" href="<?php echo $serverDir; ?>/default.css">
     <meta http-equiv="content-type" content="text/html; charset=UTF-8">
   </head>
   <body>
   <div id="header">
-    <h1><img src="logo.png"></h1>
+    <h1><img src="<?php echo $serverDir; ?>/logo.png"></h1>
   </div>
   <div id="main">
     <h2>InstantSVC SOAP Server</h2>
