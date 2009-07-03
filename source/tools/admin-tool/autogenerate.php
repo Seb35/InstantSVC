@@ -39,6 +39,14 @@ if (!isset($_REQUEST['folder']) or !isset($_REQUEST['classname']) or !isset($_RE
   die('Not all parameters were filled in');
 }
 
+// serverinformationen finden
+$serverName = $_SERVER['SERVER_NAME'];
+$serverPort = $_SERVER['SERVER_PORT'];
+$server = $serverName . ':' . $serverPort;
+
+// könnte noch verbessert werden (siehe unten)
+// $server war vorher "posr.ws"
+
 $targetPath = realpath(INSTANTSVC_DEFAULT_TARGET_DIR);
 $searchPath = STD_SEARCHPATH . 'generated-from-html/';
 $onlyConsiderAnnotatedClasses = true;
@@ -46,8 +54,8 @@ $generatedUniqueFolder = $_REQUEST['folder']; // 123423782742389472389
 $className = $_REQUEST['classname']; //Meinwebservice
 $fileName = $_REQUEST['filename']; // /var/www.../123454348593485934589345893458934/Meinwebservice.php
 $serviceName = $_REQUEST['servicename']; //Meinwebservice
-$serviceUri = "http://posr.ws/instantsvc/services/soap.php/" . $className;
-$namespace = "http://posr.ws/instantsvc/services/soap.php/" . $className;
+$serviceUri = "http://$server/instantsvc/services/soap.php/" . $className;
+$namespace = "http://$server/instantsvc/services/soap.php/" . $className;
 $wsdlStyle = WSDLGenerator::RPC_LITERAL;
 $wsdlPath = $targetPath . '/' . $serviceName . '.wsdl'; // /var/www/instantsvc/services     /      Meinwebservice    .wsdl
 $realSearchPath = $searchPath . $generatedUniqueFolder;
