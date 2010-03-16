@@ -237,6 +237,12 @@ class AdminToolApp {
         } elseif (isset($_REQUEST['back'])) {
             $step--;
         }
+    
+        if (!isset($_SESSION['markedServer'])) {
+            $servType = 'soap';
+        } else {
+            $servType = $_SESSION['markedServer'];
+        }
 
         switch ($step) {
             // show registered classes and let the user select some
@@ -277,73 +283,124 @@ class AdminToolApp {
                 } else {
                     $targetPath = $_REQUEST['targetpath'];
                 }
+                switch($servType) {
+                    case 'soap':
 
-                if (isset($_SESSION['classes2generate'])) {
-                    $classes = $_SESSION['classes2generate'];
-                    if (isset($_REQUEST['servicename'])) {
-                        $services = array();
-                        foreach ($_REQUEST['servicename'] as $id => $serviceName) {
-                            $serviceName = stripslashes($serviceName);
-                            if (isset($classes[$id])) {
-                                $className = $classes[$id]['class_name'];
-                                $_REQUEST['serviceuri'][$id] = stripslashes($_REQUEST['serviceuri'][$id]);
-                                $_REQUEST['namespace'][$id] = stripslashes($_REQUEST['namespace'][$id]);
-
-                                //create and write wsdl file
-                                $saved = AdminToolLibrary::generateWsdl($className,
-                                        $classes[$id]['class_file'],
-                                        $serviceName,
-                                        $_REQUEST['serviceuri'][$id],
-                                        $_REQUEST['namespace'][$id],
-                                        (int)$_REQUEST['wsdlstyle'][$id],
-                                        $targetPath.'/'.$serviceName.'.wsdl');
-                                if (!$saved) {
-                                    $this->smarty->assign('generationfailed', true);
+                        if (isset($_SESSION['classes2generate'])) {
+                            $classes = $_SESSION['classes2generate'];
+                            if (isset($_REQUEST['servicename'])) {
+                                $services = array();
+                                foreach ($_REQUEST['servicename'] as $id => $serviceName) {
+                                    $serviceName = stripslashes($serviceName);
+                                    if (isset($classes[$id])) {
+                                        $className = $classes[$id]['class_name'];
+                                        $_REQUEST['serviceuri'][$id] = stripslashes($_REQUEST['serviceuri'][$id]);
+                                        $_REQUEST['namespace'][$id] = stripslashes($_REQUEST['namespace'][$id]);
+        
+                                        //create and write wsdl file
+                                        $saved = AdminToolLibrary::generateWsdl($className,
+                                                $classes[$id]['class_file'],
+                                                $serviceName,
+                                                $_REQUEST['serviceuri'][$id],
+                                                $_REQUEST['namespace'][$id],
+                                                (int)$_REQUEST['wsdlstyle'][$id],
+                                                $targetPath.'/'.$serviceName.'.wsdl');
+                                        if (!$saved) {
+                                            $this->smarty->assign('generationfailed', true);
+                                        }
+        
+        
+                                        if ((int)$_REQUEST['wsdlstyle'][$id] == WSDLGenerator::DOCUMENT_WRAPPED) {
+                                            $classfile = AdminToolLibrary::generateAdapter($className, $targetPath);
+                                            $className = AdminToolLibrary::getAdapterClassName($className);
+                                        } else {
+                                            $classfile = $classes[$id]['class_file'];
+                                        }
+        
+                                        $service['wsdlfile']    = $serviceName.'.wsdl';
+                                        $service['servicename'] = $serviceName;
+                                        $service['utp']         = isset($_REQUEST['useutp'][$id]);
+                                        $service['classfile']   = $classfile;
+                                        $service['classname']   = $className;
+        
+        
+                                        $services[] = $service;
+                                    }
                                 }
-
-
-                                if ((int)$_REQUEST['wsdlstyle'][$id] == WSDLGenerator::DOCUMENT_WRAPPED) {
-                                    $classfile = AdminToolLibrary::generateAdapter($className, $targetPath);
-                                    $className = AdminToolLibrary::getAdapterClassName($className);
+        
+                                // assign data to display results
+                                if (isset($_SERVER['HTTPS']) and $_SERVER['HTTPS'] == 'on') {
+                                    $protocol = 'https://';
                                 } else {
-                                    $classfile = $classes[$id]['class_file'];
+                                    $protocol = 'http://';
                                 }
-
-                                $service['wsdlfile']    = $serviceName.'.wsdl';
-                                $service['servicename'] = $serviceName;
-                                $service['utp']         = isset($_REQUEST['useutp'][$id]);
-                                $service['classfile']   = $classfile;
-                                $service['classname']   = $className;
-
-
-                                $services[] = $service;
+                                $this->smarty->assign(
+                                    'wsdlurl',
+                                    $protocol . $_SERVER['HTTP_HOST']
+                                        . substr(
+                                            realpath($targetPath),
+                                            strlen(realpath($_SERVER['DOCUMENT_ROOT']))
+                                        )
+                                        .  '/'
+                                );
+                                $this->smarty->assign('generatedServices', $services);
+        
+                                //after all services are generated build deployment descriptor
+                                AdminToolLibrary::generateDd($targetPath, $services, isset($_REQUEST['appendToExistingDd']));
+                                AdminToolLibrary::generateServer($targetPath);
                             }
                         }
+                        break;
+                    case 'xmlrpc':
 
-                        // assign data to display results
-                        if (isset($_SERVER['HTTPS']) and $_SERVER['HTTPS'] == 'on') {
-                            $protocol = 'https://';
-                        } else {
-                            $protocol = 'http://';
+                        if (isset($_SESSION['classes2generate'])) {
+                            $classes = $_SESSION['classes2generate'];
+                            if (isset($_REQUEST['servicename'])) {
+                                $services = array();
+                                foreach ($_REQUEST['servicename'] as $id => $serviceName) {
+                                    $serviceName = stripslashes($serviceName);
+                                    if (isset($classes[$id])) {
+                                        $className = $classes[$id]['class_name'];
+
+                                        if (!class_exists($className)) {
+                                            require_once($classes[$id]['class_file']);
+                                        }
+                                        
+                                        // Wrapper-Klasse erzeugen
+                                        $classfile = AdminToolLibrary::generateXmlrpcWrapper($className, $targetPath);
+                                        $className = AdminToolLibrary::getXmlrpcWrapperClassName($className);
+        
+                                        $service['servicename'] = $serviceName;
+                                        $service['classfile']   = $classfile;
+                                        $service['classname']   = $className;
+        
+                                        $services[] = $service;
+                                    }
+                                }
+        
+                                //after all services are generates build dd
+                                AdminToolLibrary::generateXmlrpcDd($targetPath, $services);
+                                AdminToolLibrary::generateXmlrpcServer($targetPath);
+                            }
                         }
-                        $this->smarty->assign(
-                            'wsdlurl',
-                            $protocol . $_SERVER['HTTP_HOST']
-                                . substr(
-                                    realpath($targetPath),
-                                    strlen(realpath($_SERVER['DOCUMENT_ROOT']))
-                                )
-                                .  '/'
-                        );
-                        $this->smarty->assign('generatedServices', $services);
-
-                        //after all services are generated build deployment descriptor
-                        AdminToolLibrary::generateDd($targetPath, $services, isset($_REQUEST['appendToExistingDd']));
-                        AdminToolLibrary::generateServer($targetPath);
-                    }
+                        break;
+                    case 'rest':
+                        if (isset($_SESSION['classes2generate'])) {
+                            $classes = $_SESSION['classes2generate'];
+                            foreach ($classes as $classArray) {
+                                include_once($classArray['class_file']);
+                                $className = $classArray['class_name'];
+                                $class = new $className();
+                                $classesObj[] = $class;
+                            }
+                            AdminToolLibrary::generateRestDd($classesObj, $targetPath);
+                            AdminToolLibrary::generateRestServer($targetPath);
+                        }
+                        break;
                 }
                 break;
         }
+        $this->smarty->assign('type', $servType);
         $this->smarty->assign('step', $step);
         $this->smarty->display('admin-tool/admin-tool-wsgen-view.tpl');
     }
@@ -384,7 +441,13 @@ class AdminToolApp {
             $nextStep = 'cancel';
         }
         $_SESSION['wizard']['step'] = $nextStep;
-
+    
+        if (!isset($_SESSION['markedServer'])) {
+            $servType = 'soap';
+        } else {
+            $servType = $_SESSION['markedServer'];
+        }
+        
         switch ($_SESSION['wizard']['step']) {
             // select class path
             case 'step1':
@@ -451,69 +514,121 @@ class AdminToolApp {
                     $targetPath = $_REQUEST['targetpath'];
                 }
 
-                if (isset($_SESSION['classes2generate'])) {
-                    $classes = $_SESSION['classes2generate'];
-                    if (isset($_REQUEST['servicename'])) {
-                        $services = array();
-                        foreach ($_REQUEST['servicename'] as $className => $serviceName) {
-                            $serviceName = stripslashes($serviceName);
-                            if (isset($classes[$className])) {
-                                $origClassName = $className;
-                                $_REQUEST['serviceuri'][$className] = stripslashes($_REQUEST['serviceuri'][$className]);
-                                $_REQUEST['namespace'][$className] = stripslashes($_REQUEST['namespace'][$className]);
-
-                                //create and write wsdl file
-                                $saved = AdminToolLibrary::generateWsdl($className,
-                                        $classes[$className]['file'],
-                                        $serviceName,
-                                        $_REQUEST['serviceuri'][$className],
-                                        $_REQUEST['namespace'][$className],
-                                        (int)$_REQUEST['wsdlstyle'][$className],
-                                        $targetPath.'/'.$serviceName.'.wsdl');
-                                if (!$saved) {
-                                    $this->smarty->assign('generationfailed', true);
+                switch($servType) {
+                    case 'soap':
+                
+                        if (isset($_SESSION['classes2generate'])) {
+                            $classes = $_SESSION['classes2generate'];
+                            if (isset($_REQUEST['servicename'])) {
+                                $services = array();
+                                foreach ($_REQUEST['servicename'] as $className => $serviceName) {
+                                    $serviceName = stripslashes($serviceName);
+                                    if (isset($classes[$className])) {
+                                        $origClassName = $className;
+                                        $_REQUEST['serviceuri'][$className] = stripslashes($_REQUEST['serviceuri'][$className]);
+                                        $_REQUEST['namespace'][$className] = stripslashes($_REQUEST['namespace'][$className]);
+        
+                                        //create and write wsdl file
+                                        $saved = AdminToolLibrary::generateWsdl($className,
+                                                $classes[$className]['file'],
+                                                $serviceName,
+                                                $_REQUEST['serviceuri'][$className],
+                                                $_REQUEST['namespace'][$className],
+                                                (int)$_REQUEST['wsdlstyle'][$className],
+                                                $targetPath.'/'.$serviceName.'.wsdl');
+                                        if (!$saved) {
+                                            $this->smarty->assign('generationfailed', true);
+                                        }
+        
+        
+                                        if ((int)$_REQUEST['wsdlstyle'][$className] == WSDLGenerator::DOCUMENT_WRAPPED) {
+                                            $classfile = AdminToolLibrary::generateAdapter($className, $targetPath);
+                                            $className = AdminToolLibrary::getAdapterClassName($className);
+                                        } else {
+                                            $classfile = $classes[$className]['file'];
+                                        }
+        
+                                        $service['wsdlfile']    = $serviceName.'.wsdl';
+                                        $service['servicename'] = $serviceName;
+                                        $service['utp']         = isset($_REQUEST['useutp'][$origClassName]);
+                                        $service['classfile']   = $classfile;
+                                        $service['classname']   = $className;
+        
+        
+                                        $services[] = $service;
+                                    }
                                 }
-
-
-                                if ((int)$_REQUEST['wsdlstyle'][$className] == WSDLGenerator::DOCUMENT_WRAPPED) {
-                                    $classfile = AdminToolLibrary::generateAdapter($className, $targetPath);
-                                    $className = AdminToolLibrary::getAdapterClassName($className);
+        
+                                // assign data to display results
+                                if (isset($_SERVER['HTTPS']) and $_SERVER['HTTPS'] == 'on') {
+                                    $protocol = 'https://';
                                 } else {
-                                    $classfile = $classes[$className]['file'];
+                                    $protocol = 'http://';
                                 }
-
-                                $service['wsdlfile']    = $serviceName.'.wsdl';
-                                $service['servicename'] = $serviceName;
-                                $service['utp']         = isset($_REQUEST['useutp'][$origClassName]);
-                                $service['classfile']   = $classfile;
-                                $service['classname']   = $className;
-
-
-                                $services[] = $service;
+                                $this->smarty->assign(
+                                    'wsdlurl',
+                                    $protocol . $_SERVER['HTTP_HOST']
+                                        . substr(
+                                            realpath($targetPath),
+                                            strlen(realpath($_SERVER['DOCUMENT_ROOT']))
+                                        )
+                                        .  '/'
+                                );
+                                $this->smarty->assign('generatedServices', $services);
+        
+                                //after all services are generated build deployment descriptor
+                                AdminToolLibrary::generateDd($targetPath, $services, isset($_REQUEST['appendToExistingDd']));
+                                AdminToolLibrary::generateServer($targetPath);
                             }
                         }
-
-                        // assign data to display results
-                        if (isset($_SERVER['HTTPS']) and $_SERVER['HTTPS'] == 'on') {
-                            $protocol = 'https://';
-                        } else {
-                            $protocol = 'http://';
+                        break;
+                    case 'xmlrpc':
+                
+                        if (isset($_SESSION['classes2generate'])) {
+                            $classes = $_SESSION['classes2generate'];
+                            if (isset($_REQUEST['servicename'])) {
+                                $services = array();
+                                foreach ($_REQUEST['servicename'] as $className => $serviceName) {
+                                    $serviceName = stripslashes($serviceName);
+                                    if (isset($classes[$className])) {
+                
+                                        if (!class_exists($className)) {
+                                            require_once($classes[$className]['file']);
+                                        }
+                                        
+                                        $classfile = AdminToolLibrary::generateXmlrpcWrapper($className, $targetPath);
+                                        $className = AdminToolLibrary::getXmlrpcWrapperClassName($className);
+                                        
+                                        $service['servicename'] = $serviceName;
+                                        $service['classfile']   = $classfile;
+                                        $service['classname']   = $className;
+        
+        
+                                        $services[] = $service;
+                                    }
+                                }
+                                //after all services are generates build dd
+                                AdminToolLibrary::generateXmlrpcDd($targetPath, $services);
+                                AdminToolLibrary::generateXmlrpcServer($targetPath);
+                            }
                         }
-                        $this->smarty->assign(
-                            'wsdlurl',
-                            $protocol . $_SERVER['HTTP_HOST']
-                                . substr(
-                                    realpath($targetPath),
-                                    strlen(realpath($_SERVER['DOCUMENT_ROOT']))
-                                )
-                                .  '/'
-                        );
-                        $this->smarty->assign('generatedServices', $services);
-
-                        //after all services are generated build deployment descriptor
-                        AdminToolLibrary::generateDd($targetPath, $services, isset($_REQUEST['appendToExistingDd']));
-                        AdminToolLibrary::generateServer($targetPath);
-                    }
+                        break;
+                    case 'rest':
+                
+                        if (isset($_SESSION['classes2generate'])) {
+                            $classes = $_SESSION['classes2generate'];
+                            foreach ($classes as $classArray) {
+                                $className = $classArray['class_name'];
+                                if (!class_exists($className)) {
+                                    require_once($classes[$className]['file']);
+                                }
+                                $class = new $className();
+                                $classesObj[] = $class;
+                            }
+                            AdminToolLibrary::generateRestDd($classesObj, $targetPath);
+                            AdminToolLibrary::generateRestServer($targetPath);
+                        }
+                        break;
                 }
                 break;
         }

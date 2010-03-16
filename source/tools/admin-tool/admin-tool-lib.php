@@ -25,7 +25,10 @@ require_once dirname(__FILE__).'/admin-tool-db.php';
 require_once(dirname(__FILE__).'/../../libs/Generators/class.WSDLGenerator.php');
 require_once(dirname(__FILE__).'/../../libs/Generators/WsdlPolicyPlugin/policy-plugin.php');
 require_once(dirname(__FILE__).'/../../libs/Generators/class.soapDdGenerator.php');
+require_once(dirname(__FILE__).'/../../libs/Generators/class.restDdGenerator.php');
 require_once(dirname(__FILE__).'/../../libs/Generators/class.DocumentWrappedAdapterGenerator.php');
+require_once(dirname(__FILE__).'/../../libs/Generators/class.XmlrpcWrapperGenerator.php');
+require_once(dirname(__FILE__).'/../../libs/Generators/class.xmlrpcDdGenerator.php');
 
 //***** AdminToolLibrary ****************************************************
 /**
@@ -298,6 +301,71 @@ public function getRegisteredClasses() {
         return $publishedMethods;
 
     } // end getPublishedMethods
+
+    //=======================================================================
+    /**
+     * @param string $className
+     * @param string $targetPath
+     * @return string path of generated file
+     */
+    public static function generateXmlrpcWrapper($className, $targetPath) {
+        $generator = new XmlrpcWrapperGenerator($className);
+        return $generator->saveToFile($targetPath);
+    }
+
+    //=======================================================================
+    /**
+     * @param string $className
+     * @return string
+     */
+    public static function getXmlrpcWrapperClassName($className) {
+        return XmlrpcWrapperGenerator::generateWrapperClassName($className);
+    }
+
+    //=======================================================================
+    /**
+     * @param String $targetPath
+     * @param array<string,string>[] $ddInfos
+     */
+    public static function generateXmlrpcDd($targetPath, array $ddInfos) {
+        $generator = new XmlrpcDeploymentDescriptorGenerator();
+
+        foreach ($ddInfos as $ser) {
+            $generator->addService($ser['servicename'], $ser['classfile'], $ser['classname']);
+        }
+        $generator->setDeployPath($targetPath);
+        $generator->save();
+    }
+
+    //=======================================================================
+    /**
+     * @param string $targetPath
+     * @return boolean
+     */
+    public static function generateXmlrpcServer($targetPath) {
+        return copy(dirname(__FILE__).'/../../libs/Server/xmlrpc.php', $targetPath.'/xmlrpc.php');
+    }
+
+    //=======================================================================
+    /**
+     * @param String $targetPath
+     * @param array $ddInfos
+     */
+    public static function generateRestDd($classes, $targetPath) {
+        $generator = new RestDeploymentDescriptorGenerator($classes);
+        $generator->setStandardSerializer('PearSerializer');
+        $generator->setStandardDeserializer('PearSerializer');
+        $generator->save($targetPath);
+    }
+
+    //=======================================================================
+    /**
+     * @param string $targetPath
+     * @return boolean
+     */
+    public static function generateRestServer($targetPath) {
+        return copy(dirname(__FILE__).'/../../libs/Server/rest.php', $targetPath.'/rest.php');
+    }
 }
 
 ?>
