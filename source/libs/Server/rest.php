@@ -118,7 +118,7 @@ foreach ($restDD['mapping'] as $pattern => $methods) {
 	        }
 
 	        //May be we have a singleton class, just check for some common names
-            if (is_callable(array($methods[$requestMethod]['c'], '__contruct'), false)) {
+            if (is_callable(array($methods[$requestMethod]['c'], '__construct'), false)) {
 	           $obj = new $methods[$requestMethod]['c']();
             }
             elseif (is_callable(array($methods[$requestMethod]['c'], 'getInstance'), false)) {
