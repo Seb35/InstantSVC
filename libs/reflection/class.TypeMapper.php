@@ -73,6 +73,7 @@ class TypeMapper {
         $mixed   = 'mixed';
         $void    = 'void';
         $object  = 'object';
+        $datetime = 'datetime';
 
         $this->mappingTable['int']     = $integer;
         $this->mappingTable['integer'] = $integer;
@@ -143,6 +144,8 @@ class TypeMapper {
             The string datatype represents character strings in XML.
         */
         $this->xmlMappingTable[$string]  = 'string';
+        
+        $this->xmlMappingTable[$datetime] = 'dateTime';
     }
 
     //=======================================================================
